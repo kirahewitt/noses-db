@@ -1,4 +1,4 @@
-i<?php
+<?php
 require 'database.php';
 
 // Get the posted data.
@@ -39,3 +39,4 @@ if(isset($postdata) && !empty($postdata))
     http_response_code(422);
   }
 }
+?>

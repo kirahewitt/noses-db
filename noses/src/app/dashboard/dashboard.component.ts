@@ -4,7 +4,7 @@ import { Policy } from  '../policy';
 import { MatTableModule, MatTableDataSource } from '@angular/material';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
     this.apiService.readPolicies().subscribe((policies: Policy[])=>{
       this.policies = policies;
       this.dataSource = policies;
-      console.log(this.policies);
+      console.log(this.dataSource);
     })
   }
 
@@ -28,13 +28,13 @@ export class DashboardComponent implements OnInit {
     if(this.selectedPolicy && this.selectedPolicy.id){
       form.value.id = this.selectedPolicy.id;
       this.apiService.updatePolicy(form.value).subscribe((policy: Policy)=>{
-        console.log("Policy updated" , policy);
+        // console.log("Policy updated" , policy);
       });
     }
     else{
 
       this.apiService.createPolicy(form.value).subscribe((policy: Policy)=>{
-        console.log("Policy created, ", policy);
+        // console.log("Policy created, ", policy);
       });
     }
 
@@ -46,7 +46,7 @@ export class DashboardComponent implements OnInit {
 
   deletePolicy(id){
     this.apiService.deletePolicy(id).subscribe((policy: Policy)=>{
-      console.log("Policy deleted, ", policy);
+      // console.log("Policy deleted, ", policy);
     });
   }
 }

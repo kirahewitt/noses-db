@@ -1,7 +1,8 @@
-<h1>Insurance Policy Management</h1>
 <div>
-
-  <table border='1' width='100%' style='border-collapse: collapse;'>
+  <br>
+  <br>
+  <br>
+  <table class="table table-hover" border='1' width='100%' style='border-collapse: collapse;'>
     <tr>
       <th>ID</th>
       <th>Policy Number</th>
@@ -15,8 +16,8 @@
       <td>{{ policy.number }}</td>
       <td>{{ policy.amount }}</td>
       <td>
-        <button (click)="deletePolicy(policy.id)">Delete</button>
-        <button (click)="selectPolicy(policy)">Update</button>
+        <button class="btn btn-link" (click)="selectPolicy(policy)">Update</button>
+        <button class="btn btn-link redText" (click)="deletePolicy(policy.id)">Delete</button>
       </td>
     </tr>
   </table>
@@ -25,10 +26,10 @@
 <br>
   <form #f = "ngForm">
     <label>Number</label>
-    <input type="text" name="number" [(ngModel)] = "selectedPolicy.number">
+    <input type="text" name="number" [(ngModel)]="selectedPolicy.number">
     <br>
     <label>Amount</label>
-    <input type="text" name="amount" [(ngModel)] = "selectedPolicy.amount">
+    <input type="text" name="amount" [(ngModel)]="selectedPolicy.amount">
     <br>
     <input type="button" (click)="createOrUpdatePolicy(f)" value="Create or Update Policy">
   </form>

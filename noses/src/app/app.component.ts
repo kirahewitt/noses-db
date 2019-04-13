@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { MatToolbarModule, MatTableModule, MatTableDataSource } from '@angular/material';
 
-
 export interface PeriodicElement {
   name: string;
   position: number;
