@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BackendService } from '../backend.service';
+import { FlaskBackendService } from '../flask-backend.service';
 import { Policy } from  '../policy';
+import { Users } from  '../users';
 import { MatTableModule, MatTableDataSource } from '@angular/material';
 
 @Component({
@@ -8,45 +10,22 @@ import { MatTableModule, MatTableDataSource } from '@angular/material';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
+
 export class DashboardComponent implements OnInit {
 
   policies:  Policy[];
-  selectedPolicy:  Policy  = { id :  null , number:null, amount:  null};
-  dataSource: Policy[]
+  users: Users[];
+  dataSource: Users[]
 
-  constructor(private apiService: BackendService) { }
+  constructor(private apiService: FlaskBackendService) { }
 
   ngOnInit() {
-    this.apiService.readPolicies().subscribe((policies: Policy[])=>{
-      this.policies = policies;
-      this.dataSource = policies;
+    this.apiService.readUsers().subscribe((users: Users[])=>{
+      this.users = users;
+      this.dataSource = users;
       console.log(this.dataSource);
+      console.log(this.users);
     })
   }
 
-  createOrUpdatePolicy(form){
-    if(this.selectedPolicy && this.selectedPolicy.id){
-      form.value.id = this.selectedPolicy.id;
-      this.apiService.updatePolicy(form.value).subscribe((policy: Policy)=>{
-        // console.log("Policy updated" , policy);
-      });
-    }
-    else{
-
-      this.apiService.createPolicy(form.value).subscribe((policy: Policy)=>{
-        // console.log("Policy created, ", policy);
-      });
-    }
-
-  }
-
-  selectPolicy(policy: Policy){
-    this.selectedPolicy = policy;
-  }
-
-  deletePolicy(id){
-    this.apiService.deletePolicy(id).subscribe((policy: Policy)=>{
-      // console.log("Policy deleted, ", policy);
-    });
-  }
 }
