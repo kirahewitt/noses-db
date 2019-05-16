@@ -13,7 +13,6 @@ import { MatTableModule, MatTableDataSource } from '@angular/material';
 
 export class DashboardComponent implements OnInit {
 
-  policies:  Policy[];
   users: Users[];
   dataSource: Users[]
 
@@ -23,8 +22,6 @@ export class DashboardComponent implements OnInit {
     this.apiService.readUsers().subscribe((users: Users[])=>{
       this.users = users;
       this.dataSource = users;
-      console.log(this.dataSource);
-      console.log(this.users);
     })
   }
 
