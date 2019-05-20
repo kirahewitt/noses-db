@@ -77,15 +77,16 @@ def getTopObsv(cursor):
         return int(row[0])
 
 def getDate(date):
+    print date
     datetime_object = datetime.strptime(date, "%m/%d/%y")
     return datetime_object.date()
 
 def writeObsv(cnx, cursor, row, ID):
     statement = ("INSERT INTO Observations VALUES ("
                 + str(ID) + ", "
-                + "'testEmail', "     # email TODO needs to change to something dynamic
-                + row[SEX] + ", "                # gender
-                + str(getDate(row[DATE]))+ ", "                # date
+                + "'testEmail', "     # email 
+                + row[SEX] + ", '"                # gender
+                + str(getDate(row[DATE]))+ "', "                # date
                 + row[MOLT] + ", '"                # molt
                 + row[COMMENTS].replace("'", "") + "', "                # comments
                 + row[AGE] + ", "                # Age
@@ -118,9 +119,9 @@ def runQuery(cursor, query):
 
 # takes cursor and tag to look for
 # returns obsID if found, -1 if not found
-def getMark(cursor, mark):
-    "run get mark"
-    query = "SELECT MarkSeal FROM Marks WHERE Mark = {:s};".format(mark)
+def getMark(cursor, mark, year):
+    print("mark, {:s} year {:s}".format(mark, year))
+    query = "SELECT MarkSeal FROM Marks WHERE Mark = {:s} and Year = {:s};".format(mark, year)
     runQuery(cursor, query)
     row = cursor.fetchone()
     print("getMark: ", row, mark)
@@ -150,8 +151,8 @@ def pushMark(cnx, cursor, csvRow, obsID, sealID):
     statement = ("INSERT INTO Marks VALUES ("
                 + str(0) + ", "       # MarkID
                 + csvRow[MARK].replace(" ", "") + ", "        # mark
-                + csvRow[MARKPOS] + ", "          # Year
-                + + ", "          # date
+                + csvRow[MARKPOS] + ", '"          # Year
+                + str(getDate(csvRow[2]))+ "', "          # date
                 + csvRow[YEAR] + ", " 
                 + str(sealID) + ");")        # 
     print(statement)
@@ -190,17 +191,38 @@ def observeTag(cnx, cursor, tag, ID):
     statement = "INSERT INTO ObserveTags VALUES ({:d}, {:d}, {:s});".format(OTAG_ID, ID, tag)
     pushQuery(cnx, cursor, statement)
 
+def getColor(tag):
+    if tag == 'G':
+        return "'green'"
+    if tag == 'W':
+        return "'white'"
+    if tag == 'B':
+        return "'blue'"
+    if tag == 'Y':
+        return "'yellow'"
+    if tag == 'R':
+        return "'red'"
+    if tag == 'P':
+        return "'pink'"
+    if tag == 'V':
+        return "'violet'"
+    if tag == 'O':
+        return "'orange'"
+    else:
+        return "'unknown'"
+
 # takes an observation from which to make a new mark
 # updates table with the new mark, with error checks
 def pushTag(cnx, cursor, csvRow, whichTag, sealID):
     TAGPOS  = 9
     DATE    = 1
+    print("pushTag {:s}".format(csvRow[2]))
 
     statement = ("INSERT INTO Tags VALUES ("
                 + csvRow[whichTag] + ", "        # mark
-                + "NULL" + ", "          # TODO write getTagColor(row[whichTag][0])
-                + csvRow[TAGPOS] + ", "
-                + str(getDate(row[DATE])) + ", "
+                + getColor(csvRow[whichTag][0]) + ", "          # TODO write getTagColor(row[whichTag][0])
+                + csvRow[TAGPOS] + ", '"
+                + str(getDate(csvRow[2])) + "', "
                 + str(sealID) + ");")        # 
     print(statement)
     try:
@@ -237,7 +259,6 @@ def updateObserveTag(cnx, cursor, old, new):
                 + "ObservationID = {:d} WHERE ObservationID = {:d};").format(new, old)
     pushQuery(cnx, cursor, statement)
 
-#TODO probably needs to change
 # consolidates a seal with tags/IDs that don't match on obsID
 def consolidate(cnx, cursor, sealID, tags, marks):
     print("tags: ", tags, "marks: ", marks)
@@ -258,7 +279,6 @@ def consolidate(cnx, cursor, sealID, tags, marks):
     for ID in seals:
         dropSeal(cnx, cursor, ID)
 
-#TODO was changed
 def createSeal(cnx, cursor, row, oID):
     getNewID = "SELECT MAX(SealID) FROM Seals;"
     runQuery(cursor, getNewID)
@@ -268,7 +288,6 @@ def createSeal(cnx, cursor, row, oID):
     pushQuery(cnx, cursor, statement)
     return ID
 
-#TODO was changed
 #adds all non-null tags/marks and then adds a seal TODO add measurements
 def addSeal(cnx, cursor, row, obsID):
     sealID = createSeal(cnx, cursor, row, obsID)
@@ -289,7 +308,6 @@ def positiveMin(IDs):
         mainID = IDs[2]
     return mainID
 
-#TODO Definitely changed
 # takes an observation and determines if the seal has been seen before
 def findSeal(cnx, cursor, row):
     obsID = getTopObsv(cursor) + 1
@@ -299,7 +317,7 @@ def findSeal(cnx, cursor, row):
     divergentM = []
     merge = False
 
-    mID = getMark(cursor, row[MARK])
+    mID = getMark(cursor, row[MARK], row[YEAR])
     t1ID = getTag(cursor, row[TAG1])
     t2ID = getTag(cursor, row[TAG2])
 
