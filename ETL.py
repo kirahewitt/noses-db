@@ -1,19 +1,15 @@
 from mysql.connector import (connection)
 from mysql.connector import errorcode
+from datetime import datetime
 import mysql
 import csv
-import marks
-import tags
-
-
-
-obsID = 0
-sealID = 0
+FL = 0
 YEAR = 1
 DATE = 2
 LOC = 3
 SEX = 4
 AGE = 5
+PUP = 6
 NEWMARK = 7
 MARK = 8
 MARKPOS = 9
@@ -31,18 +27,8 @@ AXGIRTH = 23
 MASS = 24
 TARE = 25
 MASSTARE = 26
+RANGE = 29
 COMMENTS = 30
-
-# takes a table name to search, a value, and a column to find it in
-# searches table and returns true if found
-def canFind(cursor, tableName, value, column):
-    check = "SELECT * FROM " + tableName + ";"
-    cursor.execute(check)
-    remaining_rows = cursor.fetchall()
-    
-    if any(row[column] == value for row in remaining_rows):
-        return True # This is a resight
-    return False
 
 def makeConnection():
     try:
@@ -60,178 +46,300 @@ def makeConnection():
     else:
         return cnx
 
-def runQuery(cnx, cursor, query):
+# takes a table name to search, a value, and a column to find it in
+# searches table and returns true if found
+def canFind(cursor, tableName, value, column):
+    check = "SELECT * FROM " + tableName + ";"
+    cursor.execute(check)
+    remaining_rows = cursor.fetchall()
+    
+    if any(row[column] == value for row in remaining_rows):
+        return True # This is a resight
+    return False
+
+# puts NULL where there is empty space and puts "'" around string values
+def swapNulls(row):
+    for index in range(len(row)):
+        if (row[index] == ""):
+            row[index] = "NULL"
+        elif (index not in [YEAR, DATE, MOLT, SEASON,
+            STLENGTH, CRVLENGTH, AXGIRTH, MASS, TARE, MASSTARE]):
+            row[index] = "'" + row[index] + "'"
+    print row
+
+def getTopObsv(cursor):
+    statement = "SELECT MAX(ObservationID) FROM Observations;"
+    result = runQuery(cursor, statement)
+    row = cursor.fetchone()
+    if row[0] is None:
+        return 0
+    else:
+        return int(row[0])
+
+def getDate(date):
+    datetime_object = datetime.strptime(date, "%m/%d/%y")
+    return datetime_object.date()
+
+def writeObsv(cnx, cursor, row, ID):
+    statement = ("INSERT INTO Observations VALUES ("
+                + str(ID) + ", "
+                + "'testEmail', "     # email TODO needs to change to something dynamic
+                + row[SEX] + ", "                # gender
+                + str(getDate(row[DATE]))+ ", "                # date
+                + row[MOLT] + ", '"                # molt
+                + row[COMMENTS].replace("'", "") + "', "                # comments
+                + row[AGE] + ", "                # Age
+                + row[YEAR] + ", "                # year
+                + row[LOC] + ")")              # SLOCode 
+    print(statement)
     try:
-        cursor.execute(query)
+        cursor.execute(statement)
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print(err)
+        return -5
+
+def pushQuery(cnx, cursor, query):
+    try:
+        print(query)
+        row = cursor.execute(query)
         cnx.commit()
     except mysql.connector.Error as err:
         print(err)
         exit(1)
 
-def writeObsv(cursor, row, obsID):
-    if row[SEX] == "NULL":
-        sex = "NULL"
-    else:
-        sex = "'" + row[SEX] + "'"
-    statement = ("INSERT INTO Observations VALUES ("
-                + str(obsID) + ", "
-                + "'testEmail', "     # email TODO needs to change to something dynamic
-                + sex + ", "                # gender
-                + "NULL, "                # date
-                + row[MOLT] + ", '"                # molt
-                + row[COMMENTS].replace("'", "") + "', '"                # comments
-                + row[AGE] + "', "                # Age
-                + row[YEAR] + ", '"                # year
-                + row[LOC][0:3] + "')")              # SLOCode 
-    print(statement)
-#    cursor.execute(statement)
+def runQuery(cursor, query):
     try:
-        cursor.execute(statement)
+        print(query)
+        cursor.execute(query)
     except mysql.connector.Error as err:
         print(err)
-        return -5
+        exit(1)
 
-
-def swapNulls(row):
-    for index in range(len(row)):
-        if (row[index] == ""):
-            row[index] = "NULL"
-
-def checkMark(cnx, cursor, obsID, markID, csvRow):
-    resight = False
-    # query marks for this mark
-    # if it exists, return 1
-    #otherwise, write it to marks and return -1
-#    checkMark = "SELECT * FROM Marks;"
-#    cursor.execute(checkMark)
-#    remaining_rows = cursor.fetchall()
-#    
-#  #  if any(row[1] == csvRow[MARK] and row[4] == int(csvRow[YEAR]) 
-#            #TODO should I check all elements? Raise err when elements don't match on mark 
-#    for row in remaining_rows:
-#        if (row[1] == csvRow[MARK] and row[4] == int(csvRow[YEAR])):
-    if marks.canFindMark(cursor, csvRow[MARK], csvRow[YEAR]):
-        markID = marks.getMarkID(cursor, csvRow[MARK], csvRow[YEAR]) #TODO check if this works :/
-        observeMarks = ("INSERT INTO ObserveMarks VALUES (" 
-                    + str(obsID) + ", " 
-                    + str(markID) + ");")
-        runQuery(cnx, cursor, observeMarks)
-        resight = True
-        print("resight mark: " + csvRow[MARK])
+# takes cursor and tag to look for
+# returns obsID if found, -1 if not found
+def getMark(cursor, mark):
+    "run get mark"
+    query = "SELECT MarkSeal FROM Marks WHERE Mark = {:s};".format(mark)
+    runQuery(cursor, query)
+    row = cursor.fetchone()
+    print("getMark: ", row, mark)
+    if (row is None):
+        return -1
     else:
-        # before this func call, should I check for Y/N, speed it up?
-        marks.pushMark(cnx, cursor, csvRow)
-#        statement = ("INSERT INTO Marks VALUES ("
-#                + str(markID) + ", '"       # MarkID
-#                + csvRow[MARK] + "', '"        # mark
-#                + csvRow[MARKPOS] + "', "          # Year
-#                + "'2019-01-01', "          # date
-#                + csvRow[YEAR] + ");")        # 
-#        print(statement)
-#        try:
-#            cursor.execute(statement)
-#            cnx.commit()
-#        except mysql.connector.Error as err:
-#            print(err)
-#            exit(1)
-        markID = marks.getMarkID(cursor, csvRow[MARK], csvRow[YEAR])
-        observeMarks = ("INSERT INTO ObserveMarks VALUES (" 
-                        + str(obsID) + ", " 
-                        + str(markID) + ");")
-        print(observeMarks)
-        runQuery(cnx, cursor, observeMarks)
+        return int(row[0])
 
-        if (resight == False): #never seen this mark this year
-            return -1
-        return 1
+def addMark(cnx, cursor, row, ID, sealID):
+    pushMark(cnx, cursor, row, ID, sealID)
+    query = "SELECT MAX(MarkID) FROM Marks;"
+    runQuery(cursor, query)
+    row = cursor.fetchone()
+    markid = row[0]
+    observeMark(cnx, cursor, markid, ID)
 
-def checkTag(cnx, cursor, obsID, csvRow, whichTag):
-    resight = False
-    if tags.canFindTag(cursor, csvRow[whichTag]):
-        observeTags = ("INSERT INTO ObserveTags VALUES (" 
-                    + str(0) + ", "
-                    + str(obsID) + ", '" 
-                    + csvRow[whichTag] + "');")
-        runQuery(cnx, cursor, observeTags)
-        resight = True
-        print("resight tag: " + csvRow[whichTag])
+def observeMark(cnx, cursor, mark, ID):
+    statement = "INSERT INTO ObserveMarks VALUES ({:d}, {:d});".format(ID, mark)
+    pushQuery(cnx, cursor, statement)
+
+# takes an observation from which to make a new mark
+# updates table with the new mark, with error checks
+def pushMark(cnx, cursor, csvRow, obsID, sealID):
+    MARK    = 8
+    MARKPOS = 9
+    YEAR    = 1
+    statement = ("INSERT INTO Marks VALUES ("
+                + str(0) + ", "       # MarkID
+                + csvRow[MARK].replace(" ", "") + ", "        # mark
+                + csvRow[MARKPOS] + ", "          # Year
+                + + ", "          # date
+                + csvRow[YEAR] + ", " 
+                + str(sealID) + ");")        # 
+    print(statement)
+    try:
+        cursor.execute(statement)
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print(err)
+        exit(1)
+
+# returns obsID if found, -1 if not found
+def getTag(cursor, tag):
+    query = "SELECT TagSeal, TagNumber FROM Tags WHERE TagNumber = {:s}".format(tag)
+    runQuery(cursor, query)
+    row = cursor.fetchone()
+    print("getTag: ", row)
+    if (row is None):
+        return -1
     else:
-        # before this func call, should I check for Y/N, speed it up?
-        tags.pushTag(cnx, cursor, csvRow, whichTag)
-        observeTags = ("INSERT INTO ObserveTags VALUES (" 
-                        + str(0) + ", "
-                        + str(obsID) + ", '" 
-                        + csvRow[whichTag] + "');")
-        print(observeTags)
-        runQuery(cnx, cursor, observeTags)
+        return int(row[0])
 
-        if (resight == False): #never seen this mark this year
-            return -1
-        return 1
 
-def addSeal(cnx, cursor, obsID, row):
-    if(row[SEX] != "NULL"):
-        row[SEX] = "'" + row[SEX] + "'"
-    statement = ("INSERT INTO Seals VALUES ("
-                + str(0) + ", "
-                + str(obsID) + ", "
-                + row[SEX] + ", "
-                + "FALSE);")
-    print statement
-    runQuery(cnx, cursor, statement)
+def addTag(cnx, cursor, row, whichTag, obsID, sealID):
+    pushTag(cnx, cursor, row, whichTag, sealID)
+    tag = row[whichTag]
+    observeTag(cnx, cursor, tag, obsID)
+
+def observeTag(cnx, cursor, tag, ID):
+    getNewOTAG = "SELECT MAX(OTAG_ID) FROM ObserveTags;"
+    runQuery(cursor, getNewOTAG)
+    row = cursor.fetchone()
+    if(row[0] is not None):
+        OTAG_ID = int(row[0]) + 1
+    else:
+        OTAG_ID = 0
+    statement = "INSERT INTO ObserveTags VALUES ({:d}, {:d}, {:s});".format(OTAG_ID, ID, tag)
+    pushQuery(cnx, cursor, statement)
+
+# takes an observation from which to make a new mark
+# updates table with the new mark, with error checks
+def pushTag(cnx, cursor, csvRow, whichTag, sealID):
+    TAGPOS  = 9
+    DATE    = 1
+
+    statement = ("INSERT INTO Tags VALUES ("
+                + csvRow[whichTag] + ", "        # mark
+                + "NULL" + ", "          # TODO write getTagColor(row[whichTag][0])
+                + csvRow[TAGPOS] + ", "
+                + str(getDate(row[DATE])) + ", "
+                + str(sealID) + ");")        # 
+    print(statement)
+    try:
+        cursor.execute(statement)
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print(err)
+        exit(1)
+
+def dropSeal(cnx, cursor, ID):
+    statement = "DELETE FROM Seals WHERE Seals.SealID = {:d};".format(ID)
+    pushQuery(cnx, cursor, statement);
+
+def updateMark(cnx, cursor, markID, newSeal):
+    statement = ("UPDATE Marks SET "
+            + "MarkSeal = {:d} WHERE MarkSeal = {:d};").format(newSeal, markID)
+    pushQuery(cnx, cursor, statement);
+
+def updateTag(cnx, cursor, tag, newSeal):
+    statement = ("UPDATE Tags SET "
+            + "TagSeal = {:d} WHERE TagSeal = {:d};").format(newSeal, tag)
+    pushQuery(cnx, cursor, statement);
+    
+
+def updateObserveMark(cnx, cursor, old, new):
+    print("Update Observe Mark ", old, " to ", new)
+    statement = ("UPDATE ObserveMarks SET "
+                + "ObservationID = {:d} WHERE ObservationID = {:d};").format(new, old)
+    pushQuery(cnx, cursor, statement)
+
+def updateObserveTag(cnx, cursor, old, new):
+    print("Update Observe Tag ", old, " to ", new)
+    statement = ("UPDATE ObserveTags SET "
+                + "ObservationID = {:d} WHERE ObservationID = {:d};").format(new, old)
+    pushQuery(cnx, cursor, statement)
+
+#TODO probably needs to change
+# consolidates a seal with tags/IDs that don't match on obsID
+def consolidate(cnx, cursor, sealID, tags, marks):
+    print("tags: ", tags, "marks: ", marks)
+    seals = []
+    for ID in tags:
+        updateTag(cnx, cursor, ID, sealID)
+        updateMark(cnx, cursor, ID, sealID)
+        if ID not in seals:
+            seals.append(ID)
+        #updateObserveTag(cnx, cursor, ID, obsID)
+    for ID in marks:
+        #dropSeal(cnx, cursor, ID)
+        updateMark(cnx, cursor, ID, sealID)
+        updateTag(cnx, cursor, ID, sealID)
+        if ID not in seals:
+            seals.append(ID)
+        #updateObserveMark(cnx, cursor, ID, obsID)
+    for ID in seals:
+        dropSeal(cnx, cursor, ID)
+
+#TODO was changed
+def createSeal(cnx, cursor, row, oID):
+    getNewID = "SELECT MAX(SealID) FROM Seals;"
+    runQuery(cursor, getNewID)
+    result = cursor.fetchone()
+    ID = result[0]+1 if result[0] is not None else 0
+    statement = "INSERT INTO Seals VALUES ({:d}, {:d}, {:s}, FALSE)".format(ID, oID, row[SEX])
+    pushQuery(cnx, cursor, statement)
+    return ID
+
+#TODO was changed
+#adds all non-null tags/marks and then adds a seal TODO add measurements
+def addSeal(cnx, cursor, row, obsID):
+    sealID = createSeal(cnx, cursor, row, obsID)
+    if(row[MARK] != "NULL"):
+        addMark(cnx, cursor, row, obsID, sealID)
+    if(row[TAG1] != "NULL"):
+        addTag(cnx, cursor, row, TAG1, obsID, sealID)
+    if(row[TAG2] != "NULL"):
+        addTag(cnx, cursor, row, TAG2, obsID, sealID)
+
+def positiveMin(IDs):
+    mainID = 99999999999
+    if IDs[0] != -1:
+        mainID = IDs[0]
+    if IDs[1] != -1 and IDs[1] < mainID:
+        mainID = IDs[1]
+    if IDs[2] != -1 and IDs[2] < mainID:
+        mainID = IDs[2]
+    return mainID
+
+#TODO Definitely changed
+# takes an observation and determines if the seal has been seen before
+def findSeal(cnx, cursor, row):
+    obsID = getTopObsv(cursor) + 1
+    writeObsv(cnx, cursor, row, obsID)
+
+    divergentT = []
+    divergentM = []
+    merge = False
+
+    mID = getMark(cursor, row[MARK])
+    t1ID = getTag(cursor, row[TAG1])
+    t2ID = getTag(cursor, row[TAG2])
+
+    mainID = positiveMin([mID, t1ID, t2ID])
+    print "Positive min: {:d}".format(mainID)
+
+    if(mID == -1 and t1ID == -1 and t2ID == -1):
+        addSeal(cnx, cursor, row, obsID)
+    else:
+        if (mID == -1 and row[MARK] != "NULL"):
+            addMark(cnx, cursor, row, obsID, mainID)
+        if (t1ID == -1 and row[TAG1] != "NULL"):
+            addTag(cnx, cursor, row, TAG1, obsID, mainID)
+        if (t2ID == -1 and row[TAG2] != "NULL"):
+            addTag(cnx, cursor, row, TAG2, obsID, mainID)
+
+        if(mID != mainID and row[MARK] != "NULL" and mID != -1):
+            divergentM.append(mID)
+            merge = True
+        if(t1ID != mainID and row[TAG1] != "NULL" and t1ID != -1):
+            divergentT.append(t1ID)
+            merge = True
+        if(t2ID != mainID and row[TAG2] != "NULL" and t2ID !=  -1):
+            divergentT.append(t2ID)
+            merge = True
+        if(merge is True):
+            print("divergents: ", divergentT, divergentM)
+            consolidate(cnx, cursor, mainID, divergentT, divergentM)
 
 def main():
-    i = 0
-    obsID = 0
-    sealID = 0
-    markID = 0
     cnx = makeConnection()
+    cursor = cnx.cursor(buffered=True)
 
     filename = raw_input("Give file name: ")
-
-    cursor = cnx.cursor(buffered=True)
     with open(filename) as csvfile:
-   # with open('ElephantSealData18-19.csv') as csvfile:
-   # with open('dupTags.csv') as csvfile:
-   # with open('DupMarks.csv') as csvfile:
-#
-#        # TODO this needs to be changed to update based on actual Rookery stuff"
-#        # I need to know what Beaches hook to which rookeries
-#        locFile.write("INSERT INTO Rookery VALUES('PB', 'Red', 'Pietras Blancas');\n")
-#
-#        # BEGIN READING
         readCSV = csv.reader(csvfile, delimiter=',')
         for row in readCSV:
-            if(i == 0 or all(element == "" for element in row)):
-                print("do nothing")
-                i = 1
-            else:
+            if canFind(cursor, "Beach", row[LOC], 0):
                 swapNulls(row)
-                MarkFlag = -1
-                Tag1Flag = -1
-                Tag2Flag = -1
-                if(canFind(cursor, "Beach", row[LOC][0:3], 0)):
-                    writeObsv(cursor, row, obsID)
-                    cnx.commit()
-    #                #if you haven't seen the mark yet
-                    if (row[MARK] != "NULL"):
-                        MarkFlag = checkMark(cnx, cursor, obsID, markID, row)
-                        cnx.commit()
-                        if(MarkFlag != -1):
-                            markID = markID + 1
-                        # eventually we'll need to query the database for the most recent one...oh well
-                    if(row[TAG1] != "NULL"):
-                        Tag1Flag = checkTag(cnx, cursor, obsID, row, TAG1)
-                    if(row[TAG2] != "NULL"):
-                        Tag2Flag = checkTag(cnx, cursor, obsID, row, TAG2)
-    
-                    if(MarkFlag == -1 and Tag1Flag == -1 and Tag2Flag == -1):
-                        addSeal(cnx, cursor, obsID, row)
-                        sealID = sealID + 1
-
-                    obsID = obsID + 1
-    
-    cursor.close()
+                findSeal(cnx, cursor, row)
     cnx.close()
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
