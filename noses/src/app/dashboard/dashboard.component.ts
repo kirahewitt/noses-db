@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BackendService } from '../backend.service';
 import { FlaskBackendService } from '../flask-backend.service';
-import { Policy } from  '../policy';
-import { Users } from  '../users';
+import { Observations } from  '../Observations';
 import { MatTableModule, MatTableDataSource } from '@angular/material';
 
 @Component({
@@ -13,15 +12,21 @@ import { MatTableModule, MatTableDataSource } from '@angular/material';
 
 export class DashboardComponent implements OnInit {
 
-  users: Users[];
-  dataSource: Users[]
+  observations: Observations[];
+  dataSource: Observations[];
+  displayedColumns: string[] = ['ObservationID', 'AgeClass', 'sex', 'date', 'email', 'Year', 'Comments' ];
+
 
   constructor(private apiService: FlaskBackendService) { }
 
   ngOnInit() {
-    this.apiService.readUsers().subscribe((users: Users[])=>{
-      this.users = users;
-      this.dataSource = users;
+    this.apiService.readUsers().subscribe((observations: Observations[])=>{
+      this.observations = observations;
+      this.dataSource = observations;
+      while(this.dataSource == undefined)
+      {
+        console.log("undefined")
+      }
     })
   }
 

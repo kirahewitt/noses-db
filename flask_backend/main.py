@@ -39,7 +39,7 @@ def users():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM tbl_user")
+		cursor.execute("SELECT * FROM Observations WHERE Observations.date IS NOT NULL")
 		rows = cursor.fetchall()
 		resp = jsonify(rows)
 		resp.status_code = 200
