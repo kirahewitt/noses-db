@@ -1,7 +1,19 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
-  <mat-toolbar color="primary">SealQLTeam6 NOSES Database</mat-toolbar>
-  <dashboard></dashboard>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span>SealQLTeam6 NOSES Database</span>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+      <a routerLink="/dashboard">Observations</a>
+      <div class="col-sm-1"></div>
+      <a routerLink="/upload-seal">Upload Data</a>
+      <div class="col-sm-1"></div>
+      <a routerLink="/sign-in">Login</a>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <router-outlet></router-outlet>
  </div>
+
 
 

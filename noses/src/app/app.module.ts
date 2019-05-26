@@ -1,20 +1,30 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Routes, RouterModule } from '@angular/router';
 import { MatToolbarModule, MatTableModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from  '@angular/forms';
-import { DashboardComponent } from './dashboard/dashboard.component';
+// import { DashboardComponent } from './dashboard/dashboard.component';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
-
-const routes: Routes = [
-  { path: 'dashboard', component: DashboardComponent }
-];
+import { UserLoginComponent } from './user-login/user-login.component';
+import { AuthService } from "./auth.service";
+import { AuthGuard } from "./auth.guard";
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { UploadSealComponent } from './upload-seal/upload-seal.component';
+import {
+  MatButtonModule,
+  MatDialogModule,
+  MatListModule,
+  MatProgressBarModule,
+} from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { PapaParseModule } from 'ngx-papaparse';
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -28,25 +38,34 @@ const config = {
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent
+    routingComponents,
+    UserLoginComponent,
+    VerifyEmailComponent,
+    UploadSealComponent,
   ],
   imports: [
     BrowserModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatListModule,
+    FlexLayoutModule,
     MatToolbarModule,
     MatTableModule,
     HttpClientModule,
+    BrowserAnimationsModule,
+    MatProgressBarModule,
     FormsModule,
-    RouterModule.forRoot(routes),
     AppRoutingModule,
     AngularFireModule.initializeApp(config),
     AngularFirestoreModule, // firestore
     AngularFireAuthModule, // auth
-    AngularFireStorageModule // storage
+    AngularFireStorageModule, // storage
+    PapaParseModule,
   ],
   exports: [
     RouterModule
   ],
-  providers: [],
+  providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

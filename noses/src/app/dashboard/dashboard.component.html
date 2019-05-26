@@ -2,7 +2,9 @@
   <br>
   <br>
   <br>
-
+  <div class="row" *ngIf="authService.userData as user">
+<p>Email: <strong>{{user.email}}</strong></p>
+</div>
   <div class="row">
     <div class="col-md-2"> </div>
     <div class="col-md-10">
