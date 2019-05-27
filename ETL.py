@@ -3,6 +3,7 @@ from mysql.connector import errorcode
 from datetime import datetime
 import mysql
 import csv
+
 FL = 0
 YEAR = 1
 DATE = 2
@@ -76,8 +77,17 @@ def getTopObsv(cursor):
     else:
         return int(row[0])
 
+def getTopMeasurement(cursor):
+    statement = "SELECT MAX(MeasurementID) FROM Measurements;"
+    result = runQuery(cursor, statement)
+    row = cursor.fetchone()
+    if row[0] is None:
+        return 0
+    else:
+        return int(row[0])
+
 def getDate(date):
-    print date
+    # print date
     datetime_object = datetime.strptime(date, "%m/%d/%y")
     return datetime_object.date()
 
@@ -120,11 +130,11 @@ def runQuery(cursor, query):
 # takes cursor and tag to look for
 # returns obsID if found, -1 if not found
 def getMark(cursor, mark, year):
-    print("mark, {:s} year {:s}".format(mark, year))
+    # print("mark, {:s} year {:s}".format(mark, year))
     query = "SELECT MarkSeal FROM Marks WHERE Mark = {:s} and Year = {:s};".format(mark, year)
     runQuery(cursor, query)
     row = cursor.fetchone()
-    print("getMark: ", row, mark)
+    # print("getMark: ", row, mark)
     if (row is None):
         return -1
     else:
@@ -192,21 +202,22 @@ def observeTag(cnx, cursor, tag, ID):
     pushQuery(cnx, cursor, statement)
 
 def getColor(tag):
+    print ("tag: ", tag)
     if tag == 'G':
         return "'green'"
-    if tag == 'W':
+    elif tag == "W":
         return "'white'"
-    if tag == 'B':
+    elif tag == "B":
         return "'blue'"
-    if tag == 'Y':
+    elif tag == "Y":
         return "'yellow'"
-    if tag == 'R':
+    elif tag == "R":
         return "'red'"
-    if tag == 'P':
+    elif tag == "P":
         return "'pink'"
-    if tag == 'V':
+    elif tag == "V":
         return "'violet'"
-    if tag == 'O':
+    elif tag == "O":
         return "'orange'"
     else:
         return "'unknown'"
@@ -215,12 +226,12 @@ def getColor(tag):
 # updates table with the new mark, with error checks
 def pushTag(cnx, cursor, csvRow, whichTag, sealID):
     TAGPOS  = 9
-    DATE    = 1
-    print("pushTag {:s}".format(csvRow[2]))
+    # print("pushTag {:s}".format(csvRow[2]))
+    print "getColor: {:s}".format(getColor(csvRow[whichTag][0]))
 
     statement = ("INSERT INTO Tags VALUES ("
                 + csvRow[whichTag] + ", "        # mark
-                + getColor(csvRow[whichTag][0]) + ", "          # TODO write getTagColor(row[whichTag][0])
+                + getColor(csvRow[whichTag][1]) + ", "          # TODO write getTagColor(row[whichTag][0])
                 + csvRow[TAGPOS] + ", '"
                 + str(getDate(csvRow[2])) + "', "
                 + str(sealID) + ");")        # 
@@ -231,6 +242,13 @@ def pushTag(cnx, cursor, csvRow, whichTag, sealID):
     except mysql.connector.Error as err:
         print(err)
         exit(1)
+
+def pushMeasurement(cnx, cursor, obsID, row):
+    newID = getTopMeasurement(cursor) + 1
+
+    statement = "INSERT INTO Measurements VALUES ({:d}, {:d}, {:s}, {:s}, {:s}, {:s}, {:s});".format(newID, obsID, 
+            row[AXGIRTH], row[MASS], row[TARE], row[CRVLENGTH], row[STLENGTH])
+    pushQuery(cnx, cursor, statement)
 
 def dropSeal(cnx, cursor, ID):
     statement = "DELETE FROM Seals WHERE Seals.SealID = {:d};".format(ID)
@@ -261,7 +279,7 @@ def updateObserveTag(cnx, cursor, old, new):
 
 # consolidates a seal with tags/IDs that don't match on obsID
 def consolidate(cnx, cursor, sealID, tags, marks):
-    print("tags: ", tags, "marks: ", marks)
+    # print("tags: ", tags, "marks: ", marks)
     seals = []
     for ID in tags:
         updateTag(cnx, cursor, ID, sealID)
@@ -277,6 +295,7 @@ def consolidate(cnx, cursor, sealID, tags, marks):
             seals.append(ID)
         #updateObserveMark(cnx, cursor, ID, obsID)
     for ID in seals:
+        updateObserveSeal(cnx, cursor, ID, sealID)
         dropSeal(cnx, cursor, ID)
 
 def createSeal(cnx, cursor, row, oID):
@@ -288,7 +307,7 @@ def createSeal(cnx, cursor, row, oID):
     pushQuery(cnx, cursor, statement)
     return ID
 
-#adds all non-null tags/marks and then adds a seal TODO add measurements
+#adds all non-null tags/marks and then adds a seal
 def addSeal(cnx, cursor, row, obsID):
     sealID = createSeal(cnx, cursor, row, obsID)
     if(row[MARK] != "NULL"):
@@ -297,6 +316,7 @@ def addSeal(cnx, cursor, row, obsID):
         addTag(cnx, cursor, row, TAG1, obsID, sealID)
     if(row[TAG2] != "NULL"):
         addTag(cnx, cursor, row, TAG2, obsID, sealID)
+    return sealID
 
 def positiveMin(IDs):
     mainID = 99999999999
@@ -308,10 +328,21 @@ def positiveMin(IDs):
         mainID = IDs[2]
     return mainID
 
+def observeSeal(cnx, cursor, sealID, obsID):
+    statement = "INSERT INTO ObserveSeal VALUES ({:d},{:d});".format(sealID, obsID)
+    pushQuery(cnx, cursor, statement)
+
+def updateObserveSeal(cnx, cursor, oldSeal, newSeal):
+    statement = "UPDATE ObserveSeal SET SealID = {:d} WHERE SealID = {:d};".format(newSeal, oldSeal)
+    pushQuery(cnx, cursor, statement)
+
 # takes an observation and determines if the seal has been seen before
 def findSeal(cnx, cursor, row):
     obsID = getTopObsv(cursor) + 1
     writeObsv(cnx, cursor, row, obsID)
+
+    if(row[STLENGTH] != "NULL" or row[CRVLENGTH] != "NULL" or row[AXGIRTH] != "NULL" or row[MASS] != "NULL" or row[TARE] != "NULL" or row[MASSTARE] != "NULL"):
+        pushMeasurement(cnx, cursor, obsID, row)
 
     divergentT = []
     divergentM = []
@@ -322,10 +353,10 @@ def findSeal(cnx, cursor, row):
     t2ID = getTag(cursor, row[TAG2])
 
     mainID = positiveMin([mID, t1ID, t2ID])
-    print "Positive min: {:d}".format(mainID)
+    # print "Positive min: {:d}".format(mainID)
 
     if(mID == -1 and t1ID == -1 and t2ID == -1):
-        addSeal(cnx, cursor, row, obsID)
+        mainID = addSeal(cnx, cursor, row, obsID)
     else:
         if (mID == -1 and row[MARK] != "NULL"):
             addMark(cnx, cursor, row, obsID, mainID)
@@ -344,8 +375,9 @@ def findSeal(cnx, cursor, row):
             divergentT.append(t2ID)
             merge = True
         if(merge is True):
-            print("divergents: ", divergentT, divergentM)
+            # print("divergents: ", divergentT, divergentM)
             consolidate(cnx, cursor, mainID, divergentT, divergentM)
+    observeSeal(cnx, cursor, mainID, obsID)
 
 def main():
     cnx = makeConnection()
