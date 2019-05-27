@@ -3,75 +3,58 @@
   <br>
   <br>
   <div class="row" *ngIf="authService.userData as user">
-<p>Email: <strong>{{user.email}}</strong></p>
+<!-- <p>Email: <strong>{{user.email}}</strong></p> -->
 </div>
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-2">
+  <mat-form-field>
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+    </div>
+</div>
+
   <div class="row">
     <div class="col-md-2"> </div>
     <div class="col-md-10">
-      <table mat-table class="table table-hover table-striped" [dataSource]="dataSource">
+        <table mat-table class="table table-hover table-striped" [dataSource]="dataSource">
 
         <ng-container matColumnDef="ObservationID">
           <th mat-header-cell *matHeaderCellDef> Obs ID </th>
           <td mat-cell *matCellDef="let obs"> {{ obs.ObservationID }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="AgeClass">
-          <th mat-header-cell *matHeaderCellDef> Age Class </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.AgeClass }} </td>
+        <ng-container matColumnDef="TagNumber1">
+          <th mat-header-cell *matHeaderCellDef> Tag #1 </th>
+          <td mat-cell *matCellDef="let obs"> {{ obs.TagNumber1 }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="sex">
-          <th mat-header-cell *matHeaderCellDef> Sex </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.sex }} </td>
+        <ng-container matColumnDef="TagNumber2">
+          <th mat-header-cell *matHeaderCellDef> Tag #2 </th>
+          <td mat-cell *matCellDef="let obs"> {{ obs.TagNumber2 }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef> Date </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.date }} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef> Observer Email </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.email }} </td>
+        <ng-container matColumnDef="Mark">
+          <th mat-header-cell *matHeaderCellDef> Mark </th>
+          <td mat-cell *matCellDef="let obs"> {{ obs.Mark }} </td>
         </ng-container>
 
         <ng-container matColumnDef="Year">
           <th mat-header-cell *matHeaderCellDef> Breeding Season </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.date }} </td>
+          <td mat-cell *matCellDef="let obs"> {{ obs.Year }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="Comments">
-          <th mat-header-cell *matHeaderCellDef> Comments </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.Comments }} </td>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let row"> <label class="redText" (click)="selectRow(row)">delete</label></td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-row  *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
   </div>
- <!--  <table class="table table-hover" border='1' width='100%' style='border-collapse: collapse;'>
-    <tr>
-      <th>Obs ID</th>
-      <th>Age Class</th>
-      <th>Sex</th>
-      <th>Date</th>
-      <th>Observer Email</th>
-      <th>Breeding Season</th>
-      <th>Comments</th>
-
-    </tr>
-
-    <tr *ngFor="let obs of observations">
-      <td>{{ obs.ObservationID }}</td>
-      <td>{{ obs.AgeClass}}</td>
-      <td>{{ obs.sex }}</td>
-      <td>{{ obs.date }}</td>
-      <td>{{ obs.email }}</td>
-      <td>{{ obs.Year }}</td>
-      <td>{{ obs.Comments }}</td>
-    </tr>
-  </table> -->
 </div>
 
 <br>

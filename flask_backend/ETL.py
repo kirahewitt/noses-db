@@ -66,7 +66,7 @@ def swapNulls(row):
         elif (index not in [YEAR, DATE, MOLT, SEASON,
             STLENGTH, CRVLENGTH, AXGIRTH, MASS, TARE, MASSTARE]):
             row[index] = "'" + row[index] + "'"
-    print row
+    print(row)
 
 def getTopObsv(cursor):
     statement = "SELECT MAX(ObservationID) FROM Observations;"
@@ -87,7 +87,7 @@ def getTopMeasurement(cursor):
         return int(row[0])
 
 def getDate(date):
-    # print date
+    print(date)
     datetime_object = datetime.strptime(date, "%m/%d/%y")
     return datetime_object.date()
 
@@ -354,6 +354,7 @@ def findSeal(cnx, cursor, row):
 
     mainID = positiveMin([mID, t1ID, t2ID])
     # print "Positive min: {:d}".format(mainID)
+    print("Positive min: {:d}".format(mainID))
 
     if(mID == -1 and t1ID == -1 and t2ID == -1):
         mainID = addSeal(cnx, cursor, row, obsID)
@@ -383,7 +384,7 @@ def main():
     cnx = makeConnection()
     cursor = cnx.cursor(buffered=True)
 
-    filename = raw_input("Give file name: ")
+    filename = input("Give file name: ")
     with open(filename) as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
         for row in readCSV:

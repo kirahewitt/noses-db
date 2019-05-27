@@ -25,6 +25,9 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { PapaParseModule } from 'ngx-papaparse';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatFormFieldModule } from '@angular/material';
+import { MatInputModule } from '@angular/material';
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -45,9 +48,12 @@ const config = {
   ],
   imports: [
     BrowserModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatButtonModule,
     MatDialogModule,
     MatListModule,
+    MatPaginatorModule,
     FlexLayoutModule,
     MatToolbarModule,
     MatTableModule,

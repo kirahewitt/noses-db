@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BackendService } from '../backend.service';
 import { FlaskBackendService } from '../flask-backend.service';
 import { Observations } from  '../Observations';
-import { MatTableModule, MatTableDataSource } from '@angular/material';
+import { MatTableModule, MatTableDataSource, MatPaginator } from '@angular/material';
 import { AuthService } from "../auth.service";
 import { AngularFireAuth } from "@angular/fire/auth";
 import {
@@ -20,8 +20,12 @@ export class DashboardComponent implements OnInit {
 
   userData: any;
   observations: Observations[];
-  dataSource: Observations[];
-  displayedColumns: string[] = ['ObservationID', 'AgeClass', 'sex', 'date', 'email', 'Year', 'Comments' ];
+  dataSource: any;
+  obsID: any;
+  tag1: string;
+  mark1: string;
+  displayedColumns: string[] = ['ObservationID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'actions' ];
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
   constructor(private apiService: FlaskBackendService,
@@ -29,21 +33,36 @@ export class DashboardComponent implements OnInit {
               public afAuth: AngularFireAuth) { }
 
   ngOnInit() {
-    this.apiService.readUsers().subscribe((observations: Observations[])=>{
+    this.apiService.readObs().subscribe((observations: any)=>{
       this.observations = observations;
-      this.dataSource = observations;
+      this.dataSource = new MatTableDataSource(<any> observations);
+      this.dataSource.paginator = this.paginator;
+      console.log(this.dataSource);
     });
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.userData = user;
         localStorage.setItem("user", JSON.stringify(this.userData));
         JSON.parse(localStorage.getItem("user"));
-        console.log(this.userData)
+        // console.log(this.userData)
       } else {
         localStorage.setItem("user", null);
         JSON.parse(localStorage.getItem("user"));
       }
     });
 
-}
+  }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  selectRow(row) {
+    console.log(row['ObservationID']);
+    this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
+    console.log(JSON.stringify(this.obsID));
+
+    this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
+
+ }
 }

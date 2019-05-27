@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Papa} from 'ngx-papaparse';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { SimpleUser } from '../simpleUser';
+import { FlaskBackendService } from '../flask-backend.service';
 
 @Component({
   selector: 'app-upload-seal',
@@ -8,13 +11,17 @@ import { Papa} from 'ngx-papaparse';
 })
 export class UploadSealComponent implements OnInit {
 
-  constructor(private papa: Papa) {
+  constructor(private papa: Papa,
+              private http: HttpClient,
+              private apiService: FlaskBackendService) {
   }
 
   ngOnInit() {
   }
 
-  test = [];
+  url = `http://httpbin.org/post`;
+  FLASK_API_SERVER = "http://127.0.0.1:5000";
+
   handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
     var file = files[0];
@@ -22,26 +29,25 @@ export class UploadSealComponent implements OnInit {
     reader.readAsText(file);
     reader.onload = (event: any) => {
       var csv = event.target.result; // Content of CSV file
+      console.log(csv)
       this.papa.parse(csv, {
         skipEmptyLines: true,
         header: true,
         complete: (results) => {
-          for (let i = 0; i < results.data.length; i++) {
-            let orderDetails = {
-              order_id: results.data[i].Address,
-              age: results.data[i].Age
-            };
-           this.test.push(orderDetails);
-          }
-          // console.log(this.test);
-          console.log('Parsed: k', results.data);
+          //console.log(JSON.stringify(results.data));
+          // this.user = {name: 'raquel', email: 'mail', pwd: '111'};
+          //const user: SimpleUser = {name: 'raquel', email: 'mail', pwd: '111'};
+
+          // console.log(this.user);
+          //console.log(user);
+
+          this.apiService.addUser(JSON.stringify(results.data)).subscribe(() => this.apiService.readObs());
         }
       });
     }
   }
 
   ConvertCSVtoJSON() {
-    console.log(JSON.stringify(this.test));
     // let csvData = '"Hello","World!"';
     // this.papa.parse(csvData, {
     //   complete: (results) => {
