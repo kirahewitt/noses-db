@@ -46,7 +46,12 @@
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef> Actions </th>
-          <td mat-cell *matCellDef="let row"> <label class="redText" (click)="selectRow(row)">delete</label></td>
+          <td mat-cell *matCellDef="let row"> <label class="redText" (click)="deleteSeal(row)">delete</label></td>
+        </ng-container>
+
+        <ng-container matColumnDef=" ">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let row"> <a (click)="selectSeal(row)" class="blueText" >View Seal</a></td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

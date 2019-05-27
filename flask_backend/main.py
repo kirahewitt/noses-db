@@ -4,10 +4,10 @@ from app import app
 from db_config import mysql
 from flask import jsonify
 from flask import flash, request
+from flask import g
 from werkzeug import generate_password_hash, check_password_hash
 from flask_cors import CORS, cross_origin
 CORS(app)
-
 
 
 @app.route('/delete', methods=['POST', 'GET'])
@@ -28,7 +28,7 @@ def delete_user():
 
             cursor.execute("DELETE FROM ObserveSeal WHERE ObservationID=" + str(obs))
             cursor.execute("DELETE FROM ObserveMarks WHERE ObservationID=" + str(obs))
-            cursor.execute("DELETE FROM ObserveTags WHERE ObservationID=" + str(obs))
+            cursor.execute("DELETE FROM ObserveTags WHERE ObservationID=" + str(obs)) 
 
             if tag1 != None:
                 cursor.execute("DELETE FROM Tags WHERE TagNumber=" + tag1)
@@ -45,7 +45,33 @@ def delete_user():
             resp.status_code = 200
             return jsonify('deleted something')
         else:
+
             return jsonify('no delete')
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/getseal', methods=['POST', 'GET'])
+def get_seal():
+    conn = mysql.connect()
+    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        _json = request.json
+        print(_json)
+        obj = _json['SealID']
+
+        cursor.execute("SELECT o.* from Observations as o, ObserveSeal as os WHERE o.ObservationID=os.ObservationID and os.SealID=" + str(obj))
+        rows = cursor.fetchall()
+        resp = jsonify(rows)
+        print(resp)
+        return resp
+        # else:
+        #     _json = request.json
+        #     print(_json)
+        #     print('HERE')
+        #     return jsonify('no delete')
     except Exception as e:
         print(e)
     finally:
@@ -55,6 +81,7 @@ def delete_user():
 
 @app.route('/users')
 def users():
+    global sealIDquery
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -63,6 +90,8 @@ def users():
         rows = cursor.fetchall()
         resp = jsonify(rows)
         #resp.status_code = 200
+
+
         return resp
     except Exception as e:
         print(e)
@@ -70,22 +99,6 @@ def users():
         cursor.close()
         conn.close()
 
-
-@app.route('/user/')
-def user(id):
-    try:
-        #conn = mysql.connect()
-        #cursor = conn.cursor(pymysql.cursors.DictCursor)
-        #cursor.execute("SELECT * FROM tbl_user WHERE user_id=%s", id)
-        row = {"name": "John", "age": 30, "car": null}
-        resp = jsonify(row)
-        resp.status_code = 200
-        return resp
-    except Exception as e:
-        print(e)
-    finally:
-        cursor.close()
-        conn.close()
 
 
 @app.route('/update', methods=['POST'])

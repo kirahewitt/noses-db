@@ -30,6 +30,17 @@ TARE = 25
 MASSTARE = 26
 RANGE = 29
 COMMENTS = 30
+global sealIDquery
+sealIDquery = 2
+
+def setGlobalSealID(newId):
+    sealIDquery = newId
+    return sealIDquery
+
+def getGlobalSealID():
+    return sealIDquery
+
+
 
 def makeConnection():
     try:
@@ -227,7 +238,7 @@ def getColor(tag):
 def pushTag(cnx, cursor, csvRow, whichTag, sealID):
     TAGPOS  = 9
     # print("pushTag {:s}".format(csvRow[2]))
-    print "getColor: {:s}".format(getColor(csvRow[whichTag][0]))
+    print("getColor: {:s}".format(getColor(csvRow[whichTag][0])))
 
     statement = ("INSERT INTO Tags VALUES ("
                 + csvRow[whichTag] + ", "        # mark

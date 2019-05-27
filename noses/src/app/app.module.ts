@@ -28,6 +28,7 @@ import { PapaParseModule } from 'ngx-papaparse';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material';
 import { MatInputModule } from '@angular/material';
+import { SealPageComponent } from './seal-page/seal-page.component';
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -45,6 +46,7 @@ const config = {
     UserLoginComponent,
     VerifyEmailComponent,
     UploadSealComponent,
+    SealPageComponent,
   ],
   imports: [
     BrowserModule,

@@ -9,6 +9,8 @@ import {
   AngularFirestore,
   AngularFirestoreDocument
 } from "@angular/fire/firestore";
+import { SealDataService } from "../seal-data.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'dashboard',
@@ -21,16 +23,23 @@ export class DashboardComponent implements OnInit {
   userData: any;
   observations: Observations[];
   dataSource: any;
+
   obsID: any;
   tag1: string;
   mark1: string;
-  displayedColumns: string[] = ['ObservationID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'actions' ];
+
+  filterTag1: any;
+  filterTag2: any;
+  filterMark1: any;
+  displayedColumns: string[] = ['ObservationID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'actions', ' ' ];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
   constructor(private apiService: FlaskBackendService,
               public authService: AuthService,
-              public afAuth: AngularFireAuth) { }
+              public afAuth: AngularFireAuth,
+              private sealData: SealDataService,
+              public router: Router) { }
 
   ngOnInit() {
     this.apiService.readObs().subscribe((observations: any)=>{
@@ -38,6 +47,13 @@ export class DashboardComponent implements OnInit {
       this.dataSource = new MatTableDataSource(<any> observations);
       this.dataSource.paginator = this.paginator;
       console.log(this.dataSource);
+
+      this.dataSource.filterPredicate = function(data, filter: string): boolean {
+        this.filterTag1 = String(data.TagNumber1).toLowerCase();
+        this.filterTag2 = String(data.TagNumber2).toLowerCase();
+        this.filterMark1 = String(data.Mark).toLowerCase();
+        return this.filterTag1.includes(filter) || this.filterTag2.includes(filter) || this.filterMark1.includes(filter);
+      };
     });
     this.afAuth.authState.subscribe(user => {
       if (user) {
@@ -57,8 +73,15 @@ export class DashboardComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  selectRow(row) {
-    console.log(row['ObservationID']);
+  selectSeal(row) {
+    this.sealData.changeMessage(row);
+    this.router.navigate(["seal-page"]);
+
+
+  }
+
+  deleteSeal(row) {
+    console.log(row);
     this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
     console.log(JSON.stringify(this.obsID));
 
