@@ -31,6 +31,7 @@
 <br>
 <br>
 <form [formGroup]="sealForm">
+  <div class="form-group">
 
   <div class="row">
     <div class="col-md-1"></div>
@@ -44,7 +45,7 @@
       <div class="col-md-2">
           <label>
               Year
-              <input type="text" formControlName="Year">
+              <input class="form-control" type="text" formControlName="Year">
           </label>
       </div>
       <div class="col-md-1"></div>
@@ -77,12 +78,13 @@
       <div class="col-md-2">
           <label>
               Age
-              <input type="text" formControlName="Age">
+              <input class="form-control" type="text" formControlName="Age">
           </label>
       </div>
   </div>
   <br>
   <br>
+
 
   <div class="row">
     <div class="col-md-1"></div>
@@ -336,7 +338,7 @@
   <br>
   <br>
 
-
+</div>
 </form>
 
     <form [formGroup]="sealForm" (ngSubmit)="onSubmit()">

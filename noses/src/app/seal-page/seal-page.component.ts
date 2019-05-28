@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { SealDataService } from "../seal-data.service";
 import { FlaskBackendService } from '../flask-backend.service';
 import { MatTableModule, MatTableDataSource, MatPaginator } from '@angular/material';
@@ -31,6 +31,8 @@ export class SealPageComponent implements OnInit {
     comments: new FormControl('')
   });
 
+  // @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+
 
   ngOnInit() {
     this.sealData.currentSeal.subscribe(currentSeal  => {
@@ -49,15 +51,21 @@ export class SealPageComponent implements OnInit {
   editObs(row) {
     this.sealRow = row;
     this.show = !this.show;
+    if(this.show == true) {
+      // implement scroll to bottom
+    }
 
   }
 
   onSubmit() {
-
+    console.log(this.sealForm.value.ageClass);
     if(this.sealForm.value.ageClass != "") {
       console.log("updating")
       this.apiService.updateAgeClass(JSON.stringify({'obsID': this.sealRow.ObservationID, 'age': this.sealForm.value.ageClass})).subscribe(() => this.apiService.readObs());
+
     }
+
+
 
   }
 
