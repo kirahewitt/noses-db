@@ -9,9 +9,11 @@
                 <input type="password" class="formControl" placeholder="Password" #userPassword required>
             </div>
             <!-- Calling SignIn Api from AuthService -->
+            <br>
             <div class="formGroup">
                 <input type="button" class="btn btn-primary" value="Log in" (click)="authService.SignIn(userName.value, userPassword.value)">
             </div>
+
             <!-- <div class="forgotPassword">
                 <span routerLink="/forgot-password">Forgot Password?</span>
             </div> -->
