@@ -52,14 +52,35 @@ def get_seal():
     conn = mysql.connect()
     cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
     try:
-        _json = request.json
-        obj = _json['SealID']
 
-        cursor.execute("SELECT o.* from Observations as o, ObserveSeal as os WHERE o.ObservationID=os.ObservationID and os.SealID=" + str(obj))
+        if request.method == 'POST':
+            _json = request.json
+            obj = _json['SealID']
 
-        rows = cursor.fetchall()
-        resp = jsonify(rows)
-        return resp
+            cursor.execute("SELECT o.* from Observations as o, ObserveSeal as os WHERE o.ObservationID=os.ObservationID and os.SealID=" + str(obj))
+
+            rows = cursor.fetchall()
+            resp = jsonify(rows)
+            return resp
+        else:
+            return jsonify("no seal was clicked")
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/add', methods=['POST', 'GET'])
+def add_seals():
+    conn = mysql.connect()
+    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        if request.method == 'POST':
+            _json = request.json
+            print(_json)
+            return jsonify('data sent to upload function')
+        else:
+            return jsonify('error')
     except Exception as e:
         print(e)
     finally:
@@ -68,7 +89,6 @@ def get_seal():
 
 @app.route('/users')
 def users():
-    global sealIDquery
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
