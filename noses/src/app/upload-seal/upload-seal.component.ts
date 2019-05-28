@@ -3,6 +3,7 @@ import { Papa} from 'ngx-papaparse';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SimpleUser } from '../simpleUser';
 import { FlaskBackendService } from '../flask-backend.service';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-upload-seal',
@@ -19,7 +20,44 @@ export class UploadSealComponent implements OnInit {
   ngOnInit() {
   }
 
-  url = `http://httpbin.org/post`;
+  sealUpload: any;
+
+  sealForm = new FormGroup({
+    FieldLeaderInitials: new FormControl(''),
+    Year: new FormControl(''),
+    Date: new FormControl(''),
+    Loc: new FormControl(''),
+    Sex: new FormControl(''),
+    Age: new FormControl(''),
+    Pup: new FormControl(''),
+    NewMark1: new FormControl(''),
+    Mark1: new FormControl(''),
+    Mark1Pos: new FormControl(''),
+    NewMark2: new FormControl(''),
+    Mark2: new FormControl(''),
+    Mark2Pos: new FormControl(''),
+    NewTag1: new FormControl(''),
+    Tag1: new FormControl(''),
+    Tag1Pos: new FormControl(''),
+    NewTag2: new FormControl(''),
+    Tag2: new FormControl(''),
+    Tag2Pos: new FormControl(''),
+    Molt: new FormControl(''),
+    Season: new FormControl(''),
+    stLength: new FormControl(''),
+    crvLength: new FormControl(''),
+    axGirth: new FormControl(''),
+    Mass: new FormControl(''),
+    Tare: new FormControl(''),
+    massTare: new FormControl(''),
+    lastSeenP: new FormControl(''),
+    fstWeen: new FormControl(''),
+    Range: new FormControl(''),
+    Comments: new FormControl(''),
+    enterAno: new FormControl(''),
+
+  });
+
   FLASK_API_SERVER = "http://127.0.0.1:5000";
 
   handleFileSelect(evt) {
@@ -47,13 +85,19 @@ export class UploadSealComponent implements OnInit {
     }
   }
 
-  ConvertCSVtoJSON() {
-    // let csvData = '"Hello","World!"';
-    // this.papa.parse(csvData, {
-    //   complete: (results) => {
-    //     console.log('Parsed  : ', results.data[0][1]);
-    //     // console.log(results.data.length);
-    //   }
-    // });
+  onSubmit() {
+    this.sealUpload = {'Field Leader Initials': this.sealForm.value.FieldLeaderInitials, 'Year': this.sealForm.value.Year,
+                        'Date': this.sealForm.value.Date, 'Loc.': this.sealForm.value.Loc, 'Sex': this.sealForm.value.Sex,
+                        'Age': this.sealForm.value.Age, 'Pup?': this.sealForm.value.Pup, 'New Mark 1?': this.sealForm.value.NewMark1,
+                        'Mark 1': this.sealForm.value.Mark1, 'Mark 1 Position': this.sealForm.value.Mark1Pos, 'New Mark 2?': this.sealForm.value.NewMark2,
+                        'Mark 2': this.sealForm.value.NewMark2, 'Mark 2 Position': this.sealForm.value.Mark2Pos, 'New Tag1?': this.sealForm.value.NewTag1,
+                        'Tag1 #': this.sealForm.value.Tag1, 'Tag 1 Pos.': this.sealForm.value.Tag1Pos, 'New Tag2?': this.sealForm.value.NewTag2,
+                        'Tag2 #': this.sealForm.value.Tag2, 'Tag 2 Pos.': this.sealForm.value.Tag2Pos, 'Molt(%)': this.sealForm.value.Molt,
+                        'Season': this.sealForm.value.Season, 'St. Length': this.sealForm.value.stLength, 'Crv. Length': this.sealForm.value.crvLength,
+                        'Ax. Girth': this.sealForm.value.axGirth, 'Mass': this.sealForm.value.Mass, 'Tare': this.sealForm.value.Tare,
+                        'Mass-Tare': this.sealForm.value.massTare, 'Last seen as P': this.sealForm.value.lastSeenP, '1st seen as W': this.sealForm.value.fstWeen,
+                        'Range (days)': this.sealForm.value.Range, 'Comments': this.sealForm.value.Comments, 'Entered in Ano': this.sealForm.value.enterAno};
+
+    this.apiService.addUser(JSON.stringify(this.sealUpload)).subscribe(() => this.apiService.readObs());
   }
 }

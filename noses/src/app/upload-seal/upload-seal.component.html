@@ -1,5 +1,355 @@
 <br>
 <br>
+
+<div class="row">
+
+  <div class="col-md-3"></div>
+  <div class="col-md-4">
+    <h3> Upload Bulk Seals</h3>
+  </div>
+</div>
 <br>
 
-<input type="file"  accept=".csv" (change)="handleFileSelect($event)">
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <input type="file"  accept=".csv" (change)="handleFileSelect($event)">
+  </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<div class="row">
+
+  <div class="col-md-3"></div>
+  <div class="col-md-4">
+    <h3> Upload Single Seal</h3>
+  </div>
+</div>
+<br>
+<br>
+<form [formGroup]="sealForm">
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Field Leader Initials
+              <input type="text" formControlName="FieldLeaderInitials">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Year
+              <input type="text" formControlName="Year">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Date
+              <input type="text" formControlName="Date">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Location
+              <input type="text" formControlName="Loc">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Sex
+              <input type="text" formControlName="Sex">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Age
+              <input type="text" formControlName="Age">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              is Pup?
+              <input type="text" formControlName="Pup">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              New Mark 1?
+              <input type="text" formControlName="NewMark1">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Mark 1
+              <input type="text" formControlName="Mark1">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Mark 1 Pos
+              <input type="text" formControlName="Mark1Pos">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              New Mark 2?
+              <input type="text" formControlName="NewMark2">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Mark 2
+              <input type="text" formControlName="Mark2">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+<div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Mark 1 Pos
+              <input type="text" formControlName="Mark1Pos">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              New Mark 2?
+              <input type="text" formControlName="NewMark2">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Mark 2
+              <input type="text" formControlName="Mark2">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Mark 2 Pos
+              <input type="text" formControlName="Mark2Pos">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              New Tag 1?
+              <input type="text" formControlName="NewTag1">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Tag 1
+              <input type="text" formControlName="Tag1">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Tag 1 Pos
+              <input type="text" formControlName="Tag1Pos">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              New Tag 2?
+              <input type="text" formControlName="NewTag2">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Tag 2
+              <input type="text" formControlName="Tag2">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Tag 2 Pos
+              <input type="text" formControlName="Tag2Pos">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Molt %
+              <input type="text" formControlName="Molt">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Breeding Season
+              <input type="text" formControlName="Season">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              St. Length
+              <input type="text" formControlName="stLength">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Crv. Length
+              <input type="text" formControlName="crvLength">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Ax. Girth
+              <input type="text" formControlName="axGirth">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Mass
+              <input type="text" formControlName="Mass">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Tare
+              <input type="text" formControlName="Tare">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Mass-Tare
+              <input type="text" formControlName="massTare">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Last Seen as Pup
+              <input type="text" formControlName="lastSeenP">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              First Seen as Weener
+              <input type="text" formControlName="fstWeen">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Range
+              <input type="text" formControlName="Range">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Comments
+              <input type="text" formControlName="Comments">
+          </label>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+          <label>
+              Entered in Año
+              <input type="text" formControlName="enterAno">
+          </label>
+      </div>
+  </div>
+  <br>
+  <br>
+
+
+</form>
+
+    <form [formGroup]="sealForm" (ngSubmit)="onSubmit()">
+      <button class="btn btn-primary">Submit</button>
+    </form>
+
+  <br>
+  <br>
+  <br>
+  <br>
+
+
+
+
+
+

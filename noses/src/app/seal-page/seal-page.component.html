@@ -1,3 +1,13 @@
+
+<br>
+<br>
+<div class="row">
+  <div class="col-md-5"></div>
+  <div class="col-md-2">
+    <h4>Seal Observations</h4>
+  </div>
+</div>
+<br>
 <div class="row">
     <div class="col-md-2"> </div>
     <div class="col-md-10">
@@ -52,20 +62,29 @@
         <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
 </div>
+<br>
+<br>
 
 <ng-container *ngIf="show">
+  <div class="row">
+    <div class="col-md-4"></div>
+    <h4>Update Observation</h4>
+  </div>
+  <br>
+  <br>
+
+
     <form [formGroup]="sealForm">
 
         <div class="row">
+          <div class="col-md-3"></div>
             <div class="col-md-2">
                 <label>
                     AgeClass
                     <input type="text" formControlName="ageClass" placeholder="{{ sealRow.AgeClass }}">
                 </label>
             </div>
-        </div>
-        <br>
-        <div class="row">
+            <div class="col-md-1"></div>
             <div class="col-md-2">
                 <label>
                     Sex
@@ -77,6 +96,7 @@
         <br>
 
         <div class="row">
+          <div class="col-md-3"></div>
             <div class="col-md-2">
                 <label>
                     Comments
@@ -84,10 +104,7 @@
                     <input type="text" formControlName="comments" placeholder="{{ sealRow.Comments }}">
                 </label>
             </div>
-        </div>
-        <br>
-
-        <div class="row">
+            <div class="col-md-1"></div>
             <div class="col-md-2">
                 <label>
                     SLOCode
@@ -96,10 +113,15 @@
                 </label>
             </div>
         </div>
+        <br>
     </form>
 
     <form [formGroup]="sealForm" (ngSubmit)="onSubmit()">
-      <button type="submit">Submit</button>
+      <button class="btn btn-primary">Submit</button>
 
     </form>
 </ng-container>
+<br>
+<br>
+<br>
+<br>

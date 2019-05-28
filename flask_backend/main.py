@@ -52,7 +52,6 @@ def get_seal():
     conn = mysql.connect()
     cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
     try:
-
         if request.method == 'POST':
             _json = request.json
             obj = _json['SealID']
