@@ -86,7 +86,7 @@ def add_seals():
         cursor.close()
         conn.close()
 
-@app.route('/users')
+@app.route('/users', methods=['GET'])
 def users():
     try:
         conn = mysql.connect()
