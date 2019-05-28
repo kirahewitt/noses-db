@@ -9,11 +9,10 @@ from werkzeug import generate_password_hash, check_password_hash
 from flask_cors import CORS, cross_origin
 CORS(app)
 
-
 @app.route('/delete', methods=['POST', 'GET'])
 def delete_user():
     conn = mysql.connect()
-    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
     try:
         if request.method == 'POST':
             print("in delete")
@@ -21,10 +20,6 @@ def delete_user():
             obs = _json['obsID']
             tag1 = _json['tag1']
             mark = _json['Mark']
-            print(_json)
-            print(obs)
-            print(tag1)
-            print(mark)
 
             cursor.execute("DELETE FROM ObserveSeal WHERE ObservationID=" + str(obs))
             cursor.execute("DELETE FROM ObserveMarks WHERE ObservationID=" + str(obs))
@@ -45,7 +40,6 @@ def delete_user():
             resp.status_code = 200
             return jsonify('deleted something')
         else:
-
             return jsonify('no delete')
     except Exception as e:
         print(e)
@@ -59,25 +53,18 @@ def get_seal():
     cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
     try:
         _json = request.json
-        print(_json)
         obj = _json['SealID']
 
         cursor.execute("SELECT o.* from Observations as o, ObserveSeal as os WHERE o.ObservationID=os.ObservationID and os.SealID=" + str(obj))
+
         rows = cursor.fetchall()
         resp = jsonify(rows)
-        print(resp)
         return resp
-        # else:
-        #     _json = request.json
-        #     print(_json)
-        #     print('HERE')
-        #     return jsonify('no delete')
     except Exception as e:
         print(e)
     finally:
         cursor.close()
         conn.close()
-
 
 @app.route('/users')
 def users():
@@ -140,8 +127,27 @@ def not_found(error=None):
     }
     resp = jsonify(message)
     resp.status_code = 404
-
     return resp
+
+@app.route('/updateAgeClass', methods=['POST'])
+def update_age():
+    conn = mysql.connect()
+    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        if request.method == 'POST':
+            _json = request.json
+            print(_json)
+            cursor.execute("UPDATE Observations SET AgeClass="+_json['age']+" WHERE ObservationID=" + str(_json['obsID']))
+            conn.commit()
+            return jsonify("hellowtheienfosdnck")
+        else:
+            return jsonify('nothing to do')
+
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
 
 
 if __name__ == "__main__":

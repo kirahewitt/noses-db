@@ -31,6 +31,7 @@ export class FlaskBackendService {
 
   /** DELETE: delete the user from the server */
   deleteObs(obs: string) {
+    console.log('calling flask function')
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/delete`, obs, this.httpOptions);
   }
 
@@ -40,6 +41,11 @@ export class FlaskBackendService {
     });
 
     return this.rows
+  }
+
+  updateAgeClass(obs: string) {
+    console.log(obs);
+    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/updateAgeClass`, obs, this.httpOptions);
   }
 
 

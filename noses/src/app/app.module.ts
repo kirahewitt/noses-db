@@ -29,6 +29,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material';
 import { MatInputModule } from '@angular/material';
 import { SealPageComponent } from './seal-page/seal-page.component';
+import {ReactiveFormsModule} from '@angular/forms';
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -49,6 +50,8 @@ const config = {
     SealPageComponent,
   ],
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     MatFormFieldModule,
     MatInputModule,
@@ -62,7 +65,6 @@ const config = {
     HttpClientModule,
     BrowserAnimationsModule,
     MatProgressBarModule,
-    FormsModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(config),
     AngularFirestoreModule, // firestore

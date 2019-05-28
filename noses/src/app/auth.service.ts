@@ -79,7 +79,7 @@ up and returns promise */
   // Returns true when user is looged in and email is verified
   get isLoggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log(user.emailVerified)
+    // console.log(user.emailVerified)
     //return user !== null && user.emailVerified !== false ? true : false;
     if (user !== null) {
       return true;

@@ -2,39 +2,104 @@
     <div class="col-md-2"> </div>
     <div class="col-md-10">
         <table mat-table class="table table-hover table-striped" [dataSource]="dataSource">
-        <ng-container matColumnDef="ObservationID">
-          <th mat-header-cell *matHeaderCellDef> Obs ID </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.ObservationID }} </td>
-        </ng-container>
+            <ng-container matColumnDef="ObservationID">
+                <th mat-header-cell *matHeaderCellDef> Obs ID </th>
+                <td mat-cell *matCellDef="let obs"> {{ obs.ObservationID }} </td>
+            </ng-container>
 
-        <ng-container matColumnDef="AgeClass">
-          <th mat-header-cell *matHeaderCellDef> Age Class </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.AgeClass }} </td>
-        </ng-container>
+            <ng-container matColumnDef="AgeClass">
+                <th mat-header-cell *matHeaderCellDef> Age Class </th>
+                <td mat-cell *matCellDef="let obs"> {{ obs.AgeClass }} </td>
+            </ng-container>
 
-        <ng-container matColumnDef="sex">
-          <th mat-header-cell *matHeaderCellDef> Sex </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.sex }} </td>
-        </ng-container>
+            <ng-container matColumnDef="sex">
+                <th mat-header-cell *matHeaderCellDef> Sex </th>
+                <td mat-cell *matCellDef="let obs"> {{ obs.sex }} </td>
+            </ng-container>
 
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef> Date</th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.date }} </td>
-        </ng-container>
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef> Date</th>
+                <td mat-cell *matCellDef="let obs"> {{ obs.date }} </td>
+            </ng-container>
 
-        <ng-container matColumnDef="Comments">
-          <th mat-header-cell *matHeaderCellDef> Comments </th>
-          <td mat-cell *matCellDef="let obs"> {{ obs.Comments }} </td>
-        </ng-container>
+            <ng-container matColumnDef="SLOCode">
+                <th mat-header-cell *matHeaderCellDef> SLOCode</th>
+                <td mat-cell *matCellDef="let obs"> {{ obs.SLOCode }} </td>
+            </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef> Actions </th>
-          <td mat-cell *matCellDef="let row"> <label class="redText">todo...</label></td>
-        </ng-container>
+            <ng-container matColumnDef="Comments">
+                <th mat-header-cell *matHeaderCellDef> Comments </th>
+                <td mat-cell *matCellDef="let obs"> {{ obs.Comments }} </td>
+            </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row  *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let row">
+                    <label (click)="deleteObs(row)" class="redText">Delete Seal</label>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Edit">
+                <th mat-header-cell *matHeaderCellDef> Edit </th>
+                <td mat-cell *matCellDef="let row">
+                    <label (click)="editObs(row)" class="redText">edit</label>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
-  </div>
+</div>
+
+<ng-container *ngIf="show">
+    <form [formGroup]="sealForm">
+
+        <div class="row">
+            <div class="col-md-2">
+                <label>
+                    AgeClass
+                    <input type="text" formControlName="ageClass" placeholder="{{ sealRow.AgeClass }}">
+                </label>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-2">
+                <label>
+                    Sex
+                    <br>
+                    <input type="text" formControlName="sex" placeholder="{{ sealRow.sex }}">
+                </label>
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label>
+                    Comments
+                    <br>
+                    <input type="text" formControlName="comments" placeholder="{{ sealRow.Comments }}">
+                </label>
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label>
+                    SLOCode
+                    <br>
+                    <input type="text" formControlName="slo" placeholder="{{ sealRow.SLOCode }}">
+                </label>
+            </div>
+        </div>
+    </form>
+
+    <form [formGroup]="sealForm" (ngSubmit)="onSubmit()">
+      <button type="submit">Submit</button>
+
+    </form>
+</ng-container>

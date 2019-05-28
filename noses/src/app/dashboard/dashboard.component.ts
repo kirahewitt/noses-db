@@ -46,7 +46,6 @@ export class DashboardComponent implements OnInit {
       this.observations = observations;
       this.dataSource = new MatTableDataSource(<any> observations);
       this.dataSource.paginator = this.paginator;
-      console.log(this.dataSource);
 
       this.dataSource.filterPredicate = function(data, filter: string): boolean {
         this.filterTag1 = String(data.TagNumber1).toLowerCase();
@@ -81,9 +80,8 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteSeal(row) {
-    console.log(row);
     this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
-    console.log(JSON.stringify(this.obsID));
+    console.log('about to call delete');
 
     this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
 
