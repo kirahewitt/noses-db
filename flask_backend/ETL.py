@@ -1,6 +1,8 @@
 from mysql.connector import (connection)
 from mysql.connector import errorcode
 from datetime import datetime
+import json
+import pandas
 import mysql
 import csv
 
@@ -30,17 +32,6 @@ TARE = 25
 MASSTARE = 26
 RANGE = 29
 COMMENTS = 30
-global sealIDquery
-sealIDquery = 2
-
-def setGlobalSealID(newId):
-    sealIDquery = newId
-    return sealIDquery
-
-def getGlobalSealID():
-    return sealIDquery
-
-
 
 def makeConnection():
     try:
@@ -77,7 +68,7 @@ def swapNulls(row):
         elif (index not in [YEAR, DATE, MOLT, SEASON,
             STLENGTH, CRVLENGTH, AXGIRTH, MASS, TARE, MASSTARE]):
             row[index] = "'" + row[index] + "'"
-    print(row)
+    # print row
 
 def getTopObsv(cursor):
     statement = "SELECT MAX(ObservationID) FROM Observations;"
@@ -98,8 +89,8 @@ def getTopMeasurement(cursor):
         return int(row[0])
 
 def getDate(date):
-    print(date)
-    datetime_object = datetime.strptime(date, "%m/%d/%y")
+    print date
+    datetime_object = datetime.strptime(date, "%m/%d/%Y")
     return datetime_object.date()
 
 def writeObsv(cnx, cursor, row, ID):
@@ -238,7 +229,7 @@ def getColor(tag):
 def pushTag(cnx, cursor, csvRow, whichTag, sealID):
     TAGPOS  = 9
     # print("pushTag {:s}".format(csvRow[2]))
-    print("getColor: {:s}".format(getColor(csvRow[whichTag][0])))
+    print ("getColor: {:s}".format(getColor(csvRow[whichTag][0])))
 
     statement = ("INSERT INTO Tags VALUES ("
                 + csvRow[whichTag] + ", "        # mark
@@ -365,7 +356,6 @@ def findSeal(cnx, cursor, row):
 
     mainID = positiveMin([mID, t1ID, t2ID])
     # print "Positive min: {:d}".format(mainID)
-    print("Positive min: {:d}".format(mainID))
 
     if(mID == -1 and t1ID == -1 and t2ID == -1):
         mainID = addSeal(cnx, cursor, row, obsID)
@@ -395,13 +385,49 @@ def main():
     cnx = makeConnection()
     cursor = cnx.cursor(buffered=True)
 
-    filename = input("Give file name: ")
-    with open(filename) as csvfile:
-        readCSV = csv.reader(csvfile, delimiter=',')
-        for row in readCSV:
-            if canFind(cursor, "Beach", row[LOC], 0):
-                swapNulls(row)
-                findSeal(cnx, cursor, row)
+    filename = raw_input("Give file name: ")
+    f = open(filename)
+    line = f.read()
+    y = json.loads(line)
+#    with open(filename) as csvfile:
+#        readCSV = csv.reader(csvfile, delimiter=',')
+#        for row in readCSV:
+    for val in y:
+        row = [val["Field Leader Initials"],
+                val["Year"],
+                val["Date"],
+                val["Loc."],
+                val["Sex"],
+                val["Age"],
+                val["Pup?"],
+                val["New Mark 1?"],
+                val["Mark 1"],
+                val["Mark 1 Position "],
+                val["New Mark 2?"],
+                val["Mark 2"],
+                val["Mark 2 Position"],
+                val["New Tag1?"],
+                val["Tag1 #"],
+                val["Tag 1 Pos. "],
+                val["New Tag2?"],
+                val["Tag2 #"],
+                val["Tag 2 Pos. "],
+                val["Molt (%)"],
+                val["Season"],
+                val["St. Length"],
+                val["Crv. Length"],
+                val["Ax. Girth"],
+                val["Mass"],
+                val["Tare"],
+                val["Mass-Tare"],
+                val["Last seen as P"],
+                val["1st seen as W"],
+                val["Range (days)"],
+                val["Comments"],
+                val["Entered in Ano "]]
+        if canFind(cursor, "Beach", row[LOC], 0):
+            swapNulls(row)
+            findSeal(cnx, cursor, row)
     cnx.close()
 if __name__ == '__main__':
     main()
