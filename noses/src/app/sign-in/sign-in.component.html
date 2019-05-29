@@ -1,13 +1,26 @@
 <div class="displayTable">
     <div class="displayTableCell">
         <div class="authBlock">
+          <br>
             <h3>Sign In</h3>
-            <div class="formGroup">
-                <input type="text" class="formControl" placeholder="email" #userName required>
-            </div>
-            <div class="formGroup">
-                <input type="password" class="formControl" placeholder="Password" #userPassword required>
-            </div>
+
+              <div class="row">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                  <div class="formGroup">
+                      <input type="text" class="form-control" placeholder="email" #userName required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-5"></div>
+                <div class="col-md-2">
+                  <div class="formGroup">
+                    <input type="password" class="form-control" placeholder="Password" #userPassword required>
+                  </div>
+                </div>
+              </div>
             <!-- Calling SignIn Api from AuthService -->
             <br>
             <div class="formGroup">
