@@ -57,11 +57,27 @@ export class SealPageComponent implements OnInit {
 
   }
 
-  onSubmit() {
-    console.log(this.sealForm.value.ageClass);
+  async onSubmit() {
     if(this.sealForm.value.ageClass != "") {
-      console.log("updating")
-      this.apiService.updateAgeClass(JSON.stringify({'obsID': this.sealRow.ObservationID, 'age': this.sealForm.value.ageClass})).subscribe(() => this.apiService.readObs());
+      await this.apiService.updateAgeClass(JSON.stringify({'obsID': this.sealRow.ObservationID, 'age': this.sealForm.value.ageClass}))
+      .subscribe(() => {
+        this.apiService.readObs()
+        this.sealData.currentSeal.subscribe(currentSeal  => {
+        this.seal = currentSeal;
+        this.jseal = JSON.stringify(currentSeal);
+
+        // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
+        this.datas = this.apiService.getSeal(this.jseal);
+        this.datas.then(msg => {
+          this.dataSource = new MatTableDataSource(<any> msg);
+          this.sealForm.reset();
+          this.show = false;
+        });
+
+      });
+    });
+
+
 
     }
 
