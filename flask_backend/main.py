@@ -1,6 +1,8 @@
 import pymysql
 import pandas as pd
+import json
 from app import app
+from ETL import startUpdate
 from db_config import mysql
 from flask import jsonify
 from flask import flash, request
@@ -75,8 +77,12 @@ def add_seals():
     cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
     try:
         if request.method == 'POST':
+
+            print("yooooo")
             _json = request.json
             print(_json)
+            startUpdate(json.dumps(_json))
+
             return jsonify('data sent to upload function')
         else:
             return jsonify('error')
