@@ -1,2 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.btn.focus, .btn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0;
+}
+
+.mat-header-cell {
+  font-size: 14px;
+  color: #2D333A;
+}
