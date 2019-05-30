@@ -1,19 +1,20 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <mat-toolbar color="primary">
+<div class="row">
+
+  <mat-toolbar class="mat-elevation-z4 tool-color">
     <mat-toolbar-row>
-      <span>SealQLTeam6 NOSES Database</span>
-    </mat-toolbar-row>
-    <mat-toolbar-row>
-      <a routerLink="/dashboard">Observations</a>
-      <div class="col-sm-1"></div>
-      <a routerLink="/upload-seal">Upload Data</a>
-      <div class="col-sm-1"></div>
-      <a routerLink="/sign-in">Login</a>
+      <span class="hack-space">SealQLTeam6</span>
+      <div class="col-md-6"></div>
+        <div>
+            <button type="button" class="btn"><a routerLink="/dashboard">Observations</a></button>
+            <button type="button" class="btn"><a routerLink="/upload-seal">Upload Data</a></button>
+            <button type="button" class="btn"><a routerLink="/sign-in">Login</a></button>
+            <button type="button" class="btn btn-admin1" routerLink="/manage-accounts">Manage Accounts</button>
+            <button type="button" class="btn btn-admin2" routerLink="/approve-obs">Approve Observations</button>
+        </div>
     </mat-toolbar-row>
   </mat-toolbar>
+</div>
   <router-outlet></router-outlet>
- </div>
-
 
 

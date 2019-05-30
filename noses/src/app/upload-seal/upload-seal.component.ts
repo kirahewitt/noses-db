@@ -20,6 +20,7 @@ export class UploadSealComponent implements OnInit {
   ngOnInit() {
   }
 
+  fileName: string = "No File Selected"
   sealUpload: any;
 
   sealForm = new FormGroup({
@@ -63,6 +64,8 @@ export class UploadSealComponent implements OnInit {
   handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
     var file = files[0];
+    console.log(file);
+    this.fileName = file.name;
     var reader = new FileReader();
     reader.readAsText(file);
     reader.onload = (event: any) => {

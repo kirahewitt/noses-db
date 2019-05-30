@@ -31,7 +31,9 @@ export class DashboardComponent implements OnInit {
   filterTag1: any;
   filterTag2: any;
   filterMark1: any;
-  displayedColumns: string[] = ['ObservationID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'actions', ' ' ];
+  displayedColumns: string[] = ['ObservationID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year',  'viewSeal', 'actions' ];
+
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
@@ -67,6 +69,7 @@ export class DashboardComponent implements OnInit {
     });
 
   }
+
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();

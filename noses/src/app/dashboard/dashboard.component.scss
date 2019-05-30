@@ -1,11 +1,12 @@
-.redText{
-  color: red;
+.trash {
+  color: #F86C6B;
+  font-size: 20px;
 }
 
-.blueText{
-  color: #0000CD;
+.hippo {
+  color: #20A8D8;
+  font-size: 20px;
 }
-
 
 th {
   width: 10%;
@@ -15,4 +16,20 @@ th {
 td {
   width: 5%;
   text-align: left;
+  padding-top: 20px;
 }
+
+.lightBlue {
+  color: blue;
+  size: 50px;
+}
+
+td.mat-cell {
+  padding-top: 10px;
+}
+
+
+
+
+
+

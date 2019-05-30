@@ -1,9 +1,50 @@
 table {
   width: 80%;
 }
+.tool-color {
+  background-color: #2E343A;
+  color: white;
+}
 
 a {
-  color: black;
+  color: white;
   font-size: 16px;
+}
+
+.fill-remaining-space {
+  /* This fills the remaining space, by using flexbox.
+     Every toolbar row uses a flexbox row layout. */
+  flex: 1 1 auto;
+}
+
+.hack-space {
+  padding-left: 20px
+}
+
+.btn-light-blue {
+  color: #63C2DE;
+}
+
+.btn-light-red {
+  color: #F86C6B;
+}
+
+.btn-admin1 {
+  background-color: #73ef92;
+  border-radius: 30px;
+  width: 22%;
+  font-weight: 500;
+  font-size: 12px;
+  text-align: center;
+}
+
+.btn-admin2 {
+  background-color: #b770ff;
+  border-radius: 30px;
+  width: 25%;
+  margin-left: 5px;
+  font-weight: 500;
+  font-size: 12px;
+  text-align: center;
 }
 
