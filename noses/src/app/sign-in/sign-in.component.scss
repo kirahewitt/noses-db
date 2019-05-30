@@ -1,0 +1,30 @@
+.log {
+  width: 30%;
+  border-radius: 30px;
+  margin: 2px;
+}
+
+.btn-light-blue {
+  background-color: #63C2DE;
+}
+
+.btn-light-red {
+  background-color: #F86C6B;
+}
+
+.btn {
+  color: white;
+  font-weight: bold;
+}
+
+.user-info {
+  width: 60%;
+
+}
+
+input[type=text], input[type=password] {
+    text-align:center;
+    display: block;
+    margin: 0 auto 1em auto;
+    padding: 5px;
+}

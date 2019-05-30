@@ -16,11 +16,21 @@ th {
 td {
   width: 5%;
   text-align: left;
+  padding-top: 20px;
 }
 
 .lightBlue {
   color: blue;
   size: 50px;
+}
+
+td.mat-cell {
+  padding-top: 10px;
+}
+
+.mat-header-cell {
+  font-size: 14px;
+  color: #2D333A;
 }
 
 

@@ -1,6 +1,10 @@
 table {
   width: 80%;
 }
+.tool-color {
+  background-color: #2E343A;
+  color: white;
+}
 
 a {
   color: white;
@@ -13,7 +17,14 @@ a {
   flex: 1 1 auto;
 }
 
-.remove-padding {
-  margin-right: 100px
+.hack-space {
+  padding-left: 20px
 }
 
+.btn-light-blue {
+  color: #63C2DE;
+}
+
+.btn-light-red {
+  color: #F86C6B;
+}
