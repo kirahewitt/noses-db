@@ -32,6 +32,7 @@ import { SealPageComponent } from './seal-page/seal-page.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
+import {MatSelectModule} from '@angular/material/select';
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -58,6 +59,7 @@ const config = {
     ReactiveFormsModule,
     BrowserModule,
     MatFormFieldModule,
+    MatSelectModule,
     MatInputModule,
     MatButtonModule,
     MatDialogModule,
