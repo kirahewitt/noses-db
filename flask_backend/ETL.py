@@ -106,8 +106,7 @@ def writeObsv(cnx, cursor, row, ID):
                 + row[COMMENTS].replace("'", "") + "', "                # comments
                 + row[AGE] + ", "                # Age
                 + row[YEAR] + ", "                # year
-                + row[LOC] + ", " + str(approvalStatus) + ")")              # SLOCode 
-    print(statement)
+                + row[LOC] + ", " + str(approvalStatus) + ")")     
     try:
         cursor.execute(statement)
         cnx.commit()
@@ -117,7 +116,6 @@ def writeObsv(cnx, cursor, row, ID):
 
 def pushQuery(cnx, cursor, query):
     try:
-        print(query)
         row = cursor.execute(query)
         cnx.commit()
     except mysql.connector.Error as err:
@@ -126,7 +124,6 @@ def pushQuery(cnx, cursor, query):
 
 def runQuery(cursor, query):
     try:
-        print(query)
         cursor.execute(query)
     except mysql.connector.Error as err:
         print(err)
@@ -169,8 +166,7 @@ def pushMark(cnx, cursor, csvRow, obsID, sealID):
                 + csvRow[MARKPOS] + ", '"          # Year
                 + str(getDate(csvRow[2]))+ "', "          # date
                 + csvRow[YEAR] + ", " 
-                + str(sealID) + ");")        # 
-    print(statement)
+                + str(sealID) + ");")
     try:
         cursor.execute(statement)
         cnx.commit()
@@ -183,7 +179,6 @@ def getTag(cursor, tag):
     query = "SELECT TagSeal, TagNumber FROM Tags WHERE TagNumber = {:s}".format(tag)
     runQuery(cursor, query)
     row = cursor.fetchone()
-    print("getTag: ", row)
     if (row is None):
         return -1
     else:
@@ -207,7 +202,6 @@ def observeTag(cnx, cursor, tag, ID):
     pushQuery(cnx, cursor, statement)
 
 def getColor(tag):
-    print ("tag: ", tag)
     if tag == 'G':
         return "'green'"
     elif tag == "W":
@@ -232,15 +226,13 @@ def getColor(tag):
 def pushTag(cnx, cursor, csvRow, whichTag, sealID):
     TAGPOS  = 9
     # print("pushTag {:s}".format(csvRow[2]))
-    print ("getColor: {:s}".format(getColor(csvRow[whichTag][0])))
 
     statement = ("INSERT INTO Tags VALUES ("
                 + csvRow[whichTag] + ", "        # mark
                 + getColor(csvRow[whichTag][1]) + ", "          # TODO write getTagColor(row[whichTag][0])
                 + csvRow[TAGPOS] + ", '"
                 + str(getDate(csvRow[2])) + "', "
-                + str(sealID) + ");")        # 
-    print(statement)
+                + str(sealID) + ");")
     try:
         cursor.execute(statement)
         cnx.commit()
@@ -271,20 +263,17 @@ def updateTag(cnx, cursor, tag, newSeal):
     
 
 def updateObserveMark(cnx, cursor, old, new):
-    print("Update Observe Mark ", old, " to ", new)
     statement = ("UPDATE ObserveMarks SET "
                 + "ObservationID = {:d} WHERE ObservationID = {:d};").format(new, old)
     pushQuery(cnx, cursor, statement)
 
 def updateObserveTag(cnx, cursor, old, new):
-    print("Update Observe Tag ", old, " to ", new)
     statement = ("UPDATE ObserveTags SET "
                 + "ObservationID = {:d} WHERE ObservationID = {:d};").format(new, old)
     pushQuery(cnx, cursor, statement)
 
 # consolidates a seal with tags/IDs that don't match on obsID
 def consolidate(cnx, cursor, sealID, tags, marks):
-    # print("tags: ", tags, "marks: ", marks)
     seals = []
     for ID in tags:
         updateTag(cnx, cursor, ID, sealID)

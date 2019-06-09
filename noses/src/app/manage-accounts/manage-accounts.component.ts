@@ -119,6 +119,13 @@ export class DialogOverviewExampleDialog {
   selectAdmin = "No";
   userObj: any;
 
+  loginID: string;
+  fullname: string;
+  password: string;
+  isAdmin: boolean;
+  affiliation: string;
+  email: string;
+
   constructor(
     public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
