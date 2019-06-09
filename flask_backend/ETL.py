@@ -34,6 +34,7 @@ TARE = 25
 MASSTARE = 26
 RANGE = 29
 COMMENTS = 30
+approvalStatus = 1
 
 def makeConnection():
     try:
@@ -91,7 +92,7 @@ def getTopMeasurement(cursor):
         return int(row[0])
 
 def getDate(date):
-    print date
+    #print date
     datetime_object = datetime.strptime(date, "%m/%d/%Y")
     return datetime_object.date()
 
@@ -105,7 +106,7 @@ def writeObsv(cnx, cursor, row, ID):
                 + row[COMMENTS].replace("'", "") + "', "                # comments
                 + row[AGE] + ", "                # Age
                 + row[YEAR] + ", "                # year
-                + row[LOC] + ", 0)")              # SLOCode 
+                + row[LOC] + ", " + str(approvalStatus) + ")")              # SLOCode 
     print(statement)
     try:
         cursor.execute(statement)
@@ -347,7 +348,7 @@ def findSeal(cnx, cursor, row):
 
     if(row[STLENGTH] != "NULL" or row[CRVLENGTH] != "NULL" or row[AXGIRTH] != "NULL" or row[MASS] != "NULL" or row[TARE] != "NULL" or row[MASSTARE] != "NULL"):
         pushMeasurement(cnx, cursor, obsID, row)
-    print len(row)
+    print(len(row))
 
     divergentT = []
     divergentM = []
@@ -394,18 +395,21 @@ def findSeal(cnx, cursor, row):
             consolidate(cnx, cursor, mainID, divergentT, divergentM)
     observeSeal(cnx, cursor, mainID, obsID)
 
-def main():
+def startUpdate(obj):
     cnx = makeConnection()
     cursor = cnx.cursor(buffered=True)
 
-    filename = raw_input("Give file name: ")
-    f = open(filename)
-    line = f.read()
-    y = json.loads(line)
+    # filename = raw_input("Give file name: ")
+    # f = open(filename)
+    y = json.loads(obj)
+    j_obj = y[0]
+    # print(y)
+    approvalStatus = y[1]["isApproved"]
+
 #    with open(filename) as csvfile:
 #        readCSV = csv.reader(csvfile, delimiter=',')
 #        for row in readCSV:
-    for val in y:
+    for val in j_obj:
         row = [val["Field Leader Initials"],
                 val["Year"],
                 val["Date"],
@@ -415,16 +419,16 @@ def main():
                 val["Pup?"],
                 val["New Mark 1?"],
                 val["Mark 1"],
-                val["Mark 1 Position "],
+                val["Mark 1 Position"],
                 val["New Mark 2?"],
                 val["Mark 2"],
                 val["Mark 2 Position"],
                 val["New Tag1?"],
                 val["Tag1 #"],
-                val["Tag 1 Pos. "],
+                val["Tag 1 Pos."],
                 val["New Tag2?"],
                 val["Tag2 #"],
-                val["Tag 2 Pos. "],
+                val["Tag 2 Pos."],
                 val["Molt (%)"],
                 val["Season"],
                 val["St. Length"],
@@ -437,44 +441,11 @@ def main():
                 val["1st seen as W"],
                 val["Range (days)"],
                 val["Comments"],
-                val["Entered in Ano "]]
+                val["Entered in Ano"]]
         if canFind(cursor, "Beach", row[LOC], 0):
             swapNulls(row)
             findSeal(cnx, cursor, row)
-        else:
-            exceptions.write("\"" + str(val["Field Leader Initials"]) + "\""
-              + ", " + str(val["Year"])
-              + ", " + str(val["Date"])
-              + ", " + str(val["Loc."])
-              + ", " + str(val["Sex"])
-              + ", " + str(val["Age"])
-              + ", " + str(val["Pup?"])
-              + ", " + str(val["New Mark 1?"])
-              + ", " + str(val["Mark 1"])
-              + ", " + str(val["Mark 1 Position "])
-              + ", " + str(val["New Mark 2?"])
-              + ", " + str(val["Mark 2"])
-              + ", " + str(val["Mark 2 Position"])
-              + ", " + str(val["New Tag1?"])
-              + ", " + str(val["Tag1 #"])
-              + ", " + str(val["Tag 1 Pos. "])
-              + ", " + str(val["New Tag2?"])
-              + ", " + str(val["Tag2 #"])
-              + ", " + str(val["Tag 2 Pos. "])
-              + ", " + str(val["Molt (%)"])
-              + ", " + str(val["Season"])
-              + ", " + str(val["St. Length"])
-              + ", " + str(val["Crv. Length"])
-              + ", " + str(val["Ax. Girth"])
-              + ", " + str(val["Mass"])
-              + ", " + str(val["Tare"])
-              + ", " + str(val["Mass-Tare"])
-              + ", " + str(val["Last seen as P"])
-              + ", " + str(val["1st seen as W"])
-              + ", " + str(val["Range (days)"])
-              + ", " + str(val["Comments"])
-              + ", " + str(val["Entered in Ano "])
-              + ", " + "Location unkown" + "\n")
+        
     exceptions.close()
     cnx.close()
 if __name__ == '__main__':

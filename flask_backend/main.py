@@ -106,9 +106,9 @@ def add_seals():
     try:
         if request.method == 'POST':
 
-            print("yooooo")
+            #print("yooooo")
             _json = request.json
-            print(_json)
+            # print(_json)
             startUpdate(json.dumps(_json))
 
             return jsonify('data sent to upload function')

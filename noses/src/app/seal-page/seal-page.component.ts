@@ -38,6 +38,7 @@ export class SealPageComponent implements OnInit {
     this.sealData.currentSeal.subscribe(currentSeal  => {
       this.seal = currentSeal;
       this.jseal = JSON.stringify(currentSeal);
+      console.log(this.jseal);
 
       // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
       this.datas = this.apiService.getSeal(this.jseal).then(msg => {
