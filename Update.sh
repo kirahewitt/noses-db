@@ -18,7 +18,7 @@ if [[ $gitResults != *"Already up to date."* ]] ; then
    if [[ $error != 0 ]] ; then
       exit $error
    fi
-   eval cp /home/jbuelow/htaccess /etc/SealQL/sealqlteam6/noses/dist/.htaccess
+   eval cp /home/jbuelow/htaccess /etc/SealQL/sealqlteam6/noses/dist/noses/.htaccess
    eval systemctl restart apache2
 fi
 exit 0
