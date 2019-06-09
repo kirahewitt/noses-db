@@ -88,13 +88,18 @@ export class ManageAccountsComponent implements OnInit {
       if(result !== undefined) {
         this.add_user = this.apiService.addUser(JSON.stringify(result));
         this.add_user.then(users => {
-          this.dataSource = new MatTableDataSource(<any> users);
-          console.log(users);
+          if(users == "1") {
+            alert("user not created, duplicate username or email");
+          } else {
+            this.dataSource = new MatTableDataSource(<any> users);
+            this.authService.SignUp("rockib13@gmail.com", "password");
+          }
+
         });
       }
 
 
-      //this.authService.SignUp("rockib13@gmail.com", "password");
+
 
       // **** unable to create an account and NOT sign in with it...
       // https://stackoverflow.com/questions/37730712/how-to-just-create-an-user-in-firebase-3-and-do-not-authenticate-it

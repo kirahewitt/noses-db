@@ -94,7 +94,7 @@ def add_user():
             return jsonify("no seal was clicked")
     except Exception as e:
         print('EXCEPTION WAS THROWN!')
-        return jsonify('bad sql')
+        return jsonify(1)
     finally:
         cursor.close()
         conn.close()
