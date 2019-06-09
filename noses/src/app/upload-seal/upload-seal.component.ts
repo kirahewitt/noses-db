@@ -83,7 +83,7 @@ export class UploadSealComponent implements OnInit {
   }
 
   onSubmit() {
-    this.sealUpload = [{"Field Leader Initials": this.sealForm.value.FieldLeaderInitials, "Year": this.sealForm.value.Year,
+    this.sealUpload = {"Field Leader Initials": this.sealForm.value.FieldLeaderInitials, "Year": this.sealForm.value.Year,
                         "Date": this.sealForm.value.Date, "Loc.": this.sealForm.value.Loc, "Sex": this.sealForm.value.Sex,
                         "Age": this.sealForm.value.Age, "Pup?": this.sealForm.value.Pup, "New Mark 1?": this.sealForm.value.NewMark1,
                         "Mark 1": this.sealForm.value.Mark1, "Mark 1 Position ": this.sealForm.value.Mark1Pos, "New Mark 2?": this.sealForm.value.NewMark2,
