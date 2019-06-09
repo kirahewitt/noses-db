@@ -21,6 +21,7 @@ import {
   MatDialogModule,
   MatListModule,
   MatProgressBarModule,
+  MatProgressSpinnerModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -32,7 +33,9 @@ import { SealPageComponent } from './seal-page/seal-page.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
-import {MatSelectModule} from '@angular/material/select';
+import { DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
+import { MatSelectModule } from '@angular/material/select';
+
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -53,6 +56,7 @@ const config = {
     SealPageComponent,
     ManageAccountsComponent,
     ApproveObsComponent,
+    DialogOverviewExampleDialog,
   ],
   imports: [
     FormsModule,
@@ -63,6 +67,7 @@ const config = {
     MatInputModule,
     MatButtonModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     MatListModule,
     MatPaginatorModule,
     FlexLayoutModule,
@@ -79,7 +84,11 @@ const config = {
     PapaParseModule,
   ],
   exports: [
-    RouterModule
+    RouterModule,
+    DialogOverviewExampleDialog,
+  ],
+  entryComponents: [
+    DialogOverviewExampleDialog,
   ],
   providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]

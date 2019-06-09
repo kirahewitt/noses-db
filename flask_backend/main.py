@@ -71,7 +71,32 @@ def get_seal():
         cursor.close()
         conn.close()
 
-@app.route('/add', methods=['POST', 'GET'])
+@app.route('/adduser', methods=['POST', 'GET'])
+def add_user():
+    conn = mysql.connect()
+    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        if request.method == 'POST':
+            _json = request.json
+            print(_json)
+            cursor.execute("INSERT INTO Users (LoginID, FullName, isAdmin, Affiliation) values (\'" + _json['loginid'] + "\', \'" + _json['fullname'] + "\', " + _json['isAdmin'] + ", \'" + _json['affiliation'] + "\');")
+            cursor.execute("INSERT INTO Observers values (\'" + _json['email'] + "\', '', '', \'" + _json['loginid'] + "\');")
+            cursor.execute("UPDATE Users SET email = \'" + _json['email'] + "\' WHERE LoginID = \'" + _json['loginid'] + "\';")
+            conn.commit()
+            #cursor.execute("SELECT o.* from Observations as o, ObserveSeal as os WHERE o.ObservationID=os.ObservationID and os.SealID=" + str(obj))
+
+            # rows = cursor.fetchall()
+            resp = jsonify("hello")
+            return resp
+        else:
+            return jsonify("no seal was clicked")
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/addseals', methods=['POST', 'GET'])
 def add_seals():
     conn = mysql.connect()
     cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -92,8 +117,8 @@ def add_seals():
         cursor.close()
         conn.close()
 
-@app.route('/users', methods=['GET'])
-def users():
+@app.route('/allseals', methods=['GET'])
+def getAllSeals():
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)

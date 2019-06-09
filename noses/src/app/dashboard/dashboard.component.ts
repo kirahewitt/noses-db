@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { BackendService } from '../backend.service';
 import { FlaskBackendService } from '../flask-backend.service';
 import { Observations } from  '../Observations';
-import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect } from '@angular/material';
+import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';
 import {FormControl } from '@angular/forms';
 import { AuthService } from "../auth.service";
 import { AngularFireAuth } from "@angular/fire/auth";
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
   filterTag2: any;
   filterMark1: any;
   isAdmin=true;
-  ready = false;
+  notReady = true;
   displayedColumns: any;
 
 
@@ -64,10 +64,10 @@ export class DashboardComponent implements OnInit {
     this.apiService.readObs().subscribe((observations: any)=>{
       if(this.isAdmin) {
         this.displayedColumns = ['ObservationID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year',  'viewSeal', 'actions' ];
-        this.ready = true;
+        this.notReady = false;
       } else {
         this.displayedColumns = ['ObservationID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year',  'viewSeal'];
-        this.ready = true;
+        this.notReady = false;
       }
       this.observations = observations;
       this.runSealQuery(observations);
@@ -89,8 +89,6 @@ export class DashboardComponent implements OnInit {
 
   runSealQuery(obs: any) {
     this.dataSource = new MatTableDataSource(<any> obs);
-      // console.log(observations);
-
     this.dataSource.paginator = this.paginator;
 
     this.dataSource.filterPredicate = function(data, filter: string): boolean {
@@ -155,7 +153,6 @@ export class DashboardComponent implements OnInit {
     //   return String(elem.Sex) == this.filterGender;
     //   });
     // }
-
     this.runSealQuery(tempObs);
 
   }

@@ -7,6 +7,7 @@ import { UploadSealComponent } from './upload-seal/upload-seal.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component'
 
 
 const routes: Routes = [
@@ -14,6 +15,7 @@ const routes: Routes = [
 { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
 { path: 'upload-seal', component: UploadSealComponent, canActivate: [AuthGuard]},
 { path: 'sign-in', component: SignInComponent},
+{ path: 'verify-email', component: VerifyEmailComponent},
 { path: 'seal-page', component: SealPageComponent},
 { path: 'manage-accounts', component: ManageAccountsComponent, canActivate: [AuthGuard]},
 { path: 'approve-obs', component: ApproveObsComponent, canActivate: [AuthGuard]}];

@@ -40,8 +40,7 @@ export class SealPageComponent implements OnInit {
       this.jseal = JSON.stringify(currentSeal);
 
       // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
-      this.datas = this.apiService.getSeal(this.jseal);
-      this.datas.then(msg => {
+      this.datas = this.apiService.getSeal(this.jseal).then(msg => {
         this.dataSource = new MatTableDataSource(<any> msg);
       });
 

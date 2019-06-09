@@ -75,14 +75,8 @@ export class UploadSealComponent implements OnInit {
         skipEmptyLines: true,
         header: true,
         complete: (results) => {
-          //console.log(JSON.stringify(results.data));
-          // this.user = {name: 'raquel', email: 'mail', pwd: '111'};
-          //const user: SimpleUser = {name: 'raquel', email: 'mail', pwd: '111'};
 
-          // console.log(this.user);
-          //console.log(user);
-
-          this.apiService.addUser(JSON.stringify(results.data)).subscribe(() => this.apiService.readObs());
+          this.apiService.addSeals(JSON.stringify(results.data)).subscribe(() => this.apiService.readObs());
         }
       });
     }
@@ -101,6 +95,6 @@ export class UploadSealComponent implements OnInit {
                         "Mass-Tare": this.sealForm.value.massTare, "Last seen as P": this.sealForm.value.lastSeenP, "1st seen as W": this.sealForm.value.fstWeen,
                         "Range (days)": this.sealForm.value.Range, "Comments": this.sealForm.value.Comments, "Entered in Ano ": this.sealForm.value.enterAno}];
 
-    this.apiService.addUser(JSON.stringify(this.sealUpload)).subscribe(() => this.apiService.readObs());
+    this.apiService.addSeals(JSON.stringify(this.sealUpload)).subscribe(() => this.apiService.readObs());
   }
 }

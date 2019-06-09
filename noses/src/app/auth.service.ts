@@ -53,7 +53,8 @@ logged in and setting up null when logged out */
         /* Call the SendVerificaitonMail() function when new user sign
 up and returns promise */
         this.SendVerificationMail();
-        this.SetUserData(result.user);
+        // alert("New user successfully created and verification email was sent!");
+        // this.SetUserData(result.user); // i dont want admin to log in under another account
       })
       .catch(error => {
         window.alert(error.message);
@@ -62,7 +63,7 @@ up and returns promise */
   // Send email verfificaiton when new user sign up
   SendVerificationMail() {
     return this.afAuth.auth.currentUser.sendEmailVerification().then(() => {
-      this.router.navigate(["verify-email-address"]);
+      this.router.navigate(["verify-email"]);
     });
   }
   // Reset Forggot password
@@ -125,7 +126,7 @@ provider in Firestore database using AngularFirestore + AngularFirestoreDocument
   }
   // Sign out
   SignOut() {
-    alert("succeccfully logged out")
+    alert("successfully logged out")
     return this.afAuth.auth.signOut().then(() => {
       localStorage.removeItem("user");
       this.router.navigate(["sign-in"]);

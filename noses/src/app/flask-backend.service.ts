@@ -13,20 +13,21 @@ import { SealDataService } from "./seal-data.service";
 export class FlaskBackendService {
   constructor(private httpClient: HttpClient,
               private sealData: SealDataService) {}
-  FLASK_API_SERVER = "http://34.217.54.156:5000";
+  FLASK_API_SERVER = "http://localhost:5000";
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
   rows: any;
+  newUsers: any;
 
   readObs(): Observable<Observations[]>{
-    return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/users` );
+    return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allseals` );
   }
 
-  addUser(user: string): Observable<string>{
-    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/add`, user, this.httpOptions);
+  addSeals(user: string): Observable<string>{
+    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addseals`, user, this.httpOptions);
   }
 
   /** DELETE: delete the user from the server */
@@ -34,6 +35,15 @@ export class FlaskBackendService {
     console.log('calling flask function')
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/delete`, obs, this.httpOptions);
   }
+
+  async addUser(obs: string) {
+    await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/adduser`, obs, this.httpOptions).toPromise().then(data => {
+      this.newUsers = data;
+    });
+
+    return this.newUsers;
+  }
+
 
   async getSeal(obs: string) {
     await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/getseal`, obs, this.httpOptions).toPromise().then(data => {

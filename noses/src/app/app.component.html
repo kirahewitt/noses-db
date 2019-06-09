@@ -4,14 +4,14 @@
   <mat-toolbar class="mat-elevation-z4 tool-color">
     <mat-toolbar-row>
       <span class="hack-space"><a routerLink="/dashboard">SealQLTeam6</a></span>
-      <div class="col-md-5"></div>
+      <div class="col-md-4"></div>
       <ng-container *ngIf="!isAdmin">
         <div class="col-md-2"></div>
       </ng-container>
         <div>
           <ng-container *ngIf="isAdmin">
-            <button type="button" class="btn btn-admin1" routerLink="/manage-accounts">Manage Accounts</button>
-            <button type="button" class="btn btn-admin2" routerLink="/approve-obs">Approve Observations</button>
+            <button type="button" class="btn btn-admin1"><a routerLink="/manage-accounts">Manage Accounts</a></button>
+            <button type="button" class="btn btn-admin2"><a routerLink="/approve-obs">Approve Observations</a></button>
           </ng-container>
           <button type="button" class="btn"><a routerLink="/dashboard">Observations</a></button>
           <button type="button" class="btn"><a routerLink="/upload-seal">Upload Bulk Data</a></button>

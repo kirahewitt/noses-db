@@ -1,10 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firestore";
-import { MatTableModule, MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatTableModule,
+        MatTableDataSource,
+        MatPaginator,
+        MatSelect,
+        MatDialog,
+        MatDialogRef,
+        MAT_DIALOG_DATA } from '@angular/material';
+import { FormGroup, FormControl } from '@angular/forms';
 import { FlaskBackendService } from '../flask-backend.service';
 import { sqlUser } from '../sqlUser';
 import { AuthService } from "../auth.service";
+import { AngularFireModule } from '@angular/fire';
 
 
 const USER_DATA: sqlUser[] = [
@@ -14,6 +22,11 @@ const USER_DATA: sqlUser[] = [
   {LoginID: 4, Fullname: 'Lewanite2', isAdmin: 0, Affiliation: 'CalPoly', email: 'l3@gmail.com'},
   {LoginID: 5, Fullname: 'CitSci', isAdmin: 0, Affiliation: 'Citizen Scientist', email: 'cs1@gmail.com'},
 ];
+
+export interface DialogData {
+  animal: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-manage-accounts',
@@ -30,6 +43,17 @@ export class ManageAccountsComponent implements OnInit {
   loggedInUser: any;
   displayedColumns: string[] = ['Fullname', 'Affiliation', 'isAdmin', 'email', 'editUser', 'remUser' ];
   show: boolean = false;
+  add_user: any;
+
+  animal: string;
+  name: string;
+
+  loginID: string;
+  fullname: string;
+  password: string;
+  isAdmin: boolean;
+  affiliation: string;
+  email: string;
 
 // ***** sql User ***** //
 //   LoginID: string;
@@ -38,19 +62,67 @@ export class ManageAccountsComponent implements OnInit {
 //   Affiliation: string;
 //   email: string;
 
-
   constructor(private apiService: FlaskBackendService,
               public authService: AuthService,
-              public afAuth: AngularFireAuth) { }
+              public afAuth: AngularFireAuth,
+              public dialog: MatDialog,
+              public firebase: AngularFireModule) { }
 
   ngOnInit() {
     this.loggedInUser = JSON.parse(localStorage.getItem("user"));
-    console.log(USER_DATA);
+    console.log(this.loggedInUser);
     this.dataSource = new MatTableDataSource<sqlUser>(USER_DATA);
     this.dataSource.paginator = this.paginator;
 
-
   }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+      width: '650px',
+      data: {loginid: this.loginID, fullname: this.animal, password: this.password,
+              isAdmin: this.isAdmin, affiliation: this.affiliation, email: this.email},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+
+      this.add_user = this.apiService.addUser(JSON.stringify(result));
+      this.add_user.then(users => {
+        this.dataSource = new MatTableDataSource(<any> users);
+      });
+
+
+      //this.authService.SignUp("rockib13@gmail.com", "password");
+
+      // **** unable to create an account and NOT sign in with it...
+      // https://stackoverflow.com/questions/37730712/how-to-just-create-an-user-in-firebase-3-and-do-not-authenticate-it
+
+    });
+  }
+
+}
+
+@Component({
+  selector: 'dialog-overview-example-dialog',
+  templateUrl: 'dialog-overview-example-dialog.html',
+  styleUrls: ['./manage-accounts.component.scss']
+})
+export class DialogOverviewExampleDialog {
+
+  selectAdmin = "No";
+  userObj: any;
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private apiService: FlaskBackendService) {}
+
+  onNoClick(): void {
+    this.data = undefined;
+    this.dialogRef.close();
+  }
+
+
 
 }
 
