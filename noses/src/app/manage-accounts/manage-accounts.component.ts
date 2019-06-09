@@ -12,7 +12,6 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { FlaskBackendService } from '../flask-backend.service';
 import { sqlUser } from '../sqlUser';
 import { AuthService } from "../auth.service";
-import { AngularFireModule } from '@angular/fire';
 
 
 const USER_DATA: sqlUser[] = [
@@ -65,8 +64,7 @@ export class ManageAccountsComponent implements OnInit {
   constructor(private apiService: FlaskBackendService,
               public authService: AuthService,
               public afAuth: AngularFireAuth,
-              public dialog: MatDialog,
-              public firebase: AngularFireModule) { }
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.loggedInUser = JSON.parse(localStorage.getItem("user"));
@@ -86,10 +84,14 @@ export class ManageAccountsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
 
-      this.add_user = this.apiService.addUser(JSON.stringify(result));
-      this.add_user.then(users => {
-        this.dataSource = new MatTableDataSource(<any> users);
-      });
+      // this.afAuth.authState.subscribe((authState) => { authState.delete(); });
+      if(result !== undefined) {
+        this.add_user = this.apiService.addUser(JSON.stringify(result));
+        this.add_user.then(users => {
+          this.dataSource = new MatTableDataSource(<any> users);
+          console.log(users);
+        });
+      }
 
 
       //this.authService.SignUp("rockib13@gmail.com", "password");

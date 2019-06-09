@@ -82,7 +82,9 @@ def add_user():
             cursor.execute("INSERT INTO Users (LoginID, FullName, isAdmin, Affiliation) values (\'" + _json['loginid'] + "\', \'" + _json['fullname'] + "\', " + _json['isAdmin'] + ", \'" + _json['affiliation'] + "\');")
             cursor.execute("INSERT INTO Observers values (\'" + _json['email'] + "\', '', '', \'" + _json['loginid'] + "\');")
             cursor.execute("UPDATE Users SET email = \'" + _json['email'] + "\' WHERE LoginID = \'" + _json['loginid'] + "\';")
+            
             conn.commit()
+                
             #cursor.execute("SELECT o.* from Observations as o, ObserveSeal as os WHERE o.ObservationID=os.ObservationID and os.SealID=" + str(obj))
 
             # rows = cursor.fetchall()
@@ -91,7 +93,8 @@ def add_user():
         else:
             return jsonify("no seal was clicked")
     except Exception as e:
-        print(e)
+        print('EXCEPTION WAS THROWN!')
+        return jsonify('bad sql')
     finally:
         cursor.close()
         conn.close()
