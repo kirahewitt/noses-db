@@ -8,7 +8,17 @@ if [[ $gitResults != *"Already up to date."* ]] ; then
    eval systemctl restart SealQL.service
    eval set -o pipefail
    eval npm install
-   buildRes=$(eval ng build --prod)
-   error=${PIPSTATUS[0]}
+   #buildRes=$(eval ng build --prod)
+   #error=${PIPSTATUS[0]}
+   #if [[ $error != 0 ]] ; then
+   #   exit 1
+   #fi
+   eval ng build --prod
+   error=$?
+   if [[ $error != 0 ]] ; then
+      exit $error
+   fi
+   eval cp /home/jbuelow/htaccess /etc/SealQL/sealqlteam6/noses/dist/.htaccess
+   eval systemctl restart apache2
 fi
 exit 0
