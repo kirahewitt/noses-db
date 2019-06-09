@@ -6,6 +6,8 @@ import pandas
 import mysql
 import csv
 
+exceptions = open("exceptions.csv", "w+")
+
 FL = 0
 YEAR = 1
 DATE = 2
@@ -68,6 +70,7 @@ def swapNulls(row):
         elif (index not in [YEAR, DATE, MOLT, SEASON,
             STLENGTH, CRVLENGTH, AXGIRTH, MASS, TARE, MASSTARE]):
             row[index] = "'" + row[index] + "'"
+    # print row
 
 def getTopObsv(cursor):
     statement = "SELECT MAX(ObservationID) FROM Observations;"
@@ -88,6 +91,7 @@ def getTopMeasurement(cursor):
         return int(row[0])
 
 def getDate(date):
+    print date
     datetime_object = datetime.strptime(date, "%m/%d/%Y")
     return datetime_object.date()
 
@@ -101,7 +105,8 @@ def writeObsv(cnx, cursor, row, ID):
                 + row[COMMENTS].replace("'", "") + "', "                # comments
                 + row[AGE] + ", "                # Age
                 + row[YEAR] + ", "                # year
-                + row[LOC] + ")")              # SLOCode 
+                + row[LOC] + ", 0)")              # SLOCode 
+    print(statement)
     try:
         cursor.execute(statement)
         cnx.commit()
@@ -111,6 +116,7 @@ def writeObsv(cnx, cursor, row, ID):
 
 def pushQuery(cnx, cursor, query):
     try:
+        print(query)
         row = cursor.execute(query)
         cnx.commit()
     except mysql.connector.Error as err:
@@ -119,6 +125,7 @@ def pushQuery(cnx, cursor, query):
 
 def runQuery(cursor, query):
     try:
+        print(query)
         cursor.execute(query)
     except mysql.connector.Error as err:
         print(err)
@@ -131,6 +138,7 @@ def getMark(cursor, mark, year):
     query = "SELECT MarkSeal FROM Marks WHERE Mark = {:s} and Year = {:s};".format(mark, year)
     runQuery(cursor, query)
     row = cursor.fetchone()
+    # print("getMark: ", row, mark)
     if (row is None):
         return -1
     else:
@@ -160,7 +168,8 @@ def pushMark(cnx, cursor, csvRow, obsID, sealID):
                 + csvRow[MARKPOS] + ", '"          # Year
                 + str(getDate(csvRow[2]))+ "', "          # date
                 + csvRow[YEAR] + ", " 
-                + str(sealID) + ");")    
+                + str(sealID) + ");")        # 
+    print(statement)
     try:
         cursor.execute(statement)
         cnx.commit()
@@ -173,6 +182,7 @@ def getTag(cursor, tag):
     query = "SELECT TagSeal, TagNumber FROM Tags WHERE TagNumber = {:s}".format(tag)
     runQuery(cursor, query)
     row = cursor.fetchone()
+    print("getTag: ", row)
     if (row is None):
         return -1
     else:
@@ -196,6 +206,7 @@ def observeTag(cnx, cursor, tag, ID):
     pushQuery(cnx, cursor, statement)
 
 def getColor(tag):
+    print ("tag: ", tag)
     if tag == 'G':
         return "'green'"
     elif tag == "W":
@@ -219,13 +230,16 @@ def getColor(tag):
 # updates table with the new mark, with error checks
 def pushTag(cnx, cursor, csvRow, whichTag, sealID):
     TAGPOS  = 9
+    # print("pushTag {:s}".format(csvRow[2]))
+    print ("getColor: {:s}".format(getColor(csvRow[whichTag][0])))
+
     statement = ("INSERT INTO Tags VALUES ("
                 + csvRow[whichTag] + ", "        # mark
                 + getColor(csvRow[whichTag][1]) + ", "          # TODO write getTagColor(row[whichTag][0])
                 + csvRow[TAGPOS] + ", '"
                 + str(getDate(csvRow[2])) + "', "
                 + str(sealID) + ");")        # 
-
+    print(statement)
     try:
         cursor.execute(statement)
         cnx.commit()
@@ -256,11 +270,13 @@ def updateTag(cnx, cursor, tag, newSeal):
     
 
 def updateObserveMark(cnx, cursor, old, new):
+    print("Update Observe Mark ", old, " to ", new)
     statement = ("UPDATE ObserveMarks SET "
                 + "ObservationID = {:d} WHERE ObservationID = {:d};").format(new, old)
     pushQuery(cnx, cursor, statement)
 
 def updateObserveTag(cnx, cursor, old, new):
+    print("Update Observe Tag ", old, " to ", new)
     statement = ("UPDATE ObserveTags SET "
                 + "ObservationID = {:d} WHERE ObservationID = {:d};").format(new, old)
     pushQuery(cnx, cursor, statement)
@@ -331,6 +347,7 @@ def findSeal(cnx, cursor, row):
 
     if(row[STLENGTH] != "NULL" or row[CRVLENGTH] != "NULL" or row[AXGIRTH] != "NULL" or row[MASS] != "NULL" or row[TARE] != "NULL" or row[MASSTARE] != "NULL"):
         pushMeasurement(cnx, cursor, obsID, row)
+    print len(row)
 
     divergentT = []
     divergentM = []
@@ -348,10 +365,20 @@ def findSeal(cnx, cursor, row):
     else:
         if (mID == -1 and row[MARK] != "NULL"):
             addMark(cnx, cursor, row, obsID, mainID)
+        elif (mID != -1 and row[MARK] != "NULL"):
+            query = "SELECT MarkID FROM Marks WHERE Mark = {:s};".format(row[MARK])
+            runQuery(cursor, query)
+            fetch = cursor.fetchone()
+            markid = fetch[0]
+            observeMark(cnx, cursor, markid, obsID)
         if (t1ID == -1 and row[TAG1] != "NULL"):
             addTag(cnx, cursor, row, TAG1, obsID, mainID)
+        elif (t1ID != -1 and row[TAG1] != "NULL"):
+            observeTag(cnx, cursor, row[TAG1], obsID)
         if (t2ID == -1 and row[TAG2] != "NULL"):
             addTag(cnx, cursor, row, TAG2, obsID, mainID)
+        elif (t2ID != -1 and row[TAG2] != "NULL"):
+            observeTag(cnx, cursor, row[TAG2], obsID)
 
         if(mID != mainID and row[MARK] != "NULL" and mID != -1):
             divergentM.append(mID)
@@ -367,13 +394,14 @@ def findSeal(cnx, cursor, row):
             consolidate(cnx, cursor, mainID, divergentT, divergentM)
     observeSeal(cnx, cursor, mainID, obsID)
 
-def startUpdate(obj):
-
+def main():
     cnx = makeConnection()
     cursor = cnx.cursor(buffered=True)
 
-    y = json.loads(obj)
-    print(y)
+    filename = raw_input("Give file name: ")
+    f = open(filename)
+    line = f.read()
+    y = json.loads(line)
 #    with open(filename) as csvfile:
 #        readCSV = csv.reader(csvfile, delimiter=',')
 #        for row in readCSV:
@@ -410,8 +438,44 @@ def startUpdate(obj):
                 val["Range (days)"],
                 val["Comments"],
                 val["Entered in Ano "]]
-        print("yeee")
         if canFind(cursor, "Beach", row[LOC], 0):
             swapNulls(row)
             findSeal(cnx, cursor, row)
+        else:
+            exceptions.write("\"" + str(val["Field Leader Initials"]) + "\""
+              + ", " + str(val["Year"])
+              + ", " + str(val["Date"])
+              + ", " + str(val["Loc."])
+              + ", " + str(val["Sex"])
+              + ", " + str(val["Age"])
+              + ", " + str(val["Pup?"])
+              + ", " + str(val["New Mark 1?"])
+              + ", " + str(val["Mark 1"])
+              + ", " + str(val["Mark 1 Position "])
+              + ", " + str(val["New Mark 2?"])
+              + ", " + str(val["Mark 2"])
+              + ", " + str(val["Mark 2 Position"])
+              + ", " + str(val["New Tag1?"])
+              + ", " + str(val["Tag1 #"])
+              + ", " + str(val["Tag 1 Pos. "])
+              + ", " + str(val["New Tag2?"])
+              + ", " + str(val["Tag2 #"])
+              + ", " + str(val["Tag 2 Pos. "])
+              + ", " + str(val["Molt (%)"])
+              + ", " + str(val["Season"])
+              + ", " + str(val["St. Length"])
+              + ", " + str(val["Crv. Length"])
+              + ", " + str(val["Ax. Girth"])
+              + ", " + str(val["Mass"])
+              + ", " + str(val["Tare"])
+              + ", " + str(val["Mass-Tare"])
+              + ", " + str(val["Last seen as P"])
+              + ", " + str(val["1st seen as W"])
+              + ", " + str(val["Range (days)"])
+              + ", " + str(val["Comments"])
+              + ", " + str(val["Entered in Ano "])
+              + ", " + "Location unkown" + "\n")
+    exceptions.close()
     cnx.close()
+if __name__ == '__main__':
+    main()
