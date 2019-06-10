@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observations } from  './Observations';
 import { SimpleUser } from './simpleUser';
+import { sqlUser } from './sqlUser';
 import { Observable, of } from  'rxjs';
 import { SealDataService } from "./seal-data.service";
 
@@ -13,7 +14,7 @@ import { SealDataService } from "./seal-data.service";
 export class FlaskBackendService {
   constructor(private httpClient: HttpClient,
               private sealData: SealDataService) {}
-  FLASK_API_SERVER = "http://34.217.54.156:5000";
+  FLASK_API_SERVER = "http://http://34.217.54.156:5000";
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -32,7 +33,6 @@ export class FlaskBackendService {
 
   /** DELETE: delete the user from the server */
   deleteObs(obs: string) {
-    console.log('calling flask function')
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/delete`, obs, this.httpOptions);
   }
 
@@ -42,6 +42,26 @@ export class FlaskBackendService {
     });
 
     return this.newUsers;
+  }
+
+  getUsers(): Observable<sqlUser[]>{
+    return this.httpClient.get<sqlUser[]>(`${this.FLASK_API_SERVER}/adduser`);
+  }
+
+  async removeUser(user: string) {
+    console.log(user );
+    await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/removeuser`, user, this.httpOptions).toPromise().then(data => {
+      this.rows = data
+    });
+    return this.rows
+  }
+
+  async updateUser(user: string) {
+    console.log(user );
+    await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/updateuser`, user, this.httpOptions).toPromise().then(data => {
+      this.rows = data
+    });
+    return this.rows
   }
 
 

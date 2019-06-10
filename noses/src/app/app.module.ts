@@ -17,12 +17,12 @@ import { AuthGuard } from "./auth.guard";
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { UploadSealComponent } from './upload-seal/upload-seal.component';
 import {
-  MatButtonModule,
-  MatDialogModule,
-  MatListModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-} from '@angular/material';
+          MatButtonModule,
+          MatDialogModule,
+          MatListModule,
+          MatProgressBarModule,
+          MatProgressSpinnerModule,
+        } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { PapaParseModule } from 'ngx-papaparse';
@@ -33,8 +33,11 @@ import { SealPageComponent } from './seal-page/seal-page.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
-import { DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
+import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 
 
 const config = {
@@ -57,6 +60,7 @@ const config = {
     ManageAccountsComponent,
     ApproveObsComponent,
     DialogOverviewExampleDialog,
+    EditUserDialogComponent,
   ],
   imports: [
     FormsModule,
@@ -64,6 +68,7 @@ const config = {
     BrowserModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatTooltipModule,
     MatInputModule,
     MatButtonModule,
     MatDialogModule,
@@ -86,9 +91,11 @@ const config = {
   exports: [
     RouterModule,
     DialogOverviewExampleDialog,
+    EditUserDialogComponent,
   ],
   entryComponents: [
     DialogOverviewExampleDialog,
+    EditUserDialogComponent,
   ],
   providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]

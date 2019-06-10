@@ -49,6 +49,58 @@ def delete_user():
         cursor.close()
         conn.close()
 
+@app.route('/removeuser', methods=['POST', 'GET'])
+def remove_user():
+    conn = mysql.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        if request.method == 'POST':
+            print("in delete users")
+            _json = request.json
+            email = _json['email']
+            print(_json)
+            cursor.execute("Update Users Set isAdmin=0 where email=\'" + email + "\';")
+
+            conn.commit()
+            cursor.execute("SELECT * from Users Where isAdmin > 0;")
+
+            rows = cursor.fetchall()
+            resp = jsonify(rows)
+            return resp
+        else:
+            return jsonify('no delete')
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/updateuser', methods=['POST', 'GET'])
+def update_user():
+    conn = mysql.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        if request.method == 'POST':
+            _json = request.json
+            email = _json['email']
+            priv = _json['isAdmin']
+            print(_json)
+            cursor.execute("Update Users Set isAdmin="+ str(priv) + " where email=\'" + email + "\';")
+
+            conn.commit()
+            cursor.execute("SELECT * from Users Where isAdmin > 0;")
+
+            rows = cursor.fetchall()
+            resp = jsonify(rows)
+            return resp
+        else:
+            return jsonify('no delete')
+    except Exception as e:
+        return jsonify(1)
+    finally:
+        cursor.close()
+        conn.close()
+
 @app.route('/getseal', methods=['POST', 'GET'])
 def get_seal():
     conn = mysql.connect()
@@ -76,6 +128,12 @@ def add_user():
     conn = mysql.connect()
     cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
     try:
+        if request.method == 'GET':
+            cursor.execute("SELECT * from Users Where isAdmin > 0;")
+            rows = cursor.fetchall()
+            resp = jsonify(rows)
+            return resp
+
         if request.method == 'POST':
             _json = request.json
             print(_json)
@@ -85,10 +143,10 @@ def add_user():
             
             conn.commit()
                 
-            #cursor.execute("SELECT o.* from Observations as o, ObserveSeal as os WHERE o.ObservationID=os.ObservationID and os.SealID=" + str(obj))
+            cursor.execute("SELECT * from Users Where isAdmin > 0;")
 
-            # rows = cursor.fetchall()
-            resp = jsonify("hello")
+            rows = cursor.fetchall()
+            resp = jsonify(rows)
             return resp
         else:
             return jsonify("no seal was clicked")
@@ -133,38 +191,6 @@ def getAllSeals():
 
 
         return resp
-    except Exception as e:
-        print(e)
-    finally:
-        cursor.close()
-        conn.close()
-
-
-
-@app.route('/update', methods=['POST'])
-def update_user():
-    try:
-        _json = request.json
-        _id = _json['id']
-        _name = _json['name']
-        _email = _json['email']
-        _password = _json['pwd']
-        # validate the received values
-        if _name and _email and _password and _id and request.method == 'POST':
-            # do not save password as a plain text
-            _hashed_password = generate_password_hash(_password)
-            # save edits
-            sql = "UPDATE tbl_user SET user_name=%s, user_email=%s, user_password=%s WHERE user_id=%s"
-            data = (_name, _email, _hashed_password, _id,)
-            conn = mysql.connect()
-            cursor = conn.cursor()
-            cursor.execute(sql, data)
-            conn.commit()
-            resp = jsonify('User updated successfully!')
-            resp.status_code = 200
-            return resp
-        else:
-            return not_found()
     except Exception as e:
         print(e)
     finally:

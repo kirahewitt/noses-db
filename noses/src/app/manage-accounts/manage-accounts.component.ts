@@ -7,24 +7,21 @@ import { MatTableModule,
         MatSelect,
         MatDialog,
         MatDialogRef,
+        MatTooltip,
         MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FlaskBackendService } from '../flask-backend.service';
 import { sqlUser } from '../sqlUser';
 import { AuthService } from "../auth.service";
-
-
-const USER_DATA: sqlUser[] = [
-  {LoginID: 1, Fullname: 'Raquel Bonilla', isAdmin: 1, Affiliation: 'Developer', email: 'raquelb.2014@gmail.com'},
-  {LoginID: 2, Fullname: 'Lewanite', isAdmin: 1, Affiliation: 'CalPoly', email: 'l1@gmail.com'},
-  {LoginID: 3, Fullname: 'Lewanite1', isAdmin: 0, Affiliation: 'CalPoly', email: 'l2@gmail.com'},
-  {LoginID: 4, Fullname: 'Lewanite2', isAdmin: 0, Affiliation: 'CalPoly', email: 'l3@gmail.com'},
-  {LoginID: 5, Fullname: 'CitSci', isAdmin: 0, Affiliation: 'Citizen Scientist', email: 'cs1@gmail.com'},
-];
+import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
 
 export interface DialogData {
-  animal: string;
-  name: string;
+  loginID: string;
+  fullname: string;
+  password: string;
+  isAdmin: number;
+  affiliation: string;
+  email: string;
 }
 
 @Component({
@@ -50,7 +47,7 @@ export class ManageAccountsComponent implements OnInit {
   loginID: string;
   fullname: string;
   password: string;
-  isAdmin: boolean;
+  isAdmin: number;
   affiliation: string;
   email: string;
 
@@ -68,11 +65,28 @@ export class ManageAccountsComponent implements OnInit {
 
   ngOnInit() {
     this.loggedInUser = JSON.parse(localStorage.getItem("user"));
-    console.log(this.loggedInUser);
-    this.dataSource = new MatTableDataSource<sqlUser>(USER_DATA);
-    this.dataSource.paginator = this.paginator;
+    //console.log(this.loggedInUser);
+    // this.dataSource = new MatTableDataSource<sqlUser>(USER_DATA);
+
+     this.apiService.getUsers().subscribe((users: any)=>{
+      this.users = users;
+      this.dataSource = new MatTableDataSource<sqlUser>(users);
+      this.dataSource.paginator = this.paginator;
+    });
 
   }
+
+  getMoreInformation(): string {
+   return '3 = Admin \n2 = Can add/approve observations\n1 = Needs approval';
+   }
+
+   removeUser(row: any) {
+    console.log(row);
+    this.apiService.removeUser(JSON.stringify(row)).then(msg => {
+        this.dataSource = new MatTableDataSource(<any> msg);
+      });
+
+   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
@@ -83,27 +97,39 @@ export class ManageAccountsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-
-      // this.afAuth.authState.subscribe((authState) => { authState.delete(); });
       if(result !== undefined) {
+        console.log(result);
         this.add_user = this.apiService.addUser(JSON.stringify(result));
         this.add_user.then(users => {
           if(users == "1") {
             alert("user not created, duplicate username or email");
           } else {
             this.dataSource = new MatTableDataSource(<any> users);
-            this.authService.SignUp("rockib13@gmail.com", "password");
+            this.authService.SignUp(result.email, result.password);
           }
 
         });
       }
-
-
-
-
       // **** unable to create an account and NOT sign in with it...
       // https://stackoverflow.com/questions/37730712/how-to-just-create-an-user-in-firebase-3-and-do-not-authenticate-it
 
+    });
+  }
+
+  openEditUserDialog(row: any): void {
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: '400px',
+      data: {isAdmin: this.isAdmin},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if(result !== undefined) {
+        var user = { 'isAdmin':result['isAdmin'], 'email': row.email};
+        this.apiService.updateUser(JSON.stringify(user)).then(msg => {
+          this.dataSource = new MatTableDataSource(<any> msg);
+        });
+      }
     });
   }
 
@@ -132,7 +158,7 @@ export class DialogOverviewExampleDialog {
     private apiService: FlaskBackendService) {}
 
   onNoClick(): void {
-    this.data = undefined;
+    // this.data = undefined;
     this.dialogRef.close();
   }
 

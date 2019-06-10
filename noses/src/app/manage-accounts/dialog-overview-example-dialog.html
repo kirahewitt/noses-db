@@ -3,66 +3,65 @@
 
     <div class="form-group">
 
-    <div class="row">
-      <div class="col-md-1"></div>
-        <div class="col-md-4">
-            <label>
-                Email
-                <input class="form-control" type="text" [(ngModel)]="data.email">
-            </label>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <label>
+                    Email
+                    <input class="form-control" type="text" [(ngModel)]="data.email">
+                </label>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <label>
+                    Full Name
+                    <input class="form-control" type="text" [(ngModel)]="data.fullname">
+                </label>
+            </div>
         </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-4">
-            <label>
-                Full Name
-                <input class="form-control" type="text" [(ngModel)]="data.fullname">
-            </label>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <label>
+                    Password
+                    <input class="form-control" type="password" [(ngModel)]="data.password">
+                </label>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <label>
+                    Affiliation
+                    <input class="form-control" type="text" [(ngModel)]="data.affiliation">
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <label>
+                    Username
+                    <input class="form-control" type="text" [(ngModel)]="data.loginid">
+                </label>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-4 select-admin">
+                <mat-form-field class="padded-select">
+                    <mat-label>User Priveleges</mat-label>
+                    <mat-select placeholder="Select User Priveleges" [(value)]="selectAdmin" [(ngModel)]="data.isAdmin">
+                        <mat-option value="3">Admin Priveleges</mat-option>
+                        <mat-option value="2">Can add/approve seal observations</mat-option>
+                        <mat-option value="1">Seal observations need approval</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <br>
+            <br>
         </div>
     </div>
-
-    <div class="row">
-      <div class="col-md-1"></div>
-        <div class="col-md-4">
-            <label>
-                Password
-                <input class="form-control" type="password"  [(ngModel)]="data.password">
-            </label>
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-4">
-            <label>
-                Affiliation
-                <input class="form-control" type="text" [(ngModel)]="data.affiliation">
-            </label>
-        </div>
+    <div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()">No Thanks</button>
+        <button class="btn btn-info" type="submit" [mat-dialog-close]="data">Ok</button>
     </div>
-
-    <div class="row">
-      <div class="col-md-1"></div>
-        <div class="col-md-4">
-            <label>
-                Username
-                <input class="form-control" type="text" [(ngModel)]="data.loginid">
-            </label>
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-4 select-admin">
-          <mat-form-field class="padded-select">
-            <mat-label>isAdmin?</mat-label>
-            <mat-select placeholder="Admin Priveleges?" [(value)]="selectAdmin" [(ngModel)]="data.isAdmin">
-                <mat-option value="TRUE">Yes</mat-option>
-                <mat-option value="FALSE">No</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-
-    <br>
-    <br>
-  </div>
 </div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button class="btn btn-info"type="submit" [mat-dialog-close]="data">Ok</button>
-</div>
-
