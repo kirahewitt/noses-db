@@ -137,9 +137,9 @@ def add_user():
         if request.method == 'POST':
             _json = request.json
             print(_json)
-            cursor.execute("INSERT INTO Users (LoginID, FullName, isAdmin, Affiliation) values (\'" + _json['loginid'] + "\', \'" + _json['fullname'] + "\', " + _json['isAdmin'] + ", \'" + _json['affiliation'] + "\');")
-            cursor.execute("INSERT INTO Observers values (\'" + _json['email'] + "\', '', '', \'" + _json['loginid'] + "\');")
-            cursor.execute("UPDATE Users SET email = \'" + _json['email'] + "\' WHERE LoginID = \'" + _json['loginid'] + "\';")
+            cursor.execute("INSERT INTO Users (LoginID, FullName, isAdmin, Affiliation) values (\'" + _json['loginID'] + "\', \'" + _json['fullname'] + "\', " + _json['isAdmin'] + ", \'" + _json['affiliation'] + "\');")
+            cursor.execute("INSERT INTO Observers values (\'" + _json['email'] + "\', '', '', \'" + _json['loginID'] + "\');")
+            cursor.execute("UPDATE Users SET email = \'" + _json['email'] + "\' WHERE LoginID = \'" + _json['loginID'] + "\';")
             
             conn.commit()
                 
@@ -151,7 +151,7 @@ def add_user():
         else:
             return jsonify("no seal was clicked")
     except Exception as e:
-        print('EXCEPTION WAS THROWN!')
+        print(e)
         return jsonify(1)
     finally:
         cursor.close()
