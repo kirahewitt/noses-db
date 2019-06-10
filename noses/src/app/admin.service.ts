@@ -6,13 +6,12 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AdminService {
 
-  private adminStatus = new BehaviorSubject('default message'); // messageSOurce = seal
+  private adminStatus = new BehaviorSubject(0); // messageSOurce = seal
   currentStatus = this.adminStatus.asObservable(); // currentMessage = currentSeal
 
   constructor() { }
 
-  changeMessage(nextAdmin: string) {
+  changeMessage(nextAdmin: number) {
     this.adminStatus.next(nextAdmin);
-    // console.log(this.adminStatus._value);
   }
 }

@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
   filterTag1: any;
   filterTag2: any;
   filterMark1: any;
-  isAdmin=true;
+  isAdmin=false;
   notReady = true;
   displayedColumns: any;
   admin: any;
@@ -177,16 +177,24 @@ export class DashboardComponent implements OnInit {
   }
 
   setAdmin() {
-    this.adminStatus.changeMessage(this.userData.email);
-    this.adminStatus.currentStatus.subscribe(currentStatus  => {
-      this.admin = currentStatus;
-      var getAdStatus = JSON.stringify(currentStatus);
-      console.log(getAdStatus);
-      // this.datas = this.apiService.getSeal(this.jseal).then(msg => {
-      //   this.dataSource = new MatTableDataSource(<any> msg);
+      var getAdStatus = JSON.stringify({'email': this.userData.email});
+      this.apiService.getAdminStatus(getAdStatus).then(msg => {
+        this.admin = msg
+        this.admin = this.admin[0].isAdmin;
+        this.adminStatus.changeMessage(this.admin);
+        this.setPriveleges();
+      });
+  }
 
-
-    });
+  setPriveleges() {
+    if(this.admin == 3) {
+      this.isAdmin = true;
+    } else if(this.admin == 2) {
+      this.isAdmin = true;
+    }
+    else {
+      this.isAdmin = false;
+    }
   }
 
   deleteSeal(row) {

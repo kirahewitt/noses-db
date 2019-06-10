@@ -178,6 +178,30 @@ def add_seals():
         cursor.close()
         conn.close()
 
+@app.route('/getadminuser', methods=['POST', 'GET'])
+def get_admin_status():
+    conn = mysql.connect()
+    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        if request.method == 'POST':
+
+            #print("yooooo")
+            _json = request.json
+            print(_json)
+
+            cursor.execute("SELECT isAdmin from Users Where email= \'" + _json['email'] + "\';")
+
+            rows = cursor.fetchall()
+            resp = jsonify(rows)
+            return resp
+        else:
+            return jsonify('error')
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
 @app.route('/allseals', methods=['GET'])
 def getAllSeals():
     try:
