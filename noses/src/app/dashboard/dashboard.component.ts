@@ -12,6 +12,7 @@ import {
 } from "@angular/fire/firestore";
 import { SealDataService } from "../seal-data.service";
 import { Router } from "@angular/router";
+import { AdminService } from "../admin.service";
 
 @Component({
   selector: 'dashboard',
@@ -45,6 +46,7 @@ export class DashboardComponent implements OnInit {
   isAdmin=true;
   notReady = true;
   displayedColumns: any;
+  admin: any;
 
 
 
@@ -57,6 +59,7 @@ export class DashboardComponent implements OnInit {
               public authService: AuthService,
               public afAuth: AngularFireAuth,
               private sealData: SealDataService,
+              private adminStatus: AdminService,
               public router: Router) { }
 
   ngOnInit() {
@@ -78,6 +81,7 @@ export class DashboardComponent implements OnInit {
         this.userData = user;
         localStorage.setItem("user", JSON.stringify(this.userData));
         JSON.parse(localStorage.getItem("user"));
+        this.setAdmin();
         // console.log(this.userData)
       } else {
         localStorage.setItem("user", null);
@@ -86,6 +90,7 @@ export class DashboardComponent implements OnInit {
     });
 
   }
+
 
   runSealQuery(obs: any) {
     this.dataSource = new MatTableDataSource(<any> obs);
@@ -169,8 +174,19 @@ export class DashboardComponent implements OnInit {
   selectSeal(row) {
     this.sealData.changeMessage(row);
     this.router.navigate(["seal-page"]);
+  }
+
+  setAdmin() {
+    this.adminStatus.changeMessage(this.userData.email);
+    this.adminStatus.currentStatus.subscribe(currentStatus  => {
+      this.admin = currentStatus;
+      var getAdStatus = JSON.stringify(currentStatus);
+      console.log(getAdStatus);
+      // this.datas = this.apiService.getSeal(this.jseal).then(msg => {
+      //   this.dataSource = new MatTableDataSource(<any> msg);
 
 
+    });
   }
 
   deleteSeal(row) {
