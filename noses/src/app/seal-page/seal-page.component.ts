@@ -31,7 +31,7 @@ export class SealPageComponent implements OnInit {
     comments: new FormControl('')
   });
 
-  // @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
 
   ngOnInit() {
@@ -41,6 +41,7 @@ export class SealPageComponent implements OnInit {
       // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
       this.datas = this.apiService.getSeal(this.jseal).then(msg => {
         this.dataSource = new MatTableDataSource(<any> msg);
+        this.dataSource.paginator = this.paginator;
       });
 
     });

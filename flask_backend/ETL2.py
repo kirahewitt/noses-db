@@ -109,7 +109,8 @@ def getDatey(date):
     return "'" + str(datetime_object.date()) + "'"
 
 def writeObsv(cnx, cursor, row, ID):
-    approve = 1
+    print("OVER HERE APPROVAL STATUS IS: ")
+    print(approvalStatus)
     if "_" in row[TAG1]:
         print("Inside writeObs: {:s} {:s} {:s}".format(row[DATE], row[27], row[28]))
     statement = ("INSERT INTO Observations VALUES ("
@@ -429,6 +430,7 @@ def startUpdate(obj):
     j_obj = y[0]
     # print(y)
     approvalStatus = y[1]["isApproved"]
+    print("approval status is: " + str(approvalStatus))
 #    with open(filename) as csvfile:
 #        readCSV = csv.reader(csvfile, delimiter=',')
 #        for row in readCSV:

@@ -51,6 +51,7 @@ export class DashboardComponent implements OnInit {
 
 
   yearControl = new FormControl('');
+  partialControl = new FormControl('');
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -66,10 +67,10 @@ export class DashboardComponent implements OnInit {
 
     this.apiService.readObs().subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['ObservationID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year',  'viewSeal', 'actions' ];
+        this.displayedColumns = ['SealID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'Sex', 'Age Class', 'viewSeal' ];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['ObservationID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year',  'viewSeal'];
+        this.displayedColumns = ['SealID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'Sex',  'Age Class', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;
@@ -121,6 +122,17 @@ export class DashboardComponent implements OnInit {
     document.body.removeChild(a);
   }
 
+  getPartialTag() {
+    console.log(this.partialControl.value);
+    var part = {'part': this.partialControl.value};
+    console.log(JSON.stringify(part));
+    this.apiService.getPartials(JSON.stringify(part)).then(matches => {
+          this.runSealQuery(matches);
+        });
+
+    // need to get the query and then runSealQuery(queryData)
+  }
+
   downloadCSV() {
     console.log("in download");
     var data = this.dataSource.filteredData;
@@ -130,11 +142,12 @@ export class DashboardComponent implements OnInit {
 
   runSealQuery(obs: any) {
     this.dataSource = new MatTableDataSource(<any> obs);
+    console.log(this.dataSource.data[0]);
     this.dataSource.paginator = this.paginator;
 
     this.dataSource.filterPredicate = function(data, filter: string): boolean {
-      this.filterTag1 = String(data.TagNumber1).toLowerCase();
-      this.filterTag2 = String(data.TagNumber2).toLowerCase();
+      this.filterTag1 = String(data.T1).toLowerCase();
+      this.filterTag2 = String(data.T2).toLowerCase();
       this.filterMark1 = String(data.Mark).toLowerCase();
       return this.filterTag1.includes(filter) || this.filterTag2.includes(filter) || this.filterMark1.includes(filter);
     };
