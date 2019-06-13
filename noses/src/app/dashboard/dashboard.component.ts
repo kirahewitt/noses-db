@@ -3,7 +3,7 @@ import { BackendService } from '../backend.service';
 import { FlaskBackendService } from '../flask-backend.service';
 import { Observations } from  '../Observations';
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';
-import {FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { AuthService } from "../auth.service";
 import { AngularFireAuth } from "@angular/fire/auth";
 import {
@@ -91,6 +91,42 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  objectToCSV(data: any) {
+    const headers = Object.keys(data[0]);
+    const csvRows = [];
+    csvRows.push(headers.join(','));
+    // console.log(csvRows);
+    for (const row of data) {
+      const values = headers.map(header => {
+        const escaped = String(row[header]).replace(/"/g, '\\"');
+        return `"${escaped}"`;
+      });
+      // console.log(values.join(','));
+      csvRows.push(values.join(','));
+    }
+
+    return csvRows.join('\n');
+
+  }
+
+  download(data: any) {
+    const blob = new Blob([data], {type: 'text/csv'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'seals.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  downloadCSV() {
+    console.log("in download");
+    var data = this.dataSource.filteredData;
+    var csvObj = this.objectToCSV(data);
+    this.download(csvObj);
+  }
 
   runSealQuery(obs: any) {
     this.dataSource = new MatTableDataSource(<any> obs);
