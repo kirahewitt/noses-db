@@ -2,7 +2,7 @@ import pymysql
 import pandas as pd
 import json
 from app import app
-from ETL import startUpdate
+from ETL2 import startUpdate
 from db_config import mysql
 from flask import jsonify
 from flask import flash, request

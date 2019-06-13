@@ -38,6 +38,7 @@ FIRSTSEEN = 28
 RANGE = 29
 COMMENTS = 30
 ENTERANO = 31
+approvalStatus = 1
 
 def makeConnection():
     try:
@@ -80,6 +81,7 @@ def swapNulls(row):
 def getTopObsv(cursor):
     statement = "SELECT MAX(ObservationID) FROM Observations;"
     result = runQuery(cursor, statement)
+    print('error got to here')
     row = cursor.fetchone()
     if row[0] is None:
         return 0
@@ -96,37 +98,36 @@ def getTopMeasurement(cursor):
         return int(row[0])
 
 def getDate(date):
-    print date
+    # print date
     yourdate = parser.parse(date)
     #datetime_object = datetime.strptime(date, "%m/%d/%Y")
     return "'" + str(yourdate.date()) + "'"
 
 def getDatey(date):
-    print date
+    # print date
     datetime_object = datetime.strptime(date, "%m/%d/%y")
     return "'" + str(datetime_object.date()) + "'"
 
 def writeObsv(cnx, cursor, row, ID):
     approval = 0
     if "_" in row[TAG1]:
-        approval = 1
-    print("Inside writeObs: {:s} {:s} {:s}".format(row[DATE], row[27], row[28]))
-    statement = ("INSERT INTO Observations VALUES ("
-                + str(ID) + ", "
-                + row[FL] + ", "
-                + "'testEmail', "     # email 
-                + row[SEX] + ", "                # gender
-                + getDate(row[DATE]) + ", "                # date
-                + row[MOLT] + ", '"                # molt
-                + row[COMMENTS].replace("'", "") + "', "                # comments
-                + row[AGE] + ", "                # Age
-                + row[YEAR] + ", "                # year
-                + row[LOC] + ", " 
-                + str(approval) + ", "
-                + ((getDate(row[27])) if row[27] != "NULL" else row[27]) + ", "
-                + ((getDate(row[28])) if row[28] != "NULL" else row[28]) + ", "
-                + row[29] + ", "
-                + row[31] + ");")              # SLOCode 
+    # print("Inside writeObs: {:s} {:s} {:s}".format(row[DATE], row[27], row[28]))
+        statement = ("INSERT INTO Observations VALUES ("
+                    + str(ID) + ", "
+                    + row[FL] + ", "
+                    + "'testEmail', "     # email 
+                    + row[SEX] + ", "                # gender
+                    + getDate(row[DATE]) + ", "                # date
+                    + row[MOLT] + ", '"                # molt
+                    + row[COMMENTS].replace("'", "") + "', "                # comments
+                    + row[AGE] + ", "                # Age
+                    + row[YEAR] + ", "                # year
+                    + row[LOC] + ", " 
+                    + str(approvalStatus) + ", "
+                    + ((getDate(row[27])) if row[27] != "NULL" else row[27]) + ", "
+                    + ((getDate(row[28])) if row[28] != "NULL" else row[28]) + ", "
+                    + row[29] + ", "
+                    + row[31] + ");")              # SLOCode 
     print(statement)
     try:
         cursor.execute(statement)
@@ -146,6 +147,7 @@ def pushQuery(cnx, cursor, query):
 
 def runQuery(cursor, query):
     try:
+        print('now hereewwrew')
         print(query)
         cursor.execute(query)
     except mysql.connector.Error as err:
@@ -227,7 +229,7 @@ def observeTag(cnx, cursor, tag, ID):
     pushQuery(cnx, cursor, statement)
 
 def getColor(tag):
-    print ("tag: ", tag)
+    # print ("tag: ", tag)
     if tag == 'G':
         return "'green'"
     elif tag == "W":
@@ -252,7 +254,7 @@ def getColor(tag):
 def pushTag(cnx, cursor, csvRow, whichTag, sealID):
     TAGPOS  = 9
     # print("pushTag {:s}".format(csvRow[2]))
-    print ("getColor: {:s}".format(getColor(csvRow[whichTag][0])))
+    # print ("getColor: {:s}".format(getColor(csvRow[whichTag][0])))
 
     statement = ("INSERT INTO Tags VALUES ("
                 + csvRow[whichTag] + ", "        # mark
@@ -368,7 +370,7 @@ def findSeal(cnx, cursor, row):
 
     if(row[STLENGTH] != "NULL" or row[CRVLENGTH] != "NULL" or row[AXGIRTH] != "NULL" or row[MASS] != "NULL" or row[TARE] != "NULL" or row[MASSTARE] != "NULL"):
         pushMeasurement(cnx, cursor, obsID, row)
-    print len(row)
+    # print len(row)
 
     divergentT = []
     divergentM = []
@@ -415,18 +417,22 @@ def findSeal(cnx, cursor, row):
             consolidate(cnx, cursor, mainID, divergentT, divergentM)
     observeSeal(cnx, cursor, mainID, obsID)
 
-def main():
+def startUpdate(obj):
     cnx = makeConnection()
     cursor = cnx.cursor(buffered=True)
 
-    filename = raw_input("Give file name: ")
-    f = open(filename)
-    line = f.read()
-    y = json.loads(line)
+    # filename = raw_input("Give file name: ")
+    # f = open(filename)
+    # line = f.read()
+    print('in seal upload')
+    y = json.loads(obj)
+    j_obj = y[0]
+    # print(y)
+    approvalStatus = y[1]["isApproved"]
 #    with open(filename) as csvfile:
 #        readCSV = csv.reader(csvfile, delimiter=',')
 #        for row in readCSV:
-    for val in y:
+    for val in j_obj:
         row = [val["Field Leader Initials"],
                 val["Year"],
                 val["Date"],
@@ -436,16 +442,16 @@ def main():
                 val["Pup?"],
                 val["New Mark 1?"],
                 val["Mark 1"],
-                val["Mark 1 Position "],
+                val["Mark 1 Position"],
                 val["New Mark 2?"],
                 val["Mark 2"],
                 val["Mark 2 Position"],
                 val["New Tag1?"],
                 val["Tag1 #"],
-                val["Tag 1 Pos. "],
+                val["Tag 1 Pos."],
                 val["New Tag2?"],
                 val["Tag2 #"],
-                val["Tag 2 Pos. "],
+                val["Tag 2 Pos."],
                 val["Molt (%)"],
                 val["Season"],
                 val["St. Length"],
@@ -458,7 +464,7 @@ def main():
                 val["1st seen as W"],
                 val["Range (days)"],
                 val["Comments"],
-                val["Entered in Ano "]]
+                val["Entered in Ano"]]
         if canFind(cursor, "Beach", row[LOC], 0):
             swapNulls(row)
             findSeal(cnx, cursor, row)
