@@ -109,25 +109,25 @@ def getDatey(date):
     return "'" + str(datetime_object.date()) + "'"
 
 def writeObsv(cnx, cursor, row, ID):
-    approval = 0
+    approve = 1
     if "_" in row[TAG1]:
-    # print("Inside writeObs: {:s} {:s} {:s}".format(row[DATE], row[27], row[28]))
-        statement = ("INSERT INTO Observations VALUES ("
-                    + str(ID) + ", "
-                    + row[FL] + ", "
-                    + "'testEmail', "     # email 
-                    + row[SEX] + ", "                # gender
-                    + getDate(row[DATE]) + ", "                # date
-                    + row[MOLT] + ", '"                # molt
-                    + row[COMMENTS].replace("'", "") + "', "                # comments
-                    + row[AGE] + ", "                # Age
-                    + row[YEAR] + ", "                # year
-                    + row[LOC] + ", " 
-                    + str(approvalStatus) + ", "
-                    + ((getDate(row[27])) if row[27] != "NULL" else row[27]) + ", "
-                    + ((getDate(row[28])) if row[28] != "NULL" else row[28]) + ", "
-                    + row[29] + ", "
-                    + row[31] + ");")              # SLOCode 
+        print("Inside writeObs: {:s} {:s} {:s}".format(row[DATE], row[27], row[28]))
+    statement = ("INSERT INTO Observations VALUES ("
+                + str(ID) + ", "
+                + row[FL] + ", "
+                + "'testEmail', "     # email 
+                + row[SEX] + ", "                # gender
+                + getDate(row[DATE]) + ", "                # date
+                + row[MOLT] + ", '"                # molt
+                + row[COMMENTS].replace("'", "") + "', "                # comments
+                + row[AGE] + ", "                # Age
+                + row[YEAR] + ", "                # year
+                + row[LOC] + ", " 
+                + str(approve) + ", "
+                + ((getDate(row[27])) if row[27] != "NULL" else row[27]) + ", "
+                + ((getDate(row[28])) if row[28] != "NULL" else row[28]) + ", "
+                + row[29] + ", "
+                + row[31] + ");")              # SLOCode 
     print(statement)
     try:
         cursor.execute(statement)
