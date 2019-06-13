@@ -108,7 +108,7 @@ def getDatey(date):
     datetime_object = datetime.strptime(date, "%m/%d/%y")
     return "'" + str(datetime_object.date()) + "'"
 
-def writeObsv(cnx, cursor, row, ID):
+def writeObsv(cnx, cursor, row, ID, approvalStatus):
     print("OVER HERE APPROVAL STATUS IS: ")
     print(approvalStatus)
     if "_" in row[TAG1]:
@@ -365,9 +365,9 @@ def updateObserveSeal(cnx, cursor, oldSeal, newSeal):
     pushQuery(cnx, cursor, statement)
 
 # takes an observation and determines if the seal has been seen before
-def findSeal(cnx, cursor, row):
+def findSeal(cnx, cursor, row, approvalStatus):
     obsID = getTopObsv(cursor) + 1
-    writeObsv(cnx, cursor, row, obsID)
+    writeObsv(cnx, cursor, row, obsID, approvalStatus)
 
     if(row[STLENGTH] != "NULL" or row[CRVLENGTH] != "NULL" or row[AXGIRTH] != "NULL" or row[MASS] != "NULL" or row[TARE] != "NULL" or row[MASSTARE] != "NULL"):
         pushMeasurement(cnx, cursor, obsID, row)
@@ -469,7 +469,7 @@ def startUpdate(obj):
                 val["Entered in Ano"]]
         if canFind(cursor, "Beach", row[LOC], 0):
             swapNulls(row)
-            findSeal(cnx, cursor, row)
+            findSeal(cnx, cursor, row, approvalStatus)
         else:
             exceptions.write("\"" + str(val["Field Leader Initials"]) + "\""
               + ", " + str(val["Year"])

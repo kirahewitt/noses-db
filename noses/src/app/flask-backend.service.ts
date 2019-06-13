@@ -31,8 +31,6 @@ export class FlaskBackendService {
     return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/notapproved`);
   }
 
-
-
   addSeals(user: string): Observable<string>{
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addseals`, user, this.httpOptions);
   }

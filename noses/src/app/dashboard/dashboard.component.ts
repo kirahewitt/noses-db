@@ -204,6 +204,7 @@ export class DashboardComponent implements OnInit {
 
     // if(this.filterGender != "Any") {
     //   tempObs = tempObs.filter(function(elem, index, self) {
+    //     console.log("here");
     //   return String(elem.Sex) == this.filterGender;
     //   });
     // }
@@ -212,6 +213,7 @@ export class DashboardComponent implements OnInit {
   }
 
   resetObs() {
+    this.selectedYear = undefined;
     this.selectedYear = undefined;
     this.runSealQuery(this.observations);
   }
