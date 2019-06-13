@@ -11,6 +11,7 @@ import { AdminService } from "./admin.service";
 })
 export class AppComponent implements OnInit {
   title = 'noses';
+  isSuperAdmin = false;
   isAdmin = false;
   loggedInUser: any;
   priv: any;
@@ -31,8 +32,13 @@ export class AppComponent implements OnInit {
 
   setPrivelege() {
     if(this.priv == 3) {
+      this.isSuperAdmin = true;
       this.isAdmin = true;
-    } else {
+    } else if(this.priv == 2) {
+      this.isSuperAdmin = false;
+      this.isAdmin = true;
+    } else  {
+      this.isSuperAdmin = false;
       this.isAdmin = false;
     }
   }

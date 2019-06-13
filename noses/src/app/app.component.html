@@ -9,8 +9,10 @@
         <div class="col-md-3"></div>
       </ng-container>
         <div>
-          <ng-container *ngIf="isAdmin">
+          <ng-container *ngIf="isSuperAdmin">
             <button type="button" class="btn btn-admin1"><a routerLink="/manage-accounts">Manage Accounts</a></button>
+          </ng-container>
+          <ng-container *ngIf="isAdmin">
             <button type="button" class="btn btn-admin2"><a routerLink="/approve-obs">Approve Observations</a></button>
           </ng-container>
           <button type="button" class="btn"><a routerLink="/dashboard">Observations</a></button>
