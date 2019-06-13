@@ -123,7 +123,7 @@ def writeObsv(cnx, cursor, row, ID):
                 + row[AGE] + ", "                # Age
                 + row[YEAR] + ", "                # year
                 + row[LOC] + ", " 
-                + str(approve) + ", "
+                + str(approvalStatus) + ", "
                 + ((getDate(row[27])) if row[27] != "NULL" else row[27]) + ", "
                 + ((getDate(row[28])) if row[28] != "NULL" else row[28]) + ", "
                 + row[29] + ", "
