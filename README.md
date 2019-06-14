@@ -16,7 +16,7 @@ Features
 * Upload observations by single entry and bulk entry
 * Separate landing page for observations to be approved by a higher ranking User
 * Must have an account to view any page on the website other than Login page
-* Deployed live [here](34.217.54.156)
+* Deployed live [here](http://34.217.54.156)
 
 Get Started
 =================
