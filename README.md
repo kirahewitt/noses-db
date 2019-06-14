@@ -14,6 +14,7 @@ Features
 * Run queries on full and partial marks and tags
 * Filter results by Tags, Marks, and Breeding Season
 * Upload observations by single entry and bulk entry
+* Download Observations as CSVs
 * Separate landing page for observations to be approved by a higher ranking User
 * Must have an account to view any page on the website other than Login page
 * Deployed live [here](http://34.217.54.156)
