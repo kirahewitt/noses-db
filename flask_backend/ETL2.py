@@ -85,8 +85,8 @@ def swapNulls(row):
 
 def getTopObsv(cursor):
     statement = "SELECT MAX(ObservationID) FROM Observations;"
-    #result = runQuery(cursor, statement)
-    runQuery(cursor, statement)
+    result = runQuery(cursor, statement)
+    #runQuery(cursor, statement)
     print('error got to here')
     row = cursor.fetchone()
     if row[0] is None:
@@ -96,8 +96,8 @@ def getTopObsv(cursor):
 
 def getTopMeasurement(cursor):
     statement = "SELECT MAX(MeasurementID) FROM Measurements;"
-    #result = runQuery(cursor, statement)
-    runQuery(cursor, statement)
+    result = runQuery(cursor, statement)
+    #runQuery(cursor, statement)
     row = cursor.fetchone()
     if row[0] is None:
         return 0

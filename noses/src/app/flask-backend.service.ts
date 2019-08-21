@@ -14,7 +14,9 @@ import { SealDataService } from "./seal-data.service";
 export class FlaskBackendService {
   constructor(private httpClient: HttpClient,
               private sealData: SealDataService) {}
-  FLASK_API_SERVER = "http://34.217.54.156:5000";
+
+  //FLASK_API_SERVER = "http://34.217.54.156:5000";
+  FLASK_API_SERVER = "http://127.0.0.1:5000";
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
