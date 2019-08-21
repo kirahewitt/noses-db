@@ -42,10 +42,15 @@ approvalStatus = 1
 
 def makeConnection():
     try:
-        cnx = connection.MySQLConnection(user='kbleich',
-                                        password='abc123',
-                                        host='ambari-head.csc.calpoly.edu',
-                                        database='kbleich')
+        #cnx = connection.MySQLConnection(user='kbleich',
+        #                                password='abc123',
+        #                                host='ambari-head.csc.calpoly.edu',
+        #                                database='kbleich')
+
+        cnx = connection.MySQLConnection(user='root',
+                                        password='password',
+                                        host='localhost',
+                                        database='sealDB')
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")
@@ -80,7 +85,8 @@ def swapNulls(row):
 
 def getTopObsv(cursor):
     statement = "SELECT MAX(ObservationID) FROM Observations;"
-    result = runQuery(cursor, statement)
+    #result = runQuery(cursor, statement)
+    runQuery(cursor, statement)
     print('error got to here')
     row = cursor.fetchone()
     if row[0] is None:
@@ -90,7 +96,8 @@ def getTopObsv(cursor):
 
 def getTopMeasurement(cursor):
     statement = "SELECT MAX(MeasurementID) FROM Measurements;"
-    result = runQuery(cursor, statement)
+    #result = runQuery(cursor, statement)
+    runQuery(cursor, statement)
     row = cursor.fetchone()
     if row[0] is None:
         return 0
@@ -140,7 +147,8 @@ def writeObsv(cnx, cursor, row, ID, approvalStatus):
 def pushQuery(cnx, cursor, query):
     try:
         print(query)
-        row = cursor.execute(query)
+        #row = cursor.execute(query)
+        cursor.execute(query)
         cnx.commit()
     except mysql.connector.Error as err:
         print(err)
@@ -280,17 +288,17 @@ def pushMeasurement(cnx, cursor, obsID, row):
 
 def dropSeal(cnx, cursor, ID):
     statement = "DELETE FROM Seals WHERE Seals.SealID = {:d};".format(ID)
-    pushQuery(cnx, cursor, statement);
+    pushQuery(cnx, cursor, statement)
 
 def updateMark(cnx, cursor, markID, newSeal):
     statement = ("UPDATE Marks SET "
             + "MarkSeal = {:d} WHERE MarkSeal = {:d};").format(newSeal, markID)
-    pushQuery(cnx, cursor, statement);
+    pushQuery(cnx, cursor, statement)
 
 def updateTag(cnx, cursor, tag, newSeal):
     statement = ("UPDATE Tags SET "
             + "TagSeal = {:d} WHERE TagSeal = {:d};").format(newSeal, tag)
-    pushQuery(cnx, cursor, statement);
+    pushQuery(cnx, cursor, statement)
     
 
 def updateObserveMark(cnx, cursor, old, new):
@@ -506,5 +514,6 @@ def startUpdate(obj):
               + ", " + "Location unkown" + "\n")
     exceptions.close()
     cnx.close()
+
 if __name__ == '__main__':
     main()
