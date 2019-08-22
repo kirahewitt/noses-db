@@ -75,6 +75,11 @@ def remove_user():
         cursor.close()
         conn.close()
 
+
+## updates the database with a new permissions level of the user
+## b/c this is the only thing that can currently be changed about
+## an account. Then it gets all the users again to display any changes.
+## That logic to get the users again shouldn't be here. 
 @app.route('/updateuser', methods=['POST', 'GET'])
 def update_user():
     conn = mysql.connect()
@@ -85,8 +90,8 @@ def update_user():
             email = _json['email']
             priv = _json['isAdmin']
             print(_json)
-            cursor.execute("Update Users Set isAdmin="+ str(priv) + " where email=\'" + email + "\';")
 
+            cursor.execute("Update Users Set isAdmin="+ str(priv) + " where email=\'" + email + "\';")
             conn.commit()
             cursor.execute("SELECT * from Users Where isAdmin > 0;")
 
@@ -101,6 +106,8 @@ def update_user():
         cursor.close()
         conn.close()
 
+
+## Gets the relevant information for a seal with the provided ID
 @app.route('/getseal', methods=['POST', 'GET'])
 def get_seal():
     conn = mysql.connect()
@@ -114,6 +121,9 @@ def get_seal():
 
             rows = cursor.fetchall()
             resp = jsonify(rows)
+
+            print(resp)
+
             return resp
         else:
             return jsonify("no seal was clicked")
@@ -123,10 +133,24 @@ def get_seal():
         cursor.close()
         conn.close()
 
+
+## Places a single apostrophe on either side of a provided string
+## and returns the result.
+def surr_apos(origStr):
+    retStr = "\'" + origStr + "\'"
+    return retStr
+
+## Adds a new user to the database
+## Having a new user involves two entity sets: Users and Observers
+## (1) Adds a new user tuple. this insertion omits the email value.
+## (2) Adds a new observer tuple. Only includes the valueID and email.
+## (3) Updates the user tuple we created in step 1 with the email belonging to the observer we just created.
+## Then it queries the  database again and returns all the user tuples.
 @app.route('/adduser', methods=['POST', 'GET'])
 def add_user():
     conn = mysql.connect()
-    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
     try:
         if request.method == 'GET':
             cursor.execute("SELECT * from Users Where isAdmin > 0;")
@@ -137,10 +161,38 @@ def add_user():
         if request.method == 'POST':
             _json = request.json
             print(_json)
-            cursor.execute("INSERT INTO Users (LoginID, FullName, isAdmin, Affiliation) values (\'" + _json['loginID'] + "\', \'" + _json['fullname'] + "\', " + _json['isAdmin'] + ", \'" + _json['affiliation'] + "\');")
-            cursor.execute("INSERT INTO Observers values (\'" + _json['email'] + "\', '', '', \'" + _json['loginID'] + "\');")
-            cursor.execute("UPDATE Users SET email = \'" + _json['email'] + "\' WHERE LoginID = \'" + _json['loginID'] + "\';")
-            
+            print(_json['isAdmin'])
+
+            insertUserCmd = (   "INSERT INTO Users(LoginID, FullName, Password, isAdmin, Affiliation)"
+                                " VALUES " 
+                                "(" + surr_apos(_json['loginID']) +
+                                ", " + surr_apos(_json['fullname']) +
+                                ", " + surr_apos(_json['password']) +
+                                ", " + _json['isAdmin'] +
+                                ", " + surr_apos(_json['affiliation']) +
+                                ");"
+                            )
+            insertObserverCmd = (   "INSERT INTO Observers(email, FieldLeader, DataRecorderName, LoginID)"
+                                    " VALUES "
+                                    "(" + surr_apos(_json['email']) + 
+                                    ", " + surr_apos("") +
+                                    ", " + surr_apos("") +
+                                    ", " + surr_apos(_json['loginID']) +
+                                    ");"
+                                )
+            updateUserEmailCmd = (  "UPDATE Users" 
+                                    " SET email=" + surr_apos(_json['email']) + 
+                                    " WHERE LoginID=" + surr_apos(_json['loginID']) + ";"
+                                )
+
+            print("\n")
+            print("insert user cmd: " + insertUserCmd)
+            print("insert observer cmd: " + insertObserverCmd)
+            print("update user email: " + updateUserEmailCmd + "\n")
+
+            cursor.execute(insertUserCmd)
+            cursor.execute(insertObserverCmd)
+            cursor.execute(updateUserEmailCmd)
             conn.commit()
                 
             cursor.execute("SELECT * from Users Where isAdmin > 0;")
@@ -148,15 +200,20 @@ def add_user():
             rows = cursor.fetchall()
             resp = jsonify(rows)
             return resp
+
         else:
             return jsonify("no seal was clicked")
+
     except Exception as e:
         print(e)
         return jsonify(1)
+
     finally:
         cursor.close()
         conn.close()
 
+
+## 
 @app.route('/addseals', methods=['POST', 'GET'])
 def add_seals():
     conn = mysql.connect()
@@ -166,17 +223,21 @@ def add_seals():
 
             #print("yooooo")
             _json = request.json
-            # print(_json)
+            print(_json)
             startUpdate(json.dumps(_json))
-
             return jsonify('data sent to upload function')
+
         else:
             return jsonify('error')
     except Exception as e:
+        print("Exception: main.py - /addSeals route")
         print(e)
     finally:
         cursor.close()
         conn.close()
+
+
+
 
 @app.route('/getadminuser', methods=['POST', 'GET'])
 def get_admin_status():
