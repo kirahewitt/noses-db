@@ -81,7 +81,7 @@ export class UploadSealComponent implements OnInit {
           var strjson = JSON.stringify(results.data);
           var tmp = [results.data, {"isApproved" : 0}];
           // console.log(tmp);
-          this.apiService.addSeals(JSON.stringify(tmp)).subscribe(() => this.apiService.readObs());
+          this.apiService.addObservations(JSON.stringify(tmp)).subscribe(() => this.apiService.readObs());
         }
       });
     }
@@ -111,6 +111,6 @@ export class UploadSealComponent implements OnInit {
                         "Range (days)": this.sealForm.value.Range, "Comments": this.sealForm.value.Comments, "Entered in Ano": this.sealForm.value.enterAno}],
                         {"isApproved": this.approvalStatus}];
 
-    this.apiService.addSeals(JSON.stringify(this.sealUpload)).subscribe(() => this.apiService.readObs());
+    this.apiService.addObservations(JSON.stringify(this.sealUpload)).subscribe(() => this.apiService.readObs());
   }
 }

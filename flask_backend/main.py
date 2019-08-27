@@ -11,6 +11,8 @@ from werkzeug import generate_password_hash, check_password_hash
 from flask_cors import CORS, cross_origin
 CORS(app)
 
+
+# Deletes a particular observation from the database
 @app.route('/delete', methods=['POST', 'GET'])
 def delete_user():
     conn = mysql.connect()
@@ -49,6 +51,10 @@ def delete_user():
         cursor.close()
         conn.close()
 
+
+# While we want to support preventing users from being able to log in by deleting their accounts
+#  some entities in the has foreign keys tied to User. So instead of deleting a user we just set 
+#  their permission level to 0.
 @app.route('/removeuser', methods=['POST', 'GET'])
 def remove_user():
     conn = mysql.connect()
@@ -140,6 +146,7 @@ def surr_apos(origStr):
     retStr = "\'" + origStr + "\'"
     return retStr
 
+
 ## Adds a new user to the database
 ## Having a new user involves two entity sets: Users and Observers
 ## (1) Adds a new user tuple. this insertion omits the email value.
@@ -186,9 +193,9 @@ def add_user():
                                 )
 
             print("\n")
-            print("insert user cmd: " + insertUserCmd)
+            print("insert user cmd:     " + insertUserCmd)
             print("insert observer cmd: " + insertObserverCmd)
-            print("update user email: " + updateUserEmailCmd + "\n")
+            print("update user email:   " + updateUserEmailCmd + "\n")
 
             cursor.execute(insertUserCmd)
             cursor.execute(insertObserverCmd)
@@ -213,9 +220,9 @@ def add_user():
         conn.close()
 
 
-## 
-@app.route('/addseals', methods=['POST', 'GET'])
-def add_seals():
+## Attempts to insert records for a list of observations.
+@app.route('/addobservations', methods=['POST', 'GET'])
+def add_observations():
     conn = mysql.connect()
     cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
     try:
@@ -230,7 +237,7 @@ def add_seals():
         else:
             return jsonify('error')
     except Exception as e:
-        print("Exception: main.py - /addSeals route")
+        print("Exception: main.py - /addobservations route")
         print(e)
     finally:
         cursor.close()
@@ -238,7 +245,7 @@ def add_seals():
 
 
 
-
+# Checks whether the email of the received user belongs to a user with admin privileges.
 @app.route('/getadminuser', methods=['POST', 'GET'])
 def get_admin_status():
     conn = mysql.connect()
@@ -263,6 +270,9 @@ def get_admin_status():
         cursor.close()
         conn.close()
 
+
+# (Unsure)
+# Gets the information for seals which only partially match a provided tag id or mark id.
 @app.route('/partials', methods=['GET', 'POST'])
 def getpartials():
     conn = mysql.connect()
@@ -603,6 +613,8 @@ def getpartials():
         cursor.close()
         conn.close()
 
+
+# Gets the data for all the seals
 @app.route('/allseals', methods=['GET'])
 def getAllSeals():
     try:
@@ -624,6 +636,8 @@ def getAllSeals():
         cursor.close()
         conn.close()
 
+
+# I DON'T KNOW
 @app.route('/notapproved', methods=['GET'])
 def getAllNonSeals():
     try:
@@ -646,6 +660,7 @@ def getAllNonSeals():
         conn.close()
 
 
+# Generates a 404 error
 @app.errorhandler(404)
 def not_found(error=None):
     message = {
@@ -656,6 +671,8 @@ def not_found(error=None):
     resp.status_code = 404
     return resp
 
+
+# Updates the ageclass of a particular observation
 @app.route('/updateAgeClass', methods=['POST'])
 def update_age():
     conn = mysql.connect()
@@ -676,6 +693,8 @@ def update_age():
         cursor.close()
         conn.close()
 
+
+# This is required to get this python program to run.
 if __name__ == "__main__":
     app.run(host='127.0.0.1',port=5000)
     #app.run(host='0.0.0.0',port=5000)
