@@ -7,7 +7,7 @@ from db_config import mysql
 from flask import jsonify
 from flask import flash, request
 from flask import g
-from werkzeug import generate_password_hash, check_password_hash
+#from werkzeug import generate_password_hash, check_password_hash
 from flask_cors import CORS, cross_origin
 CORS(app)
 
@@ -637,7 +637,7 @@ def getAllSeals():
         conn.close()
 
 
-# I DON'T KNOW
+# The purpose of this method is to get all of the non-approved records. 
 @app.route('/notapproved', methods=['GET'])
 def getAllNonSeals():
     try:

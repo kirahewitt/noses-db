@@ -7,6 +7,54 @@ import mysql
 import csv
 from dateutil import parser
 
+
+
+
+###########################################################################
+###########################################################################
+#not sure if i need to have this here too
+_FL = 0
+_YEAR = 1
+_DATE = 2
+_LOC = 3
+_SEX = 4
+_AGE = 5
+_PUP = 6
+
+_NEWMARK1 = 7
+_MARK1 = 8
+_MARKPOS1 = 9
+
+_NEWMARK2 = 10
+_MARK2 = 11
+_MARKPOS2 = 12
+
+_NEWTAG1 = 13
+_TAG1 = 14
+_TAGPOS1 = 15
+
+_NEWTAG2 = 16
+_TAG2 = 17
+_TAGPOS2 = 18
+
+_MOLT = 19
+_SEASON = 20
+_STLENGTH = 21
+_CRVLENGTH = 22
+_AXGIRTH = 23
+_MASS = 24
+_TARE = 25
+_MASSTARE = 26
+_LASTSEEN = 27
+_FIRSTSEEN = 28
+_RANGE = 29
+_COMMENTS = 30
+_ENTERANO = 31
+
+from Observation import Observation
+###########################################################################
+###########################################################################
+
 exceptions = open("exceptions.csv", "w+")
 
 FL = 0
@@ -16,15 +64,23 @@ LOC = 3
 SEX = 4
 AGE = 5
 PUP = 6
+
 NEWMARK = 7
 MARK = 8
 MARKPOS = 9
+
+NEWMARK2 = 10
+MARK2 = 11
+MARKPOS2 = 12
+
 NEWTAG = 13
 TAG1 = 14
 TAGPOS = 15
+
 NEWTAG2 = 16
 TAG2 = 17
 TAG2POS = 18
+
 MOLT = 19
 SEASON = 20
 STLENGTH = 21
@@ -38,6 +94,8 @@ FIRSTSEEN = 28
 RANGE = 29
 COMMENTS = 30
 ENTERANO = 31
+
+
 approvalStatus = 1
 
 
@@ -96,10 +154,6 @@ def swapNulls(row):
 
 
 def getTopObsv(cursor):
-
-
-    
-
     statement = "SELECT MAX(ObservationID) FROM Observations;"
     #result = runQuery(cursor, statement)
     runQuery(cursor, statement)
@@ -140,47 +194,15 @@ def getDatey(date):
 def insert_observation(cnx, cursor, row, approvalStatus):
     print("\n\n WRITE OBSERVATION...")
 
-
+    
     print("OVER HERE APPROVAL STATUS IS: ")
     print(approvalStatus)
+
+
     if "_" in row[TAG1]:
         print("Inside writeObs: {:s} {:s} {:s}".format(row[DATE], row[27], row[28]))
 
-
-    # Construct the sql command to insert an observation
-    
-    # statement = ("INSERT INTO Observations "
-    #               "VALUES ("
-    #             + str() + ", "
-    #             + row[FL] + ", "
-    #             + "'testEmail', "                          # email 
-    #             + row[SEX] + ", "                          # gender
-    #             + getDate(row[DATE]) + ", "                # date
-    #             + row[MOLT] + ", '"                        # molt
-    #             + row[COMMENTS].replace("'", "") + "', "   # comments
-    #             + row[AGE] + ", "                          # Age
-    #             + row[YEAR] + ", "                         # year
-    #             + row[LOC] + ", "                          # (aka SLOCode)
-    #             + str(approvalStatus) + ", "
-                # + ((getDate(row[27])) if row[27] != "NULL" else row[27]) + ", "
-                # + ((getDate(row[28])) if row[28] != "NULL" else row[28]) + ", "
-                # + row[29] + ", "
-                # + row[31] + ");")              # SLOCode 
-
-    # insertUserCmd = (   "INSERT INTO Users(LoginID, FullName, Password, isAdmin, Affiliation)"
-    #                             " VALUES " 
-    #                             "(" + surr_apos(_json['loginID']) +
-    #                             ", " + surr_apos(_json['fullname']) +
-    #                             ", " + surr_apos(_json['password']) +
-    #                             ", " + _json['isAdmin'] +
-    #                             ", " + surr_apos(_json['affiliation']) +
-    #                             ");"
-    #                         )
-
-    #print("\nINSERT USER COMMAND: " + insertUserCmd)
-
     print("BEFORE BUILDING STRING:")
-    #statement = ("INSERT INTO Observations (email, sex, date, MoltPercent, Comments, AgeClass, Year, SLOCode) "
     statement = (   "INSERT INTO Observations(ObservationID, FieldLeader, email, sex, date, MoltPercent, Comments, AgeClass, Year, SLOCode, isApproved, LastSeenPup, FirstSeenWeaner, Rnge, EnteredAno) "
                             " VALUES "
                             "(" + "NULL" +                                                     # ObservationID (NULL b/c allows for automatic increment to work)
@@ -202,39 +224,25 @@ def insert_observation(cnx, cursor, row, approvalStatus):
                 )
     print("AFTER BUILDING STRING")
 
-                # + surr_apos("iorourke@calpoly.edu") + ", "                          # email 
-                # + row[SEX] + ", "                                                   # sex
-                # + getDate(row[DATE]) + ", "                                         # date
-                # + row[MOLT] + ", '"                                                 # molt
-                # + row[COMMENTS].replace("'", "") + "', "                            # comments
-                # + row[AGE] + ", "                                                   # AgeClass
-                # + row[YEAR] + ", "                                                  # year
-                # + row[LOC] + ", "                                                   # (aka SLOCode)
-                # + str(approvalStatus) + ", "                                        # approval status
-                # + ((getDate(row[27])) if row[27] != "NULL" else row[27]) + ", "     # last seen as pup
-                # + ((getDate(row[28])) if row[28] != "NULL" else row[28]) + ", "     # first seen as weaner
-                # + row[29] + ", "                                                    # range
-                # + row[31] + ");")                                                   # Entered in Ano
-    print("*****BEFORE PRINT STATEMENT")
-    print(statement)
-
     try:
-        #cursor.execute(statement)
-        #cnx.commit()
+        # perform the sql insertion command
         pushQuery(cnx, cursor, statement)
         print("before observation insert")
+
+        # run a query that will get us the id of the last observation we inserted
         getLast_statement = "SELECT LAST_INSERT_ID();"
-        
         runQuery(cursor, getLast_statement)
-        print("after observation insert")
         row = cursor.fetchone()
         observationID = row[0]
+        
         print("after observation insert: " + str(observationID))
         return observationID
     except mysql.connector.Error as err:
         print(err)
         return -5
 
+
+# runs a sql command and calls commit() afterwards to keep the changes
 def pushQuery(cnx, cursor, query):
     try:
         print(query)
@@ -245,6 +253,8 @@ def pushQuery(cnx, cursor, query):
         print(err)
         exit(1)
 
+
+# runs a sql query, for getting data
 def runQuery(cursor, query):
     try:
         print(query)
@@ -253,11 +263,12 @@ def runQuery(cursor, query):
         print(err)
         exit(1)
 
+
 # takes cursor and tag to look for
 # returns obsID if found, -1 if not found
-def getMarkId(cursor, mark, year):
+def getSealIdFromMark(cursor, mark, year):
     # print("mark, {:s} year {:s}".format(mark, year))
-    query = "SELECT MarkID FROM Marks WHERE Mark = {:s} and Year = {:s};".format(mark, year)
+    query = "SELECT MarkSeal FROM Marks WHERE Mark = {:s} and Year = {:s};".format(mark, year)
     runQuery(cursor, query)
     row = cursor.fetchone()
     # print("getMark: ", row, mark)
@@ -279,6 +290,7 @@ def addMark(cnx, cursor, row, observationID, sealID):
     insert_observeMark(cnx, cursor, markid, observationID)
 
 def insert_observeMark(cnx, cursor, mark, observationID):
+    print("making insert observemark statement")
     statement = "INSERT INTO ObserveMarks VALUES ({:d}, {:d});".format(observationID, mark)
     pushQuery(cnx, cursor, statement)
 
@@ -288,14 +300,31 @@ def insert_mark(cnx, cursor, csvRow, obsID, sealID):
     MARK    = 8
     MARKPOS = 9
     YEAR    = 1
-    statement = ("INSERT INTO Marks VALUES ("
-                + "NULL" + ", "                                 # MarkID... NULL allows auto-increment to take over
-                + csvRow[MARK].replace(" ", "") + ", "          # mark
-                + csvRow[MARKPOS] + ", "                        # mark position 'b', 'l', 'r'
-                + str(getDate(csvRow[2]))+ ", "                 # date
-                + csvRow[YEAR] + ", "                           # year
-                + str(sealID) + ");")                           # seal id
+
+    # get the values for our sql statement
+    t_markID = "NULL"
+    t_mark = csvRow[MARK].replace(" ", "")
+    t_markPosition = csvRow[MARKPOS]
+    t_markDate = str(getDate(csvRow[2]))
+    t_year = csvRow[YEAR]
+    t_observationID = str(obsID)
+    t_markSeal = str(sealID)
+    
+    print("Making insert mark statement")
+    print("")
+    # make the sql statement
+    statement = ("INSERT INTO Marks (MarkID, Mark, MarkPosition, markDate, Year, ObservationID, MarkSeal) " 
+                "VALUES " 
+                "(" + t_markID +                                      # MarkID... NULL allows auto-increment to take over
+                ", " + t_mark +          # mark
+                ", " + t_markPosition +                         # mark position 'b', 'l', 'r'
+                ", " + t_markDate +                  # date
+                ", " + t_year +                            # year
+                ", " + t_observationID +                    
+                ", " + t_markSeal + ");")                           # seal id
     print(statement)
+
+    # run the sql statement
     try:
         cursor.execute(statement)
         cnx.commit()
@@ -303,9 +332,10 @@ def insert_mark(cnx, cursor, csvRow, obsID, sealID):
         print(err)
         exit(1)
 
+
 # returns obsID if found, -1 if not found
-def getTagNumber(cursor, tag):
-    query = "SELECT TagNumber FROM Tags WHERE TagNumber = {:s}".format(tag)
+def getSealIDFromTag(cursor, tag):
+    query = "SELECT TagSeal, TagNumber FROM Tags WHERE TagNumber = {:s}".format(tag)
     runQuery(cursor, query)
     row = cursor.fetchone()
     print("getTag: ", row)
@@ -317,7 +347,7 @@ def getTagNumber(cursor, tag):
 
 def addTag(cnx, cursor, row, tagNumber, observationID, sealID):
     print("test1.5")
-    insert_tag(cnx, cursor, row, tagNumber, observationID)
+    insert_tag(cnx, cursor, row, tagNumber, observationID, sealID)
     print("test1.6")
     insert_observeTag(cnx, cursor, tagNumber, observationID)
     print("test1.7")
@@ -358,15 +388,17 @@ def getColor(tag):
 
 # takes an observation from which to make a new mark
 # updates table with the new mark, with error checks
-def insert_tag(cnx, cursor, csvRow, tagNumber, observationID):
+def insert_tag(cnx, cursor, csvRow, tagNumber, observationID, sealID):
     TAGPOS  = 9
 
+    print("making insert tag statement")
     statement = ("INSERT INTO Tags VALUES ("
                 + str(tagNumber) + ", "        # mark
                 + getColor(tagNumber) + ", "          # TODO write getTagColor(row[whichTag][0])
                 + csvRow[TAGPOS] + ", "
                 + str(getDate(csvRow[2])) + ", "
-                + str(observationID) + ");")        # 
+                + str(observationID) + ", "
+                + str(sealID) + ");")        # 
     print(statement)
     try:
         cursor.execute(statement)
@@ -432,6 +464,7 @@ def consolidate(cnx, cursor, sealID, tags, marks):
         updateObserveSeal(cnx, cursor, ID, sealID)
         dropSeal(cnx, cursor, ID)
 
+
 def insert_seal(cnx, cursor, row, observationID):
     # insert a seal into DB
     statement = "INSERT INTO Seals VALUES (NULL, {:d}, {:s}, FALSE)".format(observationID, row[SEX])
@@ -447,7 +480,8 @@ def insert_seal(cnx, cursor, row, observationID):
     print("CREATE SEAL GOT THE ID: " + str(sealID))
     return sealID
 
-# adds all non-null tags/marks and then adds a seal
+
+# adds all non-null tags/marks and then adds a seal, returning the sealID
 def addSeal(cnx, cursor, row, observationID):
     sealID = insert_seal(cnx, cursor, row, observationID)
     if(row[MARK] != "NULL"):
@@ -458,19 +492,27 @@ def addSeal(cnx, cursor, row, observationID):
         addTag(cnx, cursor, row, row[TAG2], observationID, sealID)
     return sealID
 
+
 ##  Returns the index of the ID that should be used in identifying the seal to be created.
 ##  Receives an array: ([mID, t1ID, t2ID])
 ##    mID = mark id
 ##    t1ID = tag1 ID
 ##    t2ID = tag2 ID
 def positiveMin(IDs):
+    print("positiveMIN1")
     mainID = 99999999999
+    print("positiveMIN2")
+    print("IDs[0] " + str(IDs[0]))
+    print("IDs[1] " + str(IDs[1]))
+    print("IDs[2] " + str(IDs[2]))
+
     if IDs[0] != -1:
         mainID = IDs[0]
     if IDs[1] != -1 and IDs[1] < mainID:
         mainID = IDs[1]
     if IDs[2] != -1 and IDs[2] < mainID:
         mainID = IDs[2]
+    print("positiveMIN3")
     return mainID
 
 def observeSeal(cnx, cursor, sealID, obsID):
@@ -482,6 +524,17 @@ def updateObserveSeal(cnx, cursor, oldSeal, newSeal):
     pushQuery(cnx, cursor, statement)
 
 
+
+# Operates on each of our marks.
+# For each mark:
+#    if the mark is new --> try to create the mark
+#    if the mark isn't new --> find the 
+#def processMarks(observationRecord, cursor, row, approvalStatus):
+    
+    
+
+
+
 # "row" contains all the data for the observation we want to insert.
 # But before we do any inserting we need to make sure that we don't insert any duplicate Marks, Tags or Seals.
 # So this method will look at the identifiers provided for Tags and Marks. If the identifier exists,
@@ -489,7 +542,6 @@ def updateObserveSeal(cnx, cursor, oldSeal, newSeal):
 #  it will create it.
 # takes an observation and determines if the seal has been seen before
 def processObservation(cnx, cursor, row, approvalStatus):
-
     observationID = insert_observation(cnx, cursor, row, approvalStatus)
 
     if(row[STLENGTH] != "NULL" or row[CRVLENGTH] != "NULL" or row[AXGIRTH] != "NULL" or row[MASS] != "NULL" or row[TARE] != "NULL" or row[MASSTARE] != "NULL"):
@@ -499,20 +551,41 @@ def processObservation(cnx, cursor, row, approvalStatus):
     divergentM = []
     merge = False
 
-    mID = getMarkId(cursor, row[MARK], row[YEAR])
-    t1ID = getTagNumber(cursor, row[TAG1])
-    t2ID = getTagNumber(cursor, row[TAG2])
+    mID = getSealIdFromMark(cursor, row[MARK], row[YEAR])
+
+    print("test1")
+    t1ID = getSealIDFromTag(cursor, row[TAG1])
+    print("test2")
+    t2ID = getSealIDFromTag(cursor, row[TAG2])
+    print("test3")
 
     mainID = positiveMin([mID, t1ID, t2ID])
-    # print "Positive min: {:d}".format(mainID)
+
+    print("test4")
+
+    # turn the row into an object to make our lives easier
+    #observationRecord = Observation(row)
+
+    # process marks    
+    #processMarks(observationRecord, cursor, row, approvalStatus)
 
     # if we don't find the marks or tags
     if(mID == -1 and t1ID == -1 and t2ID == -1):
         mainID = addSeal(cnx, cursor, row, observationID)
     else:
 
+        # print("...Processing Mark...")
+        # # insert the mark if not already in the DB
+        # if (mID == -1 and row[MARK] != "NULL"):                 # didn't find markID    AND     a mark was specified
+        #     addMark(cnx, cursor, row, observationID, mainID)
+        # elif (mID != -1 and row[MARK] != "NULL"):               # found markID          AND     a mark was specified
+        #     query = "SELECT MarkID FROM Marks WHERE Mark = {:s};".format(row[MARK])
+        #     runQuery(cursor, query)
+        #     fetch = cursor.fetchone()
+        #     markid = fetch[0]
+        #     insert_observeMark(cnx, cursor, markid, observationID)
+
         print("...Processing Mark...")
-        # insert the mark if not already in the DB
         if (mID == -1 and row[MARK] != "NULL"):                 # didn't find markID    AND     a mark was specified
             addMark(cnx, cursor, row, observationID, mainID)
         elif (mID != -1 and row[MARK] != "NULL"):               # found markID          AND     a mark was specified
@@ -551,6 +624,16 @@ def processObservation(cnx, cursor, row, approvalStatus):
             divergentT.append(t2ID)
             merge = True
 
+        # if(mID != mainID and row[MARK] != "NULL" and mID != -1):
+        #     divergentM.append(mID)
+        #     merge = True
+        # if(t1ID == None && mainID==- != mainID and row[TAG1] != "NULL" and t1ID != None):
+        #     divergentT.append(t1ID)
+        #     merge = True
+        # if(t2ID != mainID and row[TAG2] != "NULL" and t2ID !=  None):
+        #     divergentT.append(t2ID)
+        #     merge = True
+
         print("...Checking for need to merge...")
         if(merge is True):
             # print("divergents: ", divergentT, divergentM)
@@ -559,25 +642,23 @@ def processObservation(cnx, cursor, row, approvalStatus):
     print("...Recording relationship btwn OBSERVATIONS and SEALS...")
     observeSeal(cnx, cursor, mainID, observationID)
 
+
 # Attempts to add a list of observations to the database.
 def startUpdate(obj):
     print("\n\nSTART UPDATE...\n")
     cnx = makeConnection()
     cursor = cnx.cursor(buffered=True)
 
-    # filename = raw_input("Give file name: ")
-    # f = open(filename)
-    # line = f.read()
     print('in seal upload')
     y = json.loads(obj)
     j_obj = y[0]
-    # print(y)
+    
     approvalStatus = y[1]["isApproved"]
     print("approval status is: " + str(approvalStatus))
-#    with open(filename) as csvfile:
-#        readCSV = csv.reader(csvfile, delimiter=',')
-#        for row in readCSV:
+
+    i = 0
     for val in j_obj:
+        print("*" + str(i) + "*")
         row = [val["Field Leader Initials"],
                 val["Year"],
                 val["Date"],
@@ -610,10 +691,18 @@ def startUpdate(obj):
                 val["Range (days)"],
                 val["Comments"],
                 val["Entered in Ano"]]
-        if canFind(cursor, "Beach", row[LOC], 0):
+
+        print("before conditions")
+        tableName = "Beach"
+        sloCode = row[LOC]
+        if canFind(cursor, tableName, sloCode, 0):
+            print("   test1")
             swapNulls(row)
+            print("   test2")
             processObservation(cnx, cursor, row, approvalStatus)
+            print("   test3")
         else:
+            print("   ERROR")
             exceptions.write("\"" + str(val["Field Leader Initials"]) + "\""
               + ", " + str(val["Year"])
               + ", " + str(val["Date"])
@@ -623,16 +712,16 @@ def startUpdate(obj):
               + ", " + str(val["Pup?"])
               + ", " + str(val["New Mark 1?"])
               + ", " + str(val["Mark 1"])
-              + ", " + str(val["Mark 1 Position "])
+              + ", " + str(val["Mark 1 Position"])
               + ", " + str(val["New Mark 2?"])
               + ", " + str(val["Mark 2"])
               + ", " + str(val["Mark 2 Position"])
               + ", " + str(val["New Tag1?"])
               + ", " + str(val["Tag1 #"])
-              + ", " + str(val["Tag 1 Pos. "])
+              + ", " + str(val["Tag 1 Pos."])
               + ", " + str(val["New Tag2?"])
               + ", " + str(val["Tag2 #"])
-              + ", " + str(val["Tag 2 Pos. "])
+              + ", " + str(val["Tag 2 Pos."])
               + ", " + str(val["Molt (%)"])
               + ", " + str(val["Season"])
               + ", " + str(val["St. Length"])
@@ -645,12 +734,14 @@ def startUpdate(obj):
               + ", " + str(val["1st seen as W"])
               + ", " + str(val["Range (days)"])
               + ", " + str(val["Comments"])
-              + ", " + str(val["Entered in Ano "])
+              + ", " + str(val["Entered in Ano"])
               + ", " + "Location unkown" + "\n")
+        
+        i = i + 1
 
     print(" ****CLOSING STUFF")
     exceptions.close()
     cnx.close()
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()
