@@ -95,7 +95,6 @@ RANGE = 29
 COMMENTS = 30
 ENTERANO = 31
 
-
 approvalStatus = 1
 
 
@@ -193,7 +192,6 @@ def getDatey(date):
 ##  the Observations entity set. 
 def insert_observation(cnx, cursor, row, approvalStatus):
     print("\n\n WRITE OBSERVATION...")
-
     
     print("OVER HERE APPROVAL STATUS IS: ")
     print(approvalStatus)
@@ -659,6 +657,8 @@ def startUpdate(obj):
     i = 0
     for val in j_obj:
         print("*" + str(i) + "*")
+        
+        print(val["Mark 1 Position"])
         row = [val["Field Leader Initials"],
                 val["Year"],
                 val["Date"],
