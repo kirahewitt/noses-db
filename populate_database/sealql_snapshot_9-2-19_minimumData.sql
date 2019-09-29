@@ -1,3 +1,5 @@
+# Colors and which other data sets do we need to manually fill?
+
 DROP database `sealDB`;
 CREATE DATABASE  IF NOT EXISTS `sealDB`;
 USE `sealDB`;
@@ -36,7 +38,7 @@ CREATE TABLE `Beach` (
   `Code` varchar(30) NOT NULL,
   PRIMARY KEY (`SLOCode`),
   KEY `Code` (`Code`),
-  CONSTRAINT `beach_ibfk_1` FOREIGN KEY (`Code`) REFERENCES `rookery` (`Code`)
+  CONSTRAINT `beach_ibfk_1` FOREIGN KEY (`Code`) REFERENCES `Rookery` (`Code`)
 );
 
 --
@@ -74,7 +76,7 @@ CREATE TABLE `BeachSection` (
   `SLOCode` varchar(30) NOT NULL,
   PRIMARY KEY (`Code`),
   KEY `SLOCode` (`SLOCode`),
-  CONSTRAINT `beachsection_ibfk_1` FOREIGN KEY (`SLOCode`) REFERENCES `beach` (`SLOCode`)
+  CONSTRAINT `beachsection_ibfk_1` FOREIGN KEY (`SLOCode`) REFERENCES `Beach` (`SLOCode`)
 );
 
 --
@@ -86,6 +88,7 @@ CREATE TABLE `Seasons` (
   `Year` int(11) NOT NULL,
   `StartMonth` date NOT NULL,
   `EndMonth` date NOT NULL,
+  `isCurrent` bool DEFAULT false,
   PRIMARY KEY (`Year`)
 );
 
@@ -114,35 +117,8 @@ CREATE TABLE `Marks` (
   `MarkSeal` int(11) DEFAULT NULL,
   PRIMARY KEY (`MarkID`,`Mark`,`Year`),
   KEY `Year` (`Year`),
-  CONSTRAINT `marks_ibfk_1` FOREIGN KEY (`Year`) REFERENCES `seasons` (`Year`)
+  CONSTRAINT `marks_ibfk_1` FOREIGN KEY (`Year`) REFERENCES `Seasons` (`Year`)
 );
-
-
-
---
--- Table structure for table `Users`
---
-
-DROP TABLE IF EXISTS `Users`;
-CREATE TABLE `Users` (
-  `LoginID` varchar(30) NOT NULL,
-  `Fullname` varchar(30) NOT NULL,
-  `Password` varchar(30) NOT NULL,
-  `isAdmin` tinyint(1) NOT NULL,
-  `Affiliation` varchar(30) NOT NULL,
-  `email` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`LoginID`)
-);
-
---
--- Dumping data for table `Users`
---
-
-LOCK TABLES `Users` WRITE;
-INSERT INTO `Users` (`LoginID`, `Fullname`, `Password`, `isAdmin`, `Affiliation`, `email`) 
-VALUES ('iorourke@calpoly.edu','iorourke@calpoly.edu','password',3,'iorourke@calpoly.edu','iorourke@calpoly.edu'),
-       ('iminarov@calpoly.edu','iminarov@calpoly.edu','password',3,'iminarov@calpoly.edu','iminarov@calpoly.edu');
-UNLOCK TABLES;
 
 --
 -- Table structure for table `Observers`
@@ -150,13 +126,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Observers`;
 CREATE TABLE `Observers` (
-  `email` varchar(30) NOT NULL,
-  `FieldLeader` varchar(30) DEFAULT NULL,
-  `DataRecorderName` varchar(30) DEFAULT NULL,
-  `LoginID` varchar(30) NOT NULL,
-  PRIMARY KEY (`email`),
-  KEY `LoginID` (`LoginID`),
-  CONSTRAINT `observers_ibfk_1` FOREIGN KEY (`LoginID`) REFERENCES `users` (`LoginID`)
+  `ObsID` int AUTO_INCREMENT,
+  `FirstName` varchar(30) DEFAULT NULL,
+  `LastName` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`ObsID`)
 );
 
 --
@@ -164,40 +137,69 @@ CREATE TABLE `Observers` (
 --
 
 LOCK TABLES `Observers` WRITE;
-INSERT INTO `Observers` (`email`, `FieldLeader`, `DataRecorderName`, `LoginID`) 
-VALUES ('iorourke@calpoly.edu','','','iorourke@calpoly.edu'),
-       ('iminarov@calpoly.edu', '', '', 'iminarov@calpoly.edu');
+INSERT INTO `Observers` (`FirstName`, `LastName`) 
+VALUES ('Ilya','Minarov'),
+       ('Ian','O\'Rourke');
 UNLOCK TABLES;
 
 --
--- Table structure for table `Events`
+-- Table structure for table `Users`
 --
 
-DROP TABLE IF EXISTS `Events`;
-CREATE TABLE `Events` (
-  `EventID` int(11) NOT NULL AUTO_INCREMENT,
-  `EventTypeName` varchar(30) NOT NULL,
-  `Description` varchar(240) NOT NULL,
-  `LoginID` varchar(30) NOT NULL,
-  `Year` int(11) NOT NULL,
-  PRIMARY KEY (`EventID`),
-  KEY `LoginID` (`LoginID`),
-  KEY `Year` (`Year`),
-  CONSTRAINT `events_ibfk_1` FOREIGN KEY (`LoginID`) REFERENCES `users` (`LoginID`),
-  CONSTRAINT `events_ibfk_2` FOREIGN KEY (`Year`) REFERENCES `seasons` (`Year`)
+DROP TABLE IF EXISTS `Users`;
+CREATE TABLE `Users` (
+  `UserID` int auto_increment,
+  `Username` varchar(30) NOT NULL,
+  `Password` varchar(30) NOT NULL,
+  `Initials` varchar(30) NOT NULL,
+  `PermissionsLevel` tinyint(1) NOT NULL,
+  `Affiliation` varchar(30) NOT NULL,
+  `Email` varchar(30) DEFAULT NULL,
+  `ObsID` int UNIQUE NOT NULL,
+  PRIMARY KEY (`UserID`),
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`ObsID`) REFERENCES `Observers` (`ObsID`)
 );
+
+--
+-- Dumping data for table `Users`
+--
+
+LOCK TABLES `Users` WRITE;
+INSERT INTO `Users` (`Username`, `Password`, `Initials`, `PermissionsLevel`, `Affiliation`, `Email`, `ObsID`) 
+VALUES ('iorourke@calpoly.edu','password', 'IR', 3,'iorourke@calpoly.edu','iorourke@calpoly.edu', 2),
+       ('iminarov@calpoly.edu','password', 'IM', 3,'iminarov@calpoly.edu','iminarov@calpoly.edu', 1);
+UNLOCK TABLES;
+
+
+-- --
+-- -- Table structure for table `Events`
+-- --
+-- 
+-- DROP TABLE IF EXISTS `Events`;
+-- CREATE TABLE `Events` (
+--   `EventID` int(11) NOT NULL AUTO_INCREMENT,
+--   `EventTypeName` varchar(30) NOT NULL,
+--   `Description` varchar(240) NOT NULL,
+--   `LoginID` varchar(30) NOT NULL,
+--   `Year` int(11) NOT NULL,
+--   PRIMARY KEY (`EventID`),
+--   KEY `LoginID` (`LoginID`),
+--   KEY `Year` (`Year`),
+--   CONSTRAINT `events_ibfk_1` FOREIGN KEY (`LoginID`) REFERENCES `Users` (`LoginID`),
+--   CONSTRAINT `events_ibfk_2` FOREIGN KEY (`Year`) REFERENCES `Seasons` (`Year`)
+-- );
 
 --
 -- Table structure for table `Observations`
 --
 
+
 DROP TABLE IF EXISTS `Observations`;
 CREATE TABLE `Observations` (
   `ObservationID` int(11) NOT NULL AUTO_INCREMENT,
-  `FieldLeader` varchar(45) DEFAULT NULL,
-  `email` varchar(30) NOT NULL,
-  `sex` varchar(1) DEFAULT NULL,
-  `date` date NOT NULL,
+  `ObserverID` int NOT NULL,
+  `Sex` varchar(1) DEFAULT NULL,
+  `Date` date NOT NULL,
   `MoltPercent` int(11) DEFAULT NULL,
   `Comments` varchar(240) DEFAULT NULL,
   `AgeClass` VARCHAR(30) NULL DEFAULT NULL,
@@ -206,18 +208,43 @@ CREATE TABLE `Observations` (
   `isApproved` int(11) NOT NULL DEFAULT '0',
   `LastSeenPup` datetime DEFAULT NULL,
   `FirstSeenWeaner` datetime DEFAULT NULL,
-  `Rnge` varchar(45) DEFAULT NULL,
-  `EnteredAno` varchar(45) DEFAULT NULL,
-  `isValid` int(11) DEFAULT '0',
+  `WeanDateRange` varchar(45) DEFAULT NULL,
+  `EnteredInAno` bool DEFAULT FALSE,
+  `isProcedure` bool DEFAULT FALSE,
+  `isDeprecated` bool DEFAULT FALSE,
   PRIMARY KEY (`ObservationID`),
-  KEY `email` (`email`),
+  KEY `ObserverID` (`ObserverID`),
   KEY `SLOCode` (`SLOCode`),
   KEY `observations_ibfk_3` (`Year`),
-  CONSTRAINT `observations_ibfk_1` FOREIGN KEY (`email`) REFERENCES `observers` (`email`),
-  CONSTRAINT `observations_ibfk_2` FOREIGN KEY (`SLOCode`) REFERENCES `beach` (`SLOCode`),
-  CONSTRAINT `observations_ibfk_3` FOREIGN KEY (`Year`) REFERENCES `seasons` (`Year`)
+  CONSTRAINT `observations_ibfk_1` FOREIGN KEY (`ObserverID`) REFERENCES `Observers` (`ObsID`),
+  CONSTRAINT `observations_ibfk_2` FOREIGN KEY (`SLOCode`) REFERENCES `Beach` (`SLOCode`),
+  CONSTRAINT `observations_ibfk_3` FOREIGN KEY (`Year`) REFERENCES `Seasons` (`Year`)
 );
 
+DROP TABLE IF EXISTS `ObsUpload`;
+CREATE TABLE `ObsUpload` (
+    `UploadID` int,
+	PRIMARY KEY (`UploadID`)
+);
+
+DROP TABLE IF EXISTS `UploadContainingObs`;
+CREATE TABLE `UploadContainingObs` (
+    `UploadID` int,
+    `ObservationID` int,
+	PRIMARY KEY (`ObservationID`),
+    CONSTRAINT `uploadContainingObs_ibfk_1` FOREIGN KEY (`UploadID`) REFERENCES `ObsUpload` (`UploadID`),
+	CONSTRAINT `uploadContainingObs_ibfk_2` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`)
+);
+
+
+
+DROP TABLE IF EXISTS `FieldLeaderForObs`;
+CREATE TABLE `FieldLeaderForObs` (
+	`ObservationID` int,
+    `UserID` int,
+    CONSTRAINT `FieldLeaderForObs_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`),
+	CONSTRAINT `FieldLeaderForObs_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`)
+);
 
 --
 -- Table structure for table `ObserveMarks`
@@ -229,8 +256,8 @@ CREATE TABLE `ObserveMarks` (
   `MarkID` int(11) NOT NULL,
   PRIMARY KEY (`ObservationID`),
   KEY `MarkID` (`MarkID`),
-  CONSTRAINT `observemarks_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `observations` (`ObservationID`),
-  CONSTRAINT `observemarks_ibfk_2` FOREIGN KEY (`MarkID`) REFERENCES `marks` (`MarkID`)
+  CONSTRAINT `observemarks_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`),
+  CONSTRAINT `observemarks_ibfk_2` FOREIGN KEY (`MarkID`) REFERENCES `Marks` (`MarkID`)
 );
 
 --
@@ -248,7 +275,7 @@ CREATE TABLE `Measurements` (
   `StandardLength` DOUBLE(12,2) NULL DEFAULT NULL,
   PRIMARY KEY (`MeasurementID`),
   KEY `ObservationID` (`ObservationID`),
-  CONSTRAINT `measurements_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `observations` (`ObservationID`)
+  CONSTRAINT `measurements_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`)
 );
 
 --
@@ -263,9 +290,10 @@ CREATE TABLE `Tags` (
   `TagDate` date NOT NULL,
   `ObservationID` int(11) DEFAULT NULL,
   `TagSeal` int(11) NOT NULL,
+  `isLost` bool DEFAULT false,
   PRIMARY KEY (`TagNumber`),
   KEY `ObservationID` (`ObservationID`),
-  CONSTRAINT `tags_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `observations` (`ObservationID`)
+  CONSTRAINT `tags_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`)
 );
 
 --
@@ -277,10 +305,28 @@ CREATE TABLE `Seals` (
   `SealID` int(11) NOT NULL AUTO_INCREMENT,
   `ObservationID` int(11) NOT NULL,
   `Sex` varchar(1) DEFAULT NULL,
-  `proc` tinyint(1) DEFAULT NULL,
+  `isDeprecated` bool DEFAULT FALSE,
   PRIMARY KEY (`SealID`),
   KEY `ObservationID` (`ObservationID`),
-  CONSTRAINT `seals_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `observations` (`ObservationID`)
+  CONSTRAINT `seals_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`)
+);
+
+#Do we need this table?
+
+DROP TABLE IF EXISTS `SealPictures`;
+CREATE TABLE `SealPictures` (
+  `SealID` int(11) NOT NULL,
+  `PictureURL` varchar(50) NOT NULL,
+  PRIMARY KEY (`PictureURL`),
+  CONSTRAINT `sealPictures_ibfk_1` FOREIGN KEY (`SealID`) REFERENCES `Seals` (`SealID`)
+);
+
+DROP TABLE IF EXISTS `ObsPictures`;
+CREATE TABLE `ObsPictures` (
+  `ObsID` int(11) NOT NULL,
+  `PictureURL` varchar(50) NOT NULL,
+  PRIMARY KEY (`PictureURL`),
+  CONSTRAINT `obsPictures_ibfk_1` FOREIGN KEY (`ObsID`) REFERENCES `Observations` (`ObservationID`)
 );
 
 --
@@ -293,8 +339,8 @@ CREATE TABLE `ObserveSeal` (
   `SealID` int(11) NOT NULL,
   PRIMARY KEY (`ObservationID`),
   KEY `SealID` (`SealID`),
-  CONSTRAINT `observeseal_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `observations` (`ObservationID`),
-  CONSTRAINT `observeseal_ibfk_2` FOREIGN KEY (`SealID`) REFERENCES `seals` (`SealID`)
+  CONSTRAINT `observeseal_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`),
+  CONSTRAINT `observeseal_ibfk_2` FOREIGN KEY (`SealID`) REFERENCES `Seals` (`SealID`)
 );
 
 --
@@ -309,8 +355,8 @@ CREATE TABLE `ObserveTags` (
   PRIMARY KEY (`OTAG_ID`),
   KEY `TagNumber` (`TagNumber`),
   KEY `ObservationID` (`ObservationID`),
-  CONSTRAINT `observetags_ibfk_1` FOREIGN KEY (`TagNumber`) REFERENCES `tags` (`TagNumber`),
-  CONSTRAINT `observetags_ibfk_2` FOREIGN KEY (`ObservationID`) REFERENCES `observations` (`ObservationID`)
+  CONSTRAINT `observetags_ibfk_1` FOREIGN KEY (`TagNumber`) REFERENCES `Tags` (`TagNumber`),
+  CONSTRAINT `observetags_ibfk_2` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`)
 );
 
 --
@@ -320,13 +366,11 @@ CREATE TABLE `ObserveTags` (
 DROP TABLE IF EXISTS `StagedObservations`;
 CREATE TABLE `StagedObservations` (
   `StagedID` int(11) NOT NULL,
-  `email` varchar(30) NOT NULL,
+  `ObsID` int NOT NULL,
   `MoltPercent` int(11) NOT NULL,
   `Comments` varchar(240) NOT NULL,
-  `date` date NOT NULL,
-  `sex` varchar(1) NOT NULL,
+  `Date` date NOT NULL,
+  `Sex` varchar(1) NOT NULL,
   `AgeClass` varchar(30) NOT NULL,
-  KEY `email` (`email`),
-  CONSTRAINT `stagedobservations_ibfk_1` FOREIGN KEY (`email`) REFERENCES `observers` (`email`)
+  CONSTRAINT `stagedobservations_ibfk_1` FOREIGN KEY (`ObsID`) REFERENCES `Observers` (`ObsID`)
 );
-
