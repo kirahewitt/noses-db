@@ -1,5 +1,3 @@
-# Colors and which other data sets do we need to manually fill?
-
 DROP database `sealDB`;
 CREATE DATABASE  IF NOT EXISTS `sealDB`;
 USE `sealDB`;
@@ -154,7 +152,7 @@ CREATE TABLE `Users` (
   `Initials` varchar(30) NOT NULL,
   `PermissionsLevel` tinyint(1) NOT NULL,
   `Affiliation` varchar(30) NOT NULL,
-  `Email` varchar(30) DEFAULT NULL,
+  `Email` varchar(30) UNIQUE DEFAULT NULL,
   `ObsID` int UNIQUE NOT NULL,
   PRIMARY KEY (`UserID`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`ObsID`) REFERENCES `Observers` (`ObsID`)
@@ -289,7 +287,6 @@ CREATE TABLE `Tags` (
   `TagPosition` varchar(30) DEFAULT NULL,
   `TagDate` date NOT NULL,
   `ObservationID` int(11) DEFAULT NULL,
-  `TagSeal` int(11) NOT NULL,
   `isLost` bool DEFAULT false,
   PRIMARY KEY (`TagNumber`),
   KEY `ObservationID` (`ObservationID`),
@@ -313,20 +310,14 @@ CREATE TABLE `Seals` (
 
 #Do we need this table?
 
-DROP TABLE IF EXISTS `SealPictures`;
+DROP TABLE IF EXISTS `Pictures`;
 CREATE TABLE `SealPictures` (
-  `SealID` int(11) NOT NULL,
+  `SealID` int(11) DEFAULT NULL,
+  `ObsID` int(11) DEFAULT NULL,
   `PictureURL` varchar(50) NOT NULL,
   PRIMARY KEY (`PictureURL`),
+  CONSTRAINT `obsPictures_ibfk_1` FOREIGN KEY (`ObsID`) REFERENCES `Observations` (`ObservationID`),
   CONSTRAINT `sealPictures_ibfk_1` FOREIGN KEY (`SealID`) REFERENCES `Seals` (`SealID`)
-);
-
-DROP TABLE IF EXISTS `ObsPictures`;
-CREATE TABLE `ObsPictures` (
-  `ObsID` int(11) NOT NULL,
-  `PictureURL` varchar(50) NOT NULL,
-  PRIMARY KEY (`PictureURL`),
-  CONSTRAINT `obsPictures_ibfk_1` FOREIGN KEY (`ObsID`) REFERENCES `Observations` (`ObservationID`)
 );
 
 --
