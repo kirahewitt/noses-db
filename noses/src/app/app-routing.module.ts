@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SignInComponent } from './sign-in/sign-in.component';
-import { AuthGuard } from "./auth.guard";
+import { AuthGuard } from "./_services/auth.guard";
 import { UploadSealComponent } from './upload-seal/upload-seal.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';

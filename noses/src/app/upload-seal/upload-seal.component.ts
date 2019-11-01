@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Papa} from 'ngx-papaparse';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { SimpleUser } from '../simpleUser';
-import { FlaskBackendService } from '../flask-backend.service';
+import { SimpleUser } from '../_supporting_classes/simpleUser';
+import { FlaskBackendService } from '../_services/flask-backend.service';
 import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({

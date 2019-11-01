@@ -10,9 +10,9 @@ import { MatTableModule,
         MatTooltip,
         MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
-import { FlaskBackendService } from '../flask-backend.service';
-import { sqlUser } from '../sqlUser';
-import { AuthService } from "../auth.service";
+import { FlaskBackendService } from '../_services/flask-backend.service';
+import { sqlUser } from '../_supporting_classes/sqlUser';
+import { AuthService } from "../_services/auth.service";
 
 
 export interface DialogData {

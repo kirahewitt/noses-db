@@ -5,12 +5,12 @@ import { sqlUser } from '../_supporting_classes/sqlUser';
 import { Observable, of } from  'rxjs';
 import { SealDataService } from "./seal-data.service";
 
-
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class FlaskBackendService {
-  
   rows: any;
   newUsers: any;  
   FLASK_API_SERVER = "http://127.0.0.1:5000";

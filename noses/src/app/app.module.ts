@@ -11,8 +11,8 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AuthService } from "./auth.service";
-import { AuthGuard } from "./auth.guard";
+import { AuthService } from "./_services/auth.service";
+import { AuthGuard } from "./_services/auth.guard";
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { UploadSealComponent } from './upload-seal/upload-seal.component';
 import {

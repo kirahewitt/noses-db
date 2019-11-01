@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatToolbarModule, MatTableModule, MatTableDataSource } from '@angular/material';
-import { FlaskBackendService } from './flask-backend.service';
-import { AdminService } from "./admin.service";
+import { FlaskBackendService } from './_services/flask-backend.service';
+import { AdminService } from "./_services/admin.service";
 import { LocationService } from './_services/location.service';
 
 

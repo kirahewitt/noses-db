@@ -1,17 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FlaskBackendService } from '../flask-backend.service';
-import { Observations } from  '../Observations';
+import { FlaskBackendService } from '../_services/flask-backend.service';
+import { Observations } from  '../_supporting_classes/Observations';
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { AuthService } from "../auth.service";
+import { AuthService } from "../_services/auth.service";
 import { AngularFireAuth } from "@angular/fire/auth";
 import {
   AngularFirestore,
   AngularFirestoreDocument
 } from "@angular/fire/firestore";
-import { SealDataService } from "../seal-data.service";
+import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
-import { AdminService } from "../admin.service";
+import { AdminService } from "../_services/admin.service";
 
 @Component({
   selector: 'dashboard',
