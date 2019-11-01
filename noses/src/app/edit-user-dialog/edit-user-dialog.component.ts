@@ -14,6 +14,7 @@ import { FlaskBackendService } from '../flask-backend.service';
 import { sqlUser } from '../sqlUser';
 import { AuthService } from "../auth.service";
 
+
 export interface DialogData {
   isAdmin: number;
 }
@@ -24,18 +25,28 @@ export interface DialogData {
   templateUrl: './edit-user-dialog.component.html',
   styleUrls: ['./edit-user-dialog.component.scss']
 })
-
 export class EditUserDialogComponent {
-  selectAdmin = 0
-    constructor(
-    public dialogRef: MatDialogRef<EditUserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private apiService: FlaskBackendService) {}
 
+  private selectAdmin = 0;
+
+
+  /**
+   * Constructor for this Angular Component. 
+   * @param dialogRef 
+   * @param data 
+   * @param apiService 
+   */
+  constructor(private apiService: FlaskBackendService,
+              public dialogRef: MatDialogRef<EditUserDialogComponent>, 
+              @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+
+  /**
+   * 
+   */
   onNoClick(): void {
     // this.data = undefined;
     this.dialogRef.close();
   }
-
 
 }

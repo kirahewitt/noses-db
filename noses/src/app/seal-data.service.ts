@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+
+/**
+ * This angular service provides components of this angular web application with information
+ * about a singular seal.
+ */
 @Injectable({
   providedIn: 'root'
 })

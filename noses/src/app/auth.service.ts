@@ -11,7 +11,6 @@ import { Router } from "@angular/router";
 })
 export class AuthService {
 
-
   private userData: any; // Save logged in user data
 
 
@@ -21,23 +20,30 @@ export class AuthService {
    * This will save user data in localstorage when logged in and setting up null when logged out
    * @param afs Inject Firestore service
    * @param afAuth Inject Firebase auth service
-   * @param router 
+   * @param router reference to the router, which will allow us to change the page the user is currently on.
    * @param ngZone NgZone service to remove outside scope warning
    */
   constructor(public afs: AngularFirestore, public afAuth: AngularFireAuth, public router: Router, public ngZone: NgZone) {
     let userObservable = this.afAuth.authState;
+    userObservable.subscribe(user => this.updateLocalStorage_userData(user));
+  }
 
-    userObservable.subscribe(user => {
-      if (user) {
-        this.userData = user;
-        localStorage.setItem("user", JSON.stringify(this.userData));
-        JSON.parse(localStorage.getItem("user"));
-      } 
-      else {
-        localStorage.setItem("user", null);
-        JSON.parse(localStorage.getItem("user"));
-      }
-    });
+
+  /**
+   * If the value of user received by this function is non-null the user is logged in.
+   * This will save user data in localstorage when logged in and setting up null when logged out.
+   * @param user firebase user object received from firebase angular service.
+   */
+  private updateLocalStorage_userData(user: firebase.User) {
+    if (user) {
+      this.userData = user;
+      localStorage.setItem("user", JSON.stringify(this.userData));
+      JSON.parse(localStorage.getItem("user"));
+    } 
+    else {
+      localStorage.setItem("user", null);
+      JSON.parse(localStorage.getItem("user"));
+    }
   }
 
 
