@@ -11,7 +11,6 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
-import { UserLoginComponent } from './user-login/user-login.component';
 import { AuthService } from "./auth.service";
 import { AuthGuard } from "./auth.guard";
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
@@ -54,7 +53,6 @@ const config = {
   declarations: [
     AppComponent,
     routingComponents,
-    UserLoginComponent,
     VerifyEmailComponent,
     UploadSealComponent,
     SealPageComponent,
