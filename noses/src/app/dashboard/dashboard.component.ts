@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { BackendService } from '../backend.service';
 import { FlaskBackendService } from '../flask-backend.service';
 import { Observations } from  '../Observations';
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';

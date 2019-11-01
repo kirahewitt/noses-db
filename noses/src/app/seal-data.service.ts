@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class SealDataService {
 
   private seal = new BehaviorSubject('default message'); // messageSOurce = seal
-  currentSeal = this.seal.asObservable(); // currentMessage = currentSeal
+  public currentSeal = this.seal.asObservable(); // currentMessage = currentSeal
 
   constructor() { }
 

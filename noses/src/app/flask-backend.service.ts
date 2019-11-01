@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observations } from  './Observations';
-import { SimpleUser } from './simpleUser';
 import { sqlUser } from './sqlUser';
 import { Observable, of } from  'rxjs';
 import { SealDataService } from "./seal-data.service";
@@ -12,18 +11,23 @@ import { SealDataService } from "./seal-data.service";
 
 
 export class FlaskBackendService {
-  constructor(private httpClient: HttpClient,
-              private sealData: SealDataService) {}
-
-  //FLASK_API_SERVER = "http://34.217.54.156:5000";
+  rows: any;
+  newUsers: any;  
   FLASK_API_SERVER = "http://127.0.0.1:5000";
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  rows: any;
-  newUsers: any;
+
+  /**
+   * @param httpClient gives us access to the get and post methods (get the data asynchronously)
+   * @param sealDataService a local reference to the application-wide angular service that retrieves seal informatino
+   */
+  constructor(private httpClient: HttpClient, private sealDataService: SealDataService) {}
+
+
+  // observations section
 
   readObs(): Observable<Observations[]>{
     return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allseals` );
@@ -37,11 +41,14 @@ export class FlaskBackendService {
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addobservations`, user, this.httpOptions);
   }
 
-  /** DELETE: delete the user from the server */
+  /** DELETE: delete the observation from the server */
   deleteObs(obs: string) {
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/delete`, obs, this.httpOptions);
   }
 
+
+  // users section
+  
   async addUser(obs: string) {
     await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/adduser`, obs, this.httpOptions).toPromise().then(data => {
       this.newUsers = data;
@@ -50,9 +57,11 @@ export class FlaskBackendService {
     return this.newUsers;
   }
 
+
   getUsers(): Observable<sqlUser[]>{
     return this.httpClient.get<sqlUser[]>(`${this.FLASK_API_SERVER}/adduser`);
   }
+
 
   async getAdminStatus(email: string) {
     await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/getadminuser`, email, this.httpOptions).toPromise().then(data => {
@@ -60,6 +69,7 @@ export class FlaskBackendService {
     });
     return this.rows;
   }
+
 
   async removeUser(user: string) {
     console.log(user );
@@ -69,6 +79,7 @@ export class FlaskBackendService {
     return this.rows;
   }
 
+
   async updateUser(user: string) {
     console.log(user );
     await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/updateuser`, user, this.httpOptions).toPromise().then(data => {
@@ -76,6 +87,7 @@ export class FlaskBackendService {
     });
     return this.rows
   }
+
 
   async getPartials(part: string) {
     await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/partials`, part, this.httpOptions).toPromise().then(data => {
@@ -85,6 +97,7 @@ export class FlaskBackendService {
   }
 
 
+  // seals sections
   async getSeal(obs: string) {
     await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/getseal`, obs, this.httpOptions).toPromise().then(data => {
       this.rows = data
@@ -92,6 +105,7 @@ export class FlaskBackendService {
 
     return this.rows
   }
+
 
   updateAgeClass(obs: string) {
     console.log(obs);

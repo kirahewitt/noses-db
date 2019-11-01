@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
 
-  private adminStatus = new BehaviorSubject(0); // messageSOurce = seal
-  currentStatus = this.adminStatus.asObservable(); // currentMessage = currentSeal
+  private adminStatus: BehaviorSubject<Number> = new BehaviorSubject(0); // messageSOurce = seal
+  public currentStatus: Observable<Number> = this.adminStatus.asObservable(); // currentMessage = currentSeal
 
   constructor() { }
 
