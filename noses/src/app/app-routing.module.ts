@@ -7,7 +7,8 @@ import { UploadSealComponent } from './upload-seal/upload-seal.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
-import { VerifyEmailComponent } from './verify-email/verify-email.component'
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { ComponentForAngServiceComponent } from './component-for-ang-service/component-for-ang-service.component';
 
 
 const routes: Routes = [
@@ -18,7 +19,8 @@ const routes: Routes = [
 { path: 'verify-email', component: VerifyEmailComponent},
 { path: 'seal-page', component: SealPageComponent},
 { path: 'manage-accounts', component: ManageAccountsComponent, canActivate: [AuthGuard]},
-{ path: 'approve-obs', component: ApproveObsComponent, canActivate: [AuthGuard]}];
+{ path: 'approve-obs', component: ApproveObsComponent, canActivate: [AuthGuard]},
+{ path: 'component-for-ang-service', component: ComponentForAngServiceComponent, canActivate: [AuthGuard]}];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

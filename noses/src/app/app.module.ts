@@ -38,6 +38,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
+import { ComponentForAngServiceComponent } from './component-for-ang-service/component-for-ang-service.component';
 
 
 const config = {
@@ -61,6 +62,7 @@ const config = {
     ApproveObsComponent,
     DialogOverviewExampleDialog,
     EditUserDialogComponent,
+    ComponentForAngServiceComponent,
   ],
   imports: [
     FormsModule,
