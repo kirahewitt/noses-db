@@ -1,9 +1,9 @@
-# SealQL Senior Project
+# NOSES
 ### Ilya Minarov, Jacob Rakestraw, Ian O'Rourke
 Overview
 =================
-* Full Stack Angular/Flask web app for the NOSES database as a project for Cal Poly's CSC 366 class with 
-Professor Dekhtyar
+* Started as a Full Stack Angular/Flask web app for the NOSES database as a project for Cal Poly's CSC 366 class. 
+* Extended into Senior Project
 * Query, download, upload (by single and bulk) Seal Observations
 
 Features
