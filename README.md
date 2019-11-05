@@ -1,4 +1,4 @@
-# SealQl Senior Project
+# SealQL Senior Project
 ### Ilya Minarov, Jacob Rakestraw, Ian O'Rourke
 Overview
 =================
