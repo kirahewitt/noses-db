@@ -1,5 +1,5 @@
-# SealQL Team6
-### Raquel Bonilla, Kaitlin Bleich, Joey Buelow, Ian O'Rourke
+# SealQl Senior Project
+### Ilya Minarov, Jacob Rakestraw, Ian O'Rourke
 Overview
 =================
 * Full Stack Angular/Flask web app for the NOSES database as a project for Cal Poly's CSC 366 class with 
