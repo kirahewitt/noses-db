@@ -29,11 +29,11 @@ Get Started
 3. cd into the Angular project file noses/
 * `npm install`
 * `ng serve`
+* Install Dependencies until it works.
 
 
-Common Erros
+Common Errors
 =================
 1. Wrong Backend Server:
-* make sure that if you are developing locally, change the server address in the file `sealqlteam6/noses/src/app/flask-backend.service.ts` to the correct address. 
-* The address of the Cal Poly server is http://34.217.54.156:5000, but if developing locally, you will want to change this to: `http://localhost:5000`
+* make sure that if you are developing locally, change the server address in the file `sealqlteam6/noses/src/app/flask-backend.service.ts` to the correct address. The current version of the application runs locally.
 
