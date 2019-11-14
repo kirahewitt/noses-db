@@ -497,20 +497,21 @@ def addSeal(cnx, cursor, row, observationID):
 ##    t1ID = tag1 ID
 ##    t2ID = tag2 ID
 def positiveMin(IDs):
-    print("positiveMIN1")
     mainID = 99999999999
-    print("positiveMIN2")
+
     print("IDs[0] " + str(IDs[0]))
     print("IDs[1] " + str(IDs[1]))
     print("IDs[2] " + str(IDs[2]))
 
     if IDs[0] != -1:
         mainID = IDs[0]
+
     if IDs[1] != -1 and IDs[1] < mainID:
         mainID = IDs[1]
+
     if IDs[2] != -1 and IDs[2] < mainID:
         mainID = IDs[2]
-    print("positiveMIN3")
+
     return mainID
 
 def observeSeal(cnx, cursor, sealID, obsID):
@@ -549,13 +550,10 @@ def processObservation(cnx, cursor, row, approvalStatus):
     divergentM = []
     merge = False
 
+    # see if any of the identifiers in this observation match an existing seal/dossier
     mID = getSealIdFromMark(cursor, row[MARK], row[YEAR])
-
-    print("test1")
     t1ID = getSealIDFromTag(cursor, row[TAG1])
-    print("test2")
     t2ID = getSealIDFromTag(cursor, row[TAG2])
-    print("test3")
 
     mainID = positiveMin([mID, t1ID, t2ID])
 

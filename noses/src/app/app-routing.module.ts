@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SignInComponent } from './sign-in/sign-in.component';
-import { AuthGuard } from "./auth.guard";
+import { AuthGuard } from "./_services/auth.guard";
 import { UploadSealComponent } from './upload-seal/upload-seal.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
@@ -12,7 +12,8 @@ import { MenuComponent } from './menu/menu.component';
 import { AllObservationsComponent } from './all-observations/all-observations.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { RequestAccountComponent} from './request-account/request-account.component';
-
+import { ComponentForAngServiceComponent } from './component-for-ang-service/component-for-ang-service.component';
+import { CitizenSciBulkUploadMainPageComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-main-page/citizen-sci-bulk-upload-main-page.component';
 
 const routes: Routes = [
 { path: '', redirectTo: '/sign-in', pathMatch: 'full'},
@@ -26,10 +27,10 @@ const routes: Routes = [
 { path: 'menu', component: MenuComponent, canActivate: [AuthGuard]},
 { path: 'all-observations', component: AllObservationsComponent, canActivate: [AuthGuard]},
 { path: 'reset', component: ResetPasswordComponent},
-{ path: 'request-account', component: RequestAccountComponent}
+{ path: 'request-account', component: RequestAccountComponent},
+{ path: 'component-for-ang-service', component: ComponentForAngServiceComponent, canActivate: [AuthGuard]},
+{ path: 'citizen-sci-bulk-upload', component: CitizenSciBulkUploadMainPageComponent, canActivate: [AuthGuard]}
 ];
-
-
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

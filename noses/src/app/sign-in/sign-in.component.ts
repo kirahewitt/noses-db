@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from "../auth.service";
+import { AuthService } from "../_services/auth.service";
 
 @Component({
   selector: 'app-sign-in',
@@ -12,4 +12,13 @@ export class SignInComponent implements OnInit {
   ) { }
 
   ngOnInit() { }
+
+  public signOutClicked() {
+    this.authService.SignOut();
+  }
+
+
+  public signInClicked(username, password) {
+    this.authService.SignIn(username, password);
+  }
 }

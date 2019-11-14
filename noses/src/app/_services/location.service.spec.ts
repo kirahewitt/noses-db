@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BackendService } from './backend.service';
+import { NumberCounterService } from './location.service';
 
-describe('BackendService', () => {
+describe('LocationService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: BackendService = TestBed.get(BackendService);
+    const service: NumberCounterService = TestBed.get(NumberCounterService);
     expect(service).toBeTruthy();
   });
 });

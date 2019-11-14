@@ -112,7 +112,6 @@ CREATE TABLE `Marks` (
   `markDate` date NOT NULL,
   `Year` int(11) NOT NULL,
   `ObservationID` int(11) NOT NULL,
-  `MarkSeal` int(11) DEFAULT NULL,
   PRIMARY KEY (`MarkID`,`Mark`,`Year`),
   KEY `Year` (`Year`),
   CONSTRAINT `marks_ibfk_1` FOREIGN KEY (`Year`) REFERENCES `Seasons` (`Year`)

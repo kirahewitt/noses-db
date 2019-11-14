@@ -18,11 +18,14 @@
 
         <br>
         <div class="row">
-            <div class="col-md-2"></div>
-              <div class="col-md-9">
-                <button class="btn btn-file-upload" (click)="uploader.click()">Upload CSV</button>
-                <input hidden #uploader type="file" accept=".csv" (change)="handleFileSelect($event)">
-                <label class="file-name">{{ fileName }}</label>
+          
+            <div class="col-md-2">
+            </div>
+
+            <div class="col-md-9">
+              <button class="btn btn-file-upload" (click)="uploader.click()">Upload CSV</button>
+              <input hidden #uploader type="file" accept=".csv" (change)="handleFileSelect($event)">
+              <label class="file-name">{{ fileName }}</label>
             </div>
         </div>
         <br>

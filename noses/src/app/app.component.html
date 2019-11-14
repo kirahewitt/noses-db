@@ -1,28 +1,53 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div class="row">
 
-  <mat-toolbar class="mat-elevation-z4 tool-color">
-    <mat-toolbar-row>
-      <span class="hack-space"><a routerLink="/dashboard">SealQLTeam6</a></span>
-      <div class="col-md-5"></div>
-      <ng-container *ngIf="!isAdmin">
-        <div class="col-md-3"></div>
-      </ng-container>
-        <div>
-          <ng-container *ngIf="isSuperAdmin">
-            <button type="button" class="btn btn-admin1"><a routerLink="/manage-accounts">Manage Accounts</a></button>
-          </ng-container>
-          <ng-container *ngIf="isAdmin">
-            <button type="button" class="btn btn-admin2"><a routerLink="/approve-obs">Staging</a></button>
-          </ng-container>
-          <button type="button" class="btn"><a routerLink="/dashboard">Observations</a></button>
-          <button type="button" class="btn"><a routerLink="/upload-seal">Upload Bulk Data</a></button>
-          <button type="button" class="btn"><a routerLink="/sign-in">Login</a></button>
+<div class=rootpage>
 
-        </div>
-    </mat-toolbar-row>
-  </mat-toolbar>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-dark">
+    
+    <!-- logo section -->
+    <div class="col-md-2">
+      <a class="navbar-brand" routerLink="/dashboard">
+        SealQL
+      </a>
+    </div>
+
+
+    <!-- link section -->
+    <div class="col-md-10">
+      <ul class="nav justify-content-end">
+
+        <li class="nav-item">
+          <a routerLink="/citizen-sci-bulk-upload" class="nav-link">Citizen Bulk Upload</a>
+        </li>
+
+        <li class="nav-item" *ngIf="isSuperAdmin">
+          <a routerLink="/manage-accounts" class="nav-link">Manage Accounts</a>
+        </li>
+
+        <li class="nav-item" *ngIf="isAdmin">
+          <a routerLink="/approve-obs" class="nav-link">Staging</a>
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/dashboard" class="nav-link">Observations</a>
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/upload-seal" class="nav-link">Upload Bulk Data</a>
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/sign-in" class="nav-link">Login</a>
+        </li>
+
+      </ul>
+    </div>
+
+  </nav>
+
 </div>
-  <router-outlet></router-outlet>
+
+
+<router-outlet></router-outlet>
 
 

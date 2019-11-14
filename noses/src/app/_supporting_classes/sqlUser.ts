@@ -5,5 +5,4 @@ export interface sqlUser {
   Password: string;
   Affiliation: string;
   email: string;
-
 }

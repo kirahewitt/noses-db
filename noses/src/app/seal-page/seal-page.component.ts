@@ -1,9 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { SealDataService } from "../seal-data.service";
-import { FlaskBackendService } from '../flask-backend.service';
+import { SealDataService } from "../_services/seal-data.service";
+import { FlaskBackendService } from '../_services/flask-backend.service';
 import { MatTableModule, MatTableDataSource, MatPaginator } from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Observations } from '../Observations';
+import { Observations } from '../_supporting_classes/Observations';
 
 @Component({
   selector: 'app-seal-page',
