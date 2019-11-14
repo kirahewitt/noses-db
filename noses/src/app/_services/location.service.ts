@@ -20,7 +20,7 @@ import { BehaviorSubject } from 'rxjs';
 export class NumberCounterService {
 
   private url : string;
-  private myTimer: NodeJS.Timer;
+  private myTimer;
   public currentNumber : BehaviorSubject<String>;
   
 

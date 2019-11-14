@@ -91,9 +91,11 @@ export class UploadSealComponent implements OnInit {
 
     if(this.isAdmin >= 2) {
       this.approvalStatus = 0;
-    } else if(this.isAdmin ==1) {
+    } 
+    else if(this.isAdmin ==1) {
       this.approvalStatus = 1;
-    } else {
+    } 
+    else {
       alert('you dont have priveleges');
       return;
     }

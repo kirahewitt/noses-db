@@ -39,6 +39,9 @@ import { DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.c
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 import { ComponentForAngServiceComponent } from './component-for-ang-service/component-for-ang-service.component';
 
+import { CitizenSciBulkUploadMainPageComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-main-page/citizen-sci-bulk-upload-main-page.component';
+import { CitizenSciBulkUploadDataPreviewComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-data-preview/citizen-sci-bulk-upload-data-preview.component';
+
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -61,6 +64,8 @@ const config = {
     DialogOverviewExampleDialog,
     EditUserDialogComponent,
     ComponentForAngServiceComponent,
+    CitizenSciBulkUploadMainPageComponent,
+    CitizenSciBulkUploadDataPreviewComponent,
   ],
   imports: [
     FormsModule,
