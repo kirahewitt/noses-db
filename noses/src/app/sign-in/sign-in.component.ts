@@ -12,4 +12,13 @@ export class SignInComponent implements OnInit {
   ) { }
 
   ngOnInit() { }
+
+  public signOutClicked() {
+    this.authService.SignOut();
+  }
+
+
+  public signInClicked(username, password) {
+    this.authService.SignIn(username, password);
+  }
 }
