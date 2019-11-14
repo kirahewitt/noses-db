@@ -8,6 +8,10 @@ import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component'
+import { MenuComponent } from './menu/menu.component';
+import { AllObservationsComponent } from './all-observations/all-observations.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { RequestAccountComponent} from './request-account/request-account.component';
 
 
 const routes: Routes = [
@@ -18,7 +22,13 @@ const routes: Routes = [
 { path: 'verify-email', component: VerifyEmailComponent},
 { path: 'seal-page', component: SealPageComponent},
 { path: 'manage-accounts', component: ManageAccountsComponent, canActivate: [AuthGuard]},
-{ path: 'approve-obs', component: ApproveObsComponent, canActivate: [AuthGuard]}];
+{ path: 'approve-obs', component: ApproveObsComponent, canActivate: [AuthGuard]},
+{ path: 'menu', component: MenuComponent, canActivate: [AuthGuard]},
+{ path: 'all-observations', component: AllObservationsComponent, canActivate: [AuthGuard]},
+{ path: 'reset', component: ResetPasswordComponent},
+{ path: 'request-account', component: RequestAccountComponent}
+];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

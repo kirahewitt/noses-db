@@ -38,6 +38,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
+import { MenuComponent } from './menu/menu.component';
+import { AllObservationsComponent } from './all-observations/all-observations.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { RequestAccountComponent } from './request-account/request-account.component';
 
 
 const config = {
@@ -61,6 +65,10 @@ const config = {
     ApproveObsComponent,
     DialogOverviewExampleDialog,
     EditUserDialogComponent,
+    MenuComponent,
+    AllObservationsComponent,
+    ResetPasswordComponent,
+    RequestAccountComponent,
   ],
   imports: [
     FormsModule,
