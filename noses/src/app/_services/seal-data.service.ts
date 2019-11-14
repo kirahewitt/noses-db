@@ -1,22 +1,46 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 
 /**
  * This angular service provides components of this angular web application with information
- * about a singular seal.
+ * about a singular seal. When a user wants to navigate to the page of a particular seal, they
+ * store the information about which seal they selected in this class as a String.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class SealDataService {
 
-  private seal = new BehaviorSubject('default message'); // messageSOurce = seal
-  public currentSeal = this.seal.asObservable(); // currentMessage = currentSeal
 
-  constructor() { }
+  private currentSeal_Str: BehaviorSubject<String>;
+  public currentSeal: Observable<String>;
 
-  changeMessage(nextSeal: string) {
-    this.seal.next(nextSeal)
+
+  /**
+   * Remember behavior subjects are like datastreams. This constructor creates one such datastream,
+   *  initialized with the value "default message'
+   */
+  constructor() {
+    this.currentSeal_Str = new BehaviorSubject('default message'); // messageSOurce = seal
+    this.currentSeal = this.currentSeal_Str.asObservable();
+  }
+
+
+  /**
+   * Returns the current seal 
+   */
+  public getCurrentSeal() : BehaviorSubject<any> {
+    return this.currentSeal_Str;
+  }
+
+
+  /**
+   * Updates the message on the seal object by calling the "next" function on the 
+   * BehaviorSubject.
+   * @param newSealMessage : A string representation of the new seal.
+   */
+  changeMessage(newSealMessage: string) {
+    this.currentSeal_Str.next(newSealMessage);
   }
 }

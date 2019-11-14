@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LocationService } from '../_services/location.service';
+import { NumberCounterService } from '../_services/location.service';
 import { BehaviorSubject } from 'rxjs';
 
 
@@ -14,7 +14,7 @@ export class ComponentForAngServiceComponent implements OnInit {
   public locationDataStream : BehaviorSubject<String>;
   public locationData : String = "no data from rest service yet";
 
-  constructor(private locationService : LocationService) { }
+  constructor(private locationService : NumberCounterService) { }
 
   ngOnInit() {
     this.locationDataStream = this.locationService.getLocationStream();

@@ -10,25 +10,32 @@ import { SealDataService } from "./seal-data.service";
 })
 
 
+/**
+ * 
+ */
 export class FlaskBackendService {
-  rows: any;
-  newUsers: any;  
-  FLASK_API_SERVER = "http://127.0.0.1:5000";
 
-  httpOptions = {
+  private rows: any;
+  private newUsers: any;  
+  private FLASK_API_SERVER: string;
+
+  private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
 
   /**
    * @param httpClient gives us access to the get and post methods (get the data asynchronously)
-   * @param sealDataService a local reference to the application-wide angular service that retrieves seal informatino
+   * @param sealDataService a local reference to the application-wide angular service that keeps track of the currently selected seal.
    */
-  constructor(private httpClient: HttpClient, private sealDataService: SealDataService) {}
+  constructor(private httpClient: HttpClient, private sealDataService: SealDataService) {
+    this.FLASK_API_SERVER = "http://127.0.0.1:5000"
+  }
 
 
-  // observations section
-
+  /**
+   * 
+   */
   readObs(): Observable<Observations[]>{
     return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allseals` );
   }
