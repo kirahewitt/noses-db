@@ -1,5 +1,12 @@
 import { Component, OnInit, Input} from '@angular/core';
 
+
+
+
+
+/**
+ * This class represents the preview component
+ */
 @Component({
   selector: 'app-citizen-sci-bulk-upload-data-preview',
   templateUrl: './citizen-sci-bulk-upload-data-preview.component.html',
