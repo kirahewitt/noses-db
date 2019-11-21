@@ -219,8 +219,8 @@ export class SpreadsheetTuple {
    * @param tupleAsJson 
    */
   constructor(tupleAsJson : any) {
-    console.log("WITHIN CONSTRUCTOR -- actual parameter: " );
-    console.log(tupleAsJson)
+    // console.log("WITHIN CONSTRUCTOR -- actual parameter: " );
+    // console.log(tupleAsJson)
     this.originalJsonInput = tupleAsJson;
     this.processingErrorList = [];
 

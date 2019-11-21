@@ -45,7 +45,8 @@ import { ComponentForAngServiceComponent } from './component-for-ang-service/com
 
 import { CitizenSciBulkUploadMainPageComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-main-page/citizen-sci-bulk-upload-main-page.component';
 import { CitizenSciBulkUploadDataPreviewComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-data-preview/citizen-sci-bulk-upload-data-preview.component';
-
+import { BulkUploadObservationViewComponent } from './citizen-scientist-upload-management/bulk-upload-observation-view/bulk-upload-observation-view.component';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -74,6 +75,7 @@ const config = {
     ComponentForAngServiceComponent,
     CitizenSciBulkUploadMainPageComponent,
     CitizenSciBulkUploadDataPreviewComponent,
+    BulkUploadObservationViewComponent,
   ],
   imports: [
     FormsModule,
@@ -100,6 +102,7 @@ const config = {
     AngularFireAuthModule, // auth
     AngularFireStorageModule, // storage
     PapaParseModule,
+    AngularFontAwesomeModule
   ],
   exports: [
     RouterModule,

@@ -75,7 +75,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
   private fileName: string = "No File Selected"
   private fileData: any[];
-  private observationTuples : SpreadsheetTuple[];
+  public observationTuples : SpreadsheetTuple[];
 
 
   constructor(private papa: Papa) { }
@@ -108,19 +108,19 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
           //this.fileData = [results.data, {"isApproved" : 0}];
           this.fileData = results.data;
           
-          console.log("\nWithin Papa-parse: ");
-          console.log(this.fileData);
-          console.log(this.fileData)
+          // console.log("\nWithin Papa-parse: ");
+          // console.log(this.fileData);
+          // console.log(this.fileData)
 
 
-          console.log("\nBELOW IS THE RESULT OF CONVERTING THE JSON TO A Map OBJECT:");
+          // console.log("\nBELOW IS THE RESULT OF CONVERTING THE JSON TO A Map OBJECT:");
           let jsonString = JSON.stringify(this.fileData);
-          console.log(jsonString);
+          // console.log(jsonString);
 
-          let jsonString_parsed = JSON.parse(jsonString);
-          console.log(jsonString_parsed);
+          // let jsonString_parsed = JSON.parse(jsonString);
+          // console.log(jsonString_parsed);
 
-          console.log(new Map(jsonString_parsed));
+          // console.log(new Map(jsonString_parsed));
 
           this.observationTuples = this.processSpreadsheetFile(this.fileData);
 
@@ -140,8 +140,8 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
   processSpreadsheetFile(fileTupleList: any[]): SpreadsheetTuple[] {
     var tupleList: SpreadsheetTuple[] = [];
 
-    console.log("\nWITHIN processSpreadsheetFile - fileTupleList:");
-    console.log(fileTupleList);
+    // console.log("\nWITHIN processSpreadsheetFile - fileTupleList:");
+    // console.log(fileTupleList);
 
     for (var tuple of fileTupleList) {
       var newTupleObj = new SpreadsheetTuple(tuple);
@@ -149,8 +149,8 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
       tupleList.push(newTupleObj);
     }
 
-    console.log("\nGenerated tuple list as object:");
-    console.log(tupleList)
+    // console.log("\nGenerated tuple list as object:");
+    // console.log(tupleList)
 
     return tupleList;
   }
@@ -182,8 +182,8 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
       let valueAsString: string = field[VALUE] as string;
 
-        console.log("    field key:   " + field[KEY]);
-        console.log("    field value: " + field[VALUE]);
+        // console.log("    field key:   " + field[KEY]);
+        // console.log("    field value: " + field[VALUE]);
         
 
       if (field[KEY] == jsonName_fieldLeaderInitials) {
