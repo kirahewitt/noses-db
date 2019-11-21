@@ -2,7 +2,7 @@ import pymysql
 import pandas as pd
 import json
 from app import app
-from ETL2 import startUpdate
+from ETL3 import startUpdate
 from db_config import mysql
 from flask import jsonify
 from flask import flash, request
@@ -228,10 +228,10 @@ def add_observations():
     try:
         if request.method == 'POST':
 
-            #print("yooooo")
+            print("yooooo")
             _json = request.json
-            print(_json)
-            startUpdate(json.dumps(_json))
+            #print(_json)
+            startUpdate(json.dumps(_json), conn)
             return jsonify('data sent to upload function')
 
         else:
@@ -286,8 +286,7 @@ def getpartials():
             statement = ('SELECT * FROM '
                         '(SELECT '
                         'O.ObservationID '
-                        ', O.SealID '
-                        ', O.FieldLeader '
+                        ', O.ObserverID '
                         ', O.Year '
                         ', O.date '
                         ', O.SLOCode '
@@ -566,8 +565,6 @@ def getpartials():
                         'seals.SealID = sealcounts.sealID AND sealcounts.count = 1) S, '
                         ' '
                         '(SELECT main.ObservationID '
-                        ', main.SealID '
-                        ', main.FieldLeader '
                         ', main.Year '
                         ', main.date '
                         ', main.SLOCode '
@@ -699,7 +696,7 @@ def update_age():
 
 # This is required to get this python program to run.
 if __name__ == "__main__":
-    app.run(host='127.0.0.1',port=5000)
+    app.run(host='127.0.0.1',port=5000, debug=True)
     #app.run(host='0.0.0.0',port=5000)
 
 
