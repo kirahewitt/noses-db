@@ -52,7 +52,7 @@ export class DashboardComponent implements OnInit {
   yearControl = new FormControl('');
   partialControl = new FormControl('');
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
 
   constructor(private apiService: FlaskBackendService,

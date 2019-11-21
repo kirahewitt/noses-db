@@ -46,11 +46,9 @@ export class ApproveObsComponent implements OnInit {
   displayedColumns: any;
   admin: any;
 
-
-
   yearControl = new FormControl('');
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
 
   constructor(private apiService: FlaskBackendService,

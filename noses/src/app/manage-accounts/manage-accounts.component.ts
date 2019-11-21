@@ -31,7 +31,7 @@ export interface DialogData {
 })
 export class ManageAccountsComponent implements OnInit {
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
   users: sqlUser[];
   dataSource: any;
