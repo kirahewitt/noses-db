@@ -1,4 +1,5 @@
 import { Component, OnInit, Input} from '@angular/core';
+import { SpreadsheetTuple } from 'src/app/_supporting_classes/SpreadsheetTuple';
 
 
 
@@ -14,7 +15,7 @@ import { Component, OnInit, Input} from '@angular/core';
 })
 export class CitizenSciBulkUploadDataPreviewComponent implements OnInit {
 
-  @Input() uploadData : any;
+  @Input() uploadData_tupleList : SpreadsheetTuple[];
 
   constructor() { }
 

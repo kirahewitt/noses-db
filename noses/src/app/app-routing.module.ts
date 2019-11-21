@@ -14,6 +14,9 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { RequestAccountComponent} from './request-account/request-account.component';
 import { ComponentForAngServiceComponent } from './component-for-ang-service/component-for-ang-service.component';
 import { CitizenSciBulkUploadMainPageComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-main-page/citizen-sci-bulk-upload-main-page.component';
+import { NewObservationComponent } from './new-observation/new-observation.component';
+import { SealComponent } from './seal/seal.component';
+import { MarkTestComponent } from './mark-test/mark-test.component';
 
 const routes: Routes = [
 { path: '', redirectTo: '/sign-in', pathMatch: 'full'},
@@ -29,7 +32,10 @@ const routes: Routes = [
 { path: 'reset', component: ResetPasswordComponent},
 { path: 'request-account', component: RequestAccountComponent},
 { path: 'component-for-ang-service', component: ComponentForAngServiceComponent, canActivate: [AuthGuard]},
-{ path: 'citizen-sci-bulk-upload', component: CitizenSciBulkUploadMainPageComponent, canActivate: [AuthGuard]}
+{ path: 'citizen-sci-bulk-upload', component: CitizenSciBulkUploadMainPageComponent, canActivate: [AuthGuard]},
+{ path: 'new-observation', component: NewObservationComponent, canActivate: [AuthGuard]},
+{ path: 'mark', component: MarkTestComponent},
+{ path: 'seal', component: SealComponent}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

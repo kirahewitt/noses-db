@@ -1,0 +1,118 @@
+.outer-most-container {
+    border: 1px solid black;
+    height: 700px;
+    display: flex;
+}
+
+.title-container {
+    display: flex;
+    padding-top: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.outer-filter-container {
+    border: 1px solid red;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.positioned-filter-container {
+    border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 100%;
+}
+
+.positioned-filter-container-right {
+    border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    height: 100%;
+}
+
+.filter-row {
+    border: 1px solid blue;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-row-item {
+    flex: 1;
+    border: 1px solid orange;
+    flex-grow: 2;
+    height: 100%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sized-large {
+    height: 5% !important;
+    flex-direction: column;
+}
+
+.sized-normal {
+    max-height: 12% !important;
+    flex-direction: column;
+}
+
+.sized-small {
+    max-height: 8% !important;
+    flex-direction: column;
+}
+
+.sized-half {
+    max-height: 30% !important;
+    flex-direction: column;
+}
+
+.half-width {
+    max-width: 50% !important;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.border-black {
+    border: 1px solid black;
+}
+
+.left {
+    float: left;
+    justify-content: left;
+    align-items: left;
+}
+
+.down {
+    padding-top: 2%;
+}
+
+.small {
+    flex-grow: 1;
+}
+
+.button-left{
+    position:absolute;
+    bottom: 3%;
+    right: 10%;
+}
+
+.button-right{
+    position:absolute;
+    bottom: 3%;
+    right: 5%;
+}
