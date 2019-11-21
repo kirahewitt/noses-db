@@ -1,0 +1,289 @@
+<h1 class="title is-2 title-container">New Observation</h1>
+<div class="outer-most-container">
+    <div class="outer-filter-container">
+        <div class="positioned-filter-container">
+            <div class="filter-row">
+                <div class="filter-row-item">
+                  <h2>Entered By:</h2>
+                </div>
+                <div class="filter-row-item left">
+                  <input class="form-control" type="text" placeholder="Default input">
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-row-item">
+                  <h2>Season:</h2>
+                </div>
+                <div class="filter-row-item left">
+                    <select class="form-control">
+                      <option>Default select</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-row-item">
+                  <h2>Date of Observation:</h2>
+                </div>
+                <div class="filter-row-item left down">
+                  <div class="form-group">
+                    <input type="date" class="form-control" id="date">
+                  </div>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-row-item">
+                  <h2>Location:</h2>
+                </div>
+                <div class="filter-row-item left">
+                    <select class="form-control">
+                      <option>Default select</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-row">
+              <div class="filter-row-item">
+                <h2>Field Leader:</h2>
+              </div>
+              <div class="filter-row-item left">
+                <select class="form-control">
+                  <option>Default select</option>
+                </select>
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="filter-row-item">
+                <h2>Pups (Age):</h2>
+              </div>
+              <div class="filter-row-item left">
+                <input class="form-control" type="text" placeholder="Default input">
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="filter-row-item">
+                <h2>Pups (Number):</h2>
+              </div>
+              <div class="filter-row-item left">
+                <input class="form-control" type="text" placeholder="Default input">
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="filter-row-item">
+                <h2>Molt %:</h2>
+              </div>
+              <div class="filter-row-item left">
+                <input class="form-control" type="number" placeholder="Enter a Number 0-100" min="0" step="5" max="100">
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="filter-row-item">
+                  <div class="checkbox">
+                    <label><input type="checkbox" value=""> First Seen as Weaner</label>
+                  </div>
+              </div>
+              <div class="filter-row-item">
+                <div class="checkbox">
+                  <label><input type="checkbox" value=""> Pup</label>
+                </div>
+              </div>
+              <div class="filter-row-item">
+                <div class="checkbox">
+                  <label><input type="checkbox" value=""> Is Procedure</label>
+                </div>
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="checkbox">
+                <label><input type="checkbox" value=""> Flag For Review</label>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="outer-filter-container">
+        <div class="positioned-filter-container-right">
+            <div class="filter-row sized-normal left">
+              <h2>Animal Identification:</h2>
+              <label class="checkbox-inline left"><input type="checkbox" value=""> New Seal</label>
+            </div>
+            <div class="filter-row sized-small flex-row left">
+              <div class="filter-row-item">
+                Mark:
+              </div>
+              <div class="filter-row-item">
+                <input class="form-control" type="text" placeholder="Text Input">
+              </div>
+              <div class="filter-row-item">
+                Position:
+              </div>
+              <div class="filter-row-item down left">
+                <div class="form-group down">
+                  <select class="form-control" id="sel1">
+                    <option>L</option>
+                    <option>R</option>
+                    <option>B</option>
+                    <option>Implement these options to be pulled from somewhere</option>
+                  </select>
+                </div>
+              </div>
+              <div class="filter-row-item down">
+                <label class="checkbox-inline left"><input type="checkbox" value=""> New Mark</label>
+              </div>
+            </div>
+            <div class="filter-row sized-small left">
+              <div class="filter-row-item left">
+                <button type="button" class="btn btn-success">  + Add Mark  </button>
+              </div>
+            </div>
+            <div class="filter-row sized-small flex-row left">
+              <div class="filter-row-item">
+                Tag:
+              </div>
+              <div class="filter-row-item">
+                <input class="form-control" type="text" placeholder="Text Input">
+              </div>
+              <div class="filter-row-item">
+                Position:
+              </div>
+              <div class="filter-row-item small">
+                Flip:
+              </div>
+              <div class="filter-row-item down small left">
+                <div class="form-group down">
+                  <select class="form-control" id="sel1">
+                    <option>L</option>
+                    <option>R</option>
+                  </select>
+                </div>
+              </div>
+              <div class="filter-row-item small">
+                Pos:
+              </div>
+              <div class="filter-row-item down small left">
+                <div class="form-group down">
+                  <select class="form-control" id="sel1">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                  </select>
+                </div>
+              </div>
+              <div class="filter-row-item small">
+                Dir:
+              </div>
+              <div class="filter-row-item down small left">
+                <div class="form-group down">
+                  <select class="form-control" id="sel1">
+                    <option>si</option>
+                    <option>so</option>
+                  </select>
+                </div>
+              </div>
+              <div class="filter-row-item down">
+                <label class="checkbox-inline left"><input type="checkbox" value=""> New Tag</label>
+              </div>
+            </div>
+            <div class="filter-row sized-small left">
+              <div class="filter-row-item left">
+                <button type="button" class="btn btn-success">  + Add Tag  </button>
+              </div>
+            </div>
+            <div class="filter-row sized-small flex-row left">
+                <div class="filter-row-item">
+                  Sex:
+                </div>
+                <div class="filter-row-item left down">
+                  <div class="form-group down">
+                    <select class="form-control" id="sel1">
+                      <option>M</option>
+                      <option>F</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="filter-row-item">
+                </div>
+                <div class="filter-row-item">
+                  Age Class:
+                </div>
+                <div class="filter-row-item down left">
+                  <div class="form-group down">
+                    <select class="form-control" id="sel1">
+                      <option>P</option>
+                      <option>W</option>
+                      <option>J</option>
+                      <option>A</option>
+                      <option>SA1</option>
+                      <option>SA2</option>
+                      <option>SA3</option>
+                      <option>SA4</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="filter-row-item">
+                    <button type="button" class="btn btn-danger">Clear</button>
+                </div>
+                <div class="filter-row-item">
+                  <button type="button" class="btn btn-success">Search</button>
+                </div>
+            </div>
+            <div class="filter-row sized-half border-black">
+              <div class="filter-row-item sized-large left" style="justify-content: left">
+                <label class="checkbox-inline left"><input type="checkbox" data-toggle="collapse" data-target="#demo"value="">Weighted?</label>
+              </div>
+              <div id="demo" class="collapse" style="justify-content: left">
+                <div class="filter-row">
+                  <div class="filter-row-item">
+                    <h4>Standard Length:</h4>
+                  </div>
+                  <div class="filter-row-item left small">
+                    <input class="form-control" type="text" placeholder="Default input">
+                  </div>
+                  <div class="filter-row-item">
+                    <h4>Total Mass:</h4>
+                  </div>
+                  <div class="filter-row-item left small">
+                    <input class="form-control" type="text" placeholder="Default input">
+                  </div>
+                </div>
+                <div class="filter-row">
+                  <div class="filter-row-item">
+                    <h4>Curvilinear Length:</h4>
+                  </div>
+                  <div class="filter-row-item left small">
+                    <input class="form-control" type="text" placeholder="Default input">
+                  </div>
+                  <div class="filter-row-item">
+                    <h4>Mass Tare:</h4>
+                  </div>
+                  <div class="filter-row-item left small">
+                    <input class="form-control" type="text" placeholder="Default input">
+                  </div>
+                </div>
+                <div class="filter-row">
+                  <div class="filter-row-item">
+                    <h4>   Auxilary Girth:</h4>
+                  </div>
+                  <div class="filter-row-item left small">
+                    <input class="form-control" type="text" placeholder="Default input">
+                  </div>
+                  <div class="filter-row-item">
+                    <h4>Animal Mass:</h4>
+                  </div>
+                  <div class="filter-row-item left small">
+                    <input class="form-control" type="text" placeholder="Default input">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filter-row border-black" style="width: 100%">
+              <div class="form-group filter-row-item flex-column">
+                <label for="comment">Comments:</label>
+                <textarea class="form-control" rows="5" id="comment" style="width: 70%"></textarea>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-danger button-left" routerLink="/menu">Cancel</button>
+
+<button type="button" class="btn btn-success button-right" routerLink="/new-observation">Submit</button>

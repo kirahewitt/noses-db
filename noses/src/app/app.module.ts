@@ -45,6 +45,11 @@ import { ComponentForAngServiceComponent } from './component-for-ang-service/com
 
 import { CitizenSciBulkUploadMainPageComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-main-page/citizen-sci-bulk-upload-main-page.component';
 import { CitizenSciBulkUploadDataPreviewComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-data-preview/citizen-sci-bulk-upload-data-preview.component';
+import { FilterBlockComponent } from './filter-block/filter-block.component';
+import { NewObservationComponent } from './new-observation/new-observation.component';
+import { MarkTestComponent } from './mark-test/mark-test.component';
+import { MarkTestChildComponent } from './mark-test-child/mark-test-child.component';
+import { SealComponent } from './seal/seal.component';
 
 
 const config = {
@@ -74,6 +79,11 @@ const config = {
     ComponentForAngServiceComponent,
     CitizenSciBulkUploadMainPageComponent,
     CitizenSciBulkUploadDataPreviewComponent,
+    FilterBlockComponent,
+    NewObservationComponent,
+    MarkTestComponent,
+    MarkTestChildComponent,
+    SealComponent
   ],
   imports: [
     FormsModule,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-all-observations',
@@ -8,6 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class AllObservationsComponent implements OnInit {
 
   constructor() { }
+
+  onClick(name) {
+    
+  }
 
   ngOnInit() {
   }

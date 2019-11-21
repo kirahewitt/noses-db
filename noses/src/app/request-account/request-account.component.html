@@ -56,9 +56,10 @@
         </div>
     </div>
 </div>
-<button type="button" class="btn btn-success button-left">Submit</button>
 
-<button type="button" class="btn btn-success button-left" data-toggle="modal" data-target="#exampleModal">Submit</button>
+<button type="button" class="btn btn-success button-right" routerLink="/sign-in">Submit</button>
+
+<button type="button" class="btn btn-success button-right" data-toggle="modal" data-target="#exampleModal">Submit</button>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -74,10 +75,12 @@
         Your account has been requested and an email will be sent with information soon!
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+        <button routerLink="/sign-in" type="button" class="btn btn-success" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-<button type="button" class="btn btn-danger button-right">Cancel</button>
+
+  <button type="button" class="btn btn-danger button-left" routerLink="/sign-in">Cancel</button>
+

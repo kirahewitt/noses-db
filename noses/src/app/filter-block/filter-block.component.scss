@@ -1,0 +1,27 @@
+.filter-row {
+    border: 1px solid blue;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+    justify-content: center;
+}
+
+.filter-row-item {
+    flex: 1;
+    flex-grow: 1;
+    border: 1px solid orange;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center;
+}
+
+.main {
+    flex-grow: 3;
+}
