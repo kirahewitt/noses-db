@@ -47,8 +47,15 @@
     "@ng-bootstrap/ng-bootstrap": "^5.1.4",
     "@types/jasmine": "~3.4.6",
     "@types/jasminewd2": "^2.0.8",
+<<<<<<< HEAD
     "@types/node": "~12.12.11",
     "jasmine-core": "~3.5.0",
+=======
+    "@types/jquery": "^3.3.31",
+    "@types/node": "~8.9.4",
+    "codelyzer": "~4.5.0",
+    "jasmine-core": "~2.99.1",
+>>>>>>> a64a7588f27734eccc173d07d6f0e6bdbf0e95bc
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.4.1",
     "karma-chrome-launcher": "~3.1.0",
