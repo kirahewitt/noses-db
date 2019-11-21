@@ -37,7 +37,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
+import { MenuComponent } from './menu/menu.component';
+import { AllObservationsComponent } from './all-observations/all-observations.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { RequestAccountComponent } from './request-account/request-account.component';
 import { ComponentForAngServiceComponent } from './component-for-ang-service/component-for-ang-service.component';
+
+import { CitizenSciBulkUploadMainPageComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-main-page/citizen-sci-bulk-upload-main-page.component';
+import { CitizenSciBulkUploadDataPreviewComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-data-preview/citizen-sci-bulk-upload-data-preview.component';
 
 
 const config = {
@@ -60,7 +67,13 @@ const config = {
     ApproveObsComponent,
     DialogOverviewExampleDialog,
     EditUserDialogComponent,
+    MenuComponent,
+    AllObservationsComponent,
+    ResetPasswordComponent,
+    RequestAccountComponent,
     ComponentForAngServiceComponent,
+    CitizenSciBulkUploadMainPageComponent,
+    CitizenSciBulkUploadDataPreviewComponent,
   ],
   imports: [
     FormsModule,

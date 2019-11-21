@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatToolbarModule, MatTableModule, MatTableDataSource } from '@angular/material';
 import { FlaskBackendService } from './_services/flask-backend.service';
 import { AdminService } from "./_services/admin.service";
-import { LocationService } from './_services/location.service';
 
 
 @Component({
@@ -18,8 +17,7 @@ export class AppComponent implements OnInit {
   priv: any;
 
   constructor(private apiService: FlaskBackendService,
-              private adminStatus: AdminService,
-              private locationService : LocationService) { }
+              private adminStatus: AdminService) { }
 
   ngOnInit() {
     this.loggedInUser = JSON.parse(localStorage.getItem("user"));

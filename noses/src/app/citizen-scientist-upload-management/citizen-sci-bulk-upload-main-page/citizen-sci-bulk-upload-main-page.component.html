@@ -1,0 +1,47 @@
+<div class="bulk-upload-body">
+
+
+  <div class="jumbotron jumbotron-fluid">
+    <div class="row">
+
+      <div class="col-md-6">
+        <div class="padding-left-25">
+          <h1 class="display-4">Citizen Scientist Bulk Upload</h1>
+          <p>Upload your own observations.</p>
+          <button class="btn btn-primary btn-sm" >Download the Template</button>
+        </div>
+      </div>
+
+
+      <!-- Section to specify File upload and for downloading format csv -->
+      <div class="col-md-6">
+
+        <!-- upload your own data -->
+        <div class="mybtn-container">
+          <button class="btn btn-primary btn-lg" (click)="uploader.click()">Upload CSV</button>
+          <input hidden #uploader type="file" accept=".csv" (change)="handleFileSelect($event)">
+          <label class="file-name">{{ fileName }}</label>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  
+
+  <!-- Where the preview of observations will be displayed from the file -->
+  <app-citizen-sci-bulk-upload-data-preview [uploadData]="fileData" ></app-citizen-sci-bulk-upload-data-preview>
+  
+  <!-- bottom of the page has a back button.-->
+  <div class="row row-for-button">
+    <button class="btn btn-primary btn-sm" >Back</button>
+  </div>
+
+
+  
+  <!-- <div class="row">
+
+  </div> -->
+
+
+</div>

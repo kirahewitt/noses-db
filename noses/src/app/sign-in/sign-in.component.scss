@@ -28,3 +28,20 @@ input[type=text], input[type=password] {
     margin: 0 auto 1em auto;
     padding: 5px;
 }
+
+.outer-most-container {
+  border: 1px solid black;
+  height: 60px;
+  display: flex;
+  padding-top: 1%;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner-most-container {
+  border: 1px solid black;
+  display: flex;
+  width: 50%;
+  align-items: center;
+  justify-content: center;
+}
