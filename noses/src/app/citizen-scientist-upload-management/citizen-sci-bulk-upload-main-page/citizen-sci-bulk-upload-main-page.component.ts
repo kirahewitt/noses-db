@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
 import { SpreadsheetTuple, TupleProcessingError } from '../../_supporting_classes/SpreadsheetTuple';
 
+// imports that will let us use modal windows
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormModalSingleObservationComponent } from '../../form-modal-single-observation/form-modal-single-observation.component';
 
 
 /**
@@ -62,9 +65,9 @@ var jsonName_observationEnteredInAno = "Entered in Ano";
 
 
 /**
- * -------------------------------------------------------------------------------------
+ * ------------------------------------------------------------------------------------------------
  * 
- * -------------------------------------------------------------------------------------
+ * ------------------------------------------------------------------------------------------------
  */
 @Component({
   selector: 'app-citizen-sci-bulk-upload-main-page',
@@ -78,15 +81,31 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
   public observationTuples : SpreadsheetTuple[];
 
 
-  constructor(private papa: Papa) { }
+  constructor(private papa: Papa, private modalService: NgbModal) { }
 
   ngOnInit() {
   }
 
+  /**
+   * -------------------------------------------------------------------------------------
+   * 
+   * -------------------------------------------------------------------------------------
+   */
+  openFormModal() {
+    const modalRef = this.modalService.open(FormModalSingleObservationComponent);
+    
+    modalRef.result.then((result) => {
+      console.log(result);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
 
   /**
-   * 
+   * -------------------------------------------------------------------------------------
    * @param event 
+   * -------------------------------------------------------------------------------------
    */
   public handleFileSelect(event) {
     var files = event.target.files; // FileList object

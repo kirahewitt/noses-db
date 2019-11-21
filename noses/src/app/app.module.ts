@@ -48,6 +48,10 @@ import { CitizenSciBulkUploadDataPreviewComponent } from './citizen-scientist-up
 import { BulkUploadObservationViewComponent } from './citizen-scientist-upload-management/bulk-upload-observation-view/bulk-upload-observation-view.component';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormModalSingleObservationComponent } from './form-modal-single-observation/form-modal-single-observation.component';
+
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
     authDomain: "noses-346ed.firebaseapp.com",
@@ -76,6 +80,7 @@ const config = {
     CitizenSciBulkUploadMainPageComponent,
     CitizenSciBulkUploadDataPreviewComponent,
     BulkUploadObservationViewComponent,
+    FormModalSingleObservationComponent,
   ],
   imports: [
     FormsModule,
@@ -102,16 +107,19 @@ const config = {
     AngularFireAuthModule, // auth
     AngularFireStorageModule, // storage
     PapaParseModule,
-    AngularFontAwesomeModule
+    AngularFontAwesomeModule,
+    NgbModule
   ],
   exports: [
     RouterModule,
     DialogOverviewExampleDialog,
     EditUserDialogComponent,
+    FormModalSingleObservationComponent
   ],
   entryComponents: [
     DialogOverviewExampleDialog,
     EditUserDialogComponent,
+    FormModalSingleObservationComponent
   ],
   providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]

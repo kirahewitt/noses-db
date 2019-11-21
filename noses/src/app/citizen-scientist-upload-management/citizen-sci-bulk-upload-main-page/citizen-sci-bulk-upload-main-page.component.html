@@ -36,6 +36,7 @@
           <!--Table head-->
           <thead class="thead">
             <tr>
+              <th scope="col">#</th>
               <th scope="col">Date</th>
               <th scope="col">Location</th>
               <th scope="col">Observer Name</th>
@@ -46,7 +47,7 @@
           <!-- Table body (Dynamic) -->
           <tbody>
             <tr *ngFor="let tuple of observationTuples; let id = index">
-              <th class="align-middle" scope="row">{{id}}</th>
+              <th class="align-middle" scope="row">{{id + 1}}</th>
               <td class="align-middle">{{tuple.dateOfRecording}}</td>
               <td class="align-middle">{{tuple.locationCode}}</td>
               <td class="align-middle">TODO</td>
@@ -59,7 +60,7 @@
                   </div>
 
                   <div class="col-md-6">
-                    <button class="btn btn-primary btn-md"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-primary btn-md" (click)="openFormModal()"><i class="fas fa-edit"></i></button>
                   </div>
 
                 </div>

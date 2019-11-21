@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SpreadsheetTuple } from '../../_supporting_classes/SpreadsheetTuple';
+import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-bulk-upload-observation-view',
@@ -9,8 +10,9 @@ import { SpreadsheetTuple } from '../../_supporting_classes/SpreadsheetTuple';
 export class BulkUploadObservationViewComponent implements OnInit {
 
   @Input() observationTuple : SpreadsheetTuple;
+  @Input() title = `Information`;
 
-  constructor() { }
+  constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit() {
   }

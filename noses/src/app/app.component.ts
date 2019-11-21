@@ -16,9 +16,20 @@ export class AppComponent implements OnInit {
   loggedInUser: any;
   priv: any;
 
+  /**
+   * 
+   * @param apiService 
+   * @param adminStatus 
+   * @param modalService 
+   */
   constructor(private apiService: FlaskBackendService,
-              private adminStatus: AdminService) { }
+              private adminStatus: AdminService
+              ) { }
 
+
+  /**
+   * 
+   */
   ngOnInit() {
     this.loggedInUser = JSON.parse(localStorage.getItem("user"));
     this.adminStatus.currentStatus.subscribe(currentStatus  => {
@@ -26,10 +37,12 @@ export class AppComponent implements OnInit {
       // console.log(typeof this.priv);
       this.setPrivelege();
     });
-
-
   }
 
+
+  /**
+   * 
+   */
   setPrivelege() {
     if(this.priv == 3) {
       this.isSuperAdmin = true;
@@ -42,7 +55,6 @@ export class AppComponent implements OnInit {
       this.isAdmin = false;
     }
   }
-
 
 }
 
