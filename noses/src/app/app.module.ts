@@ -50,7 +50,12 @@ import { NewObservationComponent } from './new-observation/new-observation.compo
 import { MarkTestComponent } from './mark-test/mark-test.component';
 import { MarkTestChildComponent } from './mark-test-child/mark-test-child.component';
 import { SealComponent } from './seal/seal.component';
+import { BulkUploadObservationViewComponent } from './citizen-scientist-upload-management/bulk-upload-observation-view/bulk-upload-observation-view.component';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormModalSingleObservationComponent } from './form-modal-single-observation/form-modal-single-observation.component';
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -83,7 +88,9 @@ const config = {
     NewObservationComponent,
     MarkTestComponent,
     MarkTestChildComponent,
-    SealComponent
+    SealComponent,
+    BulkUploadObservationViewComponent,
+    FormModalSingleObservationComponent
   ],
   imports: [
     FormsModule,
@@ -110,15 +117,19 @@ const config = {
     AngularFireAuthModule, // auth
     AngularFireStorageModule, // storage
     PapaParseModule,
+    AngularFontAwesomeModule,
+    NgbModule
   ],
   exports: [
     RouterModule,
     DialogOverviewExampleDialog,
     EditUserDialogComponent,
+    FormModalSingleObservationComponent
   ],
   entryComponents: [
     DialogOverviewExampleDialog,
     EditUserDialogComponent,
+    FormModalSingleObservationComponent
   ],
   providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
