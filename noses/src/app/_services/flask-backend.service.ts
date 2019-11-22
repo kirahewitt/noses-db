@@ -4,6 +4,7 @@ import { Observations } from  '../_supporting_classes/Observations';
 import { sqlUser } from '../_supporting_classes/sqlUser';
 import { Observable, of } from  'rxjs';
 import { SealDataService } from "./seal-data.service";
+import { Seal } from '../_supporting_classes/Seal';
 
 @Injectable({
   providedIn: 'root'
@@ -36,8 +37,8 @@ export class FlaskBackendService {
   /**
    * 
    */
-  readObs(): Observable<Observations[]>{
-    return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allseals` );
+  readObs(): Observable<Seal[]>{
+    return this.httpClient.get<Seal[]>(`${this.FLASK_API_SERVER}/allseals` );
   }
 
   readNotApproved(): Observable<Observations[]>{

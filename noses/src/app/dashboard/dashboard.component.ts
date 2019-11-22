@@ -73,6 +73,7 @@ export class DashboardComponent implements OnInit {
         this.notReady = false;
       }
       this.observations = observations;
+      console.log(observations[3])
       this.runSealQuery(observations);
       this.facetSetup(observations);
     });
