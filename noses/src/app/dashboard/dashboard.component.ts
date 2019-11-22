@@ -66,10 +66,10 @@ export class DashboardComponent implements OnInit {
 
     this.apiService.readObs().subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['SealID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'Sex', 'Age Class', 'viewSeal' ];
+        this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal' ];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['SealID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'Sex',  'Age Class', 'viewSeal'];
+        this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;
