@@ -64,7 +64,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
 
-    this.apiService.readObs().subscribe((observations: any)=>{
+    this.apiService.readSeals().subscribe((observations: any)=>{
       if(this.isAdmin) {
         this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal' ];
         this.notReady = false;

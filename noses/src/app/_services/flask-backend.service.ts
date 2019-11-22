@@ -37,7 +37,10 @@ export class FlaskBackendService {
   /**
    * 
    */
-  readObs(): Observable<Seal[]>{
+  readObs(): Observable<Observations[]>{
+    return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allobservations` );
+  }
+  readSeals(): Observable<Seal[]>{
     return this.httpClient.get<Seal[]>(`${this.FLASK_API_SERVER}/allseals` );
   }
 

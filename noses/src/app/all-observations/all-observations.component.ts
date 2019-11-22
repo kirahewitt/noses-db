@@ -71,10 +71,10 @@ export class AllObservationsComponent implements OnInit {
 
     this.apiService.readObs().subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal' ];
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal'];
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;

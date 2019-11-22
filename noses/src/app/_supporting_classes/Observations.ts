@@ -6,6 +6,8 @@ export  class Observations {
     SLOCode: String;
     Year: Number;
     date: Date;
-    email: String;
     sex: String;
+    Tags: Array<String>;
+    Marks: Array<String>;
+    SealID: Number
 }
