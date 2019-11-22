@@ -31,7 +31,7 @@ export class SealPageComponent implements OnInit {
     comments: new FormControl('')
   });
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
 
   ngOnInit() {

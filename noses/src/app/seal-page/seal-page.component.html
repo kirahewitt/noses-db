@@ -1,4 +1,3 @@
-
 <br>
 <br>
 <div class="row">
@@ -7,12 +6,11 @@
     <h4>Seal Observations</h4>
   </div>
   <div class="col-md-2"></div>
-    <button class="btn add-obs"><i class="fas fa-plus add-obs"></i> Add Observation</button>
+    <button routerLink="/new-observation" class="btn add-obs"><i class="fas fa-plus add-obs"></i> Add Observation</button>
 </div>
 <br>
-<div class="row">
-    <div class="col-md-2"> </div>
-    <div class="col-md-10">
+<div class="margins">
+    <div class="col-md-12">
         <table mat-table class="table table-hover" [dataSource]="dataSource">
             <ng-container matColumnDef="ObservationID">
                 <th mat-header-cell *matHeaderCellDef> Obs ID </th>
@@ -68,7 +66,6 @@
 <br>
 
 <ng-container *ngIf="show">
-
 
 <div #scrollMe class="row">
   <br>

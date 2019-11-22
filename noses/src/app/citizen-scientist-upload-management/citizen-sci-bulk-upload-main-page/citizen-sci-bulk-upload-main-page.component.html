@@ -28,12 +28,13 @@
 
     </div>
     
+    <!-- for the love of god -->
 
     <!-- ** ROW 1 ** -->
     <div class="row no-side-margin">
       <table *ngIf="observationTuples" class="table table-striped table-bordered table-hover">
 
-          <!--Table head-->
+          
           <thead class="thead">
             <tr>
               <th scope="col">#</th>
@@ -44,7 +45,7 @@
             </tr>
           </thead>
 
-          <!-- Table body (Dynamic) -->
+          
           <tbody>
             <tr *ngFor="let tuple of observationTuples; let id = index">
               <th class="align-middle" scope="row">{{id + 1}}</th>
@@ -55,21 +56,88 @@
 
                 <div class="row text-center">
 
-                  <div class="col-md-6">
-                    <button class="btn btn-primary btn-md"><i class="fas fa-images"></i></button>
-                  </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-primary btn-md">
+                        <i class="fas fa-images"></i>
+                      </button>
+                    </div>
 
-                  <div class="col-md-6">
-                    <button class="btn btn-primary btn-md" (click)="openFormModal()"><i class="fas fa-edit"></i></button>
-                  </div>
+                    <div class="col-md-6">  
+                      <button class="btn btn-primary btn-md" (click)="openDialog(id)">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    </div>
 
                 </div>
-                
+
               </td>
             </tr>
           </tbody>
 
       </table>
+
+
+
+
+
+
+      <!-- <table mat-table *ngIf="observationTuples" [dataSource]="dataSource" class="table table-striped table-bordered table-hover">
+
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="locationCode">
+            <th mat-header-cell *matHeaderCellDef>Location Code</th>
+            <td mat-cell *matCellDef="let element"> {{element.locationCode}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="comment">
+            <th mat-header-cell *matHeaderCellDef>Comment</th>
+            <td mat-cell *matCellDef="let element"> {{element.comment}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let id = index"> 
+              
+              <div class="row text-center">
+
+                  <div class="col-md-6">
+                    <button class="btn btn-primary btn-md">
+                      <i class="fas fa-images"></i>
+                    </button>
+                  </div>
+
+                  <div class="col-md-6">  
+                    <button class="btn btn-primary btn-md" (click)="openDialog(id)">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+
+              </div>
+            </td>
+          </ng-container>  
+
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
+
+
+
+
+
+
+
     </div>
 
 

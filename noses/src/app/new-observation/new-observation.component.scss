@@ -1,5 +1,5 @@
 .outer-most-container {
-    border: 1px solid black;
+    // border: 1px solid black;
     height: 700px;
     display: flex;
 }
@@ -12,7 +12,7 @@
 }
 
 .outer-filter-container {
-    border: 1px solid red;
+    // border: 1px solid red;
     flex: 1;
     display: flex;
     align-items: center;
@@ -20,7 +20,7 @@
 }
 
 .positioned-filter-container {
-    border: 1px solid green;
+    // border: 1px solid green;
     display: flex;
     flex-direction: column;
     width: 70%;
@@ -28,7 +28,7 @@
 }
 
 .positioned-filter-container-right {
-    border: 1px solid green;
+    // border: 1px solid green;
     display: flex;
     flex-direction: column;
     width: 90%;
@@ -36,7 +36,7 @@
 }
 
 .filter-row {
-    border: 1px solid blue;
+    // border: 1px solid blue;
     flex: 1;
     display: flex;
     flex-direction: row;
@@ -46,7 +46,7 @@
 
 .filter-row-item {
     flex: 1;
-    border: 1px solid orange;
+    // border: 1px solid orange;
     flex-grow: 2;
     height: 100%;
     width: 90%;
@@ -87,8 +87,17 @@
     flex-direction: column;
 }
 
-.border-black {
-    border: 1px solid black;
+.border-black-top {
+    border-top: 1px solid black;
+}
+.border-black-bottom {
+    border-bottom: 1px solid black;
+}
+.border-black-right {
+    border-right: 1px solid black;
+}
+.border-black-left {
+    border-left: 1px solid black;
 }
 
 .left {

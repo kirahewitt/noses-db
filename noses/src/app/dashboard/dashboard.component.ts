@@ -52,7 +52,7 @@ export class DashboardComponent implements OnInit {
   yearControl = new FormControl('');
   partialControl = new FormControl('');
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
 
   constructor(private apiService: FlaskBackendService,
@@ -66,10 +66,10 @@ export class DashboardComponent implements OnInit {
 
     this.apiService.readObs().subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['SealID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'Sex', 'Age Class', 'viewSeal' ];
+        this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal' ];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['SealID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'Sex',  'Age Class', 'viewSeal'];
+        this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;

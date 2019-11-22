@@ -25,13 +25,13 @@
       </div>
     </div>
     <div [hidden]="notReady">
-<div class="row">
+    <div class="row">
       <div class="col-md-3" style="margin-left: 15px;">
         <input class="form-control" type="text" placeholder="Partial Tag/Mark Match" [formControl]="partialControl">
 
           <button class="btn btn-primary" (click)="getPartialTag()">Partial Search</button>
-        </div>
       </div>
+    </div>
     <div class="row">
 
       <!--left border-->
@@ -89,20 +89,6 @@
                     <td mat-cell *matCellDef="let obs"> {{ obs.SealID }} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="TagNumber1">
-                    <th mat-header-cell *matHeaderCellDef> Tag #1 </th>
-                    <td mat-cell *matCellDef="let obs"> {{ obs.T1 }} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="TagNumber2">
-                    <th mat-header-cell *matHeaderCellDef> Tag #2 </th>
-                    <td mat-cell *matCellDef="let obs"> {{ obs.T2 }} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="Mark">
-                    <th mat-header-cell *matHeaderCellDef> Mark </th>
-                    <td mat-cell *matCellDef="let obs"> {{ obs.Mark }} </td>
-                </ng-container>
                 <ng-container matColumnDef="Age Class">
                     <th mat-header-cell *matHeaderCellDef> Age Class </th>
                     <td mat-cell *matCellDef="let obs"> {{ obs.AgeClass }} </td>
@@ -113,9 +99,14 @@
                     <td mat-cell *matCellDef="let obs"> {{ obs.Sex }} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="Year">
-                    <th mat-header-cell *matHeaderCellDef> Breeding Season </th>
-                    <td mat-cell *matCellDef="let obs"> {{ obs.Year }} </td>
+                <ng-container matColumnDef="TagNumber1">
+                    <th mat-header-cell *matHeaderCellDef> Recent Tag </th>
+                    <td mat-cell *matCellDef="let obs"> {{ obs.RecentTag }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Mark">
+                    <th mat-header-cell *matHeaderCellDef> Recent Mark </th>
+                    <td mat-cell *matCellDef="let obs"> {{ obs.RecentMark }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="viewSeal">

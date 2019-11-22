@@ -4,8 +4,8 @@
  * value supplied for a particular attribute of a tuple. 
  */
 export class TupleProcessingError {
-  attributeName : String;
-  errorMessage: String;
+  attributeName : string;
+  errorMessage: string;
 
 
   constructor(attributeName : string, msg : string) {
@@ -15,13 +15,16 @@ export class TupleProcessingError {
 }
 
 
+/**
+ * List of variables that are the names of each of the columns in the spreadsheet submitted by the user.
+ */
 var jsonName_fieldLeaderInitials = "Field Leader Initials";
 var jsonName_year = "Year";
 var jsonName_dateOfRecording = "Date";
 var jsonName_locationCode = "Loc.";
 var jsonName_sealSex = "Sex";
 var jsonName_sealAgeCode = "Age";
-var jsonName_sealIsPup = "Pup?";
+var jsonName_sealHasPupQuantity = "Pup?";
 var jsonName_mark1_isNew = "New Mark 1?";
 var jsonName_mark1_idValue = "Mark 1";
 var jsonName_mark1_positionCode = "Mark 1 Position";
@@ -53,13 +56,16 @@ var jsonName_comments = "Comments";
 var jsonName_observationEnteredInAno = "Entered in Ano";
 
 
+/**
+ * Each of the above defined variables in a list.
+ */
 var SpreadsheetAttributeList = [jsonName_fieldLeaderInitials,
                                 jsonName_year,
                                 jsonName_dateOfRecording,
                                 jsonName_locationCode,
                                 jsonName_sealSex,
                                 jsonName_sealAgeCode,
-                                jsonName_sealIsPup,
+                                jsonName_sealHasPupQuantity,
                                 jsonName_mark1_isNew,
                                 jsonName_mark1_idValue,
                                 jsonName_mark1_positionCode,
@@ -86,14 +92,16 @@ var SpreadsheetAttributeList = [jsonName_fieldLeaderInitials,
                                 jsonName_comments,
                                 jsonName_observationEnteredInAno]
 
-
+/**
+ * This list is actually a map of jsonNames to objectNames, which will make it easier
+ */
 var jsonName_to_objectName_map =  [ {jsonName: jsonName_fieldLeaderInitials, objectName: "fieldLeaderList"},
                                     {jsonName: jsonName_year, objectName: "year"},
                                     {jsonName: jsonName_dateOfRecording, objectName: "dateOfRecording"},
                                     {jsonName: jsonName_locationCode, objectName: "locationCode"},
                                     {jsonName: jsonName_sealSex, objectName: "sealSex"},
                                     {jsonName: jsonName_sealAgeCode, objectName: "sealAgeCode"},
-                                    {jsonName: jsonName_sealIsPup, objectName: "sealIsPup"},
+                                    {jsonName: jsonName_sealHasPupQuantity, objectName: "sealHasPupQuantity"},
                                     {jsonName: jsonName_mark1_isNew, objectName: "mark1_isNew?"},
                                     {jsonName: jsonName_mark1_idValue, objectName: "mark1_idValue"},
                                     {jsonName: jsonName_mark1_positionCode, objectName: "mark1_positionCode"},
@@ -140,72 +148,100 @@ export class SpreadsheetTuple {
   // the original json input used to construct an instance of this class
   originalJsonInput : any;
 
-  fieldLeaderList : String[] = null;
-  year : number = null;
-  dateOfRecording : Date = null;
-  locationCode : String  = null;
-  currentSeason : String  = null;
+  // other bookkeeping
+  fieldLeaderList : string[];
+  year : number;
+  dateOfRecording : Date;
+  locationCode : string;
+  currentSeason : string;
 
   // seal attributes
-  sealSex : String = null;
-  sealAgeCode : String = null;
-  sealHasPupQuantity : number = null;
+  sealSex : string;
+  sealAgeCode : string;
+  sealHasPupQuantity : number;
   
   // marks
-  mark1_idValue : String = null;
-  mark1_isNew? : Boolean = null;
-  mark1_positionCode : String = null;
-
-  mark2_idValue : String = null;
-  mark2_isNew? : Boolean = null;
-  mark2_positionCode : String = null;
+  mark1_idValue : string;
+  mark1_isNew : string;
+  mark1_positionCode : string;
+  mark2_idValue : string;
+  mark2_isNew : string;
+  mark2_positionCode : string;
 
   // tags
-  tag1_idValue : String = null;
-  tag1_isNew? : Boolean = null;
-  tag1_positionCode : String = null;
-
-  tag2_idValue : String = null;
-  tag2_isNew? : Boolean = null;
-  tag2_positionCode : String = null;
+  tag1_idValue : string;
+  tag1_isNew : string;
+  tag1_positionCode : string;
+  tag2_idValue : string;
+  tag2_isNew : string;
+  tag2_positionCode : string;
 
   // Measurements
-  sealMoltPercentage : Number = null;
-  sealStandardLength : Number = null;
-  sealStandardLength_units : String = null;
-  sealCurvilinearLength : Number = null;
-  sealCurvilinearLength_units : String = null;
-  sealAuxiliaryGirth : Number = null;
-  sealAuxiliaryGirth_units : String = null;
-  sealMass : Number = null;
-  sealMass_units : String = null;
-  sealTare : Number = null;
-  sealTare_units : String = null;
-  sealMassTare : Number = null;
-  sealMassTare_units : String = null;
+  sealMoltPercentage : number;
+  sealStandardLength : number;
+  sealStandardLength_units : string;
+  sealCurvilinearLength : number;
+  sealCurvilinearLength_units : string;
+  sealAuxiliaryGirth : number;
+  sealAuxiliaryGirth_units : string;
+  sealMass : number;
+  sealMass_units : string;
+  sealTare : number;
+  sealTare_units : string;
+  sealMassTare : number;
+  sealMassTare_units : string;
 
   // other
-  sealLastSeenAsPupDate : Date = null; // date-LSAP
-  sealFirstSeenAsWeaner : Date = null; // date-FSAW
-  comments : String = null;
-  observationEnteredInAno : Boolean = null;
+  sealLastSeenAsPupDate : Date; // date-LSAP
+  sealFirstSeenAsWeaner : Date; // date-FSAW
+  weanDateRange : number; // difference (in days) between date-FSAW and date-LSAP
+  observationEnteredInAno : string; 
+  comments : string;    
+  isApproved : boolean; // always default false for citizens' observations
+  processingErrorList : TupleProcessingError[]; // records whether the data provided for each of the fields is valid.
 
-  // difference (in days) between date-FSAW and date-LSAP
-  weanDateRange : number = null;
 
-  // will be false initially, this tuple will have to be approved by someone else later
-  isApproved : Boolean = null;
+  /**
+   * 
+   * @param tupleAsJson : A json object that represents a spreadsheet with columns named according to the types listed above.
+   */
+  constructor(tupleAsJson : any) {
 
-  // if
-  processingErrorList : TupleProcessingError[];
+    //Initialize the entire object to blank attributes
+    this.originalJsonInput = null;
+    this.fieldLeaderList = [];
+    this.year = null;
+    this.dateOfRecording = null;
+    this.locationCode = "";
+    this.currentSeason = "";
+    this.sealSex = "";
+    this.sealAgeCode = "";
+    this.sealHasPupQuantity = null;
+    this.mark1_idValue = "";
+    this.mark1_isNew = ""
+
+    this.processingErrorList = [];
+
+    // the json field
+    let dataSourceAsString : string = JSON.stringify(tupleAsJson);
+    let definitelyAnewDataSource : any = JSON.parse(dataSourceAsString);
+    this.originalJsonInput = definitelyAnewDataSource;
+  }
+
+
+  public copy(source : SpreadsheetTuple) {
+
+  }
 
 
   /**
    * Creates an instance of this class to represent a json tuple. If there is an error while processing one
-   * of the fields, the error is placed in "processingErrorList".
+   *  of the fields, the error is placed in "processingErrorList".
+   * 
+   * This method requires that the originalJsonInput field be already filled in.
    * 
    * Can use a map to map a field name to one of the classes attribute names. and we can reference attributes
-   * by building a string and using that string for the attribute name.
+   *  by building a string and using that string for the attribute name.
    * 
    * Easiest way to do this is to store the original list, and then have all the above fields, and the map
    *
@@ -215,14 +251,425 @@ export class SpreadsheetTuple {
    *     2. perform the appropriate processing for that field
    *     3. if processing == success --> assign it to the objectValue
    *     4. if processing == fail    --> record the failure in the processingErrorList
-   *  
-   * @param tupleAsJson 
    */
-  constructor(tupleAsJson : any) {
-    // console.log("WITHIN CONSTRUCTOR -- actual parameter: " );
-    // console.log(tupleAsJson)
-    this.originalJsonInput = tupleAsJson;
-    this.processingErrorList = [];
+  public validateTupleData() {
+    let tuple : SpreadsheetTuple = this;
+    let jsonInput = tuple.originalJsonInput;
+
+    for (var field of Object.entries(jsonInput) ) {
+      let KEY : number = 0;
+      let VALUE : number = 1;
+      let valueAsString: string = field[VALUE] as string;        
+
+      // field leader initials
+      if (field[KEY] == jsonName_fieldLeaderInitials) {
+        let fieldLeaders : string = field[VALUE] as string;
+        let fieldLeaderList = fieldLeaders.split(" ");
+        tuple.fieldLeaderList = fieldLeaderList;
+
+        // we have a string like "ABC" or "ABC, DEF, ..., XYZ"
+        // verify each one of those strings is an existing field leader.
+        // if not, error
+
+        // if we receive a field leader which does not yet exist, record an error for this field.
+      }
+
+      // the actual current year (as opposed to breeding season year)
+      else if (field[KEY] == jsonName_year) {
+        // verify they gave us an integer
+        let value = parseInt(valueAsString);
+
+        if (value == NaN) {
+          var error = new TupleProcessingError(jsonName_year, "Error: received non-integer value for year");
+          tuple.processingErrorList.push(error);
+        }
+        else {
+          tuple.year = value;
+        }
+      }
+
+      // date the observation was recorded
+      else if (field[KEY] == jsonName_dateOfRecording) {
+        try {
+          var value: Date = new Date(valueAsString);  
+          tuple.dateOfRecording = value;
+        }
+        catch (error) {
+          var error = new TupleProcessingError(jsonName_dateOfRecording, "Error: something that wasn't a date (MM/DD/YYYY)");
+          tuple.processingErrorList.push(error);
+        }
+      }
+
+      // location code
+      else if (field[KEY] == jsonName_locationCode) {
+        // verify they gave us a location code that already exists ()
+        // var value
+        // for now, trust
+        tuple.locationCode = valueAsString;
+      }
+
+      // sex of the seal the observation is about.. verify the value is either 'M' or 'F'
+      else if (field[KEY] == jsonName_sealSex) {
+        let value = valueAsString;
+        
+        if (value != "M" && value != "F") {
+          var error = new TupleProcessingError(jsonName_sealSex, "Error: received value for seal gender that wasn't M or F: " + value);
+          tuple.processingErrorList.push(error);
+        }
+        else {
+          tuple.sealSex = value;
+        }
+      }
+
+      // age code for the seal the observation is about. Valid age codes: "pup", "weanling", "juvenile", "adult female", "SA1"..."SA4", "adult male"
+      else if (field[KEY] == jsonName_sealAgeCode) {  
+        let acceptableValueList = ["P", "W", "J", "SA1", "SA2", "SA3", "SA4", "A"]; //    
+
+        if ((acceptableValueList.indexOf(valueAsString) > -1) == false) {
+          var error = new TupleProcessingError(jsonName_sealAgeCode, "Error: received invalid age code: " + valueAsString);
+          tuple.processingErrorList.push(error);
+        }
+        else {
+          tuple.sealAgeCode = valueAsString;
+        }
+
+        // if adult female --> verify the sex is also female
+        // if adult male   --> verify the sex is also male
+        // if pup          --> verify the sealIsPup is set to true
+      }
+
+      // for mother elephant seals, indicates the number of pups they are caring for
+      else if (field[KEY] == jsonName_sealHasPupQuantity) {
+        let value = parseInt(valueAsString);
+        
+        if (value == NaN) {
+          var error = new TupleProcessingError(jsonName_sealHasPupQuantity, "Error: received non-integer value for number of pups suffered by this parent. Intead: " + value);
+          tuple.processingErrorList.push(error);
+        }
+        else {
+          tuple.sealHasPupQuantity = value;
+        }
+      }
+
+      // must be (Y/N)
+      else if (field[KEY] == jsonName_mark1_isNew) {
+        let value = valueAsString;
+
+        if (value != "Y" && value != "N" && value != "") {
+          var error = new TupleProcessingError(jsonName_mark1_isNew, "Error: expected Y or N. Instead: " + value);
+          tuple.processingErrorList.push(error);
+        }
+        else {
+          tuple.mark1_isNew = value;
+        }
+      }
+
+      // really could be anything
+      else if (field[KEY] == jsonName_mark1_idValue) {
+        tuple.mark1_idValue = valueAsString;
+      }
+
+      // aka the STAMP // verify composed of one of the valid positions: "L" "R" "B"
+      else if (field[KEY] == jsonName_mark1_positionCode) {
+        
+        let regexMatcher = /[L]*[R]*[B]*/gm;
+        let value = valueAsString;
+        if (value.match(regexMatcher)) {
+          tuple.mark1_positionCode = value;
+        }
+        else {
+          if (value != "") {
+            var error = new TupleProcessingError(jsonName_mark1_positionCode, "Error: expected something in the set [LRB LR RB LB L R B]. Instead: " + value);
+            tuple.processingErrorList.push(error);
+          }
+          else {
+            tuple.mark1_positionCode = "";
+          }
+        }
+      }
+
+      // mark 2 - indicates whether it is a newly placed mark
+      else if (field[KEY] == jsonName_mark2_isNew) {
+        let value = valueAsString;
+        if (value != "Y" && value != "N" && value != "") {
+          var error = new TupleProcessingError(jsonName_mark2_isNew, "Error: expected Y or N. Instead: " + value);
+          tuple.processingErrorList.push(error);
+        }
+        else {
+          tuple.mark2_isNew = value;
+        }
+      }
+
+      else if (field[KEY] == jsonName_mark2_idValue) {
+        // really could be anything
+        tuple.mark2_idValue = valueAsString;
+      }
+
+      else if (field[KEY] == jsonName_mark2_positionCode) {
+        // aka the STAMP (can be stamped multiple times)
+        // verify composed of one or more of the valid positions: "L" "R" "B"
+        let regexMatcher = /[L]*[R]*[B]*/gm;
+        let value = valueAsString;
+        if (value.match(regexMatcher)) {
+          tuple.mark2_positionCode = value;
+        }
+        else {
+
+          if (value != "") {
+            var error = new TupleProcessingError(jsonName_mark2_positionCode, "Error: expected something in the set [LRB LR RB LB L R B]. Instead: " + value);
+            tuple.processingErrorList.push(error);
+          }
+          else {
+            tuple.mark2_positionCode;
+          }
+          
+        }
+      }
+
+      // verify either "Y" or "N"
+      else if (field[KEY] == jsonName_tag1_isNew) {
+        let value = valueAsString;
+
+        if (value != "Y" && value != "N" && value != "") {
+          var error = new TupleProcessingError(jsonName_tag1_isNew, "Error: expected Y or N. Instead: " + value);
+          tuple.processingErrorList.push(error);
+        }
+        else {
+          tuple.tag1_isNew = value;
+        }
+      }
+
+      // anything
+      else if (field[KEY] == jsonName_tag1_idValue) {
+        tuple.tag1_idValue = valueAsString;
+      }
+
+      // 3 parts
+        //    Flipper side       - "L" or "R"
+        //    Flipper Location   - "1" "2" "3" "4"
+        //    Spike Orientation  - "so" "si"
+      else if (field[KEY] == jsonName_tag1_positionCode) {
+        let positionCodeRegex = /([LR][1234]-(so|si))/gm;
+        let value = valueAsString;
+
+        if (value.match(positionCodeRegex)) {
+          tuple.tag1_positionCode = value;
+        }
+        else {
+          if (value != "") {
+            var error = new TupleProcessingError(jsonName_tag1_positionCode, "Error: expected something in the set [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]. Instead: " + value);
+            tuple.processingErrorList.push(error);
+          }
+          else {
+            tuple.tag1_positionCode;
+          }
+        }
+      }
+
+      // Y or N
+      else if (field[KEY] == jsonName_tag2_isNew) {
+        
+        let value = valueAsString;
+
+        if (value != "Y" && value != "N" && value != "") {
+          var error = new TupleProcessingError(jsonName_tag2_isNew, "Error: expected Y or N. Instead: " + value);
+          tuple.processingErrorList.push(error);
+        }
+        else {
+          tuple.tag2_isNew = value;
+        }
+      }
+
+      // anything
+      else if (field[KEY] == jsonName_tag2_idValue) {
+
+        tuple.tag2_idValue = valueAsString;
+      }
+
+      // 3 parts
+      //    Flipper side       - "L" or "R"
+      //    Flipper Location   - "1" "2" "3" "4"
+      //    Spike Orientation  - "so" "si"
+      // L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si 
+      // R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si
+      // regex: "/ ([LR][1234]-(so|si)) /gm"
+      else if (field[KEY] == jsonName_tag2_positionCode) {
+        
+        let positionCodeRegex = /([LR][1234]-(so|si))/gm;
+        let value = valueAsString;
+
+        if (value.match(positionCodeRegex)) {
+          tuple.tag2_positionCode = value;
+        }
+        else {
+          if (value != "") {
+            var error = new TupleProcessingError(jsonName_tag2_positionCode, "Error: expected something in the set [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]. Instead: " + value);
+            tuple.processingErrorList.push(error);
+          }
+          else {
+            tuple.tag2_positionCode;
+          }
+        }
+      }
+
+      // / \b\d{1,3}\b[%]* /gm
+      // conditions
+      //    integer 1-3 chars w/% or w/o%
+      //    ""
+      else if (field[KEY] == jsonName_sealMoltPercentage) {        
+        
+          // integer 1-3 characters w/ %
+          if (valueAsString.match(/\b\d{1,3}[%]\b/gm)) {
+            let strlength = valueAsString.length;
+            try {
+              let value = parseInt(valueAsString.substr(0, strlength - 1));
+              if (value < 0 || value > 100) {  
+                var error = new TupleProcessingError(jsonName_sealMoltPercentage, "Error: not between 0 and 100. expected an integer value 1-3 digits, between 0 and 100, w or w/o % sign. Instead: " + value);
+                tuple.processingErrorList.push(error);
+              }
+              else {
+                tuple.sealMoltPercentage = value;
+              }
+            }
+            catch (error) {
+              var error = new TupleProcessingError(jsonName_sealMoltPercentage, "Error: not between 0 and 100. expected an integer value 1-3 digits, between 0 and 100, w or w/o % sign. Instead: " + valueAsString);
+              tuple.processingErrorList.push(error);
+            }
+          }
+
+          //    integer 1-3 chars w/o %
+          else if (valueAsString.match(/\b\d{1,3}\b/gm)) {
+            let value = parseInt(valueAsString);
+            if (value < 0 || value > 100) {
+              var error = new TupleProcessingError(jsonName_sealMoltPercentage, "Error: not between 0 and 100. expected an integer value 1-3 digits, between 0 and 100, w or w/o % sign. Instead: " + value);
+              tuple.processingErrorList.push(error);
+            }
+            else {
+              tuple.sealMoltPercentage = value;
+            }
+          }
+
+          // can be left blank
+          else if (valueAsString == "") {
+            tuple.sealMoltPercentage;
+          }
+
+          //    anything else is an ERROR
+          else {
+            var error = new TupleProcessingError(jsonName_sealMoltPercentage, "Error: expected an integer value 1-3 digits, between 0 and 100, w or w/o % sign. Instead: " + value);
+            tuple.processingErrorList.push(error);
+          }
+      }
+
+      else if (field[KEY] == jsonName_currentSeason) {
+        // Gotta be for the current season or some season in the past
+        tuple.currentSeason = valueAsString;
+      }
+
+      else if (field[KEY] == jsonName_sealStandardLength) {
+        // Gotta hve format of either: 
+        //    "<numeric value> <units>"
+        //    "<numeric value>"  and then we just assume default units
+        tuple.sealStandardLength = parseFloat(valueAsString);
+      }
+
+      else if (field[KEY] == jsonName_sealCurvilinearLength) {
+        // Gotta hve format of either: 
+        //    "<numeric value> <units>"
+        //    "<numeric value>"  and then we just assume default units
+        tuple.sealCurvilinearLength = parseFloat(valueAsString);
+      }
+
+      else if (field[KEY] == jsonName_sealAuxiliaryGirth) {
+        // Gotta hve format of either: 
+        //    "<numeric value> <units>"
+        //    "<numeric value>"  and then we just assume default units
+        tuple.sealAuxiliaryGirth = parseFloat(valueAsString);
+      }
+
+      else if (field[KEY] == jsonName_sealMass) {
+        // Gotta hve format of either: 
+        //    "<numeric value> <units>"
+        //    "<numeric value>"  and then we just assume default units
+        tuple.sealMass = parseFloat(valueAsString);
+      }
+
+      else if (field[KEY] == jsonName_sealTare) {  
+        // Gotta hve format of either: 
+        //    "<numeric value> <units>"
+        //    "<numeric value>"  and then we just assume default units
+        tuple.sealTare = parseFloat(valueAsString);
+      }
+
+      else if (field[KEY] == jsonName_sealMassTare) {
+        // Gotta hve format of either: 
+        //    "<numeric value> <units>"
+        //    "<numeric value>"  and then we just assume default units
+        tuple.sealMassTare = parseFloat(valueAsString);
+      }
+
+      else if (field[KEY] == jsonName_sealLastSeenAsPupDate) {
+        // for now just require that it work nicely with Javascript Date constructor
+        try {
+          var value: Date = new Date(valueAsString);  
+          tuple.sealLastSeenAsPupDate = value;
+        }
+        catch (error) {
+          var error = new TupleProcessingError(jsonName_sealLastSeenAsPupDate, "Error: something that wasn't a date (MM/DD/YYYY). received: " + valueAsString);
+          tuple.processingErrorList.push(error);
+        }
+      }
+
+      else if (field[KEY] == jsonName_sealFirstSeenAsWeaner) {
+        try {
+          var value: Date = new Date(valueAsString);  
+          tuple.sealFirstSeenAsWeaner = value;
+        }
+        catch (error) {
+          var error = new TupleProcessingError(jsonName_sealFirstSeenAsWeaner, "Error: something that wasn't a date (MM/DD/YYYY). received: " + valueAsString);
+          tuple.processingErrorList.push(error);
+        }
+      }
+
+      else if (field[KEY] == jsonName_weanDateRange) {
+        // should be an integer... (maybe we let them use floats if they really want to?)
+        // sould be the difference in days between seal-LSAP and seal-FSAW
+        
+        // first check regex for an integer. 
+        let value = parseInt(valueAsString);
+        tuple.weanDateRange = value;
+
+        //then check that it is equal to the difference of the other two fields
+        // (AT THE VERY END, OUTSIDE THE IF CONDITIONS)
+      }
+
+      else if (field[KEY] == jsonName_comments) {
+        // literally anything
+        tuple.comments = valueAsString;
+      }
+
+      else if (field[KEY] == jsonName_observationEnteredInAno) {
+        // WHAT THE HECK IS THIS FIELD FOR?????
+        let value = valueAsString;
+
+        if (value != "Y" && value != "N" && value != "") {
+          var error = new TupleProcessingError(jsonName_observationEnteredInAno, "Error: expected Y or N. Instead: " + value);
+          tuple.processingErrorList.push(error);
+        }
+        else {
+          tuple.observationEnteredInAno = value;
+        }
+      }
+
+      else {
+        // somehow we received a field that wasn't in our known list of fields
+        console.log("ERROR: NO MATCH");
+        var error = new TupleProcessingError(field[KEY] as string, "Error: expected Y or N. Instead: " + value);
+        tuple.processingErrorList.push(error);
+      }
+    }
 
   }
+
+
 }
