@@ -236,7 +236,7 @@ export class AllObservationsComponent implements OnInit {
       this.apiService.getAdminStatus(getAdStatus).then(msg => {
         this.admin = msg
         this.admin = this.admin[0].isAdmin;
-        this.adminStatus.changeMessage(this.admin);
+        this.adminStatus.updatePermissionLevel(this.admin);
         this.setPriveleges();
       });
   }

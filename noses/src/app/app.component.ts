@@ -32,9 +32,9 @@ export class AppComponent implements OnInit {
    */
   ngOnInit() {
     this.loggedInUser = JSON.parse(localStorage.getItem("user"));
-    this.adminStatus.currentStatus.subscribe(currentStatus  => {
+    this.adminStatus.currentPermissionStatus.subscribe(currentStatus  => {
       this.priv = currentStatus;
-      // console.log(typeof this.priv);
+
       this.setPrivelege();
     });
   }
