@@ -3,46 +3,29 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Routes, RouterModule } from '@angular/router';
-import { MatToolbarModule, MatTableModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from  '@angular/forms';
-// import { DashboardComponent } from './dashboard/dashboard.component';
+import { FormsModule, ReactiveFormsModule } from  '@angular/forms';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AuthService } from "./_services/auth.service";
 import { AuthGuard } from "./_services/auth.guard";
+
+//Components
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { UploadSealComponent } from './upload-seal/upload-seal.component';
-import {
-          MatButtonModule,
-          MatDialogModule,
-          MatListModule,
-          MatProgressBarModule,
-          MatProgressSpinnerModule,
-        } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material';
-import { MatInputModule } from '@angular/material';
 import { SealPageComponent } from './seal-page/seal-page.component';
-import {ReactiveFormsModule} from '@angular/forms';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
-import { DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 import { MenuComponent } from './menu/menu.component';
 import { AllObservationsComponent } from './all-observations/all-observations.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { RequestAccountComponent } from './request-account/request-account.component';
 import { ComponentForAngServiceComponent } from './component-for-ang-service/component-for-ang-service.component';
-
-import { CitizenSciBulkUploadMainPageComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-main-page/citizen-sci-bulk-upload-main-page.component';
+import { CitizenSciBulkUploadMainPageComponent} from './citizen-scientist-upload-management/citizen-sci-bulk-upload-main-page/citizen-sci-bulk-upload-main-page.component';
 import { CitizenSciBulkUploadDataPreviewComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-data-preview/citizen-sci-bulk-upload-data-preview.component';
 import { FilterBlockComponent } from './filter-block/filter-block.component';
 import { NewObservationComponent } from './new-observation/new-observation.component';
@@ -51,10 +34,55 @@ import { MarkTestChildComponent } from './mark-test-child/mark-test-child.compon
 import { SealComponent } from './seal/seal.component';
 import { BulkUploadObservationViewComponent } from './citizen-scientist-upload-management/bulk-upload-observation-view/bulk-upload-observation-view.component';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormModalSingleObservationComponent } from './form-modal-single-observation/form-modal-single-observation.component';
+
+// angular material section
+import { MatFormFieldModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import {A11yModule} from '@angular/cdk/a11y';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {PortalModule} from '@angular/cdk/portal';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import {CdkStepperModule} from '@angular/cdk/stepper';
+import {CdkTableModule} from '@angular/cdk/table';
+import {CdkTreeModule} from '@angular/cdk/tree';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatBadgeModule} from '@angular/material/badge';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import {MatButtonModule} from '@angular/material/button';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatCardModule} from '@angular/material/card';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatListModule} from '@angular/material/list';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatNativeDateModule, MatRippleModule} from '@angular/material/core';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatSortModule} from '@angular/material/sort';
+import {MatTableModule} from '@angular/material/table';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatTreeModule} from '@angular/material/tree';
+import { EditObservationDialogComponent } from './edit-observation-dialog/edit-observation-dialog.component';
+
 
 const config = {
     apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
@@ -65,6 +93,7 @@ const config = {
     messagingSenderId: "924457799797"
 };
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -74,7 +103,6 @@ const config = {
     SealPageComponent,
     ManageAccountsComponent,
     ApproveObsComponent,
-    DialogOverviewExampleDialog,
     EditUserDialogComponent,
     MenuComponent,
     AllObservationsComponent,
@@ -89,7 +117,7 @@ const config = {
     MarkTestChildComponent,
     SealComponent,
     BulkUploadObservationViewComponent,
-    FormModalSingleObservationComponent
+    EditObservationDialogComponent
   ],
   imports: [
     FormsModule,
@@ -104,12 +132,13 @@ const config = {
     MatProgressSpinnerModule,
     MatListModule,
     MatPaginatorModule,
-    FlexLayoutModule,
     MatToolbarModule,
     MatTableModule,
+    MatProgressBarModule,
+    MatDatepickerModule,
+    FlexLayoutModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatProgressBarModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(config),
     AngularFirestoreModule, // firestore
@@ -119,15 +148,57 @@ const config = {
     NgbModule
   ],
   exports: [
+
+    A11yModule,
+    CdkStepperModule,
+    CdkTableModule,
+    CdkTreeModule,
+    DragDropModule,
+    MatAutocompleteModule,
+    MatBadgeModule,
+    MatBottomSheetModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    MatStepperModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatNativeDateModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatRippleModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    MatSortModule,
+    MatTableModule,
+    MatTabsModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatTreeModule,
+    PortalModule,
+    ScrollingModule,
+    MatFormFieldModule,
+    FlexLayoutModule,
     RouterModule,
-    DialogOverviewExampleDialog,
     EditUserDialogComponent,
-    FormModalSingleObservationComponent
   ],
   entryComponents: [
-    DialogOverviewExampleDialog,
     EditUserDialogComponent,
-    FormModalSingleObservationComponent
+    EditObservationDialogComponent
   ],
   providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
