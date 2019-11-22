@@ -56,12 +56,14 @@ export class AuthService {
     return this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
       .then(result => {
+        console.log("*******Login Successful!")
         this.ngZone.run(() => {
           this.router.navigate(["menu"]);
         });
         this.SetUserData(result.user);
       })
       .catch(error => {
+        console.log("*******Login Failed!");
         window.alert(error.message);
       });
   }
