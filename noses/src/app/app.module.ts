@@ -82,6 +82,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import { EditObservationDialogComponent } from './edit-observation-dialog/edit-observation-dialog.component';
+import { TtlAngMaterialStartPageComponent } from './angular-material-tutorial-components/ttl-ang-material-start-page/ttl-ang-material-start-page.component';
+import { TtlAngMaterialDialogComponent } from './angular-material-tutorial-components/ttl-ang-material-dialog/ttl-ang-material-dialog.component';
 
 
 const config = {
@@ -117,7 +119,9 @@ const config = {
     MarkTestChildComponent,
     SealComponent,
     BulkUploadObservationViewComponent,
-    EditObservationDialogComponent
+    EditObservationDialogComponent,
+    TtlAngMaterialStartPageComponent,
+    TtlAngMaterialDialogComponent
   ],
   imports: [
     FormsModule,
@@ -195,10 +199,13 @@ const config = {
     FlexLayoutModule,
     RouterModule,
     EditUserDialogComponent,
+    EditObservationDialogComponent,
+    TtlAngMaterialDialogComponent
   ],
   entryComponents: [
     EditUserDialogComponent,
-    EditObservationDialogComponent
+    EditObservationDialogComponent,
+    TtlAngMaterialDialogComponent
   ],
   providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]

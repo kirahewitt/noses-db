@@ -17,6 +17,7 @@ import { CitizenSciBulkUploadMainPageComponent } from './citizen-scientist-uploa
 import { NewObservationComponent } from './new-observation/new-observation.component';
 import { SealComponent } from './seal/seal.component';
 import { MarkTestComponent } from './mark-test/mark-test.component';
+import { TtlAngMaterialStartPageComponent } from './angular-material-tutorial-components/ttl-ang-material-start-page/ttl-ang-material-start-page.component';
 
 const routes: Routes = [
 { path: '', redirectTo: '/sign-in', pathMatch: 'full'},
@@ -35,7 +36,8 @@ const routes: Routes = [
 { path: 'citizen-sci-bulk-upload', component: CitizenSciBulkUploadMainPageComponent, canActivate: [AuthGuard]},
 { path: 'new-observation', component: NewObservationComponent, canActivate: [AuthGuard]},
 { path: 'mark', component: MarkTestComponent},
-{ path: 'seal', component: SealComponent}
+{ path: 'seal', component: SealComponent},
+{ path: 'ang-material-tutorial', component: TtlAngMaterialStartPageComponent }
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
