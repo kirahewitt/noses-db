@@ -1,302 +1,295 @@
+<h1 mat-dialog-title>Editing Data for Observation #{{tupleIndex + 1}}</h1>
 
 
-<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1> -->
-<h1 mat-dialog-title>Editing Data for Observation #{{data.obsIndex + 1}}</h1>
+<mat-dialog-content [formGroup]="form">
 
-
-<div mat-dialog-content>
-
-
-  <p>
+    <!-- <p>
     <mat-form-field appearance="outline">
-      <mat-label>Field Leader List</mat-label>
-      <input matInput [(ngModel)]="ob.fieldLeaderList[0]" placeholder="COME BACK TO THIS LATER">
+        <mat-label>Field Leader List</mat-label>
+        <input matInput [(ngModel)]="ob.fieldLeaderList[0]" placeholder="COME BACK TO THIS LATER">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Year</mat-label>
-      <input matInput [(ngModel)]="ob.year" placeholder="2020">
+        <mat-label>Year</mat-label>
+        <input matInput [(ngModel)]="ob.year" placeholder="2020">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Date Observation Recorded</mat-label>
-      <input matInput [(ngModel)]="ob.dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="01/01/2020">
-      <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
-      <mat-datepicker #observationDatePicker></mat-datepicker>
+        <mat-label>Date Observation Recorded</mat-label>
+        <input matInput [(ngModel)]="ob.dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="01/01/2020">
+        <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #observationDatePicker></mat-datepicker>
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Location Code</mat-label>
-      <input matInput  [(ngModel)]="ob.locationCode" placeholder="Location Code">
+        <mat-label>Location Code</mat-label>
+        <input matInput  [(ngModel)]="ob.locationCode" placeholder="Location Code">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Current Season</mat-label>
-      <input matInput [(ngModel)]="ob.currentSeason" placeholder="Current Season">
+        <mat-label>Current Season</mat-label>
+        <input matInput [(ngModel)]="ob.currentSeason" placeholder="Current Season">
     </mat-form-field>    
-  </p>
+    </p>
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Seal's Sex</mat-label>
-      <input matInput  [(ngModel)]="ob.sealSex" placeholder="M or F">
+        <mat-label>Seal's Sex</mat-label>
+        <input matInput  [(ngModel)]="ob.sealSex" placeholder="M or F">
     </mat-form-field>    
-  </p>  
+    </p>  
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Seal's Age Code</mat-label>
-      <input matInput  [(ngModel)]="ob.sealAgeCode" placeholder="Seal Age Code">
+        <mat-label>Seal's Age Code</mat-label>
+        <input matInput  [(ngModel)]="ob.sealAgeCode" placeholder="Seal Age Code">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>If mother, # of pups</mat-label>
-      <input matInput  [(ngModel)]="ob.sealHasPupQuantity" placeholder="Seal Has Pup Quantity">
+        <mat-label>If mother, # of pups</mat-label>
+        <input matInput  [(ngModel)]="ob.sealHasPupQuantity" placeholder="Seal Has Pup Quantity">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
-    
-  </p>
-  <mat-form-field appearance="outline">
+    <p>
+
+    </p>
+    <mat-form-field appearance="outline">
     <mat-label>Mark 1: Id Value</mat-label>
     <input matInput  [(ngModel)]="ob.mark1_idValue" placeholder="Mark 1 Id Value">
-  </mat-form-field>
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Mark 1: is new mark</mat-label>
-      <input matInput [(ngModel)]="ob.mark1_isNew" placeholder="(Y/N)">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Mark 1: Position Code</mat-label>
-      <input matInput [(ngModel)]="ob.mark1_positionCode" placeholder="(L | R | B)">
-    </mat-form-field>    
-  </p>
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Mark 2: Id Value</mat-label>
-      <input matInput [(ngModel)]="ob.mark2_idValue" placeholder="Mark 2 Id Value">
     </mat-form-field>
-  </p>
 
-  <p>
+
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Mark 2: Is New Mark</mat-label>
-      <input matInput [(ngModel)]="ob.mark2_isNew" placeholder="(Y/N)">
+        <mat-label>Mark 1: is new mark</mat-label>
+        <input matInput [(ngModel)]="ob.mark1_isNew" placeholder="(Y/N)">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Mark 2: Position Code</mat-label>
-      <input matInput [(ngModel)]="ob.mark2_positionCode" placeholder="(L | R | B)">
+        <mat-label>Mark 1: Position Code</mat-label>
+        <input matInput [(ngModel)]="ob.mark1_positionCode" placeholder="(L | R | B)">
     </mat-form-field>    
-  </p>
+    </p>
 
 
-
-
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Tag 1: Id Value</mat-label>
-      <input matInput [(ngModel)]="ob.tag1_idValue" placeholder="Tag 1 Id Value">
-    </mat-form-field>    
-  </p>
+        <mat-label>Mark 2: Id Value</mat-label>
+        <input matInput [(ngModel)]="ob.mark2_idValue" placeholder="Mark 2 Id Value">
+    </mat-form-field>
+    </p>
 
-
-
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Tag 1: Is New Tag</mat-label>
-      <input matInput [(ngModel)]="ob.tag1_isNew" placeholder="(Y/N)">
+        <mat-label>Mark 2: Is New Mark</mat-label>
+        <input matInput [(ngModel)]="ob.mark2_isNew" placeholder="(Y/N)">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Tag 1: Position Code</mat-label>
-      <input matInput [(ngModel)]="ob.tag1_positionCode" placeholder="L3-so">
+        <mat-label>Mark 2: Position Code</mat-label>
+        <input matInput [(ngModel)]="ob.mark2_positionCode" placeholder="(L | R | B)">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Tag 2: Id Value</mat-label>
-      <input matInput [(ngModel)]="ob.tag2_idValue" placeholder="Tag 2 Id Value">
+        <mat-label>Tag 1: Id Value</mat-label>
+        <input matInput [(ngModel)]="ob.tag1_idValue" placeholder="Tag 1 Id Value">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <input matInput [(ngModel)]="ob.tag2_isNew" placeholder="Tag 2 Is New (Y/N)">
+        <mat-label>Tag 1: Is New Tag</mat-label>
+        <input matInput [(ngModel)]="ob.tag1_isNew" placeholder="(Y/N)">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Tag 2: Position Code</mat-label>
-      <input matInput [(ngModel)]="ob.tag2_positionCode" placeholder="L3-so">
+        <mat-label>Tag 1: Position Code</mat-label>
+        <input matInput [(ngModel)]="ob.tag1_positionCode" placeholder="L3-so">
     </mat-form-field>    
-  </p>
+    </p>
 
 
-  <!-- Definitely will put the % mark there -->
-  <p>
+
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Seal's % Molt Completed</mat-label>
-      <input matInput [(ngModel)]="ob.sealMoltPercentage" placeholder="50">
+        <mat-label>Tag 2: Id Value</mat-label>
+        <input matInput [(ngModel)]="ob.tag2_idValue" placeholder="Tag 2 Id Value">
     </mat-form-field>    
-  </p>
+    </p>
 
 
-  <!-- can append units as a string to the end ~~ not sure if good idea -->
-  <p>
+
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Seal's Standard Length</mat-label>
-      <input matInput [(ngModel)]="ob.sealStandardLength" placeholder="Seal Standard Length">
+        <input matInput [(ngModel)]="ob.tag2_isNew" placeholder="Tag 2 Is New (Y/N)">
     </mat-form-field>    
-  </p>
+    </p>
 
 
-  <p>
+
+
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Seal's Curvilinear Length</mat-label>
-      <input matInput [(ngModel)]="ob.sealCurvilinearLength" placeholder="Seal Curvilinear Length">
+        <mat-label>Tag 2: Position Code</mat-label>
+        <input matInput [(ngModel)]="ob.tag2_positionCode" placeholder="L3-so">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Seal's Auxiliary Girth</mat-label>
-      <input matInput [(ngModel)]="ob.sealAuxiliaryGirth" placeholder="Seal Auxiliary Girth">
+        <mat-label>Seal's % Molt Completed</mat-label>
+        <input matInput [(ngModel)]="ob.sealMoltPercentage" placeholder="50">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <input matInput [(ngModel)]="ob.sealMass" placeholder="Seal Mass">
+        <mat-label>Seal's Standard Length</mat-label>
+        <input matInput [(ngModel)]="ob.sealStandardLength" placeholder="Seal Standard Length">
     </mat-form-field>    
-  </p>
+    </p>
 
 
-
-
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Seal Tare</mat-label>
-      <input matInput [(ngModel)]="ob.sealTare" placeholder="Seal Tare">
+        <mat-label>Seal's Curvilinear Length</mat-label>
+        <input matInput [(ngModel)]="ob.sealCurvilinearLength" placeholder="Seal Curvilinear Length">
     </mat-form-field>    
-  </p>
+    </p>
 
 
 
-  <p>
+    <p>
     <mat-form-field appearance="outline">
-      <mat-label>Seal Mass-Tare</mat-label>
-      <input matInput [(ngModel)]="ob.sealMassTare" placeholder="Seal Mass Tare">
+        <mat-label>Seal's Auxiliary Girth</mat-label>
+        <input matInput [(ngModel)]="ob.sealAuxiliaryGirth" placeholder="Seal Auxiliary Girth">
     </mat-form-field>    
-  </p>
+    </p>
 
 
-  <div class="row">
 
-    <!-- left col -->
-    <div class="col-md-6">
+    <p>
+    <mat-form-field appearance="outline">
+        <input matInput [(ngModel)]="ob.sealMass" placeholder="Seal Mass">
+    </mat-form-field>    
+    </p>
 
-      <p>
-        <mat-form-field appearance="outline">
-          <mat-label>Date Last Seen As A Pup</mat-label>
-          <input matInput [(ngModel)]="ob.sealLastSeenAsPupDate" [matDatepicker]="lastSeenAsPupDatePicker" placeholder="01/01/2020">
-          <mat-datepicker-toggle matSuffix [for]="lastSeenAsPupDatePicker"></mat-datepicker-toggle>
-          <mat-datepicker #lastSeenAsPupDatePicker></mat-datepicker>
-        </mat-form-field>  
-      </p>
 
-      <p>
-        <mat-form-field appearance="outline">
-          <mat-label>Date First Seen As A Weaner</mat-label>
-          <input matInput [(ngModel)]="ob.sealFirstSeenAsWeaner" [matDatepicker]="firstSeenAsWeanerDatePicker" placeholder="01/01/2020">
-          <mat-datepicker-toggle matSuffix [for]="firstSeenAsWeanerDatePicker"></mat-datepicker-toggle>
-          <mat-datepicker #firstSeenAsWeanerDatePicker></mat-datepicker>
-        </mat-form-field>
-      </p>      
 
+
+    <p>
+    <mat-form-field appearance="outline">
+        <mat-label>Seal Tare</mat-label>
+        <input matInput [(ngModel)]="ob.sealTare" placeholder="Seal Tare">
+    </mat-form-field>    
+    </p>
+
+
+
+    <p>
+    <mat-form-field appearance="outline">
+        <mat-label>Seal Mass-Tare</mat-label>
+        <input matInput [(ngModel)]="ob.sealMassTare" placeholder="Seal Mass Tare">
+    </mat-form-field>    
+    </p> -->
+
+
+    <div class="row">
+
+        <!-- left col -->
+        <div class="col-md-6">
+            <p>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Date Last Seen As A Pup</mat-label>
+                    <input matInput formControlName="sealLastSeenAsPupDate" [matDatepicker]="lastSeenAsPupDatePicker" placeholder="01/01/2020">
+                    <mat-datepicker-toggle matSuffix [for]="lastSeenAsPupDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker [startAt]="tuple.sealLastSeenAsPupDate"#lastSeenAsPupDatePicker></mat-datepicker>
+                </mat-form-field>  
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Date First Seen As A Weaner</mat-label>
+                    <input matInput formControlName="sealFirstSeenAsWeaner" [matDatepicker]="firstSeenAsWeanerDatePicker" placeholder="01/01/2020">
+                    <mat-datepicker-toggle matSuffix [for]="firstSeenAsWeanerDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker [startAt]="tuple.sealFirstSeenAsWeaner" #firstSeenAsWeanerDatePicker></mat-datepicker>
+                </mat-form-field>
+            </p>      
+        </div>
+
+        <!-- right col -->
+        <div class="col-md-6">
+            <p>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Wean Date Range</mat-label>
+                    <input matInput formControlName="weanDateRange" value="{{tuple.weanDateRange}}" placeholder="(# of days)">
+                </mat-form-field>
+            </p>      
+        </div>
     </div>
 
-    <!-- right col -->
-    <div class="col-md-6">
-      <p>
-        <mat-form-field appearance="outline">
-          <mat-label>Wean Date Range</mat-label>
-          <input matInput [(ngModel)]="ob.weanDateRange" placeholder="(# of days)">
+
+
+    <p>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Comments</mat-label>
+            <textarea matInput formControlName="comments" value="{{tuple.comments}}" placeholder="write anything you want"></textarea>
         </mat-form-field>
-      </p>      
-    </div>
-  </div>
+    </p>
+
+</mat-dialog-content>
 
 
-
-  <p>
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Comments</mat-label>
-      <textarea matInput [(ngModel)]="ob.comments" placeholder="write anything you want"></textarea>
-    </mat-form-field>
-  </p>
-
-</div>
-
-
-<div mat-dialog-actions>
-  <!-- <button mat-button (click)="onNoClick()">Cancel</button> -->
-  <button mat-button [mat-dialog-close]="oldTupleList_Copy">Cancel</button> 
-  <button mat-button [mat-dialog-close]="data.obsList" cdkFocusInitial>Save</button>
-</div>
+<mat-dialog-actions>
+    <button mat-button class="mat-raised-button" (click)="close()">Cancel</button> 
+    <button mat-button class="mat-raised-button mat-primary" (click)="save()">Save</button>
+</mat-dialog-actions>

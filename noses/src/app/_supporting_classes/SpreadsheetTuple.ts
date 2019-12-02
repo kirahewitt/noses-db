@@ -227,11 +227,63 @@ export class SpreadsheetTuple {
     let definitelyAnewDataSource : any = JSON.parse(dataSourceAsString);
     this.originalJsonInput = definitelyAnewDataSource;
   }
+    
 
+  // }
 
-  public copy(source : SpreadsheetTuple) {
-
+  /**
+   * We need this function to perform a deep copy. These classes have three kinds of
+   *  data so it needs to have three methods of copying.
+   *     
+   *     1. numbers                         - '=' operator
+   *     2. string (primitive type)         - Object.assign("", source.desiredAttribute)
+   *     3. lists/dates (complex objs)      - JSON.parse(JSON.stringify(source.desiredAttribute))
+   * @param source 
+   */
+  public copy (source : SpreadsheetTuple) {
+    this.comments = Object.assign("", source.comments);
+    this.currentSeason = Object.assign("", source.currentSeason);
+    this.dateOfRecording = JSON.parse(JSON.stringify(source.dateOfRecording));
+    this.fieldLeaderList = JSON.parse(JSON.stringify(source.fieldLeaderList));
+    this.isApproved = (source.isApproved == true);
+    this.locationCode = Object.assign("", source.locationCode);
+    this.mark1_idValue = Object.assign("", source.mark1_idValue);
+    this.mark1_isNew = Object.assign("", source.mark1_isNew);
+    this.mark1_positionCode = Object.assign("", source.mark1_positionCode);
+    this.mark2_idValue = Object.assign("", source.mark2_idValue);
+    this.mark2_isNew = Object.assign("", source.mark2_isNew);
+    this.mark2_positionCode = Object.assign("", source.mark2_positionCode);
+    this.observationEnteredInAno = Object.assign("", source.observationEnteredInAno);
+    this.originalJsonInput = JSON.parse(JSON.stringify(source.originalJsonInput));
+    this.processingErrorList = JSON.parse(JSON.stringify(source.processingErrorList));
+    this.sealAgeCode = Object.assign("", source.sealAgeCode);
+    this.sealAuxiliaryGirth = source.sealAuxiliaryGirth;
+    this.sealAuxiliaryGirth_units = Object.assign("", source.sealAuxiliaryGirth_units);
+    this.sealCurvilinearLength = source.sealCurvilinearLength;
+    this.sealCurvilinearLength_units = Object.assign("", source.sealCurvilinearLength_units);
+    this.sealFirstSeenAsWeaner = JSON.parse(JSON.stringify(source.sealFirstSeenAsWeaner));
+    this.sealHasPupQuantity = source.sealHasPupQuantity;
+    this.sealLastSeenAsPupDate = JSON.parse(JSON.stringify(source.sealLastSeenAsPupDate));
+    this.sealMass = source.sealMass;
+    this.sealMassTare = source.sealMassTare;
+    this.sealMassTare_units = Object.assign("", source.sealMassTare_units);
+    this.sealMass_units = Object.assign("", source.sealMass_units);
+    this.sealMoltPercentage = source.sealMoltPercentage;
+    this.sealSex = Object.assign("", source.sealSex);
+    this.sealStandardLength = source.sealStandardLength;
+    this.sealStandardLength_units = Object.assign("", source.sealStandardLength_units);
+    this.sealTare = source.sealTare;
+    this.sealTare_units = Object.assign("", source.sealTare_units);
+    this.tag1_idValue = Object.assign("", source.tag1_idValue);
+    this.tag1_isNew = Object.assign("", source.tag1_isNew);
+    this.tag1_positionCode = Object.assign("", source.tag1_positionCode);
+    this.tag2_idValue = Object.assign("", source.tag2_idValue);
+    this.tag2_isNew = Object.assign("", source.tag2_isNew);
+    this.tag2_positionCode = Object.assign("", source.tag2_positionCode);
+    this.weanDateRange = source.weanDateRange;
+    this.year = source.year;
   }
+
 
 
   /**
@@ -267,10 +319,10 @@ export class SpreadsheetTuple {
         let fieldLeaderList = fieldLeaders.split(" ");
         tuple.fieldLeaderList = fieldLeaderList;
 
+        
         // we have a string like "ABC" or "ABC, DEF, ..., XYZ"
         // verify each one of those strings is an existing field leader.
         // if not, error
-
         // if we receive a field leader which does not yet exist, record an error for this field.
       }
 
@@ -482,7 +534,6 @@ export class SpreadsheetTuple {
 
       // anything
       else if (field[KEY] == jsonName_tag2_idValue) {
-
         tuple.tag2_idValue = valueAsString;
       }
 
