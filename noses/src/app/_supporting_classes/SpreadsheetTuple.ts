@@ -149,7 +149,7 @@ export class SpreadsheetTuple {
   originalJsonInput : any;
 
   // other bookkeeping
-  fieldLeaderList : string[];
+  fieldLeaderList : string;
   year : number;
   dateOfRecording : Date;
   locationCode : string;
@@ -209,7 +209,7 @@ export class SpreadsheetTuple {
 
     //Initialize the entire object to blank attributes
     this.originalJsonInput = null;
-    this.fieldLeaderList = [];
+    this.fieldLeaderList = "";
     this.year = null;
     this.dateOfRecording = null;
     this.locationCode = "";
@@ -244,7 +244,7 @@ export class SpreadsheetTuple {
     this.comments = Object.assign("", source.comments);
     this.currentSeason = Object.assign("", source.currentSeason);
     this.dateOfRecording = JSON.parse(JSON.stringify(source.dateOfRecording));
-    this.fieldLeaderList = JSON.parse(JSON.stringify(source.fieldLeaderList));
+    this.fieldLeaderList = Object.assign("", source.fieldLeaderList);
     this.isApproved = (source.isApproved == true);
     this.locationCode = Object.assign("", source.locationCode);
     this.mark1_idValue = Object.assign("", source.mark1_idValue);
@@ -316,9 +316,12 @@ export class SpreadsheetTuple {
       // field leader initials
       if (field[KEY] == jsonName_fieldLeaderInitials) {
         let fieldLeaders : string = field[VALUE] as string;
-        let fieldLeaderList = fieldLeaders.split(" ");
-        tuple.fieldLeaderList = fieldLeaderList;
 
+        tuple.fieldLeaderList = fieldLeaders;
+
+        // // delete commas by replacing any commas with ''
+        // fieldLeaders = fieldLeaders.replace(/[,]/, '');
+        // let fieldLeaderList = fieldLeaders.split(" ");
         
         // we have a string like "ABC" or "ABC, DEF, ..., XYZ"
         // verify each one of those strings is an existing field leader.

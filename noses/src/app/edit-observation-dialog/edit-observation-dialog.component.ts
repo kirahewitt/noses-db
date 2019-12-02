@@ -28,8 +28,10 @@ export class EditObservationDialogComponent implements OnInit {
 
     public tupleList_master : SpreadsheetTuple[];
     public tupleList_copy : SpreadsheetTuple[];
-    public oi : number;
-    public ob : SpreadsheetTuple; 
+
+    // // need this to keep the list of field leaders
+    // public fieldLeaders_String : string;
+    // public fieldLeaders_List : string[];
 
     /**
      * @param formBuilder : Provides syntactic sugar for creating instances of objects related to Forms.
@@ -46,8 +48,27 @@ export class EditObservationDialogComponent implements OnInit {
         this.tupleList = injectedData.obsList;
         this.tupleIndex = injectedData.obsIndex;
         this.tuple = this.tupleList[this.tupleIndex];
+        
     }
 
+
+    /**
+     * Converts a received list of field leaders into a single string rather than a list of strings.
+     * @param listofStrs a list of strings, one for each field leader.
+     */
+    public fll_to_str(listofStrs : string[]) {
+        var fullString = "";
+
+        var i = 0;
+        for (var element of listofStrs) {
+            fullString += element;
+            if (i != listofStrs.length - 1) {
+                fullString += ", ";
+            }
+            i++;
+        }
+        return fullString;
+    }
 
     /**
      * 

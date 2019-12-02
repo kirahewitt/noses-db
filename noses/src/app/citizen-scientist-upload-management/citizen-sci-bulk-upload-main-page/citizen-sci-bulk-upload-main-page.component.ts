@@ -9,55 +9,6 @@ import {MatPaginator} from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material';
 
 
-export interface DialogData {
-  obsList : SpreadsheetTuple[];
-  obsIndex : number;
-}
-
-
-
-// /**
-//  * -------------------------------------------------------------------------------------
-//  * Need to figure out a way to make these be in ONE file only.
-//  * -------------------------------------------------------------------------------------
-//  */
-// var jsonName_fieldLeaderInitials = "Field Leader Initials";
-// var jsonName_year = "Year";
-// var jsonName_dateOfRecording = "Date";
-// var jsonName_locationCode = "Loc.";
-// var jsonName_sealSex = "Sex";
-// var jsonName_sealAgeCode = "Age";
-// var jsonName_sealHasPupQuantity = "Pup?";
-// var jsonName_mark1_isNew = "New Mark 1?";
-// var jsonName_mark1_idValue = "Mark 1";
-// var jsonName_mark1_positionCode = "Mark 1 Position";
-
-// var jsonName_mark2_isNew = "New Mark 2?";
-// var jsonName_mark2_idValue = "Mark 2";
-// var jsonName_mark2_positionCode = "Mark 2 Position";
-
-// var jsonName_tag1_isNew = "New Tag1?";
-// var jsonName_tag1_idValue = "Tag1 #"
-// var jsonName_tag1_positionCode = "Tag 1 Pos."
-
-// var jsonName_tag2_isNew = "New Tag2?";
-// var jsonName_tag2_idValue = "Tag2 #"
-// var jsonName_tag2_positionCode = "Tag 2 Pos."
-
-// var jsonName_sealMoltPercentage = "Molt (%)";
-// var jsonName_currentSeason = "Season";
-// var jsonName_sealStandardLength =  "St. Length";
-// var jsonName_sealCurvilinearLength = "Crv. Length";
-// var jsonName_sealAuxiliaryGirth = "Ax. Girth";
-// var jsonName_sealMass = "Mass";
-// var jsonName_sealTare = "Tare";
-// var jsonName_sealMassTare = "Mass-Tare";
-// var jsonName_sealLastSeenAsPupDate = "Last seen as P";
-// var jsonName_sealFirstSeenAsWeaner = "1st seen as W";
-// var jsonName_weanDateRange = "Range (days)";
-// var jsonName_comments = "Comments";
-// var jsonName_observationEnteredInAno = "Entered in Ano";
-
 export interface TupleStructForTable {
   position: number;
   date : Date;
@@ -118,7 +69,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
      * @param observationIndex: The index of the observation in the list provided by the
      *  user.
      */
-    openDialog(observationIndex: number): void {
+    public openDialog(observationIndex: number): void {
         event.preventDefault();
 
         // establish the settings for our dialog
@@ -140,6 +91,53 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
             if (result != undefined) {
                 var tupleToOverwrite = this.observationTuples[observationIndex];
+
+                tupleToOverwrite.originalJsonInput = result.originalJsonInput;
+
+                // observation bookkeeping section
+                tupleToOverwrite.fieldLeaderList = result.fieldLeaderList;
+                tupleToOverwrite.year = result.year;
+                tupleToOverwrite.dateOfRecording = result.dateOfRecording;
+                tupleToOverwrite.locationCode = result.locationCode;
+                tupleToOverwrite.currentSeason = result.currentSeason;
+
+                // seal attribute section
+                tupleToOverwrite.sealSex = result.sealSex;
+                tupleToOverwrite.sealAgeCode = result.sealAgeCode;
+                tupleToOverwrite.sealHasPupQuantity = result.sealHasPupQuantity;
+
+                // mark section
+                tupleToOverwrite.mark1_idValue = result.mark1_idValue;
+                tupleToOverwrite.mark1_isNew = result.mark1_isNew;
+                tupleToOverwrite.mark1_positionCode = result.mark1_positionCode;
+                tupleToOverwrite.mark2_idValue = result.mark2_idValue;
+                tupleToOverwrite.mark2_isNew = result.mark2_isNew;
+                tupleToOverwrite.mark2_positionCode = result.mark2_positionCode;
+
+                // tag section
+                tupleToOverwrite.tag1_idValue = result.tag1_idValue;
+                tupleToOverwrite.tag1_isNew = result.tag1_isNew;
+                tupleToOverwrite.tag1_positionCode = result.tag1_positionCode;
+                tupleToOverwrite.tag2_idValue = result.tag2_idValue;
+                tupleToOverwrite.tag2_isNew = result.tag2_isNew;
+                tupleToOverwrite.tag2_positionCode = result.tag2_positionCode;
+
+                // measurement section
+                tupleToOverwrite.sealMoltPercentage = result.sealMoltPercentage;
+                tupleToOverwrite.sealStandardLength = result.sealStandardLength;
+                tupleToOverwrite.sealStandardLength_units = result.sealStandardLength_units;
+                tupleToOverwrite.sealCurvilinearLength = result.sealCurvilinearLength;
+                tupleToOverwrite.sealCurvilinearLength_units = result.sealCurvilinearLength_units;
+                tupleToOverwrite.sealAuxiliaryGirth = result.sealAuxiliaryGirth;
+                tupleToOverwrite.sealAuxiliaryGirth_units = result.sealAuxiliaryGirth_units;
+                tupleToOverwrite.sealMass = result.sealMass;
+                tupleToOverwrite.sealMass_units = result.sealMass_units;
+                tupleToOverwrite.sealTare = result.sealTare;
+                tupleToOverwrite.sealTare_units = result.sealTare_units;
+                tupleToOverwrite.sealMassTare = result.sealMassTare;
+                tupleToOverwrite.sealMassTare_units = result.sealMassTare_units;
+
+                // last section
                 tupleToOverwrite.sealLastSeenAsPupDate = new Date(result.sealLastSeenAsPupDate.toString());
                 tupleToOverwrite.sealFirstSeenAsWeaner = new Date(result.sealFirstSeenAsWeaner.toString());
                 tupleToOverwrite.weanDateRange = result.weanDateRange;
@@ -169,15 +167,12 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
             var csv = event.target.result; // Content of CSV file
             
             this.papa.parse(csv, {
-            skipEmptyLines: true,
-            header: true,
-            complete: (results) => {
-                this.fileData = results.data;          
-                this.observationTuples = this.processSpreadsheetFile(this.fileData);
-
-                // at this moment, we have the tuples. now we need to map them onto tupleTableStructList so we have stuff to put in that giant table
-                // this.tupleTableStructList = this.generateTableStructList(this.observationTuples);
-            }
+                skipEmptyLines: true,
+                header: true,
+                complete: (results) => {
+                    this.fileData = results.data;          
+                    this.observationTuples = this.processSpreadsheetFile(this.fileData);
+                }
             });
         }
     }
@@ -188,7 +183,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
      * it calls the constructor of the SpreadsheetTuple object.
      * @param fileData 
      */
-    processSpreadsheetFile(fileTupleList: any[]): SpreadsheetTuple[] {
+    public processSpreadsheetFile(fileTupleList: any[]): SpreadsheetTuple[] {
         var tupleList: SpreadsheetTuple[] = [];
 
         for (var tuple of fileTupleList) {
