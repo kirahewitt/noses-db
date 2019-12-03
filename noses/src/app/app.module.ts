@@ -12,6 +12,10 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AuthService } from "./_services/auth.service";
 import { AuthGuard } from "./_services/auth.guard";
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+
 
 //Components
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
@@ -33,8 +37,9 @@ import { MarkTestComponent } from './mark-test/mark-test.component';
 import { MarkTestChildComponent } from './mark-test-child/mark-test-child.component';
 import { SealComponent } from './seal/seal.component';
 import { BulkUploadObservationViewComponent } from './citizen-scientist-upload-management/bulk-upload-observation-view/bulk-upload-observation-view.component';
-import { AngularFontAwesomeModule } from 'angular-font-awesome';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { EditObservationDialogComponent } from './edit-observation-dialog/edit-observation-dialog.component';
+import { TtlAngMaterialStartPageComponent } from './angular-material-tutorial-components/ttl-ang-material-start-page/ttl-ang-material-start-page.component';
+import { TtlAngMaterialDialogComponent } from './angular-material-tutorial-components/ttl-ang-material-dialog/ttl-ang-material-dialog.component';
 
 // angular material section
 import { MatFormFieldModule } from '@angular/material';
@@ -81,9 +86,9 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
-import { EditObservationDialogComponent } from './edit-observation-dialog/edit-observation-dialog.component';
-import { TtlAngMaterialStartPageComponent } from './angular-material-tutorial-components/ttl-ang-material-start-page/ttl-ang-material-start-page.component';
-import { TtlAngMaterialDialogComponent } from './angular-material-tutorial-components/ttl-ang-material-dialog/ttl-ang-material-dialog.component';
+
+// form validation service
+import { ValidationService } from './_services/validation.service'
 
 
 const config = {
@@ -207,7 +212,7 @@ const config = {
     EditObservationDialogComponent,
     TtlAngMaterialDialogComponent
   ],
-  providers: [AuthService, AuthGuard],
+  providers: [AuthService, AuthGuard, ValidationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

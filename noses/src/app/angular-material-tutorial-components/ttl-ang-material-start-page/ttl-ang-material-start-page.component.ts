@@ -11,6 +11,8 @@ export class TtlAngMaterialStartPageComponent implements OnInit {
 
 
     private currentDescriptionState = "Fool! I am the default description!";
+    private currentPotatoPedestalState = "potato";
+
 
     constructor(private dialogService : MatDialog) { }
 
@@ -37,7 +39,8 @@ export class TtlAngMaterialStartPageComponent implements OnInit {
         dialogConfig.data = {
             id: 1,
             title: "Angular For Beginners",
-            curDescriptionState: this.currentDescriptionState
+            curDescriptionState: this.currentDescriptionState,
+            curPotatoPedestalState: this.currentPotatoPedestalState
         };
 
         // set up a subcription to receive any modified data from the dialog after it is closed
@@ -48,6 +51,7 @@ export class TtlAngMaterialStartPageComponent implements OnInit {
             // if the data has changed, change our local state!
             if (data != undefined) {
                 this.currentDescriptionState = data.description;
+                this.currentPotatoPedestalState = data.potatoPedestal;
             }
         });
 

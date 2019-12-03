@@ -5,6 +5,8 @@ import { SpreadsheetTuple, TupleProcessingError } from './../_supporting_classes
 // imports that will let us use modal windows
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { ValidationService } from '../_services/validation.service';
+
 
 
 //
@@ -25,14 +27,6 @@ export class EditObservationDialogComponent implements OnInit {
     public tupleList : SpreadsheetTuple[];
     public tupleIndex : number;
     
-
-    public tupleList_master : SpreadsheetTuple[];
-    public tupleList_copy : SpreadsheetTuple[];
-
-    // // need this to keep the list of field leaders
-    // public fieldLeaders_String : string;
-    // public fieldLeaders_List : string[];
-
     /**
      * @param formBuilder : Provides syntactic sugar for creating instances of objects related to Forms.
      * @param dialogRef : A direct reference to the dialog opened by the MatDialog service. (that would be THIS dialog)
@@ -48,7 +42,6 @@ export class EditObservationDialogComponent implements OnInit {
         this.tupleList = injectedData.obsList;
         this.tupleIndex = injectedData.obsIndex;
         this.tuple = this.tupleList[this.tupleIndex];
-        
     }
 
 
@@ -74,15 +67,28 @@ export class EditObservationDialogComponent implements OnInit {
      * 
      */
     ngOnInit() {
+
+        console.log("OUTPUT ORIGINAL DATE JSON INPUT");
+        console.log(this.tuple.originalJsonInput['Date']);
+
         this.form = this.formBuilder.group({
             originalJsonInput: [this.tuple.originalJsonInput, []],
             fieldLeaderList: [this.tuple.fieldLeaderList, []],
             year : [this.tuple.year, []],
+
             dateOfRecording : [this.tuple.dateOfRecording, []],
+            // dateOfRecording : [this.tuple.dateOfRecording, [ValidationService.validate_calendarDateFormat]],
+            // dateOfRecording : [this.tuple.originalJsonInput['Date'], [ValidationService.validate_calendarDateFormat]],
+            // dateOfRecording : [this.formatDateMMDDYY(this.tuple.dateOfRecording), [ValidationService.validate_calendarDateFormat]],
+            
+
             locationCode : [this.tuple.locationCode, []],
             currentSeason : [this.tuple.currentSeason, []],
-            sealSex : [this.tuple.sealSex, []],
-            sealAgeCode : [this.tuple.sealAgeCode, []],
+
+            sealSex : [this.tuple.sealSex, [ValidationService.validate_sealSex]],
+
+            sealAgeCode : [this.tuple.sealAgeCode, [ValidationService.validate_sealAgeCode]],
+            
             sealHasPupQuantity : [this.tuple.sealHasPupQuantity, []],
             mark1_idValue : [this.tuple.mark1_idValue, []],
             mark1_isNew : [this.tuple.mark1_isNew, []],
@@ -114,9 +120,39 @@ export class EditObservationDialogComponent implements OnInit {
             weanDateRange : [this.tuple.weanDateRange, []],
             observationEnteredInAno : [this.tuple.observationEnteredInAno, []],
             comments : [this.tuple.comments, []],
-            isApproved : [this.tuple.isApproved, []],
-            processingErrorList : [this.tuple.processingErrorList, []]
+            isApproved : [this.tuple.isApproved, []]
         });
+    }
+
+
+    public formatDateMMDDYY(date : Date) {
+        var dateString = "";
+
+        
+        let monthNum = date.getMonth() + 1;
+        let monthStr = monthNum.toPrecision(2);
+
+        let dayNum = date.getDate();
+        let dayStr = dayNum.toPrecision(2);
+
+        let yearNum = date.getFullYear();
+        let yearStr = yearNum.toString().substr(2, 2);
+
+
+        dateString += monthStr + "/" + dayStr + "/" + yearStr;
+
+        console.log("CONSTRUCTED FORMATTED DATE");
+        console.log(dateString);
+
+        return dateString;
+    }
+
+
+    /**
+     * 
+     */
+    public hasError = (controlName: string, errorName: string) => {
+        return this.form.controls[controlName].hasError(errorName);
     }
 
 
@@ -136,29 +172,29 @@ export class EditObservationDialogComponent implements OnInit {
     }
 
 
-    /**
-     * 
-     */
-    private outputListState() {
-        var i: number;
+    // /**
+    //  * 
+    //  */
+    // private outputListState() {
+    //     var i: number;
 
-        console.log("Outputting list state...");
+    //     console.log("Outputting list state...");
 
-        console.log("\n   List State - 'tupleList_master': ");
-        i = 0;
-        for (var element of this.tupleList_master) {
-        console.log("      " + (i+1).toString() + ". " + element.comments);
-        i++;
-        }
+    //     console.log("\n   List State - 'tupleList_master': ");
+    //     i = 0;
+    //     for (var element of this.tupleList_master) {
+    //     console.log("      " + (i+1).toString() + ". " + element.comments);
+    //     i++;
+    //     }
 
 
-        console.log("\n   List State - 'tupleList_copy': ");
-        i = 0;
-        for (var element of this.tupleList_copy) {
-        console.log("      " + (i+1).toString() + ". " + element.comments);
-        i++;
-        }
+    //     console.log("\n   List State - 'tupleList_copy': ");
+    //     i = 0;
+    //     for (var element of this.tupleList_copy) {
+    //     console.log("      " + (i+1).toString() + ". " + element.comments);
+    //     i++;
+    //     }
 
-    }
+    // }
 
 }

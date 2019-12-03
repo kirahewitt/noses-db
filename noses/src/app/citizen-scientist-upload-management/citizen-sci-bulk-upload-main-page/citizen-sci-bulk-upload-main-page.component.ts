@@ -172,6 +172,8 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
                 complete: (results) => {
                     this.fileData = results.data;          
                     this.observationTuples = this.processSpreadsheetFile(this.fileData);
+                    console.log(results);
+                    console.log(this.observationTuples);
                 }
             });
         }

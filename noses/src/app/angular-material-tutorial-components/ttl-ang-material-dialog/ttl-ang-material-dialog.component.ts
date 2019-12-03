@@ -1,7 +1,20 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef, ErrorStateMatcher } from '@angular/material';
+import { FormGroup, FormBuilder, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { ValidationService } from '../../_services/validation.service';
 
+
+
+export class CrossFieldErrorMatcher implements ErrorStateMatcher {
+	isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null) : boolean {
+		return control.dirty && form.invalid;
+	}
+}
+
+
+/**
+ * 
+ */
 @Component({
   selector: 'app-ttl-ang-material-dialog',
   templateUrl: './ttl-ang-material-dialog.component.html',
@@ -12,6 +25,7 @@ export class TtlAngMaterialDialogComponent implements OnInit {
 
     public form : FormGroup;
     public description : string;
+    public potatoPedestal : string;
     public title : string;
 
 
@@ -26,10 +40,12 @@ export class TtlAngMaterialDialogComponent implements OnInit {
      */
     constructor(
         private formBuilder: FormBuilder,
+        private validationService: ValidationService,
         private dialogRef: MatDialogRef<TtlAngMaterialDialogComponent>,
         @Inject(MAT_DIALOG_DATA) injectedData) 
     { 
         this.description = injectedData.curDescriptionState;
+        this.potatoPedestal = injectedData.curPotatoPedestalState;
         this.title = injectedData.title;
     }
 
@@ -39,9 +55,43 @@ export class TtlAngMaterialDialogComponent implements OnInit {
      */
     public ngOnInit() {
         this.form = this.formBuilder.group({
-            description: [this.description, []]
-        });
+            description: [this.description, [Validators.required, 
+                                             Validators.minLength(3), 
+                                             Validators.maxLength(10),
+                                             ValidationService.customValidator]],
+            potatoPedestal: [this.potatoPedestal, [Validators.required]]
+        }, 
+        { validator: this.descriptionNeedsPotatoValidator }
+        // this.descriptionNeedsPotatoValidator
+        );
     }
+
+
+    /**
+     * 
+     */
+    public hasError = (controlName: string, errorName: string) => {
+      return this.form.controls[controlName].hasError(errorName);
+    }
+
+
+    /**
+     * 
+     */
+    public hasError_formLevel = (errorName: string) => {
+      return this.form.hasError(errorName);
+    }
+
+
+	/**
+	 * 
+	 * @param fg 
+	 */
+	public descriptionNeedsPotatoValidator(fg: FormGroup) {
+        const condition = fg.get('potatoPedestal').value !== "potato";
+        return condition ? { potatoNotOnPedestal : true } : null;
+    }
+
 
     
     /**

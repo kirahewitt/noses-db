@@ -77,6 +77,7 @@
                         <input matInput formControlName="dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="01/01/2020">
                         <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
                         <mat-datepicker [startAt]="tuple.dateOfRecording" #observationDatePicker></mat-datepicker>
+                        <mat-error *ngIf="hasError('dateOfRecording', 'invalidDateFormat')">Input must be a date MM/DD/YY.</mat-error>
                     </mat-form-field>    
                 </p>
 
@@ -92,6 +93,7 @@
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Year</mat-label>
                         <input matInput formControlName="year" value="{{tuple.year}}"   placeholder="2020">
+                        <!-- <mat-error *ngIf="hasError('year', 'pattern')">Input must be a four digit year.</mat-error> -->
                     </mat-form-field>    
                 </p>
 
@@ -102,7 +104,7 @@
             <div class="col-md-6">
                 
                  
-                 <p>
+                <p>
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Field Leader List</mat-label>
                         <input matInput formControlName="fieldLeaderList" value="{{tuple.fieldLeaderList}}" placeholder="COME BACK TO THIS LATER">
@@ -113,7 +115,7 @@
                 <p>
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Location Code</mat-label>
-                        <input matInput  formControlName="locationCode" value="{{tuple.locationCode}}"  placeholder="Location Code">
+                        <input matInput formControlName="locationCode" value="{{tuple.locationCode}}"  placeholder="Location Code">
                     </mat-form-field>    
                 </p>
 
@@ -142,6 +144,7 @@
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Seal's % Molt Completed</mat-label>
                         <input matInput formControlName="sealMoltPercentage" value="{{tuple.sealMoltPercentage}}" placeholder="50">
+                        <!-- <mat-error *ngIf="hasError('year', 'pattern')">Input must be a four digit year.</mat-error> -->
                     </mat-form-field>    
                 </p> 
 
@@ -150,6 +153,7 @@
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Seal's Age Code</mat-label>
                         <input matInput  formControlName="sealAgeCode" value="{{tuple.sealAgeCode}}" placeholder="Seal Age Code">
+                        <mat-error *ngIf="hasError('sealAgeCode', 'invalidSealAgeCode')">Can only be ["P", "W", "J", "SA1", "SA2", "SA3", "SA4", "A"]</mat-error>
                     </mat-form-field>    
                 </p>
             </div>
@@ -159,6 +163,7 @@
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Seal's Sex</mat-label>
                         <input matInput  formControlName="sealSex" value="{{tuple.sealSex}}" placeholder="M or F">
+                        <mat-error *ngIf="hasError('sealSex', 'invalidSealSex')">Can only be 'M' or 'F'</mat-error>
                     </mat-form-field>    
                 </p>  
 

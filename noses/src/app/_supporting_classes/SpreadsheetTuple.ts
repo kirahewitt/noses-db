@@ -218,7 +218,8 @@ export class SpreadsheetTuple {
     this.sealAgeCode = "";
     this.sealHasPupQuantity = null;
     this.mark1_idValue = "";
-    this.mark1_isNew = ""
+    this.mark1_isNew = "";
+    this.sealMoltPercentage = null;
 
     this.processingErrorList = [];
 
@@ -393,18 +394,6 @@ export class SpreadsheetTuple {
         // if pup          --> verify the sealIsPup is set to true
       }
 
-      // for mother elephant seals, indicates the number of pups they are caring for
-      else if (field[KEY] == jsonName_sealHasPupQuantity) {
-        let value = parseInt(valueAsString);
-        
-        if (value == NaN) {
-          var error = new TupleProcessingError(jsonName_sealHasPupQuantity, "Error: received non-integer value for number of pups suffered by this parent. Intead: " + value);
-          tuple.processingErrorList.push(error);
-        }
-        else {
-          tuple.sealHasPupQuantity = value;
-        }
-      }
 
       // must be (Y/N)
       else if (field[KEY] == jsonName_mark1_isNew) {
@@ -419,10 +408,12 @@ export class SpreadsheetTuple {
         }
       }
 
+
       // really could be anything
       else if (field[KEY] == jsonName_mark1_idValue) {
         tuple.mark1_idValue = valueAsString;
       }
+
 
       // aka the STAMP // verify composed of one of the valid positions: "L" "R" "B"
       else if (field[KEY] == jsonName_mark1_positionCode) {
@@ -580,6 +571,7 @@ export class SpreadsheetTuple {
               if (value < 0 || value > 100) {  
                 var error = new TupleProcessingError(jsonName_sealMoltPercentage, "Error: not between 0 and 100. expected an integer value 1-3 digits, between 0 and 100, w or w/o % sign. Instead: " + value);
                 tuple.processingErrorList.push(error);
+                //tuple.sealMoltPercentage = null;
               }
               else {
                 tuple.sealMoltPercentage = value;
@@ -615,6 +607,30 @@ export class SpreadsheetTuple {
           }
       }
 
+
+      // for mother elephant seals, indicates the number of pups they are caring for
+      else if (field[KEY] == jsonName_sealHasPupQuantity) {
+        
+        
+        if (valueAsString == "") {
+
+        }
+        else {
+          let value = parseInt(valueAsString);
+          if (value == NaN) {
+            var error = new TupleProcessingError(jsonName_sealHasPupQuantity, "Error: received non-integer value for number of pups suffered by this parent. Intead: " + value);
+            tuple.processingErrorList.push(error);
+            tuple.sealHasPupQuantity = null;
+          }
+          else {
+            tuple.sealHasPupQuantity = value;
+          }
+        }
+
+        
+      }
+
+
       else if (field[KEY] == jsonName_currentSeason) {
         // Gotta be for the current season or some season in the past
         tuple.currentSeason = valueAsString;
@@ -624,42 +640,78 @@ export class SpreadsheetTuple {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealStandardLength = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealStandardLength = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealCurvilinearLength) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealCurvilinearLength = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealCurvilinearLength = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealAuxiliaryGirth) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealAuxiliaryGirth = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealAuxiliaryGirth = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealMass) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealMass = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealMass = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealTare) {  
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealTare = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealTare = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealMassTare) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealMassTare = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealMassTare = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealLastSeenAsPupDate) {
@@ -689,9 +741,15 @@ export class SpreadsheetTuple {
         // should be an integer... (maybe we let them use floats if they really want to?)
         // sould be the difference in days between seal-LSAP and seal-FSAW
         
-        // first check regex for an integer. 
-        let value = parseInt(valueAsString);
-        tuple.weanDateRange = value;
+        if (valueAsString == "") {
+
+        }
+        else {
+          // first check regex for an integer. 
+          let value = parseInt(valueAsString);
+          tuple.weanDateRange = value;
+        }
+        
 
         //then check that it is equal to the difference of the other two fields
         // (AT THE VERY END, OUTSIDE THE IF CONDITIONS)
