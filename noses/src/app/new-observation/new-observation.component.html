@@ -106,7 +106,8 @@
         <div class="positioned-filter-container-right">
             <div class="filter-row sized-normal left">
               <h2>Animal Identification:</h2>
-              <label class="checkbox-inline left"><input type="checkbox" value="" onchange="if ($('.search').attr('disabled')) {$('.search').prop('disabled', null);} else {$('.search').prop('disabled', true);}"> New Seal</label>
+              <label class="checkbox-inline left"><input type="checkbox" value="" 
+                onchange="if ($('.search').attr('disabled')) {$('.search').prop('disabled', null); setToNone();} else {$('.search').prop('disabled', true); setToNew();}"> New Seal</label>
             </div>
             <div class="filter-row sized-small flex-row left border-black-left border-black-right border-black-top">
               <div class="filter-row-item">
@@ -232,6 +233,7 @@
             </div>
             <div class="filter-row sized-half border-black">
               <div class="filter-row-item sized-large left" style="justify-content: left">
+                  <h4 style="padding-top:1%;">Seal Chosen: {{sealNum}}</h4>
                 <label class="checkbox-inline left down"><input type="checkbox" data-toggle="collapse" data-target="#demo"value="">Weighted?</label>
               </div>
               <div id="demo" class="collapse" style="justify-content: left">
@@ -304,10 +306,13 @@
           </button>
         </div>
         <div class="modal-body">
-          Your account has been requested and an email will be sent with information soon!
+          <h4 style="text-align:center;">Model for choosing Seals not yet built, select seal number instead:</h4>
+          <div>
+            <input class="form-control" type="text" placeholder="Enter a Number">
+          </div>
         </div>
         <div class="modal-footer">
-          <button routerLink="/sign-in" type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
         </div>
       </div>
     </div>
