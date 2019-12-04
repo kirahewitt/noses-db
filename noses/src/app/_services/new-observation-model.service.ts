@@ -36,6 +36,7 @@ export class NewObservationModelService {
 
   public overwriteObservation(source : ObservationRecord) {
     this.obsRec = source;
+    this.obsRec_updateStream.next(this.obsRec);
   }
 
 }
