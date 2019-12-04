@@ -7,25 +7,18 @@
             </div>
             <div class="filter-row">
                 <div class="filter-row-item">
-                    <div class="form-group down">
-                        <select class="form-control" id="sel1">
-                            <option>Tag</option>
-                            <option>Mark</option>
-                            <option>Sex</option>
-                            <option>Age Class</option>
-                        </select>
-                    </div>
+                    <filter-type-selector></filter-type-selector>
                 </div>
                 <div class="filter-row-item">
                     <form>
                         <div>
-                            <input type="email" class="form-control" placeholder="Filter Value">
+                            <input class="form-control" placeholder="Filter Value" [formControl]="partialControl">
                         </div>
                     </form>
                 </div>
             </div>
             <div class="filter-row">
-                <button type="button" class="btn btn-primary">Add</button>
+                <button type="button" class="btn btn-primary" (click)="filterObs(row)">Add</button>
             </div>
         </div>
     </div>
@@ -84,7 +77,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="viewSeal">
-                    <th mat-header-cell *matHeaderCellDef> </th>
+                    <th mat-header-cell *matHeaderCellDef>View Seal</th>
                     <td mat-cell *matCellDef="let row"> <span (click)="selectSeal(row)" class="hippo">
                         <i class="fas fa-hippo"></i></span>
                     </td>

@@ -34,9 +34,9 @@
     </div>
     <div class="row">
 
-      <!--left border-->
+    <!--  # left border -->
       <div class="col-md-3 ">
-
+<!--
         <div class="left-column border mat-elevation-z4">
           <mat-form-field>
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Enter Tag or Mark">
@@ -76,8 +76,8 @@
             <button class="btn btn-filter btn-block" (click)="filterObs()">Filter</button>
             <button class="btn btn-reset btn-block" (click)="resetObs()">Reset</button>
           </div>
-        </div>
-      </div>
+        </div> -->
+      </div> 
 
       <div class="col-md-8">
         <div class="table-column">
@@ -110,7 +110,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="viewSeal">
-                    <th mat-header-cell *matHeaderCellDef> </th>
+                    <th mat-header-cell *matHeaderCellDef> View Seal</th>
                     <td mat-cell *matCellDef="let row"> <span (click)="selectSeal(row)" class="hippo">
                         <i class="fas fa-hippo"></i></span>
                     </td>

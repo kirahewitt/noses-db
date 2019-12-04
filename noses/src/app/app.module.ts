@@ -86,6 +86,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
+import {SelectFilterType} from "./all-observations/filter-type-selector"
 
 // form validation service
 import { ValidationService } from './_services/validation.service'
@@ -126,7 +127,8 @@ const config = {
     BulkUploadObservationViewComponent,
     EditObservationDialogComponent,
     TtlAngMaterialStartPageComponent,
-    TtlAngMaterialDialogComponent
+    TtlAngMaterialDialogComponent,
+    SelectFilterType
   ],
   imports: [
     FormsModule,

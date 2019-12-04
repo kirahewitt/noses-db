@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, NgModule } from '@angular/core';
 import { FlaskBackendService } from '../_services/flask-backend.service';
 import { Observations } from  '../_supporting_classes/Observations';
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';
@@ -12,6 +12,7 @@ import {
 import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
+import { SelectFilterType } from "./filter-type-selector"
 
 @Component({
   selector: 'app-all-observations',
@@ -52,6 +53,7 @@ export class AllObservationsComponent implements OnInit {
 
   yearControl = new FormControl('');
   partialControl = new FormControl('');
+  filterTypeControl = new FormControl('');
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
@@ -69,7 +71,7 @@ export class AllObservationsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.apiService.readObs().subscribe((observations: any)=>{
+    this.apiService.readObs(null).subscribe((observations: any)=>{
       if(this.isAdmin) {
         this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
         this.notReady = false;
@@ -192,27 +194,19 @@ export class AllObservationsComponent implements OnInit {
   }
 
   filterObs() {
-    var tempObs = this.observations;
-
-    if(this.filterYear != "Any") {
-      tempObs = tempObs.filter(elem => String(elem.Year) == this.filterYear);
-
-    }
-
-    // **** ADD THESE WHEN YOU GET THE QUERY INFO **********/
-    // if(this.filterAge != "Any") {
-    //   tempObs = tempObs.filter(function(elem, index, self) {
-    //   return String(elem.AgeClass) == this.filterAge;
-    //   });
-    // }
-
-    // if(this.filterGender != "Any") {
-    //   tempObs = tempObs.filter(function(elem, index, self) {
-    //     console.log("here");
-    //   return String(elem.Sex) == this.filterGender;
-    //   });
-    // }
-    this.runSealQuery(tempObs);
+    var part = this.partialControl.value;
+    this.apiService.readObs(part).subscribe((observations: any)=>{
+      if(this.isAdmin) {
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
+        this.notReady = false;
+      } else {
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
+        this.notReady = false;
+      }
+      this.observations = observations;
+      this.runSealQuery(observations);
+      this.facetSetup(observations);
+    });
 
   }
 
@@ -256,7 +250,7 @@ export class AllObservationsComponent implements OnInit {
     this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
     console.log('about to call delete');
 
-    this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
+    this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs(null));
 
  }
 }

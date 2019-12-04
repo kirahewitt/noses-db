@@ -40,7 +40,13 @@ export class SealPageComponent implements OnInit {
       this.jseal = JSON.stringify(currentSeal);
       // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
       this.datas = this.apiService.getSeal(this.jseal).then(msg => {
-        this.dataSource = new MatTableDataSource(<any> msg);
+        this.dataSource = new MatTableDataSource(<any> msg.Observations);
+        this.seal.Sex = msg.Sex;
+        this.seal.AgeClass = msg.AgeClass;
+        this.seal.Marks = msg.Marks;
+        this.seal.Tags = msg.Tags;
+        this.seal.BreedingSeason = msg.BreedingSeason;
+        this.seal.LastSeen = msg.LastSeen;
         this.dataSource.paginator = this.paginator;
       });
 
@@ -60,7 +66,7 @@ export class SealPageComponent implements OnInit {
     if(this.sealForm.value.ageClass != "") {
       await this.apiService.updateAgeClass(JSON.stringify({'obsID': this.sealRow.ObservationID, 'age': this.sealForm.value.ageClass}))
       .subscribe(() => {
-        this.apiService.readObs()
+        this.apiService.readObs(null)
         this.sealData.currentSeal.subscribe(currentSeal  => {
         this.seal = currentSeal;
         this.jseal = JSON.stringify(currentSeal);
@@ -68,7 +74,7 @@ export class SealPageComponent implements OnInit {
         // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
         this.datas = this.apiService.getSeal(this.jseal);
         this.datas.then(msg => {
-          this.dataSource = new MatTableDataSource(<any> msg);
+          this.dataSource = new MatTableDataSource(<any> msg.Observations);
           this.sealForm.reset();
           this.show = false;
         });

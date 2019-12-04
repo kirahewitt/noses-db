@@ -37,8 +37,12 @@ export class FlaskBackendService {
   /**
    * 
    */
-  readObs(): Observable<Observations[]>{
-    return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allobservations` );
+  readObs(filterObj: string): Observable<Observations[]>{
+    if(filterObj == null){
+      return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allobservations` );
+    }else{
+      return this.httpClient.post<Observations[]>(`${this.FLASK_API_SERVER}/allobservations`, filterObj, this.httpOptions );
+    }
   }
   readSeals(): Observable<Seal[]>{
     return this.httpClient.get<Seal[]>(`${this.FLASK_API_SERVER}/allseals` );
@@ -101,7 +105,7 @@ export class FlaskBackendService {
 
 
   async getPartials(part: string) {
-    await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/partials`, part, this.httpOptions).toPromise().then(data => {
+    await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/allseals`, part, this.httpOptions).toPromise().then(data => {
       this.rows = data
     });
     return this.rows
