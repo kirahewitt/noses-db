@@ -216,6 +216,7 @@
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Mark 1: Position Code</mat-label>
                         <input matInput formControlName="mark1_positionCode" value="{{tuple.mark1_positionCode}}" placeholder="(L | R | B)">
+                        <mat-error *ngIf="hasError('mark1_positionCode', 'invalidMarkPositionCode')">Can only be ["LRB" "LR" "RB" "LB" "L" "R" "B"]</mat-error>
                     </mat-form-field>    
                 </p>
             </div>
@@ -242,6 +243,7 @@
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Mark 2: Position Code</mat-label>
                         <input matInput formControlName="mark2_positionCode" value="{{tuple.mark2_positionCode}}" placeholder="(L | R | B)">
+                        <mat-error *ngIf="hasError('mark2_positionCode', 'invalidMarkPositionCode')">Can only be ["LRB" "LR" "RB" "LB" "L" "R" "B"]</mat-error>
                     </mat-form-field>    
                 </p>
             </div>
@@ -285,6 +287,8 @@
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Tag 1: Position Code</mat-label>
                         <input matInput formControlName="tag1_positionCode" value="{{tuple.tag1_positionCode}}" placeholder="L3-so">
+                        <mat-error *ngIf="hasError('tag1_positionCode', 'invalidTagPositionCode')">Can only be [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]</mat-error>
+                        <!-- <mat-error *ngIf="hasError('tag1_positionCode', 'invalidTagPositionCode')"> Invalid Tag Position Code </mat-error> -->
                     </mat-form-field>    
                 </p>
                 
@@ -314,6 +318,8 @@
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Tag 2: Position Code</mat-label>
                         <input matInput formControlName="tag2_positionCode" value="{{tuple.tag2_positionCode}}" placeholder="L3-so">
+                        <mat-error *ngIf="hasError('tag1_positionCode', 'invalidTagPositionCode')"> Can only be [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]</mat-error>
+                        <!-- <mat-error *ngIf="hasError('tag2_positionCode', 'invalidTagPositionCode')"> Invalid Tag Position Code </mat-error> -->
                     </mat-form-field>    
                 </p>
 
@@ -424,21 +430,22 @@
 
                 <p>
                     <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Date First Seen As A Weaner</mat-label>
+                        <input matInput formControlName="sealFirstSeenAsWeaner" [matDatepicker]="firstSeenAsWeanerDatePicker" placeholder="01/01/2020">
+                        <mat-datepicker-toggle matSuffix [for]="firstSeenAsWeanerDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker [startAt]="tuple.sealFirstSeenAsWeaner" #firstSeenAsWeanerDatePicker></mat-datepicker>
+                    </mat-form-field>
+                </p>    
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Date Last Seen As A Pup</mat-label>
                         <input matInput formControlName="sealLastSeenAsPupDate" [matDatepicker]="lastSeenAsPupDatePicker" placeholder="01/01/2020">
                         <mat-datepicker-toggle matSuffix [for]="lastSeenAsPupDatePicker"></mat-datepicker-toggle>
                         <mat-datepicker [startAt]="tuple.sealLastSeenAsPupDate" #lastSeenAsPupDatePicker></mat-datepicker>
                     </mat-form-field>  
                 </p>
-
-                <p>
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Date First Seen As A Weaner</mat-label>
-                        <input matInput formControlName="sealFirstSeenAsWeaner" [matDatepicker]="firstSeenAsWeanerDatePicker" placeholder="01/01/2020">
-                        <mat-datepicker-toggle matSuffix [for]="firstSeenAsWeanerDatePicker"></mat-datepicker-toggle>
-                        <mat-datepicker [startAt]="tuple.sealFirstSeenAsWeaner" #firstSeenAsWeanerDatePicker></mat-datepicker>
-                    </mat-form-field>
-                </p>     
 
             </div>
 

@@ -219,6 +219,18 @@ export class SpreadsheetTuple {
     this.sealHasPupQuantity = null;
     this.mark1_idValue = "";
     this.mark1_isNew = "";
+    this.mark1_positionCode = "";
+    this.mark2_idValue = "";
+    this.mark2_isNew = "";
+    this.mark2_positionCode = "";
+
+    this.tag1_idValue = "";
+    this.tag1_isNew = "";
+    this.tag1_positionCode = "";
+    this.tag2_idValue = "";
+    this.tag2_isNew = "";
+    this.tag2_positionCode = "";
+    
     this.sealMoltPercentage = null;
 
     this.processingErrorList = [];
@@ -368,7 +380,7 @@ export class SpreadsheetTuple {
       else if (field[KEY] == jsonName_sealSex) {
         let value = valueAsString;
         
-        if (value != "M" && value != "F") {
+        if (value != "M" && value != "F" && value != "") {
           var error = new TupleProcessingError(jsonName_sealSex, "Error: received value for seal gender that wasn't M or F: " + value);
           tuple.processingErrorList.push(error);
         }
@@ -495,7 +507,7 @@ export class SpreadsheetTuple {
         //    Flipper Location   - "1" "2" "3" "4"
         //    Spike Orientation  - "so" "si"
       else if (field[KEY] == jsonName_tag1_positionCode) {
-        let positionCodeRegex = /([LR][1234]-(so|si))/gm;
+        let positionCodeRegex = /^([LR][1234]-(so|si))$/gm;
         let value = valueAsString;
 
         if (value.match(positionCodeRegex)) {
@@ -781,6 +793,109 @@ export class SpreadsheetTuple {
       }
     }
 
+  }
+
+
+  public toJson() {
+
+    var pupQuantityStr: string;
+    var sealMoltPrcnt: string;
+    var sealStdLen: string;
+    var sealCurvLen: string;
+    var sealAuxG: string;
+    var sealMass: string;
+    var sealTare: string;
+    var sealMassTare: string;
+    var sealLSAP: string;
+    var sealFSAW: string;
+    var weanRange: string;
+    
+    pupQuantityStr = (this.sealHasPupQuantity == null) ? "" : this.sealHasPupQuantity.toString();
+    sealMoltPrcnt = (this.sealMoltPercentage == null) ? "" : this.sealMoltPercentage.toString();
+
+    sealStdLen = (this.sealStandardLength == null) ? "" : this.sealStandardLength.toString();
+    sealCurvLen = (this.sealCurvilinearLength == null) ? "" : this.sealCurvilinearLength.toString();
+    sealAuxG = (this.sealAuxiliaryGirth == null) ? "" : this.sealAuxiliaryGirth.toString();
+    sealMass = (this.sealMass == null) ? "" : this.sealMass.toString();
+    sealTare = (this.sealTare == null) ? "" : this.sealTare.toString();
+    sealMassTare = (this.sealMassTare == null) ? "" : this.sealMassTare.toString();
+    sealLSAP = (this.sealLastSeenAsPupDate == null || this.sealLastSeenAsPupDate.toString() == "Invalid Date") ? "" : this.sealLastSeenAsPupDate.toLocaleDateString();
+    sealFSAW = (this.sealFirstSeenAsWeaner == null || this.sealFirstSeenAsWeaner.toString() == "Invalid Date") ? "" : this.sealFirstSeenAsWeaner.toLocaleDateString();
+    weanRange = (this.weanDateRange == null) ? "" : this.weanDateRange.toString();
+
+
+
+    // let result = {this.jsonName_fieldLeaderInitials : this.fieldLeaderList,
+    //                             jsonName_year : this.year.toString(),
+    //                             jsonName_dateOfRecording : this.dateOfRecording.toLocaleDateString(),
+    //                             jsonName_locationCode : this.locationCode,
+    //                             jsonName_sealSex : this.sealSex,
+    //                             jsonName_sealAgeCode : this.sealAgeCode,
+    //                             jsonName_sealHasPupQuantity : pupQuantityStr,
+    //                             jsonName_mark1_isNew : this.mark1_isNew,
+    //                             jsonName_mark1_idValue : this.mark1_idValue,
+    //                             jsonName_mark1_positionCode : this.mark1_positionCode,
+    //                             jsonName_mark2_isNew : this.mark2_isNew,
+    //                             jsonName_mark2_idValue : this.mark2_idValue,
+    //                             jsonName_mark2_positionCode : this.mark2_positionCode,
+    //                             jsonName_tag1_isNew : this.tag1_isNew,
+    //                             jsonName_tag1_idValue : this.tag1_idValue,
+    //                             jsonName_tag1_positionCode : this.tag1_positionCode,
+    //                             jsonName_tag2_isNew : this.tag2_isNew,
+    //                             jsonName_tag2_idValue : this.tag2_idValue,
+    //                             jsonName_tag2_positionCode : this.tag2_positionCode,
+    //                             jsonName_sealMoltPercentage : sealMoltPrcnt,
+    //                             jsonName_currentSeason : this.currentSeason,
+    //                             jsonName_sealStandardLength : sealStdLen,
+    //                             jsonName_sealCurvilinearLength : sealCurvLen,
+    //                             jsonName_sealAuxiliaryGirth : sealAuxG,
+    //                             jsonName_sealMass : sealMass,
+    //                             jsonName_sealTare : sealTare,
+    //                             jsonName_sealMassTare : sealMassTare,
+    //                             jsonName_sealLastSeenAsPupDate : sealLSAP,
+    //                             jsonName_sealFirstSeenAsWeaner : sealFSAW,
+    //                             jsonName_weanDateRange : weanRange,
+    //                             jsonName_comments : this.comments,
+    //                             jsonName_observationEnteredInAno : this.observationEnteredInAno};
+
+    
+
+    let result = {'Field Leader Initials' : this.fieldLeaderList,
+                                "Year" : this.year.toString(),
+                                "Date" : this.dateOfRecording.toLocaleDateString(),
+                                "Loc." : this.locationCode,
+                                "Sex" : this.sealSex,
+                                "Age" : this.sealAgeCode,
+                                "Pup?" : pupQuantityStr,
+                                "New Mark 1?" : this.mark1_isNew,
+                                "Mark 1" : this.mark1_idValue,
+                                "Mark 1 Position" : this.mark1_positionCode,
+                                "New Mark 2?" : this.mark2_isNew,
+                                "Mark 2" : this.mark2_idValue,
+                                "Mark 2 Position" : this.mark2_positionCode,
+                                "New Tag1?" : this.tag1_isNew,
+                                "Tag1 #" : this.tag1_idValue,
+                                "Tag 1 Pos." : this.tag1_positionCode,
+                                "New Tag2?": this.tag2_isNew,
+                                "Tag2 #" : this.tag2_idValue,
+                                "Tag 2 Pos." : this.tag2_positionCode,
+                                "Molt (%)" : sealMoltPrcnt,
+                                "Season" : this.currentSeason,
+                                "St. Length" : sealStdLen,
+                                "Crv. Length" : sealCurvLen,
+                                "Ax. Girth" : sealAuxG,
+                                "Mass" : sealMass,
+                                "Tare" : sealTare,
+                                "Mass-Tare" : sealMassTare,
+                                "Last seen as P" : sealLSAP,
+                                "1st seen as W" : sealFSAW,
+                                "Range (days)" : weanRange,
+                                "Comments" : this.comments,
+                                "Entered in Ano" : this.observationEnteredInAno};
+
+    
+
+    return result;
   }
 
 

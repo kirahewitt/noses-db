@@ -6,7 +6,8 @@ import { SpreadsheetTuple, TupleProcessingError } from '../../_supporting_classe
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig} from '@angular/material/dialog';
 import { EditObservationDialogComponent } from 'src/app/edit-observation-dialog/edit-observation-dialog.component';
 import {MatPaginator} from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatSnackBar } from '@angular/material';
+import { FlaskBackendService } from 'src/app/_services/flask-backend.service';
 
 
 export interface TupleStructForTable {
@@ -47,7 +48,11 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
      * @param papa 
      * @param dialogMaterialService 
      */
-    constructor(private papa: Papa, public dialogMaterialService: MatDialog) {
+    constructor(private papa: Papa, 
+        public dialogMaterialService: MatDialog, 
+        private snackbarService : MatSnackBar,
+        private apiService: FlaskBackendService) 
+    {
         this.fileName = "No File Selected";
         this.displayedColumns = ["position", "date", "locationCode", "comment"];
         this.fileData = [];
@@ -90,63 +95,62 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
             console.log("Dialog output: ", result);
 
             if (result != undefined) {
-                var tupleToOverwrite = this.observationTuples[observationIndex];
-
-                tupleToOverwrite.originalJsonInput = result.originalJsonInput;
-
-                // observation bookkeeping section
-                tupleToOverwrite.fieldLeaderList = result.fieldLeaderList;
-                tupleToOverwrite.year = result.year;
-                tupleToOverwrite.dateOfRecording = result.dateOfRecording;
-                tupleToOverwrite.locationCode = result.locationCode;
-                tupleToOverwrite.currentSeason = result.currentSeason;
-
-                // seal attribute section
-                tupleToOverwrite.sealSex = result.sealSex;
-                tupleToOverwrite.sealAgeCode = result.sealAgeCode;
-                tupleToOverwrite.sealHasPupQuantity = result.sealHasPupQuantity;
-
-                // mark section
-                tupleToOverwrite.mark1_idValue = result.mark1_idValue;
-                tupleToOverwrite.mark1_isNew = result.mark1_isNew;
-                tupleToOverwrite.mark1_positionCode = result.mark1_positionCode;
-                tupleToOverwrite.mark2_idValue = result.mark2_idValue;
-                tupleToOverwrite.mark2_isNew = result.mark2_isNew;
-                tupleToOverwrite.mark2_positionCode = result.mark2_positionCode;
-
-                // tag section
-                tupleToOverwrite.tag1_idValue = result.tag1_idValue;
-                tupleToOverwrite.tag1_isNew = result.tag1_isNew;
-                tupleToOverwrite.tag1_positionCode = result.tag1_positionCode;
-                tupleToOverwrite.tag2_idValue = result.tag2_idValue;
-                tupleToOverwrite.tag2_isNew = result.tag2_isNew;
-                tupleToOverwrite.tag2_positionCode = result.tag2_positionCode;
-
-                // measurement section
-                tupleToOverwrite.sealMoltPercentage = result.sealMoltPercentage;
-                tupleToOverwrite.sealStandardLength = result.sealStandardLength;
-                tupleToOverwrite.sealStandardLength_units = result.sealStandardLength_units;
-                tupleToOverwrite.sealCurvilinearLength = result.sealCurvilinearLength;
-                tupleToOverwrite.sealCurvilinearLength_units = result.sealCurvilinearLength_units;
-                tupleToOverwrite.sealAuxiliaryGirth = result.sealAuxiliaryGirth;
-                tupleToOverwrite.sealAuxiliaryGirth_units = result.sealAuxiliaryGirth_units;
-                tupleToOverwrite.sealMass = result.sealMass;
-                tupleToOverwrite.sealMass_units = result.sealMass_units;
-                tupleToOverwrite.sealTare = result.sealTare;
-                tupleToOverwrite.sealTare_units = result.sealTare_units;
-                tupleToOverwrite.sealMassTare = result.sealMassTare;
-                tupleToOverwrite.sealMassTare_units = result.sealMassTare_units;
-
-                // last section
-                tupleToOverwrite.sealLastSeenAsPupDate = new Date(result.sealLastSeenAsPupDate.toString());
-                tupleToOverwrite.sealFirstSeenAsWeaner = new Date(result.sealFirstSeenAsWeaner.toString());
-                tupleToOverwrite.weanDateRange = result.weanDateRange;
-                tupleToOverwrite.comments = result.comments;
+                this.overwriteModifiedTuple(observationIndex, result);
             }
         });
 
     }
 
+
+
+    private overwriteModifiedTuple(observationIndex: number, result: any)
+    {
+        var tupleToOverwrite = this.observationTuples[observationIndex];
+        tupleToOverwrite.originalJsonInput = result.originalJsonInput;
+        // observation bookkeeping section
+        tupleToOverwrite.fieldLeaderList = result.fieldLeaderList;
+        tupleToOverwrite.year = result.year;
+        tupleToOverwrite.dateOfRecording = result.dateOfRecording;
+        tupleToOverwrite.locationCode = result.locationCode;
+        tupleToOverwrite.currentSeason = result.currentSeason;
+        // seal attribute section
+        tupleToOverwrite.sealSex = result.sealSex;
+        tupleToOverwrite.sealAgeCode = result.sealAgeCode;
+        tupleToOverwrite.sealHasPupQuantity = result.sealHasPupQuantity;
+        // mark section
+        tupleToOverwrite.mark1_idValue = result.mark1_idValue;
+        tupleToOverwrite.mark1_isNew = result.mark1_isNew;
+        tupleToOverwrite.mark1_positionCode = result.mark1_positionCode;
+        tupleToOverwrite.mark2_idValue = result.mark2_idValue;
+        tupleToOverwrite.mark2_isNew = result.mark2_isNew;
+        tupleToOverwrite.mark2_positionCode = result.mark2_positionCode;
+        // tag section
+        tupleToOverwrite.tag1_idValue = result.tag1_idValue;
+        tupleToOverwrite.tag1_isNew = result.tag1_isNew;
+        tupleToOverwrite.tag1_positionCode = result.tag1_positionCode;
+        tupleToOverwrite.tag2_idValue = result.tag2_idValue;
+        tupleToOverwrite.tag2_isNew = result.tag2_isNew;
+        tupleToOverwrite.tag2_positionCode = result.tag2_positionCode;
+        // measurement section
+        tupleToOverwrite.sealMoltPercentage = result.sealMoltPercentage;
+        tupleToOverwrite.sealStandardLength = result.sealStandardLength;
+        tupleToOverwrite.sealStandardLength_units = result.sealStandardLength_units;
+        tupleToOverwrite.sealCurvilinearLength = result.sealCurvilinearLength;
+        tupleToOverwrite.sealCurvilinearLength_units = result.sealCurvilinearLength_units;
+        tupleToOverwrite.sealAuxiliaryGirth = result.sealAuxiliaryGirth;
+        tupleToOverwrite.sealAuxiliaryGirth_units = result.sealAuxiliaryGirth_units;
+        tupleToOverwrite.sealMass = result.sealMass;
+        tupleToOverwrite.sealMass_units = result.sealMass_units;
+        tupleToOverwrite.sealTare = result.sealTare;
+        tupleToOverwrite.sealTare_units = result.sealTare_units;
+        tupleToOverwrite.sealMassTare = result.sealMassTare;
+        tupleToOverwrite.sealMassTare_units = result.sealMassTare_units;
+        // last section
+        tupleToOverwrite.sealLastSeenAsPupDate = new Date(result.sealLastSeenAsPupDate.toString());
+        tupleToOverwrite.sealFirstSeenAsWeaner = new Date(result.sealFirstSeenAsWeaner.toString());
+        tupleToOverwrite.weanDateRange = result.weanDateRange;
+        tupleToOverwrite.comments = result.comments;
+    }
 
 
     /**
@@ -195,6 +199,74 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         }
 
         return tupleList;
+    }
+
+
+    /**
+     * Checks whether the data is valid and can be uploaded. Displays a message answering that
+     *  question. Then if it can be uploaded, it extacts the list of json objects from the SpreadsheetTuple
+     *  list and sends it to the server.
+     */
+    public uploadData() {
+        var snackbarMessage: string;
+        
+        if (this.getErroneousObservationIndices().length > 0) {
+            snackbarMessage = "WARNING: You cannot submit this upload until you correct all errors.";
+            this.displaySnackbarMessage(snackbarMessage);
+        }
+        else {
+            snackbarMessage = "SUCCESS: This data has been successfully validated. Sending to DB.";
+            this.displaySnackbarMessage(snackbarMessage);
+
+            var extractedJsonData = this.getExtractedJsonData();
+
+            console.log("EXTRACTED JSON DATA");
+            console.log(extractedJsonData);
+
+
+            var fullData = [extractedJsonData, {"isApproved" : 0}];
+            this.apiService.addObservations(JSON.stringify(fullData)).subscribe(() => this.apiService.readObs());
+
+        }
+
+        
+    }
+
+
+    public getExtractedJsonData() {
+        let extractedJsonList = [];
+        
+        for (var tuple of this.observationTuples) {
+            extractedJsonList.push(tuple.toJson());
+        }
+
+        return extractedJsonList;
+    }
+
+
+    public displaySnackbarMessage(snackbarMessage : string) {
+        this.snackbarService.open(snackbarMessage, "Close", {
+            duration: 5000,
+        });
+    }
+
+
+    /** Returns true if any of our tuples have a non-empty list of errors */
+    private getErroneousObservationIndices() {
+        
+        var indexList: number[] = [];
+
+        var i = 0;
+        for (var tuple of this.observationTuples) {
+            if (tuple.processingErrorList.length > 0) {
+                indexList.push(i);
+                let testErrorMessage = "ERRONEOUS OBSERVATION # -- " + i.toString();
+                console.log(testErrorMessage);
+            }
+            i++;
+        }
+        
+        return indexList;
     }
 
 }

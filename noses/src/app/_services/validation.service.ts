@@ -17,7 +17,8 @@ export class ValidationService {
     // RFC 2822 compliant regex
     if (control.value.match(/(Fool!)/)) {
       return null;
-    } else {
+    } 
+    else {
       return { 'missingFoolAccusation': true };
     }
   }
@@ -50,7 +51,10 @@ export class ValidationService {
     let acceptableValueList = ["P", "W", "J", "SA1", "SA2", "SA3", "SA4", "A"];
     let value = control.value;
 
-    if ((acceptableValueList.indexOf(value) > -1) == false) {
+    if (!isNaN(Number(value))) {
+      return null;
+    }
+    else if ((acceptableValueList.indexOf(value) > -1) == false) {
       return { 'invalidSealAgeCode' : true };
     }
     else {
@@ -59,22 +63,68 @@ export class ValidationService {
   }
 
 
+  // /**
+  //  * 
+  //  * @param control 
+  //  */
+  // static validate_calendarDateFormat(control : FormControl) {
+    
+  //   console.log("FORM CONTROL DURING VALIDATE");
+  //   console.log(control);
+  //   console.log(control.value);
+
+  //   if (control.value.match(/^[0-9]{2}[\/][0-9]{2}[\/][0-9]{2}$/)) {
+  //     return null;
+  //   }
+  //   else {
+  //     return { 'invalidDateFormat' : true };
+  //   }
+  // } 
+
+  
+
   /**
    * 
    * @param control 
    */
-  static validate_calendarDateFormat(control : FormControl) {
-    
-    console.log("FORM CONTROL DURING VALIDATE");
+  static validate_markPositionCode(control : FormControl) {
+    let regexMatcher = /^[L]?[R]?[B]?$/gm;
+    let value = control.value;
+
+    console.log("MADE IT TO VALIDATE MARK POSITION CODE: ");
     console.log(control);
     console.log(control.value);
 
-    if (control.value.match(/^[0-9]{2}[\/][0-9]{2}[\/][0-9]{2}$/)) {
+    if (value.match(regexMatcher)) {
       return null;
     }
     else {
-      return { 'invalidDateFormat' : true };
+      return { 'invalidMarkPositionCode' : true };
     }
-  } 
+  }
+
+
+  /**
+   * 
+   * @param control 
+   */
+  static validate_tagPositionCode(control : FormControl) {
+    let regexMatcher = /^([LR][1234]-(so|si))$/gm;
+    let value = control.value;
+
+    console.log("MADE IT TO VALIDATE TAG POSITION CODE: ");
+    console.log(control);
+    console.log(control.value);
+
+    if (value == null || value.match(regexMatcher)) {
+      return null;
+    }
+    else {
+      return { 'invalidTagPositionCode' : true };
+    }
+  }
+
+
+
 
 }
