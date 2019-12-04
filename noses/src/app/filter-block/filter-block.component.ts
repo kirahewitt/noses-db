@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-filter-block',
@@ -6,8 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./filter-block.component.scss']
 })
 export class FilterBlockComponent implements OnInit {
-  filterName = ["Breeding Season"];
-  filterValue = ["2019"];
+  @Input() filterss : Array<Object>;
 
   constructor() { }
 

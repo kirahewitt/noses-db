@@ -8,7 +8,7 @@
             <!-- Page Title Column -->
             <div class="col-md-6">
               <div class="padding-left-25">
-                <h1 class="display-4">Citizen Scientist Bulk Upload</h1>
+                <h1 class="display-4">CSV Bulk Upload</h1>
                 <p>Upload your own observations.</p>
                 <button class="btn btn-primary btn-sm" >Download the Template</button>
               </div>
@@ -18,7 +18,7 @@
             <!-- Uploader Section Column -->
             <div class="col-md-6">
               <div class="mybtn-container">
-                <button class="btn btn-primary btn-lg" (click)="uploader.click()">Upload CSV</button>
+                <button class="btn btn-primary btn-lg" (click)="uploader.click()">Choose a .csv File</button>
                 <input hidden #uploader type="file" accept=".csv" (change)="handleFileSelect($event)">
                 <label class="file-name">{{ fileName }}</label>
               </div>
@@ -144,7 +144,9 @@
     <!-- ** ROW 2 ** -->
     <!-- bottom of the page has a back button.-->
     <div class="row row-for-button no-side-margin">
-      <button class="btn btn-primary btn-sm" >Back</button>
+      <!-- <button class="btn btn-primary btn-sm" >Back</button> -->
+
+      <button class="btn btn-primary btn-md" (click)="uploadData()"> Finish </button>
     </div>
 
 

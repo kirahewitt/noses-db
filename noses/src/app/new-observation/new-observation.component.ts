@@ -9,6 +9,16 @@ export class NewObservationComponent implements OnInit {
 
   constructor() { }
 
+  sealNum = "None"
+
+  setToNone (){
+    this.sealNum = "None"
+  }
+
+  setToNew (){
+    this.sealNum = "New Seal"
+  }
+
   ngOnInit() {
     
   }

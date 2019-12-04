@@ -77,31 +77,23 @@ export class EditObservationDialogComponent implements OnInit {
             year : [this.tuple.year, []],
 
             dateOfRecording : [this.tuple.dateOfRecording, []],
-            // dateOfRecording : [this.tuple.dateOfRecording, [ValidationService.validate_calendarDateFormat]],
-            // dateOfRecording : [this.tuple.originalJsonInput['Date'], [ValidationService.validate_calendarDateFormat]],
-            // dateOfRecording : [this.formatDateMMDDYY(this.tuple.dateOfRecording), [ValidationService.validate_calendarDateFormat]],
-            
-
             locationCode : [this.tuple.locationCode, []],
             currentSeason : [this.tuple.currentSeason, []],
-
             sealSex : [this.tuple.sealSex, [ValidationService.validate_sealSex]],
-
             sealAgeCode : [this.tuple.sealAgeCode, [ValidationService.validate_sealAgeCode]],
-            
             sealHasPupQuantity : [this.tuple.sealHasPupQuantity, []],
             mark1_idValue : [this.tuple.mark1_idValue, []],
             mark1_isNew : [this.tuple.mark1_isNew, []],
-            mark1_positionCode : [this.tuple.mark1_positionCode, []],
+            mark1_positionCode : [this.tuple.mark1_positionCode, [ValidationService.validate_markPositionCode]],
             mark2_idValue : [this.tuple.mark2_idValue, []],
             mark2_isNew : [this.tuple.mark2_isNew, []],
-            mark2_positionCode : [this.tuple.mark2_positionCode, []],
+            mark2_positionCode : [this.tuple.mark2_positionCode, [ValidationService.validate_markPositionCode]],
             tag1_idValue : [this.tuple.tag1_idValue, []],
             tag1_isNew : [this.tuple.tag1_isNew, []],
-            tag1_positionCode : [this.tuple.tag1_positionCode, []],
+            tag1_positionCode : [this.tuple.tag1_positionCode, [ValidationService.validate_tagPositionCode]],
             tag2_idValue : [this.tuple.tag2_idValue, []],
             tag2_isNew : [this.tuple.tag2_isNew, []],
-            tag2_positionCode : [this.tuple.tag2_positionCode, []],
+            tag2_positionCode : [this.tuple.tag2_positionCode, [ValidationService.validate_tagPositionCode]],
             sealMoltPercentage : [this.tuple.sealMoltPercentage, []],
             sealStandardLength : [this.tuple.sealStandardLength, []],
             sealStandardLength_units : [this.tuple.sealStandardLength_units, []],
@@ -198,3 +190,5 @@ export class EditObservationDialogComponent implements OnInit {
     // }
 
 }
+
+

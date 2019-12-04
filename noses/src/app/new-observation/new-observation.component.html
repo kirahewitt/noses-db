@@ -106,7 +106,8 @@
         <div class="positioned-filter-container-right">
             <div class="filter-row sized-normal left">
               <h2>Animal Identification:</h2>
-              <label class="checkbox-inline left"><input type="checkbox" value="" onchange="if ($('.search').attr('disabled')) {$('.search').prop('disabled', null);} else {$('.search').prop('disabled', true);}"> New Seal</label>
+              <label class="checkbox-inline left"><input type="checkbox" value="" 
+                onchange="if ($('.search').attr('disabled')) {$('.search').prop('disabled', null); setToNone();} else {$('.search').prop('disabled', true); setToNew();}"> New Seal</label>
             </div>
             <div class="filter-row sized-small flex-row left border-black-left border-black-right border-black-top">
               <div class="filter-row-item">
@@ -227,11 +228,12 @@
                 <div class="filter-row-item">
                 </div>
                 <div class="filter-row-item">
-                  <button type="button" class="search btn btn-success">Search</button>
+                  <button type="button" class="search btn btn-success" data-toggle="modal" data-target="#exampleModal">Search</button>
                 </div>
             </div>
             <div class="filter-row sized-half border-black">
               <div class="filter-row-item sized-large left" style="justify-content: left">
+                  <h4 style="padding-top:1%;">Seal Chosen: {{sealNum}}</h4>
                 <label class="checkbox-inline left down"><input type="checkbox" data-toggle="collapse" data-target="#demo"value="">Weighted?</label>
               </div>
               <div id="demo" class="collapse" style="justify-content: left">
@@ -292,3 +294,26 @@
 <button type="button" class="btn btn-danger button-left" routerLink="/menu">Cancel</button>
 
 <button type="button" class="btn btn-success button-right" routerLink="/new-observation">Submit</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Request Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h4 style="text-align:center;">Model for choosing Seals not yet built, select seal number instead:</h4>
+          <div>
+            <input class="form-control" type="text" placeholder="Enter a Number">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
