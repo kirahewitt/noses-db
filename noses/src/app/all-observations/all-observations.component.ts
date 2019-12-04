@@ -196,8 +196,7 @@ export class AllObservationsComponent implements OnInit {
   }
 
   filterObs() {
-    var part = this.partialControl.value;
-    this.apiService.readObs(part).subscribe((observations: any)=>{
+    this.apiService.readObs(this.filterss).subscribe((observations: any)=>{
       if(this.isAdmin) {
         this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
         this.notReady = false;

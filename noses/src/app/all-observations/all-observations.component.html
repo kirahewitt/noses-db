@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="filter-row">
-                <button type="button" class="btn btn-primary" (click)="filterss.push({name:filterName.value, value:filterValue.value})">Add</button>
+                <button type="button" class="btn btn-primary" (click)="filterss.push({name:filterName.value, value:filterValue.value});filterObs()">Add</button>
             </div>
         </div>
     </div>

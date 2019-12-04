@@ -37,8 +37,8 @@ export class FlaskBackendService {
   /**
    * 
    */
-  readObs(filterObj: string): Observable<Observations[]>{
-    if(filterObj == null){
+  readObs(filterObj: Array<Object>): Observable<Observations[]>{
+    if(filterObj == null || filterObj.length == 0){
       return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allobservations` );
     }else{
       return this.httpClient.post<Observations[]>(`${this.FLASK_API_SERVER}/allobservations`, filterObj, this.httpOptions );
