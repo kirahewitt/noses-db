@@ -35,57 +35,41 @@ td .thin{
   padding: 3%;
 }
 
-.outer-most-container {
-  border: 1px solid black;
-  height: 300px;
+.info {
   display: flex;
-}
-
-.title-container {
-  display: flex;
-  padding-top: 20px;
-  align-items: center;
-  justify-content: center;
-}
-
-.outer-filter-container {
-  border: 1px solid red;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.positioned-filter-container {
-  border: 1px solid green;
-  display: flex;
-  flex-direction: column;
-  width: 70%;
-  height: 100%;
-}
-
-.filter-row {
-  border: 1px solid blue;
-  flex: 1;
-  display: flex;
+  height: 400px;
+  width: 80%;
+  margin-top: 1%;
+  margin-left: 10%;
   flex-direction: row;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  flex-wrap:wrap;
 }
 
-.filter-row-item {
+.carousel-item {
+  height: 400px;
+  overflow: hidden;
+  width: 100%;
+  }
+
+  .carousel-item img {
+  width: 100%;
+  }
+
+  .inner-info {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+.inner-row {
   flex: 1;
-  border: 1px solid orange;
-  height: 50px;
+  height:100%;
+  width: 100%;
   display: flex;
-  align-items: center;
+  align-items: top;
   justify-content: center;
-}
-
-.sized {
-  max-height: 70px !important;
-}
-
-.down {
-  padding-top: 4%;
+  flex-grow: 2;
 }
