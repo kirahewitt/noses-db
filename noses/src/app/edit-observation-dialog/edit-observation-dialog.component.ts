@@ -1,9 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, HostListener } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
 import { SpreadsheetTuple, TupleProcessingError } from './../_supporting_classes/SpreadsheetTuple';
 
 // imports that will let us use modal windows
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { ValidationService } from '../_services/validation.service';
+
 
 
 //
@@ -19,66 +22,179 @@ export interface DialogData {
 })
 export class EditObservationDialogComponent implements OnInit {
 
-  public oi : number;
-  public ob : SpreadsheetTuple; 
-  public oldTupleList_Copy : SpreadsheetTuple[];
-
-
-  /**
-   * 
-   * @param dialogRef 
-   * @param data 
-   */
-  constructor(public dialogRef: MatDialogRef<EditObservationDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-    this.oi = 0;
-    this.ob = null;
-    this.oldTupleList_Copy = [];
+    public form : FormGroup;
+    public tuple: SpreadsheetTuple;
+    public tupleList : SpreadsheetTuple[];
+    public tupleIndex : number;
     
-    this.oi = data.obsIndex;
-    this.ob = data.obsList[this.oi];
-    this.oldTupleList_Copy = this.generateTupleListCopy(data.obsList);
-  }
-
-
-  /**
-   * 
-   */
-  ngOnInit() {}
-  
-
-  /**
-   * 
-   */
-  private generateTupleListCopy(originalList : SpreadsheetTuple[]) {
-    var listCopy : SpreadsheetTuple[] = [];
-
-    for (var listItem of originalList) {
-      var listItemCopy : SpreadsheetTuple;
-
-      let freshJsonObject = JSON.parse(JSON.stringify(listItem.originalJsonInput));
-
-      listItemCopy = new SpreadsheetTuple(freshJsonObject);
-      listItemCopy.validateTupleData()
-      listCopy.push(listItemCopy)
+    /**
+     * @param formBuilder : Provides syntactic sugar for creating instances of objects related to Forms.
+     * @param dialogRef : A direct reference to the dialog opened by the MatDialog service. (that would be THIS dialog)
+     *  It's purpose is to let us close the dialog and return any/all updated data to the component that created 
+     *  this dialog.
+     * @param injectedData : The data provided to this dialog which will be initially displayed in the
+     *  form it contains, and ultimately modified.
+     */
+    constructor(private formBuilder : FormBuilder,
+        public dialogRef: MatDialogRef<EditObservationDialogComponent>, 
+        @Inject(MAT_DIALOG_DATA) public injectedData) 
+    {
+        this.tupleList = injectedData.obsList;
+        this.tupleIndex = injectedData.obsIndex;
+        this.tuple = this.tupleList[this.tupleIndex];
     }
 
-    return listCopy;
-  }
+
+    /**
+     * Converts a received list of field leaders into a single string rather than a list of strings.
+     * @param listofStrs a list of strings, one for each field leader.
+     */
+    public fll_to_str(listofStrs : string[]) {
+        var fullString = "";
+
+        var i = 0;
+        for (var element of listofStrs) {
+            fullString += element;
+            if (i != listofStrs.length - 1) {
+                fullString += ", ";
+            }
+            i++;
+        }
+        return fullString;
+    }
+
+    /**
+     * 
+     */
+    ngOnInit() {
+
+        console.log("OUTPUT ORIGINAL DATE JSON INPUT");
+        console.log(this.tuple.originalJsonInput['Date']);
+
+        this.form = this.formBuilder.group({
+            originalJsonInput: [this.tuple.originalJsonInput, []],
+            fieldLeaderList: [this.tuple.fieldLeaderList, []],
+            year : [this.tuple.year, []],
+
+            dateOfRecording : [this.tuple.dateOfRecording, []],
+            // dateOfRecording : [this.tuple.dateOfRecording, [ValidationService.validate_calendarDateFormat]],
+            // dateOfRecording : [this.tuple.originalJsonInput['Date'], [ValidationService.validate_calendarDateFormat]],
+            // dateOfRecording : [this.formatDateMMDDYY(this.tuple.dateOfRecording), [ValidationService.validate_calendarDateFormat]],
+            
+
+            locationCode : [this.tuple.locationCode, []],
+            currentSeason : [this.tuple.currentSeason, []],
+
+            sealSex : [this.tuple.sealSex, [ValidationService.validate_sealSex]],
+
+            sealAgeCode : [this.tuple.sealAgeCode, [ValidationService.validate_sealAgeCode]],
+            
+            sealHasPupQuantity : [this.tuple.sealHasPupQuantity, []],
+            mark1_idValue : [this.tuple.mark1_idValue, []],
+            mark1_isNew : [this.tuple.mark1_isNew, []],
+            mark1_positionCode : [this.tuple.mark1_positionCode, []],
+            mark2_idValue : [this.tuple.mark2_idValue, []],
+            mark2_isNew : [this.tuple.mark2_isNew, []],
+            mark2_positionCode : [this.tuple.mark2_positionCode, []],
+            tag1_idValue : [this.tuple.tag1_idValue, []],
+            tag1_isNew : [this.tuple.tag1_isNew, []],
+            tag1_positionCode : [this.tuple.tag1_positionCode, []],
+            tag2_idValue : [this.tuple.tag2_idValue, []],
+            tag2_isNew : [this.tuple.tag2_isNew, []],
+            tag2_positionCode : [this.tuple.tag2_positionCode, []],
+            sealMoltPercentage : [this.tuple.sealMoltPercentage, []],
+            sealStandardLength : [this.tuple.sealStandardLength, []],
+            sealStandardLength_units : [this.tuple.sealStandardLength_units, []],
+            sealCurvilinearLength : [this.tuple.sealCurvilinearLength, []],
+            sealCurvilinearLength_units : [this.tuple.sealCurvilinearLength_units, []],
+            sealAuxiliaryGirth : [this.tuple.sealAuxiliaryGirth, []],
+            sealAuxiliaryGirth_units : [this.tuple.sealAuxiliaryGirth_units, []],
+            sealMass : [this.tuple.sealMass, []],
+            sealMass_units : [this.tuple.sealMass_units, []],
+            sealTare : [this.tuple.sealTare, []],
+            sealTare_units : [this.tuple.sealTare_units, []],
+            sealMassTare : [this.tuple.sealMassTare, []],
+            sealMassTare_units : [this.tuple.sealMassTare_units, []],
+            sealLastSeenAsPupDate : [this.tuple.sealLastSeenAsPupDate, []],
+            sealFirstSeenAsWeaner : [this.tuple.sealFirstSeenAsWeaner, []],
+            weanDateRange : [this.tuple.weanDateRange, []],
+            observationEnteredInAno : [this.tuple.observationEnteredInAno, []],
+            comments : [this.tuple.comments, []],
+            isApproved : [this.tuple.isApproved, []]
+        });
+    }
 
 
-  /**
-   * This method is called when the user clicks save.
-   * @param newList 
-   */
-  public updateList(newList : SpreadsheetTuple[]) {
-    // this.oldTupleList_Copy = this.generateTupleListCopy(newList);
-    this.data.obsList = this.generateTupleListCopy(newList);
-    return this.data.obsList;
-  }
+    public formatDateMMDDYY(date : Date) {
+        var dateString = "";
+
+        
+        let monthNum = date.getMonth() + 1;
+        let monthStr = monthNum.toPrecision(2);
+
+        let dayNum = date.getDate();
+        let dayStr = dayNum.toPrecision(2);
+
+        let yearNum = date.getFullYear();
+        let yearStr = yearNum.toString().substr(2, 2);
 
 
-  // onNoClick(): void {
-  //   this.dialogRef.close();
-  // }
+        dateString += monthStr + "/" + dayStr + "/" + yearStr;
+
+        console.log("CONSTRUCTED FORMATTED DATE");
+        console.log(dateString);
+
+        return dateString;
+    }
+
+
+    /**
+     * 
+     */
+    public hasError = (controlName: string, errorName: string) => {
+        return this.form.controls[controlName].hasError(errorName);
+    }
+
+
+    /**
+     * Closes the form and returns the value of the form as its current state.
+     */
+    public save() {
+        this.dialogRef.close(this.form.value);
+    }
+
+
+    /**
+     * This method is used to close the form when the data it contains is not updated.
+     */
+    public close() {
+        this.dialogRef.close();
+    }
+
+
+    // /**
+    //  * 
+    //  */
+    // private outputListState() {
+    //     var i: number;
+
+    //     console.log("Outputting list state...");
+
+    //     console.log("\n   List State - 'tupleList_master': ");
+    //     i = 0;
+    //     for (var element of this.tupleList_master) {
+    //     console.log("      " + (i+1).toString() + ". " + element.comments);
+    //     i++;
+    //     }
+
+
+    //     console.log("\n   List State - 'tupleList_copy': ");
+    //     i = 0;
+    //     for (var element of this.tupleList_copy) {
+    //     console.log("      " + (i+1).toString() + ". " + element.comments);
+    //     i++;
+    //     }
+
+    // }
 
 }

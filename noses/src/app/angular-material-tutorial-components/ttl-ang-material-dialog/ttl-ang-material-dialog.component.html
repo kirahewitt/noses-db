@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+    <mat-form-field class="full-width">
+        <input matInput placeholder="Course Description" formControlName="description" value="{{description}}">
+        <mat-error *ngIf="hasError('description', 'required')">This field is required!</mat-error>
+        <mat-error *ngIf="hasError('description', 'maxlength')">You have more than 10 characters!</mat-error>
+        <mat-error *ngIf="hasError('description', 'minlength')">You have less than 3 characters!</mat-error>
+        <mat-error *ngIf="hasError('description', 'missingFoolAccusation')">Fool! Provision #420! Every statement must include Fool!</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+        <input matInput placeholder="Potato Pedestal" formControlName="potatoPedestal" value="{{potatoPedestal}}" [errorStateMatcher]="CrossFieldErrorMatcher">
+        <mat-error *ngIf="hasError('potatoPedestal', 'required')">This field is required!</mat-error>
+    </mat-form-field>
+
+
+    <mat-error *ngIf="hasError_formLevel('potatoNotOnPedestal')"> ERROR MISSING POTATO </mat-error>
+ 
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button"(click)="close()">Close</button>
+    <button class="mat-raised-button mat-primary" (click)="save()">Save</button>
+</mat-dialog-actions>

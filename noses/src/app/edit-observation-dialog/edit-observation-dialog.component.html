@@ -1,302 +1,491 @@
+<!-- <h1 mat-dialog-title>Editing Data for Observation #{{tupleIndex + 1}}</h1> -->
 
+<h1 mat-dialog-title>Editing Data for Observation #{{tupleIndex + 1}}</h1>
 
-<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1> -->
-<h1 mat-dialog-title>Editing Data for Observation #{{data.obsIndex + 1}}</h1>
+<mat-dialog-content [formGroup]="form">
 
+  
 
-<div mat-dialog-content>
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Field Leader List</mat-label>
-      <input matInput [(ngModel)]="ob.fieldLeaderList[0]" placeholder="COME BACK TO THIS LATER">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Year</mat-label>
-      <input matInput [(ngModel)]="ob.year" placeholder="2020">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Date Observation Recorded</mat-label>
-      <input matInput [(ngModel)]="ob.dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="01/01/2020">
-      <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
-      <mat-datepicker #observationDatePicker></mat-datepicker>
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Location Code</mat-label>
-      <input matInput  [(ngModel)]="ob.locationCode" placeholder="Location Code">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Current Season</mat-label>
-      <input matInput [(ngModel)]="ob.currentSeason" placeholder="Current Season">
-    </mat-form-field>    
-  </p>
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Seal's Sex</mat-label>
-      <input matInput  [(ngModel)]="ob.sealSex" placeholder="M or F">
-    </mat-form-field>    
-  </p>  
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Seal's Age Code</mat-label>
-      <input matInput  [(ngModel)]="ob.sealAgeCode" placeholder="Seal Age Code">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>If mother, # of pups</mat-label>
-      <input matInput  [(ngModel)]="ob.sealHasPupQuantity" placeholder="Seal Has Pup Quantity">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
     
-  </p>
-  <mat-form-field appearance="outline">
-    <mat-label>Mark 1: Id Value</mat-label>
-    <input matInput  [(ngModel)]="ob.mark1_idValue" placeholder="Mark 1 Id Value">
-  </mat-form-field>
+
+    <!-- <mat-accordion>
+        
+        
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Observation Bookkeeping Section
+                </mat-panel-title>
+                <mat-panel-description>
+                    Information related to the tracking of this observation
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-form-field>
+                <input matInput placeholder="First name">
+            </mat-form-field>
+
+            <mat-form-field>
+                <input matInput placeholder="Age">
+            </mat-form-field>
 
 
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Mark 1: is new mark</mat-label>
-      <input matInput [(ngModel)]="ob.mark1_isNew" placeholder="(Y/N)">
-    </mat-form-field>    
-  </p>
+        </mat-expansion-panel>
 
 
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Mark 1: Position Code</mat-label>
-      <input matInput [(ngModel)]="ob.mark1_positionCode" placeholder="(L | R | B)">
-    </mat-form-field>    
-  </p>
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Mark 2: Id Value</mat-label>
-      <input matInput [(ngModel)]="ob.mark2_idValue" placeholder="Mark 2 Id Value">
-    </mat-form-field>
-  </p>
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Mark 2: Is New Mark</mat-label>
-      <input matInput [(ngModel)]="ob.mark2_isNew" placeholder="(Y/N)">
-    </mat-form-field>    
-  </p>
+        
+        <mat-expansion-panel >
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Seal Attribute Section
+                </mat-panel-title>
+                <mat-panel-description>
+                    Sex, Age, etc...
+                </mat-panel-description>
+            </mat-expansion-panel-header>
 
 
+            <mat-form-field>
+                <input matInput placeholder="First name">
+            </mat-form-field>
 
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Mark 2: Position Code</mat-label>
-      <input matInput [(ngModel)]="ob.mark2_positionCode" placeholder="(L | R | B)">
-    </mat-form-field>    
-  </p>
+            <mat-form-field>
+                <input matInput placeholder="Age">
+            </mat-form-field>
 
+        </mat-expansion-panel>
 
+    </mat-accordion> -->
 
+    
 
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Tag 1: Id Value</mat-label>
-      <input matInput [(ngModel)]="ob.tag1_idValue" placeholder="Tag 1 Id Value">
-    </mat-form-field>    
-  </p>
+    <!-- Observation Bookkeeping Section -->
+    <div class="container">
 
+        <!-- heading row -->
+        <div class="row">
+            <h6>Observation Bookkeeping Section</h6>
+        </div>
 
+        <!-- content row -->
+        <div class="row">
+            <div class="col-md-6">
 
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Tag 1: Is New Tag</mat-label>
-      <input matInput [(ngModel)]="ob.tag1_isNew" placeholder="(Y/N)">
-    </mat-form-field>    
-  </p>
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Date Observation Recorded</mat-label>
+                        <input matInput formControlName="dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="01/01/2020">
+                        <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker [startAt]="tuple.dateOfRecording" #observationDatePicker></mat-datepicker>
+                        <mat-error *ngIf="hasError('dateOfRecording', 'invalidDateFormat')">Input must be a date MM/DD/YY.</mat-error>
+                    </mat-form-field>    
+                </p>
 
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Tag 1: Position Code</mat-label>
-      <input matInput [(ngModel)]="ob.tag1_positionCode" placeholder="L3-so">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Tag 2: Id Value</mat-label>
-      <input matInput [(ngModel)]="ob.tag2_idValue" placeholder="Tag 2 Id Value">
-    </mat-form-field>    
-  </p>
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Current Season</mat-label>
+                        <input matInput formControlName="currentSeason" value="{{tuple.currentSeason}}"  placeholder="Current Season">
+                    </mat-form-field>    
+                </p>
 
 
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Year</mat-label>
+                        <input matInput formControlName="year" value="{{tuple.year}}"   placeholder="2020">
+                        <!-- <mat-error *ngIf="hasError('year', 'pattern')">Input must be a four digit year.</mat-error> -->
+                    </mat-form-field>    
+                </p>
 
-  <p>
-    <mat-form-field appearance="outline">
-      <input matInput [(ngModel)]="ob.tag2_isNew" placeholder="Tag 2 Is New (Y/N)">
-    </mat-form-field>    
-  </p>
+               
 
+            </div>
 
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Tag 2: Position Code</mat-label>
-      <input matInput [(ngModel)]="ob.tag2_positionCode" placeholder="L3-so">
-    </mat-form-field>    
-  </p>
-
-
-  <!-- Definitely will put the % mark there -->
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Seal's % Molt Completed</mat-label>
-      <input matInput [(ngModel)]="ob.sealMoltPercentage" placeholder="50">
-    </mat-form-field>    
-  </p>
+            <div class="col-md-6">
+                
+                 
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Field Leader List</mat-label>
+                        <input matInput formControlName="fieldLeaderList" value="{{tuple.fieldLeaderList}}" placeholder="COME BACK TO THIS LATER">
+                    </mat-form-field>    
+                </p>
 
 
-  <!-- can append units as a string to the end ~~ not sure if good idea -->
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Seal's Standard Length</mat-label>
-      <input matInput [(ngModel)]="ob.sealStandardLength" placeholder="Seal Standard Length">
-    </mat-form-field>    
-  </p>
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Location Code</mat-label>
+                        <input matInput formControlName="locationCode" value="{{tuple.locationCode}}"  placeholder="Location Code">
+                    </mat-form-field>    
+                </p>
 
 
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Seal's Curvilinear Length</mat-label>
-      <input matInput [(ngModel)]="ob.sealCurvilinearLength" placeholder="Seal Curvilinear Length">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Seal's Auxiliary Girth</mat-label>
-      <input matInput [(ngModel)]="ob.sealAuxiliaryGirth" placeholder="Seal Auxiliary Girth">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <input matInput [(ngModel)]="ob.sealMass" placeholder="Seal Mass">
-    </mat-form-field>    
-  </p>
-
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Seal Tare</mat-label>
-      <input matInput [(ngModel)]="ob.sealTare" placeholder="Seal Tare">
-    </mat-form-field>    
-  </p>
-
-
-
-  <p>
-    <mat-form-field appearance="outline">
-      <mat-label>Seal Mass-Tare</mat-label>
-      <input matInput [(ngModel)]="ob.sealMassTare" placeholder="Seal Mass Tare">
-    </mat-form-field>    
-  </p>
-
-
-  <div class="row">
-
-    <!-- left col -->
-    <div class="col-md-6">
-
-      <p>
-        <mat-form-field appearance="outline">
-          <mat-label>Date Last Seen As A Pup</mat-label>
-          <input matInput [(ngModel)]="ob.sealLastSeenAsPupDate" [matDatepicker]="lastSeenAsPupDatePicker" placeholder="01/01/2020">
-          <mat-datepicker-toggle matSuffix [for]="lastSeenAsPupDatePicker"></mat-datepicker-toggle>
-          <mat-datepicker #lastSeenAsPupDatePicker></mat-datepicker>
-        </mat-form-field>  
-      </p>
-
-      <p>
-        <mat-form-field appearance="outline">
-          <mat-label>Date First Seen As A Weaner</mat-label>
-          <input matInput [(ngModel)]="ob.sealFirstSeenAsWeaner" [matDatepicker]="firstSeenAsWeanerDatePicker" placeholder="01/01/2020">
-          <mat-datepicker-toggle matSuffix [for]="firstSeenAsWeanerDatePicker"></mat-datepicker-toggle>
-          <mat-datepicker #firstSeenAsWeanerDatePicker></mat-datepicker>
-        </mat-form-field>
-      </p>      
+            </div>
+        </div>
 
     </div>
 
-    <!-- right col -->
-    <div class="col-md-6">
-      <p>
-        <mat-form-field appearance="outline">
-          <mat-label>Wean Date Range</mat-label>
-          <input matInput [(ngModel)]="ob.weanDateRange" placeholder="(# of days)">
-        </mat-form-field>
-      </p>      
+
+    <mat-divider></mat-divider>
+
+
+    <!-- Seal Attribute Section -->
+    <div class="container">
+
+        <!-- heading row -->
+        <div class="row">
+            <h6>Seal Attribute Section</h6>
+        </div>
+
+        <!-- content row -->
+        <div class="row">
+            <div class="col-md-6">
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Seal's % Molt Completed</mat-label>
+                        <input matInput formControlName="sealMoltPercentage" value="{{tuple.sealMoltPercentage}}" placeholder="50">
+                        <!-- <mat-error *ngIf="hasError('year', 'pattern')">Input must be a four digit year.</mat-error> -->
+                    </mat-form-field>    
+                </p> 
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Seal's Age Code</mat-label>
+                        <input matInput  formControlName="sealAgeCode" value="{{tuple.sealAgeCode}}" placeholder="Seal Age Code">
+                        <mat-error *ngIf="hasError('sealAgeCode', 'invalidSealAgeCode')">Can only be ["P", "W", "J", "SA1", "SA2", "SA3", "SA4", "A"]</mat-error>
+                    </mat-form-field>    
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Seal's Sex</mat-label>
+                        <input matInput  formControlName="sealSex" value="{{tuple.sealSex}}" placeholder="M or F">
+                        <mat-error *ngIf="hasError('sealSex', 'invalidSealSex')">Can only be 'M' or 'F'</mat-error>
+                    </mat-form-field>    
+                </p>  
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>If mother, # of pups</mat-label>
+                        <input matInput  formControlName="sealHasPupQuantity" value="{{tuple.sealHasPupQuantity}}"  placeholder="Seal Has Pup Quantity">
+                    </mat-form-field>    
+                </p>
+            </div>
+        </div>
+
     </div>
-  </div>
+
+
+    <mat-divider></mat-divider>
+
+
+    <!-- Mark Section -->
+    <div class="container">
+
+        <!-- heading row -->
+        <div class="row">
+            <h6>Mark Section</h6>
+        </div>
+
+        <!-- content row -->
+        <div class="row">
+            <div class="col-md-6">
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Mark 1: Id Value</mat-label>
+                        <input matInput  formControlName="mark1_idValue" value="{{tuple.mark1_idValue}}" placeholder="Mark 1 Id Value">
+                    </mat-form-field>
+                </p>
+                
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Mark 1: is new mark</mat-label>
+                        <input matInput formControlName="mark1_isNew" value="{{tuple.mark1_isNew}}" placeholder="(Y/N)">
+                    </mat-form-field>    
+                </p>
 
 
 
-  <p>
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Comments</mat-label>
-      <textarea matInput [(ngModel)]="ob.comments" placeholder="write anything you want"></textarea>
-    </mat-form-field>
-  </p>
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Mark 1: Position Code</mat-label>
+                        <input matInput formControlName="mark1_positionCode" value="{{tuple.mark1_positionCode}}" placeholder="(L | R | B)">
+                    </mat-form-field>    
+                </p>
+            </div>
 
-</div>
+            <div class="col-md-6">
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Mark 2: Id Value</mat-label>
+                        <input matInput formControlName="mark2_idValue" value="{{tuple.mark2_idValue}}" placeholder="Mark 2 Id Value">
+                    </mat-form-field>
+                </p>
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Mark 2: Is New Mark</mat-label>
+                        <input matInput formControlName="mark2_isNew" value="{{tuple.mark2_isNew}}" placeholder="(Y/N)">
+                    </mat-form-field>    
+                </p>
 
 
-<div mat-dialog-actions>
-  <!-- <button mat-button (click)="onNoClick()">Cancel</button> -->
-  <button mat-button [mat-dialog-close]="oldTupleList_Copy">Cancel</button> 
-  <button mat-button [mat-dialog-close]="data.obsList" cdkFocusInitial>Save</button>
-</div>
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Mark 2: Position Code</mat-label>
+                        <input matInput formControlName="mark2_positionCode" value="{{tuple.mark2_positionCode}}" placeholder="(L | R | B)">
+                    </mat-form-field>    
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Tag Section -->
+    <div class="container">
+
+        <!-- heading row -->
+        <div class="row">
+            <h6>Tag Section</h6>
+        </div>
+
+        <!-- content row -->
+        <div class="row">
+            <div class="col-md-6">
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Tag 1: Id Value</mat-label>
+                        <input matInput formControlName="tag1_idValue" value="{{tuple.tag1_idValue}}" placeholder="Tag 1 Id Value">
+                    </mat-form-field>    
+                </p>
+
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Tag 1: Is New Tag</mat-label>
+                        <input matInput formControlName="tag1_isNew" value="{{tuple.tag1_isNew}}" placeholder="(Y/N)">
+                    </mat-form-field>    
+                </p>
+
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Tag 1: Position Code</mat-label>
+                        <input matInput formControlName="tag1_positionCode" value="{{tuple.tag1_positionCode}}" placeholder="L3-so">
+                    </mat-form-field>    
+                </p>
+                
+            </div>
+
+            <div class="col-md-6">
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Tag 2: Id Value</mat-label>
+                        <input matInput formControlName="tag2_idValue" value="{{tuple.tag2_idValue}}" placeholder="Tag 2 Id Value">
+                    </mat-form-field>    
+                </p>
+
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Tag 2: Is New Tag</mat-label>
+                        <input matInput formControlName="tag2_isNew" value="{{tuple.tag2_isNew}}" placeholder="Tag 2 Is New (Y/N)">
+                    </mat-form-field>    
+                </p>
+
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Tag 2: Position Code</mat-label>
+                        <input matInput formControlName="tag2_positionCode" value="{{tuple.tag2_positionCode}}" placeholder="L3-so">
+                    </mat-form-field>    
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+                
+
+
+    <mat-divider></mat-divider>
+                
+
+
+
+
+
+
+    <!-- Measurement Section -->
+    <div class="container">
+        <div class="row">
+            <h6>Measurement Section</h6>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Seal's Standard Length</mat-label>
+                        <input matInput formControlName="sealStandardLength" value="{{tuple.sealStandardLength}}" placeholder="Seal Standard Length">
+                    </mat-form-field>    
+                </p>
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Seal's Curvilinear Length</mat-label>
+                        <input matInput formControlName="sealCurvilinearLength" value="{{tuple.sealCurvilinearLength}}" placeholder="Seal Curvilinear Length">
+                    </mat-form-field>    
+                </p>
+
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Seal's Auxiliary Girth</mat-label>
+                        <input matInput formControlName="sealAuxiliaryGirth" value="{{tuple.sealAuxiliaryGirth}}" placeholder="Seal Auxiliary Girth">
+                    </mat-form-field>    
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Seal Mass</mat-label>
+                        <input matInput formControlName="sealMass" value="{{tuple.sealMass}}" placeholder="Seal Mass">
+                    </mat-form-field>    
+                </p>
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Seal Tare</mat-label>
+                        <input matInput formControlName="sealTare" value="{{tuple.sealTare}}" placeholder="Seal Tare">
+                    </mat-form-field>    
+                </p>
+
+
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Seal Mass-Tare</mat-label>
+                        <input matInput formControlName="sealMassTare" value="{{tuple.sealMassTare}}" placeholder="Seal Mass Tare">
+                    </mat-form-field>    
+                </p>    
+
+            </div>
+        </div>
+
+        
+
+    </div>
+
+    
+    <mat-divider></mat-divider>
+
+
+    <!-- Weaning Date Range section-->
+    <div class="container">
+
+        <div class="row">
+            <h6>Weaning Data</h6>
+        </div>
+
+
+        <div class="row">
+
+            <!-- left col -->
+            <div class="col-md-6">
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Date Last Seen As A Pup</mat-label>
+                        <input matInput formControlName="sealLastSeenAsPupDate" [matDatepicker]="lastSeenAsPupDatePicker" placeholder="01/01/2020">
+                        <mat-datepicker-toggle matSuffix [for]="lastSeenAsPupDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker [startAt]="tuple.sealLastSeenAsPupDate" #lastSeenAsPupDatePicker></mat-datepicker>
+                    </mat-form-field>  
+                </p>
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Date First Seen As A Weaner</mat-label>
+                        <input matInput formControlName="sealFirstSeenAsWeaner" [matDatepicker]="firstSeenAsWeanerDatePicker" placeholder="01/01/2020">
+                        <mat-datepicker-toggle matSuffix [for]="firstSeenAsWeanerDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker [startAt]="tuple.sealFirstSeenAsWeaner" #firstSeenAsWeanerDatePicker></mat-datepicker>
+                    </mat-form-field>
+                </p>     
+
+            </div>
+
+
+            <!-- right col -->
+            <div class="col-md-6">
+
+                <p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Wean Date Range</mat-label>
+                        <input matInput formControlName="weanDateRange" value="{{tuple.weanDateRange}}" placeholder="(# of days)">
+                    </mat-form-field>
+                </p>      
+
+            </div>
+
+        </div>
+    </div>
+        
+
+    <mat-divider></mat-divider>
+
+
+    <!-- Comments -->
+
+    <div class="container">
+
+        <div class="row">
+            <h6>Comment Section</h6>
+        </div>
+
+
+        <div class="row full-width">
+            <p class="full-width">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Comments</mat-label>
+                    <textarea matInput formControlName="comments" value="{{tuple.comments}}" placeholder="write anything you want"></textarea>
+                </mat-form-field>
+            </p>
+        </div>
+    </div>
+    
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions>
+    <button mat-button class="mat-raised-button" (click)="close()">Cancel</button> 
+    <button mat-button class="mat-raised-button mat-primary" (click)="save()">Save</button>
+</mat-dialog-actions>

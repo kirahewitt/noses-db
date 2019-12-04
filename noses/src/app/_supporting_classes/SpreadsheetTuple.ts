@@ -149,7 +149,7 @@ export class SpreadsheetTuple {
   originalJsonInput : any;
 
   // other bookkeeping
-  fieldLeaderList : string[];
+  fieldLeaderList : string;
   year : number;
   dateOfRecording : Date;
   locationCode : string;
@@ -209,7 +209,7 @@ export class SpreadsheetTuple {
 
     //Initialize the entire object to blank attributes
     this.originalJsonInput = null;
-    this.fieldLeaderList = [];
+    this.fieldLeaderList = "";
     this.year = null;
     this.dateOfRecording = null;
     this.locationCode = "";
@@ -218,7 +218,8 @@ export class SpreadsheetTuple {
     this.sealAgeCode = "";
     this.sealHasPupQuantity = null;
     this.mark1_idValue = "";
-    this.mark1_isNew = ""
+    this.mark1_isNew = "";
+    this.sealMoltPercentage = null;
 
     this.processingErrorList = [];
 
@@ -227,11 +228,63 @@ export class SpreadsheetTuple {
     let definitelyAnewDataSource : any = JSON.parse(dataSourceAsString);
     this.originalJsonInput = definitelyAnewDataSource;
   }
+    
 
+  // }
 
-  public copy(source : SpreadsheetTuple) {
-
+  /**
+   * We need this function to perform a deep copy. These classes have three kinds of
+   *  data so it needs to have three methods of copying.
+   *     
+   *     1. numbers                         - '=' operator
+   *     2. string (primitive type)         - Object.assign("", source.desiredAttribute)
+   *     3. lists/dates (complex objs)      - JSON.parse(JSON.stringify(source.desiredAttribute))
+   * @param source 
+   */
+  public copy (source : SpreadsheetTuple) {
+    this.comments = Object.assign("", source.comments);
+    this.currentSeason = Object.assign("", source.currentSeason);
+    this.dateOfRecording = JSON.parse(JSON.stringify(source.dateOfRecording));
+    this.fieldLeaderList = Object.assign("", source.fieldLeaderList);
+    this.isApproved = (source.isApproved == true);
+    this.locationCode = Object.assign("", source.locationCode);
+    this.mark1_idValue = Object.assign("", source.mark1_idValue);
+    this.mark1_isNew = Object.assign("", source.mark1_isNew);
+    this.mark1_positionCode = Object.assign("", source.mark1_positionCode);
+    this.mark2_idValue = Object.assign("", source.mark2_idValue);
+    this.mark2_isNew = Object.assign("", source.mark2_isNew);
+    this.mark2_positionCode = Object.assign("", source.mark2_positionCode);
+    this.observationEnteredInAno = Object.assign("", source.observationEnteredInAno);
+    this.originalJsonInput = JSON.parse(JSON.stringify(source.originalJsonInput));
+    this.processingErrorList = JSON.parse(JSON.stringify(source.processingErrorList));
+    this.sealAgeCode = Object.assign("", source.sealAgeCode);
+    this.sealAuxiliaryGirth = source.sealAuxiliaryGirth;
+    this.sealAuxiliaryGirth_units = Object.assign("", source.sealAuxiliaryGirth_units);
+    this.sealCurvilinearLength = source.sealCurvilinearLength;
+    this.sealCurvilinearLength_units = Object.assign("", source.sealCurvilinearLength_units);
+    this.sealFirstSeenAsWeaner = JSON.parse(JSON.stringify(source.sealFirstSeenAsWeaner));
+    this.sealHasPupQuantity = source.sealHasPupQuantity;
+    this.sealLastSeenAsPupDate = JSON.parse(JSON.stringify(source.sealLastSeenAsPupDate));
+    this.sealMass = source.sealMass;
+    this.sealMassTare = source.sealMassTare;
+    this.sealMassTare_units = Object.assign("", source.sealMassTare_units);
+    this.sealMass_units = Object.assign("", source.sealMass_units);
+    this.sealMoltPercentage = source.sealMoltPercentage;
+    this.sealSex = Object.assign("", source.sealSex);
+    this.sealStandardLength = source.sealStandardLength;
+    this.sealStandardLength_units = Object.assign("", source.sealStandardLength_units);
+    this.sealTare = source.sealTare;
+    this.sealTare_units = Object.assign("", source.sealTare_units);
+    this.tag1_idValue = Object.assign("", source.tag1_idValue);
+    this.tag1_isNew = Object.assign("", source.tag1_isNew);
+    this.tag1_positionCode = Object.assign("", source.tag1_positionCode);
+    this.tag2_idValue = Object.assign("", source.tag2_idValue);
+    this.tag2_isNew = Object.assign("", source.tag2_isNew);
+    this.tag2_positionCode = Object.assign("", source.tag2_positionCode);
+    this.weanDateRange = source.weanDateRange;
+    this.year = source.year;
   }
+
 
 
   /**
@@ -264,13 +317,16 @@ export class SpreadsheetTuple {
       // field leader initials
       if (field[KEY] == jsonName_fieldLeaderInitials) {
         let fieldLeaders : string = field[VALUE] as string;
-        let fieldLeaderList = fieldLeaders.split(" ");
-        tuple.fieldLeaderList = fieldLeaderList;
 
+        tuple.fieldLeaderList = fieldLeaders;
+
+        // // delete commas by replacing any commas with ''
+        // fieldLeaders = fieldLeaders.replace(/[,]/, '');
+        // let fieldLeaderList = fieldLeaders.split(" ");
+        
         // we have a string like "ABC" or "ABC, DEF, ..., XYZ"
         // verify each one of those strings is an existing field leader.
         // if not, error
-
         // if we receive a field leader which does not yet exist, record an error for this field.
       }
 
@@ -338,18 +394,6 @@ export class SpreadsheetTuple {
         // if pup          --> verify the sealIsPup is set to true
       }
 
-      // for mother elephant seals, indicates the number of pups they are caring for
-      else if (field[KEY] == jsonName_sealHasPupQuantity) {
-        let value = parseInt(valueAsString);
-        
-        if (value == NaN) {
-          var error = new TupleProcessingError(jsonName_sealHasPupQuantity, "Error: received non-integer value for number of pups suffered by this parent. Intead: " + value);
-          tuple.processingErrorList.push(error);
-        }
-        else {
-          tuple.sealHasPupQuantity = value;
-        }
-      }
 
       // must be (Y/N)
       else if (field[KEY] == jsonName_mark1_isNew) {
@@ -364,10 +408,12 @@ export class SpreadsheetTuple {
         }
       }
 
+
       // really could be anything
       else if (field[KEY] == jsonName_mark1_idValue) {
         tuple.mark1_idValue = valueAsString;
       }
+
 
       // aka the STAMP // verify composed of one of the valid positions: "L" "R" "B"
       else if (field[KEY] == jsonName_mark1_positionCode) {
@@ -482,7 +528,6 @@ export class SpreadsheetTuple {
 
       // anything
       else if (field[KEY] == jsonName_tag2_idValue) {
-
         tuple.tag2_idValue = valueAsString;
       }
 
@@ -526,6 +571,7 @@ export class SpreadsheetTuple {
               if (value < 0 || value > 100) {  
                 var error = new TupleProcessingError(jsonName_sealMoltPercentage, "Error: not between 0 and 100. expected an integer value 1-3 digits, between 0 and 100, w or w/o % sign. Instead: " + value);
                 tuple.processingErrorList.push(error);
+                //tuple.sealMoltPercentage = null;
               }
               else {
                 tuple.sealMoltPercentage = value;
@@ -561,6 +607,30 @@ export class SpreadsheetTuple {
           }
       }
 
+
+      // for mother elephant seals, indicates the number of pups they are caring for
+      else if (field[KEY] == jsonName_sealHasPupQuantity) {
+        
+        
+        if (valueAsString == "") {
+
+        }
+        else {
+          let value = parseInt(valueAsString);
+          if (value == NaN) {
+            var error = new TupleProcessingError(jsonName_sealHasPupQuantity, "Error: received non-integer value for number of pups suffered by this parent. Intead: " + value);
+            tuple.processingErrorList.push(error);
+            tuple.sealHasPupQuantity = null;
+          }
+          else {
+            tuple.sealHasPupQuantity = value;
+          }
+        }
+
+        
+      }
+
+
       else if (field[KEY] == jsonName_currentSeason) {
         // Gotta be for the current season or some season in the past
         tuple.currentSeason = valueAsString;
@@ -570,42 +640,78 @@ export class SpreadsheetTuple {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealStandardLength = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealStandardLength = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealCurvilinearLength) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealCurvilinearLength = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealCurvilinearLength = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealAuxiliaryGirth) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealAuxiliaryGirth = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealAuxiliaryGirth = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealMass) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealMass = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealMass = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealTare) {  
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealTare = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealTare = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealMassTare) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
-        tuple.sealMassTare = parseFloat(valueAsString);
+        if (valueAsString == "") {
+
+        }
+        else {
+          tuple.sealMassTare = parseFloat(valueAsString);
+        }
+        
       }
 
       else if (field[KEY] == jsonName_sealLastSeenAsPupDate) {
@@ -635,9 +741,15 @@ export class SpreadsheetTuple {
         // should be an integer... (maybe we let them use floats if they really want to?)
         // sould be the difference in days between seal-LSAP and seal-FSAW
         
-        // first check regex for an integer. 
-        let value = parseInt(valueAsString);
-        tuple.weanDateRange = value;
+        if (valueAsString == "") {
+
+        }
+        else {
+          // first check regex for an integer. 
+          let value = parseInt(valueAsString);
+          tuple.weanDateRange = value;
+        }
+        
 
         //then check that it is equal to the difference of the other two fields
         // (AT THE VERY END, OUTSIDE THE IF CONDITIONS)

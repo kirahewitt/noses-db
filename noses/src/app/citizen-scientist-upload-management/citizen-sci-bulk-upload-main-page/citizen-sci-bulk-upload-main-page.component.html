@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="col-md-6">  
-                      <button class="btn btn-primary btn-md" (click)="openDialog(id)">
+                      <button class="btn btn-primary btn-md" (click)="openDialog(id); $event.stopPropagation()">
                         <i class="fas fa-edit"></i>
                       </button>
                     </div>
