@@ -1,20 +1,20 @@
-<div class="filter-row">
-    <div class="filter-row-item">
+<div class="filter-row" *ngFor="let filter of filterss; let i = index;">
+    <div class="filter-row-item" ng-show="0">
       <label class="checkbox">
           <input type="checkbox">
               AND
       </label>
     </div>
-    <div class="filter-row-item">
+    <div class="filter-row-item" ng-show="0">
       <label class="checkbox">
           <input type="checkbox">
               OR
       </label>
     </div>
   <div class="filter-row-item main">
-      <h6>{{filterName[0]}} = {{filterValue[0]}}</h6>
+      <h6>{{filter.name}} = {{filter.value}}</h6>
   </div>
   <div class="filter-row-item main">
-      <button type="button" class="btn btn-danger">Remove</button>
+      <button type="button" class="btn btn-danger" (click)="filterss.splice(i, 1)">Remove</button>
   </div>
 </div>

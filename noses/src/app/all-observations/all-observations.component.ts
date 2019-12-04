@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { FlaskBackendService } from '../_services/flask-backend.service';
 import { Observations } from  '../_supporting_classes/Observations';
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';
@@ -66,6 +66,8 @@ export class AllObservationsComponent implements OnInit {
   onClick(name) {
     
   }
+
+  filterss = [{name:"Breeding Season", value:"2019"}, {name:"Tag", value:"T3456"}];
 
   ngOnInit() {
 

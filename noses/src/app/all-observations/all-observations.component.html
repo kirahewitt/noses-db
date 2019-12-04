@@ -8,7 +8,7 @@
             <div class="filter-row">
                 <div class="filter-row-item">
                     <div class="form-group down">
-                        <select class="form-control" id="sel1">
+                        <select class="form-control" id="sel1" #filterName>
                             <option>Tag</option>
                             <option>Mark</option>
                             <option>Sex</option>
@@ -19,13 +19,13 @@
                 <div class="filter-row-item">
                     <form>
                         <div>
-                            <input type="email" class="form-control" placeholder="Filter Value">
+                            <input type="email" class="form-control" placeholder="Filter Value" #filterValue>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="filter-row">
-                <button type="button" class="btn btn-primary">Add</button>
+                <button type="button" class="btn btn-primary" (click)="filterss.push({name:filterName.value, value:filterValue.value})">Add</button>
             </div>
         </div>
     </div>
@@ -35,7 +35,7 @@
                 <h2>Active Filters:</h2>
             </div>
             <div class="filter-row">
-                <app-filter-block style="width:100%; height:70%"></app-filter-block>
+                <app-filter-block [filterss]=filterss style="width:100%; height:70%"></app-filter-block>
             </div>
         </div>
     </div>
