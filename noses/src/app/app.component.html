@@ -1,62 +1,6 @@
 
 <div class=rootpage>
-
-  <!-- Navbar -->
-  <nav class="navbar navbar-dark bg-dark">
-    
-    <!-- logo section -->
-    <div class="col-md-2">
-      <a class="navbar-brand down" routerLink="/menu">
-        <a class="nav-link">NOSES Home</a>
-      </a>
-    </div>
-
-
-    <!-- link section -->
-    <div class="col-md-10">
-      <ul class="nav justify-content-end">
-
-        <li class="nav-item">
-          <a routerLink="/dashboard" class="nav-link">All Seals</a>
-        </li>
-
-        
-
-        
-        
-
-        <li class="nav-item" *ngIf="isAdmin">
-          <a routerLink="/approve-obs" class="nav-link">Staging</a>
-        </li>
-
-        <li class="nav-item">
-          <a routerLink="/all-observations" class="nav-link">All Observations</a>
-        </li>
-
-        <li class="nav-item">
-          <a routerLink="/new-observation" class="nav-link">Single Observation Upload</a>
-        </li>
-
-        <li class="nav-item">
-          <a routerLink="/citizen-sci-bulk-upload" class="nav-link">Bulk Observation Upload</a>
-        </li>
-
-        <li class="nav-item" *ngIf="isSuperAdmin">
-          <a routerLink="/manage-accounts" class="nav-link">Manage Accounts</a>
-        </li>
-
-        <li class="nav-item">
-          <a routerLink="/sign-in" class="nav-link">Login</a>
-        </li>
-
-      </ul>
-    </div>
-
-  </nav>
-
+  <app-navbar-main></app-navbar-main>
 </div>
 
-
 <router-outlet></router-outlet>
-
-
