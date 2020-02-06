@@ -1,23 +1,13 @@
-<!-- HTML that will appear if a user is logged in -->
-<!-- <a *ngIf="authService.userData != null && authService.isLoggedIn == true" mat-button="" routerLink="/sign-in" class="mat-button mat-button-base navbar-anchor " [matMenuTriggerFor]="menu" >
-    <span class="mat-button-wrapper">
-      <i class="icon-spacing fas fa-user"></i>
-      <span>{{authService.userData.email}}</span>
-    </span>
-    <div class="mat-button-ripple mat-ripple" matripple=""></div>
-    <div class="mat-button-focus-overlay"></div>
-   
-</a>  
-<mat-menu #menu="matMenu">
-  <button mat-menu-item>Item 1</button>
-  <button mat-menu-item>Item 2</button>
-</mat-menu> -->
 
+<!-- HTML that will appear if a user IS logged in -->
 <button *ngIf="authService.userData != null && authService.isLoggedIn == true" mat-button="" class="mat-button mat-button-base navbar-anchor mat-menu-trigger "  [matMenuTriggerFor]="menu">
+    
     <span class="mat-button-wrapper">
       <i class="icon-spacing fas fa-user"></i>
+      <!-- <span class="privilege-level-display"> {{privilegeLevel}} </span> -->
       <span>{{authService.userData.email}}</span>
     </span>
+
     <div class="mat-button-ripple mat-ripple" matripple=""></div>
     <div class="mat-button-focus-overlay"></div>
 </button>  
@@ -26,15 +16,9 @@
   <button mat-menu-item (click)="logoutClicked()">Sign out</button>
 </mat-menu>
 
-<!-- <button mat-button [matMenuTriggerFor]="menu">Menu</button>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item>Item 1</button>
-  <button mat-menu-item>Item 2</button>
-</mat-menu> -->
 
-
-<!-- HTML that will appear if a user is NOT logged in -->
-<a *ngIf="authService.isLoggedIn == false" mat-button="" routerLink="/sign-in" class="mat-button mat-button-base navbar-anchor "  >
+<!-- HTML that will appear if a user IS NOT logged in -->
+<a *ngIf="authService.isLoggedIn == false" mat-button="" routerLink="/sign-in" class="mat-button mat-button-base navbar-anchor " >
     <span class="mat-button-wrapper">
       <i class="fas fa-sign-in-alt"></i>
       <span> Log In </span>

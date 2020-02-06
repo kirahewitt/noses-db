@@ -112,6 +112,7 @@ CREATE TABLE `Marks` (
   `markDate` date NOT NULL,
   `Year` int(11) NOT NULL,
   `ObservationID` int(11) NOT NULL,
+  `MarkSeal` int(11) DEFAULT NULL,
   PRIMARY KEY (`MarkID`,`Mark`,`Year`),
   KEY `Year` (`Year`),
   CONSTRAINT `marks_ibfk_1` FOREIGN KEY (`Year`) REFERENCES `Seasons` (`Year`)
@@ -149,7 +150,7 @@ CREATE TABLE `Users` (
   `Username` varchar(30) NOT NULL,
   `Password` varchar(30) NOT NULL,
   `Initials` varchar(30) NOT NULL,
-  `PermissionsLevel` tinyint(1) NOT NULL,
+  `isAdmin` tinyint(1) NOT NULL,
   `Affiliation` varchar(30) NOT NULL,
   `Email` varchar(30) UNIQUE DEFAULT NULL,
   `ObsID` int UNIQUE NOT NULL,
@@ -162,7 +163,7 @@ CREATE TABLE `Users` (
 --
 
 LOCK TABLES `Users` WRITE;
-INSERT INTO `Users` (`Username`, `Password`, `Initials`, `PermissionsLevel`, `Affiliation`, `Email`, `ObsID`) 
+INSERT INTO `Users` (`Username`, `Password`, `Initials`, `isAdmin`, `Affiliation`, `Email`, `ObsID`) 
 VALUES ('iorourke@calpoly.edu','password', 'IR', 3,'iorourke@calpoly.edu','iorourke@calpoly.edu', 2),
        ('iminarov@calpoly.edu','password', 'IM', 3,'iminarov@calpoly.edu','iminarov@calpoly.edu', 1);
 UNLOCK TABLES;
@@ -285,11 +286,11 @@ CREATE TABLE `Tags` (
   `TagColor` varchar(30) NOT NULL,
   `TagPosition` varchar(30) DEFAULT NULL,
   `TagDate` date NOT NULL,
-  `ObservationID` int(11) DEFAULT NULL,
+  `TagSeal` int(11) DEFAULT NULL,
   `isLost` bool DEFAULT false,
   PRIMARY KEY (`TagNumber`),
   KEY `ObservationID` (`ObservationID`),
-  CONSTRAINT `tags_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`)
+  CONSTRAINT `tags_ibfk_1` FOREIGN KEY (`TagSeal`) REFERENCES `Observations` (`ObservationID`)
 );
 
 --

@@ -110,9 +110,12 @@
                 </ng-container>
 
                 <ng-container matColumnDef="viewSeal">
-                    <th mat-header-cell *matHeaderCellDef> View Seal</th>
-                    <td mat-cell *matCellDef="let row"> <span (click)="selectSeal(row)" class="hippo">
-                        <i class="fas fa-hippo"></i></span>
+                  <th mat-header-cell *matHeaderCellDef> View Seal</th>
+                    <td mat-cell *matCellDef="let row"> 
+                        <span (click)="selectSeal(row)" class="hippo">
+                          <img src="assets/cropped_silhouette_smaller_1_blue.png" height="30" width="56" />
+                        </span>
+                        
                     </td>
                 </ng-container>
 

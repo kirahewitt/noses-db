@@ -152,6 +152,7 @@ const config = {
     MatTableModule,
     MatMenuModule,
     MatProgressBarModule,
+    MatCardModule,
     MatDatepickerModule,
     FlexLayoutModule,
     HttpClientModule,
