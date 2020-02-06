@@ -1,48 +1,112 @@
-<div style="text-align:center">
-    <div class="displayTable">
-        <div class="displayTableCell">
-            <div class="authBlock">
-                <br>
-                <br>
-                <div class="row">
-                    <div class="col-md-4"></div>
-                    <div class="col-md-4 mat-elevation-z2">
-                        <br>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h3 style="text-align:center">Sign In</h3>
-                            </div>
-                        </div>
-                        <br>
 
-                        <br>
-                        <div class="row">
-                            <div class="formGroup col-md-12" style="text-align:center">
-                                 <input type="text" class="form-control user-info" placeholder="Email" #userName required>
-                                 <input type="password" class="form-control user-info" placeholder="Password" #userPassword required>
-                                 <label class="checkbox">
-                                        <input type="checkbox">
-                                            Remember me
-                                    </label>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="formGroup col-md-12">
-                              <input type="button" class="btn btn-light-blue log" value="Login" (click)="authService.SignIn(userName.value, userPassword.value)">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="formGroup col-md-12" style="padding-top: 5%">
-                                <a routerLink="/request-account"><input type="button" class="btn btn-light-red log" value="Request Login" href="#"></a>
-                                <a routerLink="/reset"><input type="button" class="btn btn-light-blue log" value="Reset Password" href="#"></a>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
+
+<div class="img-background">
+
+
+    <br>
+    <br>
+
+    <!-- <div class="row">
+
+        <div class="col-md-4"></div>
+
+        
+        <div class="col-md-4 mat-elevation-z2 form-box">
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 style="text-align:center">Sign In</h3>
                 </div>
+            </div>
+            
 
+            
+            <div class="row">
+                <div class="formGroup col-md-12" style="text-align:center">
+                    <input type="text" class="form-control user-info" placeholder="Email" #userName required>
+                    <input type="password" class="form-control user-info" placeholder="Password" #userPassword required>
+                    <label class="checkbox">
+                            <input type="checkbox">
+                                Remember me
+                        </label>
+                </div>
+            </div>
+
+            
+            <div class="row">
+                <div class="formGroup col-md-12">
+                    <input type="button" class="btn btn-light-blue log" value="Login" (click)="authService.SignIn(userName.value, userPassword.value)">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="formGroup col-md-12" style="padding-top: 5%">
+                    <a routerLink="/request-account"><input type="button" class="btn btn-light-red log" value="Request Login" href="#"></a>
+                    <a routerLink="/reset"><input type="button" class="btn btn-light-blue log" value="Reset Password" href="#"></a>
+                </div>
+            </div>
+            
+        </div>
+    </div> -->
+
+
+
+
+    <div style="text-align:center">
+        <div class="displayTable">
+            <div class="displayTableCell">
+
+                <div class="authBlock">
+                    
+                    <div class="row">
+
+                        <div class="col-md-4"></div>
+
+                        
+                        <div class="col-md-4 mat-elevation-z2 form-box">
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 style="text-align:center">Sign In</h3>
+                                </div>
+                            </div>
+                            
+
+                            
+                            <div class="row">
+                                <div class="formGroup col-md-12" style="text-align:center">
+                                    <input type="text" class="form-control user-info" placeholder="Email" #userName required>
+                                    <input type="password" class="form-control user-info" placeholder="Password" #userPassword required>
+                                    <label class="checkbox">
+                                            <input type="checkbox">
+                                                Remember me
+                                        </label>
+                                </div>
+                            </div>
+
+                            
+                            <div class="row">
+                                <div class="formGroup col-md-12">
+                                  <input type="button" class="btn btn-light-blue log" value="Login" (click)="authService.SignIn(userName.value, userPassword.value)">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="formGroup col-md-12" style="padding-top: 5%">
+                                    <a routerLink="/request-account"><input type="button" class="btn btn-light-red log" value="Request Login" href="#"></a>
+                                    <a routerLink="/reset"><input type="button" class="btn btn-light-blue log" value="Reset Password" href="#"></a>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
+
+    
 </div>
+
+

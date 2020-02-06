@@ -11,7 +11,7 @@ import { Router } from "@angular/router";
 })
 export class AuthService {
 
-  private userData: any; // Save logged in user data
+  private userData: firebase.User; // Save logged in user data
 
 
   /**

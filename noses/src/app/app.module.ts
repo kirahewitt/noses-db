@@ -40,6 +40,7 @@ import { BulkUploadObservationViewComponent } from './citizen-scientist-upload-m
 import { EditObservationDialogComponent } from './edit-observation-dialog/edit-observation-dialog.component';
 import { TtlAngMaterialStartPageComponent } from './angular-material-tutorial-components/ttl-ang-material-start-page/ttl-ang-material-start-page.component';
 import { TtlAngMaterialDialogComponent } from './angular-material-tutorial-components/ttl-ang-material-dialog/ttl-ang-material-dialog.component';
+import { LoginStateComponent } from './_components/navbar/login-state/login-state.component';
 
 // angular material section
 import { MatFormFieldModule } from '@angular/material';
@@ -89,7 +90,9 @@ import {MatTreeModule} from '@angular/material/tree';
 import {SelectFilterType} from "./all-observations/filter-type-selector"
 
 // form validation service
-import { ValidationService } from './_services/validation.service'
+import { ValidationService } from './_services/validation.service';
+import { NavbarMainComponent } from './_components/navbar/navbar-main/navbar-main.component';
+
 
 
 const config = {
@@ -128,7 +131,9 @@ const config = {
     EditObservationDialogComponent,
     TtlAngMaterialStartPageComponent,
     TtlAngMaterialDialogComponent,
-    SelectFilterType
+    SelectFilterType,
+    LoginStateComponent,
+    NavbarMainComponent
   ],
   imports: [
     FormsModule,
@@ -145,6 +150,7 @@ const config = {
     MatPaginatorModule,
     MatToolbarModule,
     MatTableModule,
+    MatMenuModule,
     MatProgressBarModule,
     MatDatepickerModule,
     FlexLayoutModule,

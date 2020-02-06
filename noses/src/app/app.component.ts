@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatToolbarModule, MatTableModule, MatTableDataSource } from '@angular/material';
 import { FlaskBackendService } from './_services/flask-backend.service';
 import { AdminService } from "./_services/admin.service";
+import { AuthService } from './_services/auth.service';
 
 
 @Component({
@@ -23,7 +24,8 @@ export class AppComponent implements OnInit {
    * @param modalService 
    */
   constructor(private apiService: FlaskBackendService,
-              private adminStatus: AdminService
+              private adminStatus: AdminService,
+              private authService : AuthService
               ) { }
 
 
@@ -39,6 +41,10 @@ export class AppComponent implements OnInit {
     });
   }
 
+
+  logoutClicked() {
+    this.authService.SignOut();
+  }
 
   /**
    * 
