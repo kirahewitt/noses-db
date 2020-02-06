@@ -4,6 +4,7 @@ import { auth } from "firebase/app";
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firestore";
 import { Router } from "@angular/router";
+import { Observable, of, BehaviorSubject } from  'rxjs';
 
 
 @Injectable({
@@ -25,9 +26,29 @@ export class AuthService {
    */
   constructor(public afs: AngularFirestore, public afAuth: AngularFireAuth, public router: Router, public ngZone: NgZone) {
     let userObservable = this.afAuth.authState;
-    userObservable.subscribe(user => this.updateLocalStorage_userData(user));
+    userObservable.subscribe(user => {
+      this.updateLocalStorage_userData(user);
+
+    });
+    
+    
   }
 
+
+  /**
+   * doing this might be a security risk.
+   */
+  public getUserData() {
+    return this.userData;
+  }
+
+  public getUserData_obs() {
+    return of(this.userData);
+  }
+
+  // public getUserData_str() {
+  //   return BehaviorSubject
+  // }
 
   /**
    * If the value of user received by this function is non-null the user is logged in.
@@ -61,6 +82,9 @@ export class AuthService {
           this.router.navigate(["menu"]);
         });
         this.SetUserData(result.user);
+        console.log("LOGIN COMPLETE");
+        console.log("USER CREDENTIALS RETURNED BY SUCCESSFUL LOGIN:");
+        console.log(result.user);
       })
       .catch(error => {
         console.log("*******Login Failed!");

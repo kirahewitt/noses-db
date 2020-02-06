@@ -8,6 +8,7 @@ import { EditObservationDialogComponent } from 'src/app/edit-observation-dialog/
 import {MatPaginator} from '@angular/material/paginator';
 import { MatTableDataSource, MatSnackBar } from '@angular/material';
 import { FlaskBackendService } from 'src/app/_services/flask-backend.service';
+import { AuthService } from 'src/app/_services/auth.service';
 
 
 export interface TupleStructForTable {
@@ -38,6 +39,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     public observationTuples : SpreadsheetTuple[];
     public displayedColumns: string[];
     public dataSource: MatTableDataSource<TupleStructForTable>;
+    public currentUserEmail : string;
 
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
@@ -51,20 +53,28 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     constructor(private papa: Papa, 
         public dialogMaterialService: MatDialog, 
         private snackbarService : MatSnackBar,
-        private apiService: FlaskBackendService) 
+        private apiService: FlaskBackendService,
+        private authService : AuthService) 
     {
         this.fileName = "No File Selected";
         this.displayedColumns = ["position", "date", "locationCode", "comment"];
         this.fileData = [];
         this.observationTuples = [];
         this.tupleTableStructList = []; 
+
+        this.currentUserEmail = "";
+        
     }
 
 
     /**
      * 
      */
-    ngOnInit() {}
+    ngOnInit() {
+      this.authService.getUserData_obs().subscribe(userData => {
+        this.currentUserEmail = userData.email;
+      });
+    }
 
 
 
@@ -267,6 +277,14 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         }
         
         return indexList;
+    }
+
+
+    /**
+     * Retrieves the username of the individual that is currently logged in.
+     */
+    private getSelfUserName() {
+
     }
 
 }

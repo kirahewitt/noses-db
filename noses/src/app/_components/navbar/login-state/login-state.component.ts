@@ -20,6 +20,8 @@ export class LoginStateComponent implements OnInit {
   isSuperAdmin = false;
   isAdmin = false;
   privilegeLevel: any;
+  currentUserEmail : string;
+  
 
 
   /**
@@ -27,8 +29,10 @@ export class LoginStateComponent implements OnInit {
    * @param authService 
    * @param adminStatus 
    */
-  constructor(private authService : AuthService,
-              private adminStatus: AdminService) { }
+  constructor(private authService : AuthService, private adminStatus: AdminService) { 
+    this.privilegeLevel = -42;
+    this.currentUserEmail = "";
+  }
 
 
   /**
@@ -39,6 +43,12 @@ export class LoginStateComponent implements OnInit {
       this.privilegeLevel = currentStatus;
       this.setPrivelege();
     });
+
+    this.authService.getUserData_obs().subscribe(userData => {
+      this.currentUserEmail = userData.email;
+    });
+
+    
   }
 
 
