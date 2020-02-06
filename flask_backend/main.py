@@ -258,7 +258,7 @@ def get_admin_status():
             _json = request.json
             print(_json)
 
-            cursor.execute("SELECT PermissionsLevel from Users Where email= \'" + _json['email'] + "\';")
+            cursor.execute("SELECT isAdmin from Users Where email= \'" + _json['email'] + "\';")
 
             rows = cursor.fetchall()
             resp = jsonify(rows)

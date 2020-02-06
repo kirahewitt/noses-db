@@ -48,7 +48,7 @@ td .thin{
 }
 
 .carousel-item {
-  height: 400px;
+  
   overflow: hidden;
   width: 100%;
   }
@@ -72,4 +72,8 @@ td .thin{
   align-items: top;
   justify-content: center;
   flex-grow: 2;
+}
+
+.padding-left-25 {
+  padding-left:25px;
 }
