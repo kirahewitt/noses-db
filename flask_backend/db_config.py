@@ -10,7 +10,7 @@ mysql = MySQL()
 #app.config['MYSQL_DATABASE_HOST'] = 'ambari-head.csc.calpoly.edu'
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'password'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'toor'
 app.config['MYSQL_DATABASE_DB'] = 'sealDB'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
