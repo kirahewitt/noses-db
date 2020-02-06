@@ -120,7 +120,6 @@ export class EditObservationDialogComponent implements OnInit {
     public formatDateMMDDYY(date : Date) {
         var dateString = "";
 
-        
         let monthNum = date.getMonth() + 1;
         let monthStr = monthNum.toPrecision(2);
 
@@ -129,7 +128,6 @@ export class EditObservationDialogComponent implements OnInit {
 
         let yearNum = date.getFullYear();
         let yearStr = yearNum.toString().substr(2, 2);
-
 
         dateString += monthStr + "/" + dayStr + "/" + yearStr;
 

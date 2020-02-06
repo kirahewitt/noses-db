@@ -1,6 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
+/* there is a bug preventing the body from taking 100% height unless using view hundredths units */
+html, body {
+  //min-height: 100vh;
+  height: 100%;
+  //overflow: hidden;
+  margin: 0;
+  padding:0;
+}
+
 .btn.focus, .btn:focus {
     outline: 0;
     box-shadow: 0 0 0 0;
@@ -13,10 +22,6 @@
 
 .add-obs {
   background-color: #42f483;
-}
-
-.test {
-  white-space: pre-line;
 }
 
 .light-blue {
