@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/_services/auth.service';
 import { MatMenuModule} from '@angular/material/menu';
+import { AdminService } from 'src/app/_services/admin.service';
 
 
 /**
@@ -16,13 +17,52 @@ import { MatMenuModule} from '@angular/material/menu';
 })
 export class LoginStateComponent implements OnInit {
 
-  constructor(public authService: AuthService) { }
+  isSuperAdmin = false;
+  isAdmin = false;
+  privilegeLevel: any;
 
+
+  /**
+   * 
+   * @param authService 
+   * @param adminStatus 
+   */
+  constructor(private authService : AuthService,
+              private adminStatus: AdminService) { }
+
+
+  /**
+   * 
+   */
   ngOnInit() {
+    this.adminStatus.currentPermissionStatus.subscribe(currentStatus  => {
+      this.privilegeLevel = currentStatus;
+      this.setPrivelege();
+    });
   }
 
 
+  /**
+   * 
+   */
   logoutClicked() {
     this.authService.SignOut();
+  }
+
+
+  /**
+   * 
+   */
+  setPrivelege() {
+    if(this.privilegeLevel == 3) {
+      this.isSuperAdmin = true;
+      this.isAdmin = true;
+    } else if(this.privilegeLevel == 2) {
+      this.isSuperAdmin = false;
+      this.isAdmin = true;
+    } else  {
+      this.isSuperAdmin = false;
+      this.isAdmin = false;
+    }
   }
 }

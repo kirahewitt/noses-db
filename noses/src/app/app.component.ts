@@ -14,14 +14,16 @@ export class AppComponent implements OnInit {
   title = 'noses';
   isSuperAdmin = false;
   isAdmin = false;
-  loggedInUser: any;
   priv: any;
+  loggedInUser: any;
+  
 
+ 
   /**
    * 
    * @param apiService 
    * @param adminStatus 
-   * @param modalService 
+   * @param authService 
    */
   constructor(private apiService: FlaskBackendService,
               private adminStatus: AdminService,
