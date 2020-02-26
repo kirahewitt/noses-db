@@ -62,6 +62,6 @@
     </div>
     <div mat-dialog-actions>
         <button mat-button (click)="onNoClick()">No Thanks</button>
-        <button class="btn btn-info" type="submit" [mat-dialog-close]="data">Ok</button>
+        <button class="btn btn-info" type="submit" [mat-dialog-close]="data" (click)="checkAndSubmit()">Ok</button>
     </div>
 </div>

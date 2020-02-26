@@ -22,16 +22,16 @@
 
       <ng-container matColumnDef="Fullname">
         <th mat-header-cell *matHeaderCellDef>Name </th>
-        <td mat-cell *matCellDef="let lewanite"> {{lewanite.Fullname}} </td>
+        <td mat-cell *matCellDef="let lewanite"> {{lewanite.FirstName}} {{lewanite.LastName}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="isAdmin">
+      <ng-container matColumnDef="PermissionsLevel">
         <th mat-header-cell *matHeaderCellDef>User Priveleges <i mat-raised-button
         matTooltip="{{getMoreInformation()}}"
         matTooltipClass="test"
         aria-label="Button that displays a tooltip when focused or hovered over" class="far fa-question-circle"></i></th>
         <td mat-cell *matCellDef="let lewanite">
-          {{lewanite.isAdmin}}
+          {{lewanite.PermissionsLevel}}
         </td>
       </ng-container>
 
@@ -42,7 +42,7 @@
 
       <ng-container matColumnDef="email">
         <th mat-header-cell *matHeaderCellDef> Email </th>
-        <td mat-cell *matCellDef="let lewanite"> {{lewanite.email}} </td>
+        <td mat-cell *matCellDef="let lewanite"> {{lewanite.Email}} </td>
       </ng-container>
 
       <ng-container matColumnDef="editUser">

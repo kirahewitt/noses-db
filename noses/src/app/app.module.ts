@@ -21,7 +21,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { UploadSealComponent } from './upload-seal/upload-seal.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
-import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
+import { ManageAccountsComponent, DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 import { MenuComponent } from './menu/menu.component';
@@ -133,7 +133,8 @@ const config = {
     TtlAngMaterialDialogComponent,
     SelectFilterType,
     LoginStateComponent,
-    NavbarMainComponent
+    NavbarMainComponent,
+    DialogOverviewExampleDialog
   ],
   imports: [
     FormsModule,
@@ -219,7 +220,8 @@ const config = {
   entryComponents: [
     EditUserDialogComponent,
     EditObservationDialogComponent,
-    TtlAngMaterialDialogComponent
+    TtlAngMaterialDialogComponent,
+    DialogOverviewExampleDialog,
   ],
   providers: [AuthService, AuthGuard, ValidationService],
   bootstrap: [AppComponent]

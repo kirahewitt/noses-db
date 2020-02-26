@@ -175,7 +175,7 @@ def add_user():
 
     try:
         if request.method == 'GET':
-            cursor.execute("SELECT * from Users Where isAdmin > 0;")
+            cursor.execute("SELECT * from Users inner join Observers on Users.ObsID = Observers.ObsID Where PermissionsLevel > 0;")
             rows = cursor.fetchall()
             resp = jsonify(rows)
             return resp
@@ -184,27 +184,35 @@ def add_user():
             _json = request.json
             print(_json)
             print(_json['isAdmin'])
+            initials = "".join([x[0] for x in _json['fullname'].split(' ')])
+            insertObserverCmd = (   "INSERT INTO Observers(FirstName, LastName)"
+                                    " VALUES "
+                                    "(" + surr_apos(_json['fullname'].split(" ")[0]) + 
+                                    ", " + surr_apos(_json['fullname'].split(" ")[-1]) + 
+                                    ");"
+                                )
 
-            insertUserCmd = (   "INSERT INTO Users(LoginID, FullName, Password, isAdmin, Affiliation)"
+            cursor.execute(insertObserverCmd)
+            getLast_statement = "SELECT LAST_INSERT_ID();"
+            cursor.execute(getLast_statement)
+            row = cursor.fetchone()
+            print(row)
+            print(_json)
+            observerID = row["LAST_INSERT_ID()"]
+            insertUserCmd = (   "INSERT INTO Users(Username, Initials, Password, PermissionsLevel, Affiliation, ObsID)"
                                 " VALUES " 
                                 "(" + surr_apos(_json['loginID']) +
-                                ", " + surr_apos(_json['fullname']) +
+                                ", " + surr_apos(initials) +
                                 ", " + surr_apos(_json['password']) +
                                 ", " + _json['isAdmin'] +
                                 ", " + surr_apos(_json['affiliation']) +
+                                ", " + str(observerID) +
                                 ");"
                             )
-            insertObserverCmd = (   "INSERT INTO Observers(email, FieldLeader, DataRecorderName, LoginID)"
-                                    " VALUES "
-                                    "(" + surr_apos(_json['email']) + 
-                                    ", " + surr_apos("") +
-                                    ", " + surr_apos("") +
-                                    ", " + surr_apos(_json['loginID']) +
-                                    ");"
-                                )
+            
             updateUserEmailCmd = (  "UPDATE Users" 
-                                    " SET email=" + surr_apos(_json['email']) + 
-                                    " WHERE LoginID=" + surr_apos(_json['loginID']) + ";"
+                                    " SET Email=" + surr_apos(_json['email']) + 
+                                    " WHERE UserName=" + surr_apos(_json['loginID']) + ";"
                                 )
 
             print("\n")
@@ -213,11 +221,10 @@ def add_user():
             print("update user email:   " + updateUserEmailCmd + "\n")
 
             cursor.execute(insertUserCmd)
-            cursor.execute(insertObserverCmd)
             cursor.execute(updateUserEmailCmd)
             conn.commit()
                 
-            cursor.execute("SELECT * from Users Where isAdmin > 0;")
+            cursor.execute("SELECT * from Users inner join Observers on Users.ObsID = Observers.ObsID Where PermissionsLevel > 0;")
 
             rows = cursor.fetchall()
             resp = jsonify(rows)

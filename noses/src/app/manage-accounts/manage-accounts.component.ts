@@ -19,7 +19,7 @@ export interface DialogData {
   loginID: string;
   fullname: string;
   password: string;
-  isAdmin: number;
+  PermissionsLevel: number;
   affiliation: string;
   email: string;
 }
@@ -37,7 +37,7 @@ export class ManageAccountsComponent implements OnInit {
   dataSource: any;
   userData: any;
   loggedInUser: any;
-  displayedColumns: string[] = ['Fullname', 'Affiliation', 'isAdmin', 'email', 'editUser', 'remUser' ];
+  displayedColumns: string[] = ['Fullname', 'Affiliation', 'PermissionsLevel', 'email', 'editUser', 'remUser' ];
   show: boolean = false;
   add_user: any;
 
@@ -47,14 +47,14 @@ export class ManageAccountsComponent implements OnInit {
   loginID: string;
   fullname: string;
   password: string;
-  isAdmin: number;
+  PermissionsLevel: number;
   affiliation: string;
   email: string;
 
 // ***** sql User ***** //
 //   LoginID: string;
 //   Fullname: string;
-//   isAdmin: number;
+//   PermissionsLevel: number;
 //   Affiliation: string;
 //   email: string;
 
@@ -67,7 +67,7 @@ export class ManageAccountsComponent implements OnInit {
     this.loggedInUser = JSON.parse(localStorage.getItem("user"));
     //console.log(this.loggedInUser);
     // this.dataSource = new MatTableDataSource<sqlUser>(USER_DATA);
-
+    console.log("getting users");
      this.apiService.getUsers().subscribe((users: any)=>{
       this.users = users;
       this.dataSource = new MatTableDataSource<sqlUser>(users);
@@ -92,7 +92,7 @@ export class ManageAccountsComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
       width: '650px',
       data: {loginid: this.loginID, fullname: this.animal, password: this.password,
-              isAdmin: this.isAdmin, affiliation: this.affiliation, email: this.email},
+              PermissionsLevel: this.PermissionsLevel, affiliation: this.affiliation, email: this.email},
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -119,13 +119,13 @@ export class ManageAccountsComponent implements OnInit {
   openEditUserDialog(row: any): void {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
       width: '400px',
-      data: {isAdmin: this.isAdmin},
+      data: {PermissionsLevel: this.PermissionsLevel},
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       if(result !== undefined) {
-        var user = { 'isAdmin':result['isAdmin'], 'email': row.email};
+        var user = { 'PermissionsLevel':result['PermissionsLevel'], 'Email': row.Email};
         this.apiService.updateUser(JSON.stringify(user)).then(msg => {
           this.dataSource = new MatTableDataSource(<any> msg);
         });
@@ -148,7 +148,7 @@ export class DialogOverviewExampleDialog {
   loginID: string;
   fullname: string;
   password: string;
-  isAdmin: boolean;
+  PermissionsLevel: boolean;
   affiliation: string;
   email: string;
 
@@ -160,6 +160,9 @@ export class DialogOverviewExampleDialog {
   onNoClick(): void {
     // this.data = undefined;
     this.dialogRef.close();
+  }
+  checkAndSubit(): void {
+    this.apiService.addUser(this.userObj);
   }
 
 

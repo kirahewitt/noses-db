@@ -16,7 +16,7 @@ import { AuthService } from "../_services/auth.service";
 
 
 export interface DialogData {
-  isAdmin: number;
+  PermissionsLevel: number;
 }
 
 
