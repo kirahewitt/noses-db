@@ -167,24 +167,19 @@ export class EditObservationDialogComponent implements OnInit {
     //  */
     // private outputListState() {
     //     var i: number;
-
     //     console.log("Outputting list state...");
-
     //     console.log("\n   List State - 'tupleList_master': ");
     //     i = 0;
     //     for (var element of this.tupleList_master) {
     //     console.log("      " + (i+1).toString() + ". " + element.comments);
     //     i++;
     //     }
-
-
     //     console.log("\n   List State - 'tupleList_copy': ");
     //     i = 0;
     //     for (var element of this.tupleList_copy) {
     //     console.log("      " + (i+1).toString() + ". " + element.comments);
     //     i++;
     //     }
-
     // }
 
 }

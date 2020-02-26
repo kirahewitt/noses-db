@@ -235,10 +235,16 @@ export class SpreadsheetTuple {
 
     this.processingErrorList = [];
 
-    // the json field
-    let dataSourceAsString : string = JSON.stringify(tupleAsJson);
-    let definitelyAnewDataSource : any = JSON.parse(dataSourceAsString);
-    this.originalJsonInput = definitelyAnewDataSource;
+    if (tupleAsJson != null) {
+      // the json field
+      let dataSourceAsString : string = JSON.stringify(tupleAsJson);
+      let definitelyAnewDataSource : any = JSON.parse(dataSourceAsString);
+      this.originalJsonInput = definitelyAnewDataSource;
+    }
+    else {
+      this.originalJsonInput = "";
+    }
+    
   }
     
 

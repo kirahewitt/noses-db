@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UploadSealComponent } from './upload-seal.component';
+import { ObsFormMainComponent } from './obs-form-main.component';
 
-describe('UploadSealComponent', () => {
-  let component: UploadSealComponent;
-  let fixture: ComponentFixture<UploadSealComponent>;
+describe('ObsFormMainComponent', () => {
+  let component: ObsFormMainComponent;
+  let fixture: ComponentFixture<ObsFormMainComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UploadSealComponent ]
+      declarations: [ ObsFormMainComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UploadSealComponent);
+    fixture = TestBed.createComponent(ObsFormMainComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

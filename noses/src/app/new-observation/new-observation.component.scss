@@ -1,127 +1,150 @@
-.outer-most-container {
-    // border: 1px solid black;
-    height: 700px;
-    display: flex;
+.page-container {
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
-.title-container {
-    display: flex;
-    padding-top: 20px;
-    align-items: center;
-    justify-content: center;
+.col {
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
-.outer-filter-container {
-    // border: 1px solid red;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+mat-card {
+    margin: 30px;
+    background-color: lightblue
 }
 
-.positioned-filter-container {
-    // border: 1px solid green;
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    height: 100%;
-}
 
-.positioned-filter-container-right {
-    // border: 1px solid green;
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    height: 100%;
-}
 
-.filter-row {
-    // border: 1px solid blue;
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
 
-.filter-row-item {
-    flex: 1;
-    // border: 1px solid orange;
-    flex-grow: 2;
-    height: 100%;
-    width: 90%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.sized-large {
-    height: 5% !important;
-    flex-direction: column;
-}
 
-.sized-normal {
-    max-height: 12% !important;
-    flex-direction: column;
-}
 
-.sized-small {
-    max-height: 8% !important;
-    flex-direction: column;
-}
 
-.sized-half {
-    max-height: 30% !important;
-    flex-direction: column;
-}
+// .outer-most-container {
+//     // border: 1px solid black;
+//     height: 700px;
+//     display: flex;
+// }
 
-.half-width {
-    max-width: 50% !important;
-}
+// .title-container {
+//     display: flex;
+//     padding-top: 20px;
+//     align-items: center;
+//     justify-content: center;
+// }
 
-.flex-row {
-    flex-direction: row;
-}
+// .outer-filter-container {
+//     // border: 1px solid red;
+//     flex: 1;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// }
 
-.flex-column {
-    flex-direction: column;
-}
+// .positioned-filter-container {
+//     // border: 1px solid green;
+//     display: flex;
+//     flex-direction: column;
+//     width: 70%;
+//     height: 100%;
+// }
 
-.border-black-top {
-    border-top: 1px solid black;
-}
-.border-black-bottom {
-    border-bottom: 1px solid black;
-}
-.border-black-right {
-    border-right: 1px solid black;
-}
-.border-black-left {
-    border-left: 1px solid black;
-}
+// .positioned-filter-container-right {
+//     // border: 1px solid green;
+//     display: flex;
+//     flex-direction: column;
+//     width: 90%;
+//     height: 100%;
+// }
 
-.left {
-    float: left;
-    justify-content: left;
-    align-items: left;
-}
+// .filter-row {
+//     // border: 1px solid blue;
+//     flex: 1;
+//     display: flex;
+//     flex-direction: row;
+//     align-items: center;
+//     justify-content: center;
+// }
 
-.down {
-    padding-top: 2%;
-}
+// .filter-row-item {
+//     flex: 1;
+//     // border: 1px solid orange;
+//     flex-grow: 2;
+//     height: 100%;
+//     width: 90%;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// }
 
-.small {
-    flex-grow: 1;
-}
+// .sized-large {
+//     height: 5% !important;
+//     flex-direction: column;
+// }
 
-.button-left{
-    position:absolute;
-    bottom: 3%;
-    right: 10%;
-}
+// .sized-normal {
+//     max-height: 12% !important;
+//     flex-direction: column;
+// }
 
-.button-right{
-    position:absolute;
-    bottom: 3%;
-    right: 5%;
-}
+// .sized-small {
+//     max-height: 8% !important;
+//     flex-direction: column;
+// }
+
+// .sized-half {
+//     max-height: 30% !important;
+//     flex-direction: column;
+// }
+
+// .half-width {
+//     max-width: 50% !important;
+// }
+
+// .flex-row {
+//     flex-direction: row;
+// }
+
+// .flex-column {
+//     flex-direction: column;
+// }
+
+// .border-black-top {
+//     border-top: 1px solid black;
+// }
+// .border-black-bottom {
+//     border-bottom: 1px solid black;
+// }
+// .border-black-right {
+//     border-right: 1px solid black;
+// }
+// .border-black-left {
+//     border-left: 1px solid black;
+// }
+
+// .left {
+//     float: left;
+//     justify-content: left;
+//     align-items: left;
+// }
+
+// .down {
+//     padding-top: 2%;
+// }
+
+// .small {
+//     flex-grow: 1;
+// }
+
+// .button-left{
+//     position:absolute;
+//     bottom: 3%;
+//     right: 10%;
+// }
+
+// .button-right{
+//     position:absolute;
+//     bottom: 3%;
+//     right: 5%;
+// }

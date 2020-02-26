@@ -1,319 +1,231 @@
-<h1 class="title is-2 title-container">New Observation</h1>
-<div class="outer-most-container">
-    <div class="outer-filter-container">
-        <div class="positioned-filter-container">
-            <div class="filter-row">
-                <div class="filter-row-item">
-                  <h2>Entered By:</h2>
-                </div>
-                <div class="filter-row-item left">
-                  <input class="form-control" type="text" placeholder="Name of User Inputting Data">
-                </div>
-            </div>
-            <div class="filter-row">
-                <div class="filter-row-item">
-                  <h2>Season:</h2>
-                </div>
-                <div class="filter-row-item left">
-                    <select class="form-control">
-                        <option>2019</option>
-                        <option>2018</option>
-                        <option>2017</option>
-                      </select>
-                </div>
-            </div>
-            <div class="filter-row">
-                <div class="filter-row-item">
-                  <h2>Date of Observation:</h2>
-                </div>
-                <div class="filter-row-item left down">
-                  <div class="form-group">
-                    <input type="date" class="form-control" id="date">
-                  </div>
-                </div>
-            </div>
-            <div class="filter-row">
-                <div class="filter-row-item">
-                  <h2>Location:</h2>
-                </div>
-                <div class="filter-row-item left">
-                    <select class="form-control">
-                        <option>ACU</option>
-                        <option>ACL</option>
-                        <option>DCC</option>
-                      </select>
-                </div>
-            </div>
-            <div class="filter-row">
-              <div class="filter-row-item">
-                <h2>Field Leader:</h2>
-              </div>
-              <div class="filter-row-item left">
-                <select class="form-control">
-                  <option>Heather Liawanag</option>
-                </select>
-              </div>
-            </div>
-            <div class="filter-row">
-              <div class="filter-row-item">
-                <h2>Pups (Age):</h2>
-              </div>
-              <div class="filter-row-item left">
-                <input class="form-control" type="text" placeholder="Enter a number">
-              </div>
-            </div>
-            <div class="filter-row">
-              <div class="filter-row-item">
-                <h2>Pups (Number):</h2>
-              </div>
-              <div class="filter-row-item left">
-                <input class="form-control" type="text" placeholder="Enter a number">
-              </div>
-            </div>
-            <div class="filter-row">
-              <div class="filter-row-item">
-                <h2>Molt %:</h2>
-              </div>
-              <div class="filter-row-item left">
-                <input class="form-control" type="number" placeholder="Enter a Number 0-100" min="0" step="5" max="100">
-              </div>
-            </div>
-            <div class="filter-row">
-              <div class="filter-row-item">
-                  <div class="checkbox">
-                    <label><input type="checkbox" value=""> First Seen as Weaner</label>
-                  </div>
-              </div>
-              <div class="filter-row-item">
-                <div class="checkbox">
-                  <label><input type="checkbox" value=""> Pup</label>
-                </div>
-              </div>
-              <div class="filter-row-item">
-                <div class="checkbox">
-                  <label><input type="checkbox" value=""> Is Procedure</label>
-                </div>
-              </div>
-            </div>
-            <div class="filter-row">
-              <div class="checkbox">
-                <label><input type="checkbox" value=""> Flag For Review</label>
-              </div>
-            </div>
+
+<!-- Beginning of the form -->
+<!-- <mat-dialog-content [formGroup]="form"> -->
+
+
+
+
+
+<div class="page-container" [formGroup]="form">
+
+
+        <!-- --------------------------------------------------------------------------------------------------------  -->
+        <!-- --------------------------------------------------------------------------------------------------------  -->
+
+
+        <!-- title section-->
+        <div class="row">
+
+            <p> New Observation </p>
+
         </div>
-    </div>
-    <div class="outer-filter-container">
-        <div class="positioned-filter-container-right">
-            <div class="filter-row sized-normal left">
-              <h2>Animal Identification:</h2>
-              <label class="checkbox-inline left"><input type="checkbox" value="" 
-                onchange="if ($('.search').attr('disabled')) {$('.search').prop('disabled', null); setToNone();} else {$('.search').prop('disabled', true); setToNew();}"> New Seal</label>
-            </div>
-            <div class="filter-row sized-small flex-row left border-black-left border-black-right border-black-top">
-              <div class="filter-row-item">
-                Mark:
-              </div>
-              <div class="filter-row-item">
-                <input class="form-control" type="text" placeholder="Text Input">
-              </div>
-              <div class="filter-row-item">
-              </div>
-              <div class="filter-row-item">
-                Position:
-              </div>
-              <div class="filter-row-item down left">
-                <div class="form-group down">
-                  <select class="form-control" id="sel1">
-                    <option>L</option>
-                    <option>R</option>
-                    <option>B</option>
-                    <option>Implement these options to be pulled from somewhere</option>
-                  </select>
-                </div>
-              </div>
-              <div class="filter-row-item down">
-                <label class="checkbox-inline left"><input type="checkbox" value=""> New Mark</label>
-              </div>
-            </div>
-            <div class="filter-row sized-small left border-black-left border-black-right">
-              <div class="filter-row-item left">
-                <button type="button" class="btn btn-success">  + Add Mark  </button>
-              </div>
-            </div>
-            <div class="filter-row sized-small flex-row left border-black-left border-black-right">
-              <div class="filter-row-item">
-                Tag:
-              </div>
-              <div class="filter-row-item">
-                <input class="form-control" type="text" placeholder="Text Input">
-              </div>
-              <div class="filter-row-item">
-                Position:
-              </div>
-              <div class="filter-row-item small">
-                Flip:
-              </div>
-              <div class="filter-row-item down small left">
-                <div class="form-group down">
-                  <select class="form-control" id="sel1">
-                    <option>L</option>
-                    <option>R</option>
-                  </select>
-                </div>
-              </div>
-              <div class="filter-row-item small">
-                Pos:
-              </div>
-              <div class="filter-row-item down small left">
-                <div class="form-group down">
-                  <select class="form-control" id="sel1">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                  </select>
-                </div>
-              </div>
-              <div class="filter-row-item small">
-                Dir:
-              </div>
-              <div class="filter-row-item down small left">
-                <div class="form-group down">
-                  <select class="form-control" id="sel1">
-                    <option>si</option>
-                    <option>so</option>
-                  </select>
-                </div>
-              </div>
-              <div class="filter-row-item down">
-                <label class="checkbox-inline left"><input type="checkbox" value=""> New Tag</label>
-              </div>
-            </div>
-            <div class="filter-row sized-small left border-black-left border-black-right">
-              <div class="filter-row-item left">
-                <button type="button" class="btn btn-success">  + Add Tag  </button>
-              </div>
-            </div>
-            <div class="filter-row sized-small flex-row left border-black-left border-black-right border-black-bottom">
-                <div class="filter-row-item">
-                  Sex:
-                </div>
-                <div class="filter-row-item left down">
-                  <div class="form-group down">
-                    <select class="form-control" id="sel1">
-                      <option>M</option>
-                      <option>F</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="filter-row-item">
-                </div>
-                <div class="filter-row-item">
-                  Age Class:
-                </div>
-                <div class="filter-row-item down left">
-                  <div class="form-group down">
-                    <select class="form-control" id="sel1">
-                      <option>P</option>
-                      <option>W</option>
-                      <option>J</option>
-                      <option>A</option>
-                      <option>SA1</option>
-                      <option>SA2</option>
-                      <option>SA3</option>
-                      <option>SA4</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="filter-row-item">
-                </div>
-                <div class="filter-row-item">
-                  <button type="button" class="search btn btn-success" data-toggle="modal" data-target="#exampleModal">Search</button>
-                </div>
-            </div>
-            <div class="filter-row sized-half border-black">
-              <div class="filter-row-item sized-large left" style="justify-content: left">
-                  <h4 style="padding-top:1%;">Seal Chosen: {{sealNum}}</h4>
-                <label class="checkbox-inline left down"><input type="checkbox" data-toggle="collapse" data-target="#demo"value="">Weighted?</label>
-              </div>
-              <div id="demo" class="collapse" style="justify-content: left">
-                <div class="filter-row">
-                  <div class="filter-row-item">
-                    <h4>Standard Length:</h4>
-                  </div>
-                  <div class="filter-row-item left small">
-                    <input class="form-control" type="text" placeholder="Enter a Number">
-                  </div>
-                  <div class="filter-row-item">
-                    <h4>Total Mass:</h4>
-                  </div>
-                  <div class="filter-row-item left small">
-                    <input class="form-control" type="text" placeholder="Enter a Number">
-                  </div>
-                </div>
-                <div class="filter-row">
-                  <div class="filter-row-item">
-                    <h4>Curvilinear Length:</h4>
-                  </div>
-                  <div class="filter-row-item left small">
-                    <input class="form-control" type="text" placeholder="Enter a Number">
-                  </div>
-                  <div class="filter-row-item">
-                    <h4>Mass Tare:</h4>
-                  </div>
-                  <div class="filter-row-item left small">
-                    <input class="form-control" type="text" placeholder="Enter a Number">
-                  </div>
-                </div>
-                <div class="filter-row">
-                  <div class="filter-row-item">
-                    <h4>   Auxilary Girth:</h4>
-                  </div>
-                  <div class="filter-row-item left small">
-                    <input class="form-control" type="text" placeholder="Enter a Number">
-                  </div>
-                  <div class="filter-row-item">
-                    <h4>Animal Mass:</h4>
-                  </div>
-                  <div class="filter-row-item left small">
-                    <input class="form-control" type="text" placeholder="Enter a Number">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="filter-row border-black" style="width: 100%">
-              <div class="form-group filter-row-item flex-column down">
-                <label for="comment">Comments:</label>
-                <textarea class="form-control" rows="5" id="comment" style="width: 70%"></textarea>
-              </div>
-            </div>
+
+
+        <!-- --------------------------------------------------------------------------------------------------------  -->
+        <!-- --------------------------------------------------------------------------------------------------------  -->
+
+
+        <!-- body section-->
+        <div class="row page-padding">
+
+
+            
+
+
+                    <!-- left column -->
+                    <div class="col-md-6"> 
+
+
+                        <mat-card>
+
+
+                            <p>This is a test</p>
+
+                            <!-- Year -->
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Year: </mat-label>
+                                    <input matInput formControlName="year" value="{{observationTuple.year}}" placeholder="2020">
+                                    <!-- <mat-error *ngIf="hasError('year', 'pattern')">Input must be a four digit year.</mat-error> -->
+                                </mat-form-field>    
+                            </p>
+
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Date Observation Recorded</mat-label>
+                                    <input matInput formControlName="dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="01/01/2020">
+                                    <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
+                                    <mat-datepicker [startAt]="observationTuple.dateOfRecording" #observationDatePicker></mat-datepicker>
+                                    <mat-error *ngIf="hasError('dateOfRecording', 'invalidDateFormat')">Input must be a date MM/DD/YY.</mat-error>
+                                </mat-form-field>    
+                            </p>
+
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Location Code</mat-label>
+                                    <input matInput formControlName="locationCode" value="{{observationTuple.locationCode}}"  placeholder="Location Code">
+                                </mat-form-field>    
+                            </p>
+
+
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Field Leader List</mat-label>
+                                    <input matInput formControlName="fieldLeaderList" value="{{observationTuple.fieldLeaderList}}" placeholder="Heather Liwanag">
+                                </mat-form-field>    
+                            </p>
+                            
+
+                        </mat-card>
+
+                        
+
+                        <!-- --------------------------------------------------------------------------------------------------------  -->
+                        <!-- --------------------------------------------------------------------------------------------------------  -->
+
+
+                        <!-- bottom Card -->
+                        <mat-card>
+
+
+                            <div class="filter-row">
+                            <div class="filter-row-item">
+                                <p>Pups (Age):</p>
+                            </div>
+                            <div class="filter-row-item left">
+                                <input class="form-control" type="text" placeholder="Enter a number">
+                            </div>
+                            </div>
+
+                             <!-- pup quantity (if mother) -->
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>If mother, # of pups</mat-label>
+                                    <input matInput  formControlName="sealHasPupQuantity" value="{{observationTuple.sealHasPupQuantity}}"  placeholder="Seal Has Pup Quantity">
+                                </mat-form-field>    
+                            </p>
+                           
+
+                            <!-- % molt completed -->
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Seal's % Molt Completed</mat-label>
+                                    <input matInput formControlName="sealMoltPercentage" value="{{observationTuple.sealMoltPercentage}}" placeholder="50">
+                                    <!-- <mat-error *ngIf="hasError('year', 'pattern')">Input must be a four digit year.</mat-error> -->
+                                </mat-form-field>    
+                            </p>
+
+
+                             <!-- date first seen as weaner -->
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Date First Seen As A Weaner</mat-label>
+                                    <input matInput formControlName="sealFirstSeenAsWeaner" [matDatepicker]="firstSeenAsWeanerDatePicker" placeholder="01/01/2020">
+                                    <mat-datepicker-toggle matSuffix [for]="firstSeenAsWeanerDatePicker"></mat-datepicker-toggle>
+                                    <mat-datepicker [startAt]="observationTuple.sealFirstSeenAsWeaner" #firstSeenAsWeanerDatePicker></mat-datepicker>
+                                </mat-form-field>
+                            </p>   
+
+
+                              <!-- is a pup checkbox -->
+                            <div class="filter-row-item">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value=""> Pup</label>
+                                </div>
+                            </div>
+
+
+
+                            <!-- is procedure checkbox -->
+                            <div class="filter-row-item">
+                                <div class="checkbox">
+                                <label><input type="checkbox" value=""> Is Procedure</label>
+                                </div>
+                            </div>
+
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Seal's % Molt Completed</mat-label>
+                                    <input matInput formControlName="sealMoltPercentage" value="{{observationTuple.sealMoltPercentage}}" placeholder="50">
+                                    <!-- <mat-error *ngIf="hasError('year', 'pattern')">Input must be a four digit year.</mat-error> -->
+                                </mat-form-field>    
+                            </p>    
+
+
+                            <div class="filter-row">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value=""> Flag For Review</label>
+                                </div>
+                            </div>
+
+
+                                                                
+                        </mat-card>
+
+                    </div>
+                
+
+
+            
+            
+
+                    <!-- right column -->
+                    <div class="col-md-6">
+                        <mat-card>
+                            
+                            <p> this is a test </p>
+
+                            <h2>Animal Identification:</h2>
+                            <label class="checkbox-inline left"><input type="checkbox" value="" 
+                                onchange="if ($('.search').attr('disabled')) {$('.search').prop('disabled', null); setToNone();} else {$('.search').prop('disabled', true); setToNew();}"> New Seal</label>
+
+
+                             <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Mark 1: Id Value</mat-label>
+                                    <input matInput  formControlName="mark1_idValue" value="{{observationTuple.mark1_idValue}}" placeholder="Mark 1 Id Value">
+                                </mat-form-field>
+                            </p>
+                            
+
+
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Mark 1: is new mark</mat-label>
+                                    <input matInput formControlName="mark1_isNew" value="{{observationTuple.mark1_isNew}}" placeholder="(Y/N)">
+                                </mat-form-field>    
+                            </p>
+
+
+
+                            <p>
+                                <mat-form-field appearance="outline" class="full-width">
+                                    <mat-label>Mark 1: Position Code</mat-label>
+                                    <input matInput formControlName="mark1_positionCode" value="{{observationTuple.mark1_positionCode}}" placeholder="(L | R | B)">
+                                    <mat-error *ngIf="hasError('mark1_positionCode', 'invalidMarkPositionCode')">Can only be ["LRB" "LR" "RB" "LB" "L" "R" "B"]</mat-error>
+                                </mat-form-field>    
+                            </p>
+                            
+
+                        </mat-card>
+                        
+                    <div>
+
+
+
+            
+
         </div>
-    </div>
+
+
+<!-- --------------------------------------------------------------------------------------------------------  -->
+<!-- --------------------------------------------------------------------------------------------------------  -->
+
+
 </div>
 
-<button type="button" class="btn btn-danger button-left" routerLink="/menu">Cancel</button>
 
-<button type="button" class="btn btn-success button-right" routerLink="/new-observation">Submit</button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Request Account</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <h4 style="text-align:center;">Model for choosing Seals not yet built, select seal number instead:</h4>
-          <div>
-            <input class="form-control" type="text" placeholder="Enter a Number">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
-        </div>
-      </div>
-    </div>
-  </div>
+
+
+

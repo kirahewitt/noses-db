@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { AuthGuard } from "./_services/auth.guard";
-import { UploadSealComponent } from './upload-seal/upload-seal.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
@@ -18,11 +17,11 @@ import { NewObservationComponent } from './new-observation/new-observation.compo
 import { SealComponent } from './seal/seal.component';
 import { MarkTestComponent } from './mark-test/mark-test.component';
 import { TtlAngMaterialStartPageComponent } from './angular-material-tutorial-components/ttl-ang-material-start-page/ttl-ang-material-start-page.component';
+import { ObsFormMainComponent } from './_components/observation_form/obs-form-main/obs-form-main.component';
 
 const routes: Routes = [
 { path: '', redirectTo: '/sign-in', pathMatch: 'full'},
 { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
-{ path: 'upload-seal', component: UploadSealComponent, canActivate: [AuthGuard]},
 { path: 'sign-in', component: SignInComponent},
 { path: 'verify-email', component: VerifyEmailComponent},
 { path: 'seal-page', component: SealPageComponent},
@@ -37,7 +36,8 @@ const routes: Routes = [
 { path: 'new-observation', component: NewObservationComponent, canActivate: [AuthGuard]},
 { path: 'mark', component: MarkTestComponent},
 { path: 'seal', component: SealComponent},
-{ path: 'ang-material-tutorial', component: TtlAngMaterialStartPageComponent }
+{ path: 'ang-material-tutorial', component: TtlAngMaterialStartPageComponent },
+{ path: 'observation-form', component: ObsFormMainComponent}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
