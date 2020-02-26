@@ -266,7 +266,7 @@ DROP TABLE IF EXISTS `Measurements`;
 CREATE TABLE `Measurements` (
   `MeasurementID` int(11) NOT NULL AUTO_INCREMENT,
   `ObservationID` int(11) NOT NULL,
-  `AuxillaryGirth` DOUBLE(12,2) NULL DEFAULT NULL,
+  `AxillaryGirth` DOUBLE(12,2) NULL DEFAULT NULL,
   `AnimalMass` DOUBLE(12,2) NULL DEFAULT NULL,
   `TotalMass` DOUBLE(12,2) NULL DEFAULT NULL,
   `CurvilinearLength` DOUBLE(12,2) NULL DEFAULT NULL,

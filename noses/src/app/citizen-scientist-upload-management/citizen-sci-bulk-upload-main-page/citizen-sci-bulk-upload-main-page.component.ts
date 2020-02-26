@@ -147,8 +147,8 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         tupleToOverwrite.sealStandardLength_units = result.sealStandardLength_units;
         tupleToOverwrite.sealCurvilinearLength = result.sealCurvilinearLength;
         tupleToOverwrite.sealCurvilinearLength_units = result.sealCurvilinearLength_units;
-        tupleToOverwrite.sealAuxiliaryGirth = result.sealAuxiliaryGirth;
-        tupleToOverwrite.sealAuxiliaryGirth_units = result.sealAuxiliaryGirth_units;
+        tupleToOverwrite.sealAxillaryGirth = result.sealAxillaryGirth;
+        tupleToOverwrite.sealAxillaryGirth_units = result.sealAxillaryGirth_units;
         tupleToOverwrite.sealMass = result.sealMass;
         tupleToOverwrite.sealMass_units = result.sealMass_units;
         tupleToOverwrite.sealTare = result.sealTare;
