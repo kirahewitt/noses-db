@@ -19,7 +19,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 //Components
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
-import { UploadSealComponent } from './upload-seal/upload-seal.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent, DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
 import { ApproveObsComponent } from './approve-obs/approve-obs.component';
@@ -92,6 +91,13 @@ import {SelectFilterType} from "./all-observations/filter-type-selector"
 // form validation service
 import { ValidationService } from './_services/validation.service';
 import { NavbarMainComponent } from './_components/navbar/navbar-main/navbar-main.component';
+import { ObsFormMainComponent } from './_components/observation_form/obs-form-main/obs-form-main.component';
+import { ObsFormMetadataSubformComponent } from './_components/observation_form/obs-form-metadata-subform/obs-form-metadata-subform.component';
+import { ObsFormAnimalIDSubformComponent } from './_components/observation_form/obs-form-animal-idsubform/obs-form-animal-idsubform.component';
+import { ObsFormAnimalGeneralInfoSubformComponent } from './_components/observation_form/obs-form-animal-general-info-subform/obs-form-animal-general-info-subform.component';
+import { ObsFormWeighingDataSubformComponent } from './_components/observation_form/obs-form-weighing-data-subform/obs-form-weighing-data-subform.component';
+import { ObsFormCommentSectionComponent } from './_components/observation_form/obs-form-comment-section/obs-form-comment-section.component';
+import { ObsFormObserverCredentialsDisplayComponent } from './_components/observation_form/obs-form-observer-credentials-display/obs-form-observer-credentials-display.component';
 
 
 
@@ -110,7 +116,6 @@ const config = {
     AppComponent,
     routingComponents,
     VerifyEmailComponent,
-    UploadSealComponent,
     SealPageComponent,
     ManageAccountsComponent,
     ApproveObsComponent,
@@ -134,7 +139,14 @@ const config = {
     SelectFilterType,
     LoginStateComponent,
     NavbarMainComponent,
-    DialogOverviewExampleDialog
+    DialogOverviewExampleDialog,
+    ObsFormMainComponent,
+    ObsFormMetadataSubformComponent,
+    ObsFormAnimalIDSubformComponent,
+    ObsFormAnimalGeneralInfoSubformComponent,
+    ObsFormWeighingDataSubformComponent,
+    ObsFormCommentSectionComponent,
+    ObsFormObserverCredentialsDisplayComponent
   ],
   imports: [
     FormsModule,

@@ -1,0 +1,66 @@
+
+
+
+<div class="page-container" [formGroup]="form">
+
+        <!-- title section-->
+        <div class="row page-padding">
+            <br>
+            <h1> New Observation </h1>
+            <br>
+            <br>
+        </div>
+
+        <!-- body section-->
+        <div class="row page-padding">
+
+                    <!-- left column -->
+                    <div class="col-md-6"> 
+
+                        <label> Submitting observations as: </label>
+                        <app-obs-form-observer-credentials-display></app-obs-form-observer-credentials-display>
+
+                        <!-- metadata subform -->
+                        <mat-card>
+                            <app-obs-form-metadata-subform></app-obs-form-metadata-subform>
+                        </mat-card>
+
+                        <!-- general info subform -->
+                        <mat-card>
+                            <p> ANIMAL GENERAL INFO SUBFORM </p>
+                            <app-obs-form-animal-general-info-subform></app-obs-form-animal-general-info-subform>                     
+                        </mat-card>
+
+                    </div>
+                
+                    <!-- right column -->
+                    <div class="col-md-6">
+
+                        <mat-card>
+                            <p> ANIMAL ID SUBFORM </p>
+                            <app-obs-form-animal-idsubform></app-obs-form-animal-idsubform>
+                        </mat-card>
+
+
+                        <mat-card>
+                            <p> WEIGHING DATA SUBFORM </p>
+                            <app-obs-form-weighing-data-subform></app-obs-form-weighing-data-subform>
+                        </mat-card>
+
+
+                        <mat-card>
+                            <p> COMMENT SECTION </p>
+                            <app-obs-form-comment-section></app-obs-form-comment-section>
+                        </mat-card>
+                        
+                    <div>
+
+        </div>
+
+</div>
+
+
+
+
+
+

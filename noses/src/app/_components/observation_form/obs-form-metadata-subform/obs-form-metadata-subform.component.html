@@ -1,0 +1,33 @@
+
+
+<p>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Year: </mat-label>
+        <input matInput formControlName="year" value="{{observationTuple.year}}" placeholder="2020">
+        <!-- <mat-error *ngIf="hasError('year', 'pattern')">Input must be a four digit year.</mat-error> -->
+    </mat-form-field>    
+</p>
+
+<p>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Date Observation Recorded</mat-label>
+        <input matInput formControlName="dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="01/01/2020">
+        <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker [startAt]="observationTuple.dateOfRecording" #observationDatePicker></mat-datepicker>
+        <!-- <mat-error *ngIf="hasError('dateOfRecording', 'invalidDateFormat')">Input must be a date MM/DD/YY.</mat-error> -->
+    </mat-form-field>    
+</p>
+
+<p>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Location Code</mat-label>
+        <input matInput formControlName="locationCode" value="{{observationTuple.locationCode}}"  placeholder="Location Code">
+    </mat-form-field>    
+</p>
+
+<p>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Field Leader List</mat-label>
+        <input matInput formControlName="fieldLeaderList" value="{{observationTuple.fieldLeaderList}}" placeholder="Heather Liwanag">
+    </mat-form-field>    
+</p>
