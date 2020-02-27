@@ -9,6 +9,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import { MatTableDataSource, MatSnackBar } from '@angular/material';
 import { FlaskBackendService } from 'src/app/_services/flask-backend.service';
 import { AuthService } from 'src/app/_services/auth.service';
+// import { DatePipe } from '@angular/common';
 
 
 export interface TupleStructForTable {
@@ -41,6 +42,8 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     public dataSource: MatTableDataSource<TupleStructForTable>;
     public currentUserEmail : string;
 
+    public dateForDisplay : string;
+
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
 
@@ -63,6 +66,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         this.tupleTableStructList = []; 
 
         this.currentUserEmail = "";
+        this.dateForDisplay = "";
         
     }
 
@@ -111,6 +115,15 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
     }
 
+
+    /**
+     * Receives a Javascript Date object and converts it to a string of the form MM/DD/YYYY
+     */
+    public convertDateObjToDateString(dateObj : Date) {
+        let result : string = "";
+        result += (dateObj.getMonth() + 1).toString() + "/" + (dateObj.getDate()).toString() + "/" + dateObj.getFullYear().toString();
+        return result;
+    }
 
 
     private overwriteModifiedTuple(observationIndex: number, result: any)

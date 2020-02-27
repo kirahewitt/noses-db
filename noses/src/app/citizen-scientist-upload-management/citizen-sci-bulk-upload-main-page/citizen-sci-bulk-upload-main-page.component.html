@@ -6,7 +6,7 @@
         <div class="row">
 
             <!-- Page Title Column -->
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="padding-left-25">
                 <h1 class="display-4">CSV Bulk Upload</h1>
                 <p>Upload your own observations.</p>
@@ -14,14 +14,33 @@
               </div>
             </div>
 
+            <div class="col-md-4">
 
-            <!-- Uploader Section Column -->
-            <div class="col-md-6">
-              <div class="mybtn-container">
-                <button class="btn btn-primary btn-lg" (click)="uploader.click()">Choose a .csv File</button>
-                <input hidden #uploader type="file" accept=".csv" (change)="handleFileSelect($event)">
-                <label class="file-name">{{ fileName }}</label>
-              </div>
+                <!-- cool shinier file input -->
+                <div class="file has-name text-center">
+                    <label class="file-label">
+                        <input hidden #uploader type="file" accept=".csv" (change)="handleFileSelect($event)">
+                        
+                        <span class="file-cta btn-primary" (click)="uploader.click()">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label"> 
+                                Choose a file… 
+                            </span>
+                        </span>
+                        <span class="file-name"> 
+                            {{ fileName }}
+                        </span>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class = "col-md-4">
+                <div class="mybtn-container">
+                    <button class="btn btn-primary btn-md" (click)="uploadData()"> Finish </button>
+                </div>
             </div>
 
         </div>
@@ -32,20 +51,19 @@
 
     <!-- ** ROW 1 ** -->
     <div class="row no-side-margin">
-      <table *ngIf="observationTuples" class="table table-striped table-bordered table-hover">
+      <table *ngIf="observationTuples" class="table table-striped table-bordered table-hover table-fixed">
 
-          
           <thead class="thead">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Tag #1 ID</th>
-              <th scope="col">Tag #2 ID</th>
-              <th scope="col">Mark #1 ID</th>
-              <th scope="col">Mark #2 ID</th>
-              <th scope="col">Date</th>
-              <th scope="col">Location</th>
-              <th scope="col">Observer Name</th>
-              <th scope="col">Actions</th>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Tag #1 ID</th>
+                    <th scope="col">Tag #2 ID</th>
+                    <th scope="col">Mark #1 ID</th>
+                    <th scope="col">Mark #2 ID</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Observer Name</th>
+                    <th scope="col">Actions</th>
             </tr>
           </thead>
 
@@ -57,7 +75,7 @@
               <td class="align-middle">{{tuple.tag2_idValue}}</td>
               <td class="align-middle">{{tuple.mark1_idValue}}</td>
               <td class="align-middle">{{tuple.mark2_idValue}}</td>
-              <td class="align-middle">{{tuple.dateOfRecording}}</td>
+              <td class="align-middle">{{convertDateObjToDateString(tuple.dateOfRecording)}}</td>
               <td class="align-middle">{{tuple.locationCode}}</td>
               <td class="align-middle">{{currentUserEmail}}</td>
               <td>
@@ -147,15 +165,5 @@
 
 
     </div>
-
-
-    <!-- ** ROW 2 ** -->
-    <!-- bottom of the page has a back button.-->
-    <div class="row row-for-button no-side-margin">
-      <!-- <button class="btn btn-primary btn-sm" >Back</button> -->
-
-      <button class="btn btn-primary btn-md" (click)="uploadData()"> Finish </button>
-    </div>
-
 
 </div>
