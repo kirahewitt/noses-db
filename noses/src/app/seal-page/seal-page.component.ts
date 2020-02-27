@@ -20,7 +20,7 @@ export class SealPageComponent implements OnInit {
   jseal: any;
   dataSource: any;
   datas: any;
-  displayedColumns: string[] = ['ObservationID', 'AgeClass', 'sex', 'date', 'SLOCode','Comments',  'actions', 'Edit'];
+  displayedColumns: string[] = ['ObservationID', 'AgeClass', 'sex', 'date', 'SLOCode','Comments',  'Edit', 'actions'];
   show: any = false
 
   sealForm = new FormGroup({
