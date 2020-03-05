@@ -10,9 +10,9 @@ export interface sqlUser {
 export interface sqlUser_full {
   UserID: number;
   Username: string;
-  Password: number;
+  Password: string;
   Initials: string;
-  isAdmin: string;
+  isAdmin: number;
   Affiliation: string;
   Email: string;
   ObsID: number;

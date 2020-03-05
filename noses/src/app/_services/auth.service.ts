@@ -44,6 +44,10 @@ export class AuthService {
     return this.userData_fb;
   }
 
+  public getUserData_full() {
+    return this.userData;
+  }
+
 
   /**
    * 
@@ -69,6 +73,10 @@ export class AuthService {
       JSON.parse(localStorage.getItem("user"));
     }
   }
+
+
+
+  
 
 
   /**

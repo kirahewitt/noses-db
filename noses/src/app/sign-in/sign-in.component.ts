@@ -28,10 +28,10 @@ export class SignInComponent implements OnInit {
 
     this.authService.SignIn(username, password);
   
-    let tempPassVar = '{"email": "' + username + '"}';
+    let emailAsJson = '{"email": "' + username + '"}';
 
 
-    let userSource_obs = this.apiService.getUser_obs(tempPassVar);
+    let userSource_obs = this.apiService.getUser_obs(emailAsJson);
     userSource_obs.subscribe(retval => {
       console.log("THIS SHOULD BE DOING SOMETHING");
       console.log("Result of getting user with password: ");

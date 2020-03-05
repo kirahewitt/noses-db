@@ -1,17 +1,30 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="padding-left-25">
+        <h1 class="display-4">User Account View</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-3">
 
     <!-- bulma panel for generic profile information -->
     <article class="panel">
       <p class="panel-heading">User Profile</p>
+
       <div class="panel-block">
-        <p> Full Name: ??</p>
+        <p> Username: {{userData['Username']}}</p>
       </div>  
+
       <div class="panel-block">
-        <p> Initials: ??</p>
+        <p> Initials: {{userData['Initials']}}</p>
       </div>  
+
       <div class="panel-block">
-        <p> Email: ??</p>
+        <p> Email: {{userData['Email']}}</p>
       </div>  
 
     </article>
