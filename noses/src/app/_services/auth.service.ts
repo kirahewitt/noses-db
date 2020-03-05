@@ -31,7 +31,7 @@ export class AuthService {
     let userObservable_fb = this.afAuth.authState;
 
     // get the user object stored in firebase and put it in the local storage object
-    userObservable_fb.subscribe( (user : sqlUser) => {
+    userObservable_fb.subscribe( (user : firebase.User) => {
       this.updateLocalStorage_userData_fb(user);
     });
   }
@@ -58,9 +58,9 @@ export class AuthService {
    * This will save user data in localstorage when logged in and setting up null when logged out.
    * @param user firebase user object received from firebase angular service.
    */
-  private updateLocalStorage_userData_fb(user: sqlUser_full) {
+  private updateLocalStorage_userData_fb(user: firebase.User) {
     if (user) {
-      this.userData = user;
+      this.userData_fb = user;
       localStorage.setItem("user", JSON.stringify(this.userData_fb));
       JSON.parse(localStorage.getItem("user"));
     } 
@@ -71,24 +71,6 @@ export class AuthService {
   }
 
 
-  /**
-   * DOES NOT USE FIREBASE
-   * 
-   * If the value of user received by this function is non-null the user is logged in.
-   * This will save user data in localstorage when logged in and setting up null when logged out.
-   * @param user firebase user object received from firebase angular service.
-   */
-  private updateLocalStorage_userData(user: sqlUser_full) {
-    if (user) {
-      this.userData_fb = user;
-      localStorage.setItem("user_fb", JSON.stringify(this.userData_fb));
-      JSON.parse(localStorage.getItem("user_fb"));
-    } 
-    else {
-      localStorage.setItem("user_fb", null);
-      JSON.parse(localStorage.getItem("user_fb"));
-    }
-  }
 
 
   /**
