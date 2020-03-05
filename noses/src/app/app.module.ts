@@ -97,6 +97,7 @@ import { ObsFormAnimalGeneralInfoSubformComponent } from './_components/observat
 import { ObsFormWeighingDataSubformComponent } from './_components/observation_form/obs-form-weighing-data-subform/obs-form-weighing-data-subform.component';
 import { ObsFormCommentSectionComponent } from './_components/observation_form/obs-form-comment-section/obs-form-comment-section.component';
 import { ObsFormObserverCredentialsDisplayComponent } from './_components/observation_form/obs-form-observer-credentials-display/obs-form-observer-credentials-display.component';
+import { UserPofileMainComponent } from './_components/UserProfile/user-pofile-main/user-pofile-main.component';
 
 
 
@@ -143,7 +144,8 @@ const config = {
     ObsFormAnimalGeneralInfoSubformComponent,
     ObsFormWeighingDataSubformComponent,
     ObsFormCommentSectionComponent,
-    ObsFormObserverCredentialsDisplayComponent
+    ObsFormObserverCredentialsDisplayComponent,
+    UserPofileMainComponent
   ],
   imports: [
     FormsModule,

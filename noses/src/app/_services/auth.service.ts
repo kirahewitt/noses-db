@@ -15,7 +15,7 @@ import { sqlUser_full, sqlUser } from '../_supporting_classes/sqlUser';
 export class AuthService {
 
 
-  private userData_fb: firebase.User; // Save logged in user data
+  public userData_fb: firebase.User; // Save logged in user data
   private userData: sqlUser_full;
 
   /**
@@ -71,8 +71,6 @@ export class AuthService {
   }
 
 
-
-
   /**
    * Sign in with email/password
    * @param email potential email address of a user
@@ -96,9 +94,6 @@ export class AuthService {
           window.alert(error.message);
       });
   }
-
-
-
 
 
   /**
