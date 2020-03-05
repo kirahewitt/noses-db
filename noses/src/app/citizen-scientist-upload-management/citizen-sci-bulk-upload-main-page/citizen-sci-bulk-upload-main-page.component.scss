@@ -4,6 +4,10 @@
   padding: 15px;
 }
 
+.no-margin-label {
+    margin-bottom: 0px;
+}
+
 .padding-left-25 {
   padding-left:25px;
 }
@@ -22,6 +26,13 @@
     padding: 2rem 1rem;
 }
 
+
+
+.center-me{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
 
 // .table-fixed {
 //     height: 300px;

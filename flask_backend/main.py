@@ -6,12 +6,14 @@ from ETL3 import startUpdate
 from db_config import mysql
 from flask import jsonify
 from flask import flash, request
-from flask import g
+from flask import g, Flask
 import json
+import logging
 #from werkzeug import generate_password_hash, check_password_hash
 from flask_cors import CORS, cross_origin
 CORS(app)
 
+bleh = Flask(__name__)
 
 # Deletes a particular observation from the database
 @app.route('/delete', methods=['POST', 'GET'])
@@ -58,29 +60,29 @@ def delete_user():
 #  their permission level to 0.
 @app.route('/removeuser', methods=['POST', 'GET'])
 def remove_user():
-    conn = mysql.connect()
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        if request.method == 'POST':
-            print("in delete users")
-            _json = request.json
-            email = _json['email']
-            print(_json)
-            cursor.execute("Update Users Set isAdmin=0 where email=\'" + email + "\';")
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+  try:
+    if request.method == 'POST':
+      print("in delete users")
+      _json = request.json
+      email = _json['email']
+      print(_json)
+      cursor.execute("Update Users Set isAdmin=0 where email=\'" + email + "\';")
 
-            conn.commit()
-            cursor.execute("SELECT * from Users Where isAdmin > 0;")
+      conn.commit()
+      cursor.execute("SELECT * from Users Where isAdmin > 0;")
 
-            rows = cursor.fetchall()
-            resp = jsonify(rows)
-            return resp
-        else:
-            return jsonify('no delete')
-    except Exception as e:
-        print(e)
-    finally:
-        cursor.close()
-        conn.close()
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+      return resp
+    else:
+      return jsonify('no delete')
+  except Exception as e:
+    print(e)
+  finally:
+    cursor.close()
+    conn.close()
 
 
 ## updates the database with a new permissions level of the user
@@ -89,63 +91,143 @@ def remove_user():
 ## That logic to get the users again shouldn't be here. 
 @app.route('/updateuser', methods=['POST', 'GET'])
 def update_user():
-    conn = mysql.connect()
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        if request.method == 'POST':
-            _json = request.json
-            email = _json['email']
-            priv = _json['isAdmin']
-            print(_json)
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+  try:
+    if request.method == 'POST':
+      _json = request.json
+      email = _json['email']
+      priv = _json['isAdmin']
+      print(_json)
 
-            cursor.execute("Update Users Set isAdmin="+ str(priv) + " where email=\'" + email + "\';")
-            conn.commit()
-            cursor.execute("SELECT * from Users Where isAdmin > 0;")
+      cursor.execute("Update Users Set isAdmin="+ str(priv) + " where email=\'" + email + "\';")
+      conn.commit()
+      cursor.execute("SELECT * from Users Where isAdmin > 0;")
 
-            rows = cursor.fetchall()
-            resp = jsonify(rows)
-            return resp
-        else:
-            return jsonify('no delete')
-    except Exception:
-        return jsonify(1)
-    finally:
-        cursor.close()
-        conn.close()
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+      return resp
+    else:
+      return jsonify('no delete')
+  except Exception:
+    return jsonify(1)
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
 
 
 ## Gets the relevant information for a seal with the provided ID
 @app.route('/getseal', methods=['POST', 'GET'])
 def get_seal():
-    conn = mysql.connect()
-    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
-    try:
-        if request.method == 'POST':
-            _json = request.json
-            print(_json)
-            obj = _json['SealID']
-            print(obj)
-            cursor.execute("SELECT o.*, s.Sex from Seals s inner join ObserveSeal os on os.SealID = s.SealID inner join Observations o on o.ObservationID = os.ObservationID where s.SealID = " + str(obj))
-            rows = cursor.fetchall()
-            resp = jsonify(rows)
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+  try:
+    if request.method == 'POST':
+      _json = request.json
+      print(_json)
+      obj = _json['SealID']
+      print(obj)
+      cursor.execute("SELECT o.*, s.Sex from Seals s inner join ObserveSeal os on os.SealID = s.SealID inner join Observations o on o.ObservationID = os.ObservationID where s.SealID = " + str(obj))
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+      print(resp)
+      return resp
+    else:
+      return jsonify("no seal was clicked")
+  except Exception as e:
+    print(e)
+  finally:
+    cursor.close()
+    conn.close()
 
-            print(resp)
 
-            return resp
-        else:
-            return jsonify("no seal was clicked")
-    except Exception as e:
-        print(e)
-    finally:
-        cursor.close()
-        conn.close()
+## Gets the relevant data for a user
+@app.route('/getuser', methods=['POST', 'GET'])
+def get_user():
+
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  print("\n\n")
+  print("Contents of the data passed to /getuser:")
+  print(request)
+  print("\n\n")
+
+  try:
+    if request.method == 'POST':
+      desiredUserEmail = request.json['email']
+      getUserTupleQuery = (" SELECT * " +
+                           " FROM  Users " +
+                           " WHERE email = " + surr_apos(desiredUserEmail) + ";")
+      cursor.execute(getUserTupleQuery)
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+      return resp
+  except Exception as e:
+    print(e)
+  finally:
+    cursor.close()
+    conn.close()
+
+
+## Returns the entire user tuple if the provided password was correct
+@app.route('/getloginauthenticator', methods=['POST', 'GET'])
+def get_login_authenticator():
+
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  print("\n\n")
+  print("Contents of the data passed to /getloginauthenticator:")
+  print(request)
+  print("\n\n")
+
+  try:
+    if request.method == 'POST':
+
+      # pull the email/password combo out of the json provided by the caller
+      givenEmail = request.json['email']
+      givenPassword = request.json['password']
+
+      # get the entire user object
+      getUserTupleQuery = (" SELECT * " +
+                           " FROM  Users " +
+                           " WHERE email = " + surr_apos(givenEmail) + ";")
+      cursor.execute(getUserTupleQuery)
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+      
+      # grab the password out of the user tuple
+      actualPassword = rows[0]['Password']
+
+      # return results based on whether the password was correct
+      isCorrectPassword = givenPassword == actualPassword
+      if isCorrectPassword == True:
+        print("I'm ABOUT TO SEND BACK THIS RESPONSE")
+        print(resp)
+        return resp
+      else:
+        return jsonify("Incorrect Password")
+
+  except Exception as e:
+    print(e)
+  finally:
+    cursor.close()
+    conn.close()
+
 
 
 ## Places a single apostrophe on either side of a provided string
 ## and returns the result.
 def surr_apos(origStr):
-    retStr = "\'" + origStr + "\'"
-    return retStr
+  retStr = "\'" + origStr + "\'"
+  return retStr
+
+
+
 
 
 ## Adds a new user to the database
@@ -226,6 +308,9 @@ def add_user():
 def add_observations():
     conn = mysql.connect()
     cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+
+
     try:
         if request.method == 'POST':
 

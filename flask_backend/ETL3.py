@@ -194,7 +194,7 @@ def getOrAddObserver(cnx, cursor, fieldLeader):
     initials = fieldLeader.split(', ')[0].replace('\'', '')
     fInitial = initials[0]
     lInitial = initials[1]
-    check = "SELECT ObsID from Observers o where o.FirstName LIKE '" + fInitial + "%' and o.LastName LIKE '" + lInitial + "%'";
+    check = "SELECT ObsID from Observers o where o.FirstName LIKE '" + fInitial + "%' and o.LastName LIKE '" + lInitial + "%'"
     print(check)
     cursor.execute(check)
     row = cursor.fetchone()

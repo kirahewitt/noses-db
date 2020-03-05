@@ -223,7 +223,7 @@ export class DashboardComponent implements OnInit {
   }
 
   selectSeal(row) {
-    this.sealData.changeMessage(row);
+    this.sealData.setCurrentSealState(row);
     this.router.navigate(["seal-page"]);
   }
 

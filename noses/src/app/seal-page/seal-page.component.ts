@@ -12,8 +12,7 @@ import { Observations } from '../_supporting_classes/Observations';
 })
 export class SealPageComponent implements OnInit {
 
-  constructor(private sealData: SealDataService,
-              private apiService: FlaskBackendService) { }
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
   seal: any;
   sealRow: Observations;
@@ -31,11 +30,20 @@ export class SealPageComponent implements OnInit {
     comments: new FormControl('')
   });
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+
+  /**
+   * 
+   * @param sealDataService 
+   * @param apiService 
+   */
+  constructor(private sealDataService: SealDataService, private apiService: FlaskBackendService) { }
 
 
+  /**
+   * This method needs to be rewritten. 
+   */
   ngOnInit() {
-    this.sealData.currentSeal.subscribe(currentSeal  => {
+    this.sealDataService.currentSeal_observable.subscribe(currentSeal  => {
       this.seal = currentSeal;
       this.jseal = JSON.stringify(currentSeal);
       // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
@@ -47,40 +55,58 @@ export class SealPageComponent implements OnInit {
     });
   }
 
+
+  /**
+   * 
+   * @param row 
+   */
   editObs(row) {
     this.sealRow = row;
     this.show = !this.show;
     if(this.show == true) {
       // implement scroll to bottom
     }
-
   }
 
+
+  /**
+   * this function needs to be rewritten to use BehaviorSubjects/Observables properly. 
+   * I'm pretty sure async/await isn't necessary.
+   * DO NOT CHANGE THIS RIGHT NOW
+   */
   async onSubmit() {
+
     if(this.sealForm.value.ageClass != "") {
-      await this.apiService.updateAgeClass(JSON.stringify({'obsID': this.sealRow.ObservationID, 'age': this.sealForm.value.ageClass}))
-      .subscribe(() => {
-        this.apiService.readObs()
-        this.sealData.currentSeal.subscribe(currentSeal  => {
-        this.seal = currentSeal;
-        this.jseal = JSON.stringify(currentSeal);
 
-        // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
-        this.datas = this.apiService.getSeal(this.jseal);
-        this.datas.then(msg => {
-          this.dataSource = new MatTableDataSource(<any> msg);
-          this.sealForm.reset();
-          this.show = false;
+      var json_sealIdentifier = JSON.stringify({'obsID': this.sealRow.ObservationID, 'age': this.sealForm.value.ageClass});
+      
+      await this.apiService.updateAgeClass(json_sealIdentifier).subscribe(() => {
+
+        this.apiService.readObs();
+
+        this.sealDataService.currentSeal_observable.subscribe(subscription_response => {
+          this.seal = subscription_response;
+          this.jseal = JSON.stringify(subscription_response);
+
+          // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
+          this.datas = this.apiService.getSeal(this.jseal);
+
+          this.datas.then(msg => {
+            this.dataSource = new MatTableDataSource(<any> msg);
+            this.sealForm.reset();
+            this.show = false;
+          });
+
         });
-
       });
-    });
-
-
 
     }
   }
 
+
+  /**
+   * 
+   */
   toggleForm() {
     console.log(this.show);
   }

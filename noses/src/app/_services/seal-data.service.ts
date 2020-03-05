@@ -14,7 +14,7 @@ export class SealDataService {
 
 
   private currentSeal_Str: BehaviorSubject<String>;
-  public currentSeal: Observable<String>;
+  public currentSeal_observable: Observable<String>;
 
 
   /**
@@ -23,7 +23,7 @@ export class SealDataService {
    */
   constructor() {
     this.currentSeal_Str = new BehaviorSubject('default message'); // messageSOurce = seal
-    this.currentSeal = this.currentSeal_Str.asObservable();
+    this.currentSeal_observable = this.currentSeal_Str.asObservable();
   }
 
 
@@ -38,9 +38,9 @@ export class SealDataService {
   /**
    * Updates the message on the seal object by calling the "next" function on the 
    * BehaviorSubject.
-   * @param newSealMessage : A string representation of the new seal.
+   * @param newSealState : A string representation of the new seal.
    */
-  changeMessage(newSealMessage: string) {
-    this.currentSeal_Str.next(newSealMessage);
+  setCurrentSealState(newSealState: string) {
+    this.currentSeal_Str.next(newSealState);
   }
 }
