@@ -16,7 +16,7 @@ export class AuthService {
 
 
   public userData_fb: firebase.User; // Save logged in user data
-  private userData: sqlUser_full;
+  public userData: sqlUser_full;
 
   /**
    * Constructs the Auth.Service... Constructed at the root level so once it exists the same instance

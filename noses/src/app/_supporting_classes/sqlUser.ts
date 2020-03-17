@@ -18,3 +18,9 @@ export interface sqlUser_full {
   ObsID: number;
   HashedPassword: string;
 }
+
+export interface sqlObserver_full {
+  ObsID: number;
+  FirstName: string;
+  LastName: string;
+}

@@ -117,6 +117,50 @@ def update_user():
 
 
 
+## Gets the relevant information for a seal with the provided ID
+@app.route('/getseal-with-sealid', methods=['POST', 'GET'])
+def get_seal_with_sealId():
+
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    if request.method == 'POST':
+
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      print(_json)
+
+      # store the id of the seal we want to access
+      sealId = _json
+
+      #make a query to get all the tuples with a matching sealId
+      query = (" SELECT * " +
+               " FROM  Seals " +
+               " WHERE SealID = " + surr_apos(str(sealId)) + ";")
+
+      # execute the query
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID \n\n")
+      print(rows)
+
+      return resp
+    else:
+      return jsonify("no seal was clicked")
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
 
 
 ## Gets the relevant information for a seal with the provided ID

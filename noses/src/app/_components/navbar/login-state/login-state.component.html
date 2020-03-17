@@ -4,13 +4,13 @@
     
     <span class="mat-button-wrapper">
       <i class="icon-spacing fas fa-user"></i>
-      <!-- <span class="privilege-level-display"> {{privilegeLevel}} </span> -->
       <span>{{authService.userData_fb.email}}</span>
     </span>
 
     <div class="mat-button-ripple mat-ripple" matripple=""></div>
     <div class="mat-button-focus-overlay"></div>
 </button>  
+
 <mat-menu #menu="matMenu">
   <button mat-menu-item routerLink="/user-profile-main">View Account Preferences</button>
   <button mat-menu-item (click)="logoutClicked()">Sign out</button>

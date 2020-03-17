@@ -33,7 +33,7 @@ export interface TupleStructForTable {
 })
 export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
-    private fileName: string;
+    public fileName: string;
     private fileData: any[];
     private tupleTableStructList: TupleStructForTable[];
 

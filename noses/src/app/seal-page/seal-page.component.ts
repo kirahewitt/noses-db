@@ -4,7 +4,13 @@ import { FlaskBackendService } from '../_services/flask-backend.service';
 import { MatTableModule, MatTableDataSource, MatPaginator } from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Observations } from '../_supporting_classes/Observations';
+import { DossierViewStructure } from '../_supporting_classes/DossierViewStructure';
+import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
 
+
+/**
+ * 
+ */
 @Component({
   selector: 'app-seal-page',
   templateUrl: './seal-page.component.html',
@@ -14,15 +20,15 @@ export class SealPageComponent implements OnInit {
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
-  seal: any;
-  sealRow: Observations;
-  jseal: any;
-  dataSource: any;
-  datas: any;
-  displayedColumns: string[] = ['ObservationID', 'AgeClass', 'sex', 'date', 'SLOCode','Comments',  'Edit', 'actions'];
-  show: any = false
+  public seal: any;
+  public sealRow: Observations;
+  public jseal: any;
+  public dataSource: any;
+  public datas: any;
+  public displayedColumns: string[] = ['ObservationID', 'AgeClass', 'sex', 'date', 'SLOCode','Comments',  'Edit', 'actions'];
+  public show: any = false;
 
-  sealForm = new FormGroup({
+  public sealForm = new FormGroup({
     ageClass: new FormControl(''),
     sex: new FormControl(''),
     date: new FormControl(''),
@@ -31,18 +37,34 @@ export class SealPageComponent implements OnInit {
   });
 
 
+  // CREATE A NEW LOCAL VARIABLE TO STORE THE SEAL INFORMATION
+  public sealDossier: DossierViewStructure;
+
+
   /**
    * 
    * @param sealDataService 
    * @param apiService 
    */
-  constructor(private sealDataService: SealDataService, private apiService: FlaskBackendService) { }
+  constructor(private sealDataService: SealDataService, private apiService: FlaskBackendService, private dossierHelperService : DossierViewHelperService) { 
+    this.sealDossier = new DossierViewStructure();
+  }
 
 
   /**
-   * This method needs to be rewritten. 
+   * Initializes the local attributes of this class by calling the initSubscriptions method.
    */
   ngOnInit() {
+    this.initSubscriptions();
+  }
+
+
+  /**
+   * Subscribes to relevant datastreams.
+   */
+  private initSubscriptions() {
+
+    // original subscription for seal information
     this.sealDataService.currentSeal_observable.subscribe(currentSeal  => {
       this.seal = currentSeal;
       this.jseal = JSON.stringify(currentSeal);
@@ -53,6 +75,16 @@ export class SealPageComponent implements OnInit {
       });
 
     });
+
+    // Data for the new seal
+    let obs_DossierState_stream = this.dossierHelperService.getDossierDatastream();
+    obs_DossierState_stream.subscribe((retval : DossierViewStructure) => {
+      this.sealDossier = retval;
+    });
+
+    // trigger the dossier helper service to populate based on the desired seal Id
+    this.dossierHelperService.populateViaSealId(2);
+
   }
 
 

@@ -3,8 +3,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observations } from  '../_supporting_classes/Observations';
 import { sqlUser, sqlUser_full } from '../_supporting_classes/sqlUser';
 import { Observable, of } from  'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { SealDataService } from "./seal-data.service";
 import { Seal } from '../_supporting_classes/Seal';
+import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +20,8 @@ export class FlaskBackendService {
 
   private rows: any;
   private newUsers: any;  
-  private FLASK_API_SERVER: string;
 
+  private FLASK_API_SERVER: string;
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
@@ -112,6 +114,39 @@ export class FlaskBackendService {
     // let tempPassVar =       '{"email" : "' + username + '"}';
     return this.httpClient.post<any>(flask_endpoint, inputAsJsonString, this.httpOptions);
   }
+
+
+  /**
+   * This function is going to return an Observable of SqlSealDossier. 
+   * 
+   * Since the Flask API returns information in JSON form, we have to pass the JSON through a
+   * callback function that will map the response of the Flask API to the desired typescript object.
+   * 
+   * This is accomplished by using pipe on the observable and the rxjs map operator to map the JSON
+   * to a new object, in this case, a SqlSealDossier object. 
+   * @param sealId 
+   */
+  public getSeal_bySealId(sealId: number) : Observable<SqlSealDossier> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/getseal-with-sealid`;
+
+    let obs = this.httpClient
+      .post(flask_endpoint, sealId, this.httpOptions)
+      .pipe(
+        map(jsonResponse => {
+          var newSealDossier : SqlSealDossier = new SqlSealDossier();
+          let jr = jsonResponse[0];
+
+          newSealDossier.sealId = jr["SealID"];
+          newSealDossier.identifyingObservationId = jr["ObservationID"];
+          newSealDossier.sex = jr["Sex"];
+
+          return newSealDossier;
+        })
+      );
+
+    return obs;
+  }
+
 
 
   /**

@@ -27,7 +27,7 @@ export interface DialogData {
 })
 export class EditUserDialogComponent {
 
-  private selectAdmin = 0;
+  public selectAdmin = 0;
 
 
   /**
