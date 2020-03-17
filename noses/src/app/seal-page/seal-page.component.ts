@@ -6,6 +6,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { Observations } from '../_supporting_classes/Observations';
 import { DossierViewStructure } from '../_supporting_classes/DossierViewStructure';
 import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
+import { SqlTag } from '../_supporting_classes/SqlTag';
 
 
 /**
@@ -38,7 +39,9 @@ export class SealPageComponent implements OnInit {
 
 
   // CREATE A NEW LOCAL VARIABLE TO STORE THE SEAL INFORMATION
-  public sealDossier: DossierViewStructure;
+  public sealDossier_main: DossierViewStructure;
+  public observedTagList: SqlTag[];
+  public tagListDisplayString: string;
 
 
   /**
@@ -47,7 +50,7 @@ export class SealPageComponent implements OnInit {
    * @param apiService 
    */
   constructor(private sealDataService: SealDataService, private apiService: FlaskBackendService, private dossierHelperService : DossierViewHelperService) { 
-    this.sealDossier = new DossierViewStructure();
+    this.sealDossier_main = new DossierViewStructure();
   }
 
 
@@ -68,6 +71,7 @@ export class SealPageComponent implements OnInit {
     this.sealDataService.currentSeal_observable.subscribe(currentSeal  => {
       this.seal = currentSeal;
       this.jseal = JSON.stringify(currentSeal);
+
       // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
       this.datas = this.apiService.getSeal(this.jseal).then(msg => {
         this.dataSource = new MatTableDataSource(<any> msg);
@@ -76,15 +80,24 @@ export class SealPageComponent implements OnInit {
 
     });
 
-    // Data for the new seal
+    // Subscription via the NEW SERVICE
     let obs_DossierState_stream = this.dossierHelperService.getDossierDatastream();
     obs_DossierState_stream.subscribe((retval : DossierViewStructure) => {
-      this.sealDossier = retval;
+      this.sealDossier_main = retval;
+    });
+
+    // Subscription to unique tags via NEW SERVICE
+    this.dossierHelperService.getUniqueTagListDatastream().subscribe((retval : SqlTag[]) => {
+      this.observedTagList = retval;
+
+      this.tagListDisplayString = "";
+      for (let tag of this.observedTagList) {
+        this.tagListDisplayString += tag.TagNumber + " "
+      }
     });
 
     // trigger the dossier helper service to populate based on the desired seal Id
     this.dossierHelperService.populateViaSealId(2);
-
   }
 
 

@@ -163,6 +163,107 @@ def get_seal_with_sealId():
 
 
 
+#   getobservations-with-sealid
+@app.route('/getobservations-with-sealid', methods=['POST', 'GET'])
+def get_observations_with_sealId():
+
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    if request.method == 'POST':
+
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      print(_json)
+
+      # store the id of the seal we want to access
+      sealId = _json
+
+      #make a query to get all the tuples with a matching sealId
+      # query = (" SELECT * " +
+      #          " FROM  Observations, ObserveSeal" +
+      #          " WHERE SealID = " + surr_apos(str(sealId)) + ";")
+
+      query = (" SELECT obs.ObservationID " + 
+               " FROM Observations as obs, ObserveSeal as obsSeal " + 
+               " WHERE obs.ObservationID = obsSeal.ObservationID AND SealID = " + surr_apos(str(sealId)) + ";")
+
+      # execute the query
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID \n\n")
+      print(rows)
+
+      return resp
+    else:
+      return jsonify("no seal was clicked")
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
+# Retrieves the list of unique tags for all the observations currently associated with a particular seal.
+@app.route('/gettags-with-sealid', methods=['POST', 'GET'])
+def get_tags_with_sealId():
+
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    if request.method == 'POST':
+
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      print(_json)
+
+      # store the id of the seal we want to access
+      sealId = _json
+
+      query = (" SELECT DISTINCT OTags.TagNumber, OTags.TagColor, OTags.TagPosition, OTags.TagDate, OTags.TagSeal, OTags.isLost " +
+               " FROM (SELECT Tags.TagNumber, Tags.TagColor, Tags.TagPosition, Tags.TagDate, Tags.TagSeal, Tags.isLost, ObserveTags.ObservationID " + 
+               "       FROM Tags,  ObserveTags " + 
+               "       WHERE Tags.TagNumber = ObserveTags.TagNumber) as OTags, " + 
+               "      (SELECT obs.ObservationID " + 
+               "       FROM Observations as obs, ObserveSeal as obsSeal " + 
+               "       WHERE obs.ObservationID = obsSeal.ObservationID AND SealID = " + surr_apos(str(sealId)) + " ) as ObsForSeal " + 
+               " WHERE OTags.ObservationID = ObsForSeal.ObservationID " + ";")
+
+
+      # execute the query
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID \n\n")
+      print(rows)
+
+      return resp
+    else:
+      return jsonify("no seal was clicked")
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
 ## Gets the relevant information for a seal with the provided ID
 @app.route('/getseal', methods=['POST', 'GET'])
 def get_seal():

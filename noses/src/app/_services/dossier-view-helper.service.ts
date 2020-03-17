@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { DossierViewStructure } from '../_supporting_classes/DossierViewStructure';
+import { DossierViewStructure, DossierViewStructure_compiledData } from '../_supporting_classes/DossierViewStructure';
 import { BehaviorSubject } from 'rxjs';
 import { FlaskBackendService } from './flask-backend.service';
 import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
+import { SqlObservation } from '../_supporting_classes/SqlObservation';
+import { SqlTag } from '../_supporting_classes/SqlTag';
 
 
 /**
@@ -34,6 +36,14 @@ export class DossierViewHelperService {
   private dossierViewStructure: DossierViewStructure;
   public dossierViewStructure_updateStream : BehaviorSubject<DossierViewStructure>;
 
+  private dossierViewStructure_c: DossierViewStructure_compiledData;
+  public dossierViewStructure_c_updateStream : BehaviorSubject<DossierViewStructure_compiledData>;
+
+  private uniqueTagList: SqlTag[];
+  public uniqueTagList_updateStream : BehaviorSubject<SqlTag[]>;
+
+
+
 
   /**
    * Initializes the DossierViewStructure to a blank object.(All attributes set to null)
@@ -42,6 +52,12 @@ export class DossierViewHelperService {
   constructor(private apiService: FlaskBackendService) { 
     this.dossierViewStructure = new DossierViewStructure();
     this.dossierViewStructure_updateStream = new BehaviorSubject<DossierViewStructure>(this.dossierViewStructure);
+
+    this.dossierViewStructure_c = new DossierViewStructure_compiledData();
+    this.dossierViewStructure_c_updateStream = new BehaviorSubject<DossierViewStructure_compiledData>(this.dossierViewStructure_c);
+
+    this.uniqueTagList = [];
+    this.uniqueTagList_updateStream = new BehaviorSubject<SqlTag[]>(this.uniqueTagList);
   }
 
 
@@ -50,6 +66,22 @@ export class DossierViewHelperService {
    */
   public getDossierDatastream() {
     return this.dossierViewStructure_updateStream;
+  }
+
+
+  /**
+   * 
+   */
+  public getDossierCompiledDatastream() {
+    return this.dossierViewStructure_c_updateStream;
+  }
+
+
+  /**
+   * 
+   */
+  public getUniqueTagListDatastream() {
+    return this.uniqueTagList_updateStream;
   }
 
   /**
@@ -71,6 +103,20 @@ export class DossierViewHelperService {
       // signal pass the new state of the object to the datastream and all the subscribers
       this.dossierViewStructure_updateStream.next(this.dossierViewStructure);
     });
+
+
+    let uniqueTagsForSeal_observable = this.apiService.getTags_bySealId(givenSealId);
+    uniqueTagsForSeal_observable.subscribe( (tagList : SqlTag[]) => {
+
+      // print the observations to make sure it actually worked
+      console.log("RETRIEVED tags FOR SEAL ID: " + givenSealId.toString());
+      console.log(tagList);
+
+      this.uniqueTagList = tagList;
+      this.uniqueTagList_updateStream.next(this.uniqueTagList);
+    });
+
+
   }
 
 

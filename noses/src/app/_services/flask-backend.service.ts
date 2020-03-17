@@ -7,15 +7,16 @@ import { catchError, map } from 'rxjs/operators';
 import { SealDataService } from "./seal-data.service";
 import { Seal } from '../_supporting_classes/Seal';
 import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
-
-@Injectable({
-  providedIn: 'root'
-})
+import { SqlObservation } from '../_supporting_classes/SqlObservation';
+import { SqlTag } from '../_supporting_classes/SqlTag';
 
 
 /**
  * 
  */
+@Injectable({
+  providedIn: 'root'
+})
 export class FlaskBackendService {
 
   private rows: any;
@@ -144,6 +145,78 @@ export class FlaskBackendService {
         })
       );
 
+    return obs;
+  }
+
+
+  /** 
+   * 
+   */
+  public getObservations_bySealId(sealId:number) : Observable<SqlObservation[]> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/getobservations-with-sealid`;
+
+    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
+      .pipe(
+        map( (jsonResponse : any) => {
+          var observationList : SqlObservation[] = [];
+
+          for (let json_obs of jsonResponse) {
+            var tempSqlObs : SqlObservation = new SqlObservation();
+
+            tempSqlObs.ObservationID = json_obs['ObservationID'];
+            tempSqlObs.ObserverID = json_obs['ObserverID'];
+            tempSqlObs.Sex = json_obs['Sex'];
+            tempSqlObs.Date = json_obs['Date'];
+            tempSqlObs.MoltPercent = json_obs['MoltPercent'];
+            tempSqlObs.Comments = json_obs['Comments'];
+            tempSqlObs.AgeClass = json_obs['AgeClass'];
+            tempSqlObs.Year = json_obs['Year'];
+            tempSqlObs.SLOCode = json_obs['SLOCode'];
+            tempSqlObs.isApproved = json_obs['isApproved'];
+            tempSqlObs.LastSeenPup = json_obs['LastSeenPup'];
+            tempSqlObs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
+            tempSqlObs.WeanDateRange = json_obs['WeanDateRange'];
+            tempSqlObs.EnteredInAno = json_obs['EnteredInAno'];
+            tempSqlObs.isProcedure = json_obs['isProcedure'];
+            tempSqlObs.isDeprecated = json_obs['isDeprecated'];
+
+            observationList.push(tempSqlObs);
+          }
+
+          return observationList;
+        })
+      );
+    return obs;
+  }
+
+
+  /** 
+   * 
+   */
+  public getTags_bySealId(sealId:number) : Observable<SqlTag[]> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/gettags-with-sealid`;
+
+    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
+      .pipe(
+        map( (jsonResponse : any) => {
+          var tagList : SqlTag[] = [];
+
+          for (let json_tag of jsonResponse) {
+            var tag : SqlTag = new SqlTag();
+
+            tag.TagColor = json_tag['TagColor'];
+            tag.TagDate = json_tag['TagDate'];
+            tag.TagNumber = json_tag['TagNumber'];
+            tag.TagPosition = json_tag['TagPosition'];
+            tag.TagSeal = json_tag['TagSeal'];
+            tag.isLost = json_tag['isLost'];
+            
+            tagList.push(tag);
+          }
+
+          return tagList;
+        })
+      );
     return obs;
   }
 

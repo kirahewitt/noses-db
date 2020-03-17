@@ -7,21 +7,35 @@ export class DossierViewStructure {
   public dossierId?: number;
   public sex?: string;
   public identifyingObservationId?: number;
-  public ageClass?: string;
-  public knownTagList?: TagViewStructure[];
-  public knownMarkList?: MarkViewStructure[];
-  public dateLastSeen?: Date;
 
   constructor() {
     this.dossierId = null;
     this.sex = null;
     this.identifyingObservationId = null;
+  }
+}
+
+
+/**
+ * Represents all the data which must be compiled across multiple observations
+ */
+export class DossierViewStructure_compiledData {
+  public ageClass?: string;
+  public knownTagList?: TagViewStructure[];
+  public knownMarkList?: MarkViewStructure[];
+  public dateLastSeen?: Date;
+
+
+  constructor() {
     this.ageClass = null;
     this.knownTagList = null;
     this.knownMarkList = null;
     this.dateLastSeen = null;
   }
 }
+
+
+
 
 
 /**
