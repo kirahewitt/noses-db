@@ -65,6 +65,21 @@ export class FlaskBackendService {
   }
 
   
+  /**
+   * Handle Http operation that failed.
+   * Let the app continue.
+   * @param operation - name of the operation that failed
+   * @param result - optional value to return as the observable result
+   */
+  private handleError<T> (operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(error);
+      console.log(`Flask Backend Service - ${operation} failed: ${error.message}`);
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
+  }
+
 
   // users section
   
@@ -113,7 +128,6 @@ export class FlaskBackendService {
   public getLoginAuthenticator(email: string, password: string): Observable<sqlUser_full[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getloginauthenticator`;
     let inputAsJsonString = '{"email" : "' + email    + '", "password" : "' + password + '"}';
-    // let tempPassVar =       '{"email" : "' + username + '"}';
     return this.httpClient.post<any>(flask_endpoint, inputAsJsonString, this.httpOptions);
   }
 
@@ -134,6 +148,7 @@ export class FlaskBackendService {
     let obs = this.httpClient
       .post(flask_endpoint, sealId, this.httpOptions)
       .pipe(
+        catchError(this.handleError<any>('getSeal_bySealId', [])),
         map(jsonResponse => {
           var newSealDossier : SqlSealDossier = new SqlSealDossier();
           let jr = jsonResponse[0];
@@ -158,6 +173,7 @@ export class FlaskBackendService {
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
       .pipe(
+        catchError(this.handleError<any>('getObservations_bySealId', [])),
         map( (jsonResponse : any) => {
           var observationList : SqlObservation[] = [];
 
@@ -200,6 +216,7 @@ export class FlaskBackendService {
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
       .pipe(
+        catchError(this.handleError<any>('getIdentifyingObservation_bySealId', [])),
         map( (jsonResponse : any) => {
           var sqlobs = new SqlObservation();
 
@@ -229,37 +246,97 @@ export class FlaskBackendService {
   }
 
 
-
-  public getMostRecentObservation_bySealId(sealId:number) : Observable<SqlObservation> {
+  
+  
+  /**
+   * 
+   * @param sealId 
+   */
+  public getMostRecentObservation_bySealId(sealId : number) : Observable<SqlObservation> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/get-most-recent-observation-with-sealid`;
 
-    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
-      .pipe(
-        map( (jsonResponse : any) => {
-          var sqlobs = new SqlObservation();
+    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
+      catchError(this.handleError<any>('getMostRecentObservation_bySealId', [])),
+      map( (jsonResponse : any) => {
 
-          let json_obs = jsonResponse['0'];
-          
-          sqlobs.ObservationID = json_obs['ObservationID'];
-          sqlobs.ObserverID = json_obs['ObserverID'];
-          sqlobs.Sex = json_obs['Sex'];
-          sqlobs.Date = json_obs['Date'];
-          sqlobs.MoltPercent = json_obs['MoltPercent'];
-          sqlobs.Comments = json_obs['Comments'];
-          sqlobs.AgeClass = json_obs['AgeClass'];
-          sqlobs.Year = json_obs['Year'];
-          sqlobs.SLOCode = json_obs['SLOCode'];
-          sqlobs.isApproved = json_obs['isApproved'];
-          sqlobs.LastSeenPup = json_obs['LastSeenPup'];
-          sqlobs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
-          sqlobs.WeanDateRange = json_obs['WeanDateRange'];
-          sqlobs.EnteredInAno = json_obs['EnteredInAno'];
-          sqlobs.isProcedure = json_obs['isProcedure'];
-          sqlobs.isDeprecated = json_obs['isDeprecated'];
+        console.log("\n\n\n\n");
+        console.log("FlaskBackendService - MOST RECENT for DATE");
+        console.log("JSON: ");
+        console.log(jsonResponse);
 
-          return sqlobs;
-        })
-      );
+        let json_obs = jsonResponse['0'];
+        console.log("FlaskBackendService - MOST RECENT for DATE");
+        console.log("JSON['0']: ");
+        console.log(json_obs);
+
+        var sqlobs = new SqlObservation();
+        sqlobs.ObservationID = json_obs['ObservationID'];
+        sqlobs.ObserverID = json_obs['ObserverID'];
+        sqlobs.Sex = json_obs['Sex'];
+        sqlobs.Date = json_obs['Date'];
+        sqlobs.MoltPercent = json_obs['MoltPercent'];
+        sqlobs.Comments = json_obs['Comments'];
+        sqlobs.AgeClass = json_obs['AgeClass'];
+        sqlobs.Year = json_obs['Year'];
+        sqlobs.SLOCode = json_obs['SLOCode'];
+        sqlobs.isApproved = json_obs['isApproved'];
+        sqlobs.LastSeenPup = json_obs['LastSeenPup'];
+        sqlobs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
+        sqlobs.WeanDateRange = json_obs['WeanDateRange'];
+        sqlobs.EnteredInAno = json_obs['EnteredInAno'];
+        sqlobs.isProcedure = json_obs['isProcedure'];
+        sqlobs.isDeprecated = json_obs['isDeprecated'];
+
+        console.log("FlaskBackendService - MOST RECENT for DATE");
+        console.log("sqlobs: ");
+        console.log(sqlobs);
+        
+        return sqlobs;
+      })
+    );
+    return obs;
+  }
+
+
+
+  /**
+   * 
+   * @param sealId 
+   */
+  public getNewestObservation_forAgeClass_bySealId(sealId : number) : Observable<SqlObservation> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/get_newest_obs_with_sealID_ageClass`;
+
+    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
+      catchError(this.handleError<any>('getNewestObservation_forAgeClass_bySealId', [])),
+      map( (jsonResponse : any) => {
+
+        console.log("YOU CAN SEE ME");
+
+        let json_obs = jsonResponse['0'];
+
+        console.log("SHOULD FAIL ON ME");
+
+        var sqlobs = new SqlObservation();
+        sqlobs.ObservationID = json_obs['ObservationID'];
+        sqlobs.ObserverID = json_obs['ObserverID'];
+        sqlobs.Sex = json_obs['Sex'];
+        sqlobs.Date = json_obs['Date'];
+        sqlobs.MoltPercent = json_obs['MoltPercent'];
+        sqlobs.Comments = json_obs['Comments'];
+        sqlobs.AgeClass = json_obs['AgeClass'];
+        sqlobs.Year = json_obs['Year'];
+        sqlobs.SLOCode = json_obs['SLOCode'];
+        sqlobs.isApproved = json_obs['isApproved'];
+        sqlobs.LastSeenPup = json_obs['LastSeenPup'];
+        sqlobs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
+        sqlobs.WeanDateRange = json_obs['WeanDateRange'];
+        sqlobs.EnteredInAno = json_obs['EnteredInAno'];
+        sqlobs.isProcedure = json_obs['isProcedure'];
+        sqlobs.isDeprecated = json_obs['isDeprecated'];
+
+        return sqlobs;
+      })
+    );
     return obs;
   }
 
@@ -272,6 +349,7 @@ export class FlaskBackendService {
     let flask_endpoint = `${this.FLASK_API_SERVER}/gettags-with-sealid`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
+      catchError(this.handleError<any>('getTags_bySealId', [])),
       map( (jsonResponse : any) => {
         var tagList : SqlTag[] = [];
 
@@ -303,6 +381,7 @@ export class FlaskBackendService {
 
     let flask_endpoint = `${this.FLASK_API_SERVER}/getmarks_with_sealID`;
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
+      catchError(this.handleError<any>('getMarks_bySealId', [])),
       map( (jsonResponse : any) => {
         
         var markList : SqlMark[] = [];

@@ -45,12 +45,14 @@ export class SealPageComponent implements OnInit {
   public observedTagList: SqlTag[];
   public observedMarkList: SqlMark[];
   public identifyingObservation: SqlObservation;
-  public mostRecentObservation: SqlObservation;
+  public newestObservation_forAgeClass: SqlObservation;
+  public mostRecentObservation_sealSighting: SqlObservation;
   public tagListDisplayString: string;
   public markListDisplayStringList: string[];
   public markListDisplayString: string;
   public sealSexDisplayString: string;
   public sealAgeClassDisplayString: string;
+  public sealMostRecentSightingDisplayString: string;
   
   
 
@@ -79,6 +81,7 @@ export class SealPageComponent implements OnInit {
    */
   private initSubscriptions() {
 
+
     // original subscription for seal information
     this.sealDataService.currentSeal_observable.subscribe(currentSeal  => {
 
@@ -91,11 +94,13 @@ export class SealPageComponent implements OnInit {
       });
     });
 
+
     // Subscription via the NEW SERVICE
     let obs_DossierState_stream = this.dossierHelperService.getDossierDatastream();
     obs_DossierState_stream.subscribe((retval : DossierViewStructure) => {
       this.sealDossier_main = retval;
     });
+
 
     // Subscription to unique tags via NEW SERVICE
     this.dossierHelperService.getUniqueTagListDatastream().subscribe((retval : SqlTag[]) => {
@@ -105,6 +110,7 @@ export class SealPageComponent implements OnInit {
         this.tagListDisplayString += tag.TagNumber + " "
       }
     });
+
 
     // Subscription to unique marks via new service
     this.dossierHelperService.getUniqueMarkListDatastream().subscribe((retval : SqlMark[]) => {
@@ -121,18 +127,14 @@ export class SealPageComponent implements OnInit {
         this.markListDisplayStringList.push(tempDisplayString);
       }
 
-      console.log("SUB - Marks for seal Id: constructed list of strings:");
-      console.log(this.markListDisplayStringList);
-
+      // convert the marks to a single string
       this.markListDisplayString = "";
       for (let displayString of this.markListDisplayStringList) {
         this.markListDisplayString += displayString + " ";
       }
 
-      console.log("SUB - Marks for seal Id: final markListDisplayString");
-      console.log(this.markListDisplayString);
-
     });
+
 
     // Subscription to the Identifying observation
     this.dossierHelperService.getIdentifyingObservationDatastream().subscribe((retval : SqlObservation) => {
@@ -140,14 +142,36 @@ export class SealPageComponent implements OnInit {
       this.sealSexDisplayString = this.identifyingObservation.Sex;
     });
 
-    // Subscription for most recent observation
-    this.dossierHelperService.getMostRecentObservation_Observable().subscribe((retval : SqlObservation) => {
-      this.mostRecentObservation = retval;
-      this.sealAgeClassDisplayString = this.mostRecentObservation.AgeClass;
+
+    // Subscription for most recent observation - SIGHTING OF SEAL
+    let mostRecentObs_forDate_obs = this.dossierHelperService.getMostRecentObservationDatastream();
+    mostRecentObs_forDate_obs.subscribe( (retval : SqlObservation) => {
+      console.log("\n\n********RIGHT HERE **********\n\n");
+      console.log(retval);
+      this.mostRecentObservation_sealSighting = retval;
+      let magicalDate : Date = this.mostRecentObservation_sealSighting.Date;
+      this.sealMostRecentSightingDisplayString = this.convertDateObjToDateString(magicalDate);
     });
 
-    // trigger the dossier helper service to populate based on the desired seal Id
-    // this.dossierHelperService.populateViaSealId(2);
+
+    // Subscription for most recent observation - WHERE AGE CLASS WAS ALSO RECORDED
+    let newestObs_forAC_obs = this.dossierHelperService.getNewestObservationForAgeClassDatastream();
+    newestObs_forAC_obs.subscribe( (retval : SqlObservation) => {
+      this.newestObservation_forAgeClass = retval;
+      this.sealAgeClassDisplayString = this.newestObservation_forAgeClass.AgeClass;
+    });
+    
+  }
+
+
+  /**
+   * Receives a Javascript Date object and converts it to a string of the form MM/DD/YYYY
+   */
+  public convertDateObjToDateString(dateObj : Date) : string {
+      let result : string = "";
+      console.log("\n\n WE ARE INSIDE THE CONVERSION FUNCTION \n\n");
+      result += (dateObj.getMonth() + 1).toString() + "/" + (dateObj.getDate()).toString() + "/" + dateObj.getFullYear().toString();
+      return result;
   }
 
 
