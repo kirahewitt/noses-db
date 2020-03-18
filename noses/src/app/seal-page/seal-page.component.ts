@@ -7,6 +7,7 @@ import { Observations } from '../_supporting_classes/Observations';
 import { DossierViewStructure } from '../_supporting_classes/DossierViewStructure';
 import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
 import { SqlTag } from '../_supporting_classes/SqlTag';
+import { SqlObservation } from '../_supporting_classes/SqlObservation';
 
 
 /**
@@ -41,11 +42,17 @@ export class SealPageComponent implements OnInit {
   // CREATE A NEW LOCAL VARIABLE TO STORE THE SEAL INFORMATION
   public sealDossier_main: DossierViewStructure;
   public observedTagList: SqlTag[];
+  public identifyingObservation: SqlObservation;
+  public mostRecentObservation: SqlObservation;
   public tagListDisplayString: string;
+  public sealSexDisplayString: string;
+  public sealAgeClassDisplayString: string;
+  
+  
 
 
   /**
-   * 
+   * Constructor injects the necessary services into this component.
    * @param sealDataService 
    * @param apiService 
    */
@@ -71,13 +78,10 @@ export class SealPageComponent implements OnInit {
     this.sealDataService.currentSeal_observable.subscribe(currentSeal  => {
       this.seal = currentSeal;
       this.jseal = JSON.stringify(currentSeal);
-
-      // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
       this.datas = this.apiService.getSeal(this.jseal).then(msg => {
         this.dataSource = new MatTableDataSource(<any> msg);
         this.dataSource.paginator = this.paginator;
       });
-
     });
 
     // Subscription via the NEW SERVICE
@@ -89,11 +93,21 @@ export class SealPageComponent implements OnInit {
     // Subscription to unique tags via NEW SERVICE
     this.dossierHelperService.getUniqueTagListDatastream().subscribe((retval : SqlTag[]) => {
       this.observedTagList = retval;
-
       this.tagListDisplayString = "";
       for (let tag of this.observedTagList) {
         this.tagListDisplayString += tag.TagNumber + " "
       }
+    });
+
+    // Subscription to the Identifying observation
+    this.dossierHelperService.getIdentifyingObservationDatastream().subscribe((retval : SqlObservation) => {
+      this.identifyingObservation = retval;
+      this.sealSexDisplayString = this.identifyingObservation.Sex;
+    });
+
+    this.dossierHelperService.getMostRecentObservation_Observable().subscribe((retval : SqlObservation) => {
+      this.mostRecentObservation = retval;
+      this.sealAgeClassDisplayString = this.mostRecentObservation.AgeClass;
     });
 
     // trigger the dossier helper service to populate based on the desired seal Id

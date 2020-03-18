@@ -42,6 +42,12 @@ export class DossierViewHelperService {
   private uniqueTagList: SqlTag[];
   public uniqueTagList_updateStream : BehaviorSubject<SqlTag[]>;
 
+  private identifyingObservation: SqlObservation;
+  public identifyingObservation_updateStream : BehaviorSubject<SqlObservation>;
+
+  private mostRecentObservation: SqlObservation;
+  public mostRecentObservation_updateStream : BehaviorSubject<SqlObservation>;
+
 
 
 
@@ -58,6 +64,12 @@ export class DossierViewHelperService {
 
     this.uniqueTagList = [];
     this.uniqueTagList_updateStream = new BehaviorSubject<SqlTag[]>(this.uniqueTagList);
+
+    this.identifyingObservation = new SqlObservation;
+    this.identifyingObservation_updateStream = new BehaviorSubject<SqlObservation>(this.identifyingObservation);
+
+    this.mostRecentObservation = new SqlObservation;
+    this.mostRecentObservation_updateStream = new BehaviorSubject<SqlObservation>(this.mostRecentObservation);
   }
 
 
@@ -83,6 +95,23 @@ export class DossierViewHelperService {
   public getUniqueTagListDatastream() {
     return this.uniqueTagList_updateStream;
   }
+
+
+  /**
+   * 
+   */
+  public getIdentifyingObservationDatastream() {
+    return this.identifyingObservation_updateStream;
+  }
+
+
+  /**
+   * 
+   */
+  public getMostRecentObservation_Observable() {
+    return this.mostRecentObservation_updateStream;
+  }
+
 
   /**
    * This method populates the attribute dossierViewStructure when it receives from an external caller a SealId.
@@ -114,6 +143,13 @@ export class DossierViewHelperService {
 
       this.uniqueTagList = tagList;
       this.uniqueTagList_updateStream.next(this.uniqueTagList);
+    });
+
+
+    let identifyingObservation_observable = this.apiService.getIdentifyingObservation_bySealId(givenSealId);
+    identifyingObservation_observable.subscribe( (IDingObs : SqlObservation) => {
+      this.identifyingObservation = IDingObs;
+      this.identifyingObservation_updateStream.next(this.identifyingObservation);
     });
 
 

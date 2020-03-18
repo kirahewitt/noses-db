@@ -190,6 +190,80 @@ export class FlaskBackendService {
   }
 
 
+
+  /** 
+   * 
+   */
+  public getIdentifyingObservation_bySealId(sealId:number) : Observable<SqlObservation> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/get-IDing-observations-with-sealid`;
+
+    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
+      .pipe(
+        map( (jsonResponse : any) => {
+          var sqlobs = new SqlObservation();
+
+          let json_obs = jsonResponse['0'];
+          
+          sqlobs.ObservationID = json_obs['ObservationID'];
+          sqlobs.ObserverID = json_obs['ObserverID'];
+          sqlobs.Sex = json_obs['Sex'];
+          sqlobs.Date = json_obs['Date'];
+          sqlobs.MoltPercent = json_obs['MoltPercent'];
+          sqlobs.Comments = json_obs['Comments'];
+          sqlobs.AgeClass = json_obs['AgeClass'];
+          sqlobs.Year = json_obs['Year'];
+          sqlobs.SLOCode = json_obs['SLOCode'];
+          sqlobs.isApproved = json_obs['isApproved'];
+          sqlobs.LastSeenPup = json_obs['LastSeenPup'];
+          sqlobs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
+          sqlobs.WeanDateRange = json_obs['WeanDateRange'];
+          sqlobs.EnteredInAno = json_obs['EnteredInAno'];
+          sqlobs.isProcedure = json_obs['isProcedure'];
+          sqlobs.isDeprecated = json_obs['isDeprecated'];
+
+          return sqlobs;
+        })
+      );
+    return obs;
+  }
+
+
+
+  public getMostRecentObservation_bySealId(sealId:number) : Observable<SqlObservation> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/get-most-recent-observation-with-sealid`;
+
+    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
+      .pipe(
+        map( (jsonResponse : any) => {
+          var sqlobs = new SqlObservation();
+
+          let json_obs = jsonResponse['0'];
+          
+          sqlobs.ObservationID = json_obs['ObservationID'];
+          sqlobs.ObserverID = json_obs['ObserverID'];
+          sqlobs.Sex = json_obs['Sex'];
+          sqlobs.Date = json_obs['Date'];
+          sqlobs.MoltPercent = json_obs['MoltPercent'];
+          sqlobs.Comments = json_obs['Comments'];
+          sqlobs.AgeClass = json_obs['AgeClass'];
+          sqlobs.Year = json_obs['Year'];
+          sqlobs.SLOCode = json_obs['SLOCode'];
+          sqlobs.isApproved = json_obs['isApproved'];
+          sqlobs.LastSeenPup = json_obs['LastSeenPup'];
+          sqlobs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
+          sqlobs.WeanDateRange = json_obs['WeanDateRange'];
+          sqlobs.EnteredInAno = json_obs['EnteredInAno'];
+          sqlobs.isProcedure = json_obs['isProcedure'];
+          sqlobs.isDeprecated = json_obs['isDeprecated'];
+
+          return sqlobs;
+        })
+      );
+    return obs;
+  }
+
+
+
   /** 
    * 
    */

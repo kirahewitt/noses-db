@@ -162,6 +162,90 @@ def get_seal_with_sealId():
     conn.close()
 
 
+# get-IDing-observations-with-sealid
+@app.route('/get-IDing-observations-with-sealid', methods=['POST', 'GET'])
+def get_IDing_observations_with_sealId():
+
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    if request.method == 'POST':
+
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      sealId = _json
+
+      query = (" SELECT obs.ObservationID, obs.ObserverID, obs.Sex, obs.Date, obs.MoltPercent, obs.Comments, obs.AgeClass, obs.Year, obs.SLOCode, obs.isApproved, obs.LastSeenPup, obs.FirstSeenWeaner, obs.WeanDateRange, obs.EnteredInAno, obs.isProcedure, obs.isDeprecated " + 
+               " FROM Observations as obs, ObserveSeal as obsSeal, Seals " + 
+               " WHERE obs.ObservationID = obsSeal.ObservationID AND Seals.ObservationID = obsSeal.ObservationID AND obsSeal.SealID = " + surr_apos(str(sealId)) + ";")
+
+      # execute the query
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID \n\n")
+      print(rows)
+
+      return resp
+    else:
+      return jsonify("no seal was clicked")
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
+#     get-most-recent-observation-with-sealid
+@app.route('/get-most-recent-observation-with-sealid', methods=['POST', 'GET'])
+def get_most_recent_observation_with_sealId():
+
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    if request.method == 'POST':
+
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      sealId = _json
+
+      query = (" SELECT obs.ObservationID, obs.ObserverID, obs.Sex, obs.Date, obs.MoltPercent, obs.Comments, obs.AgeClass, obs.Year, obs.SLOCode, obs.isApproved, obs.LastSeenPup, obs.FirstSeenWeaner, obs.WeanDateRange, obs.EnteredInAno, obs.isProcedure, obs.isDeprecated " + 
+               " FROM Observations as obs, ObserveSeal as obsSeal, Seals " + 
+               " WHERE obs.ObservationID = obsSeal.ObservationID AND Seals.ObservationID = obsSeal.ObservationID AND obsSeal.SealID = " + surr_apos(str(sealId)) + ";")
+
+      # execute the query
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID \n\n")
+      print(rows)
+
+      return resp
+    else:
+      return jsonify("no seal was clicked")
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
 
 #   getobservations-with-sealid
 @app.route('/getobservations-with-sealid', methods=['POST', 'GET'])
@@ -177,16 +261,9 @@ def get_observations_with_sealId():
       # get the input from the person accessing this REST endpoint
       _json = request.json
       print(_json)
-
-      # store the id of the seal we want to access
       sealId = _json
 
-      #make a query to get all the tuples with a matching sealId
-      # query = (" SELECT * " +
-      #          " FROM  Observations, ObserveSeal" +
-      #          " WHERE SealID = " + surr_apos(str(sealId)) + ";")
-
-      query = (" SELECT obs.ObservationID " + 
+      query = (" SELECT obs.ObservationID, obs.ObserverID, obs.Sex, obs.Date, obs.MoltPercent, obs.Comments, obs.AgeClass, obs.Year, obs.SLOCode, obs.isApproved, obs.LastSeenPup, obs.FirstSeenWeaner, obs.WeanDateRange, obs.EnteredInAno, obs.isProcedure, obs.isDeprecated " + 
                " FROM Observations as obs, ObserveSeal as obsSeal " + 
                " WHERE obs.ObservationID = obsSeal.ObservationID AND SealID = " + surr_apos(str(sealId)) + ";")
 
