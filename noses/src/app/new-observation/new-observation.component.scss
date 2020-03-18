@@ -13,7 +13,10 @@ mat-card {
     margin: 30px;
     background-color: lightblue
 }
-
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    background-color: white !important;
+    border-radius: 5px;
+}
 
 
 

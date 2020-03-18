@@ -145,9 +145,9 @@ def canFind(cursor, tableName, value, column):
 # puts NULL where there is empty space and puts "'" around string values
 def swapNulls(row):
     for index in range(len(row)):
-        if (row[index] == ""):
+        if (isinstance(row[index], str) and row[index] == ""):
             row[index] = "NULL"
-        elif (index not in [YEAR, DATE, MOLT, SEASON,
+        elif (isinstance(row[index], str) and index not in [YEAR, DATE, MOLT, SEASON,
             STLENGTH, CRVLENGTH, AXGIRTH, MASS, TARE, MASSTARE,
             LASTSEEN, FIRSTSEEN]):
             row[index] = "'" + row[index] + "'"
@@ -657,14 +657,18 @@ def startUpdate(obj, cnx):
     print("\n\nSTART UPDATE...\n")
     cursor = cursor = cnx.cursor(pymysql.cursors.DictCursor)
 
-    print('in seal upload')
+    print('in seal upload', obj)
     y = json.loads(obj)
+    if isinstance(y[0], dict):
+        y = [y]
+        print(y)
     j_obj = y[0]
     
-    approvalStatus = y[1]["isApproved"]
+    approvalStatus = j_obj[0]["isApproved"]
     print("approval status is: " + str(approvalStatus))
 
     i = 0
+    print(j_obj[0])
     for val in j_obj:
         print("*" + str(i) + "*")
         

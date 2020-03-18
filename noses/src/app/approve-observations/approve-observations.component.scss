@@ -1,0 +1,128 @@
+.outer-most-container {
+    // border: 1px solid black;
+    height: 200px;
+    display: flex;
+}
+
+.title-container {
+    display: flex;
+    padding-top: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.outer-filter-container {
+    // border: 1px solid red;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.positioned-filter-container {
+    // border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 100%;
+}
+
+.filter-row {
+    // border: 1px solid blue;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-row-item {
+    flex: 1;
+    // border: 1px solid orange;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sized {
+    max-height: 50px !important;
+}
+
+.down {
+    padding-top: 4%;
+}
+
+// Dashboard Table CSS
+
+.margins {
+    padding: 3%;
+}
+
+.trash {
+    color: #F86C6B;
+    font-size: 20px;
+  }
+  
+  .hippo {
+    color: #20A8D8;
+    font-size: 20px;
+  }
+  
+  th {
+    width: 10%;
+    text-align: left;
+  }
+  
+  td {
+    width: 5%;
+    text-align: left;
+    padding-top: 20px;
+  }
+  
+  .lightBlue {
+    color: blue;
+    size: 50px;
+  }
+  
+  td.mat-cell {
+    padding-top: 10px;
+  }
+  
+  .btn-reset {
+    background-color: #F86C6B;
+    color: white;
+    height: 35px;
+    
+  }
+  
+  .btn-filter {
+    background-color: #20A8D8;
+    color: white;
+    height: 35px;
+    
+  }
+  
+  .left-column {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 0px;
+  }
+  
+  .table-column {
+    margin: 10px;
+  }
+  
+  .breathing-room {
+    padding: 5px;
+  }
+  
+  .mat-form-field{
+    width: 100%;
+  }
+
+.button-right{
+    position:absolute;
+    bottom: 3%;
+    right: 5%;
+}

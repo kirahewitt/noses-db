@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { FlaskBackendService } from '../_services/flask-backend.service';
 import { Observations } from  '../_supporting_classes/Observations';
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';
@@ -12,13 +12,16 @@ import {
 import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
+import { SelectFilterType } from "./filter-type-selector"
 
 @Component({
-  selector: 'app-approve-obs',
-  templateUrl: './approve-obs.component.html',
-  styleUrls: ['./approve-obs.component.scss']
+  selector: 'app-approve-observations',
+  templateUrl: './approve-observations.component.html',
+  styleUrls: ['./approve-observations.component.scss']
 })
-export class ApproveObsComponent implements OnInit {
+export class ApproveObservationsComponent implements OnInit {
+
+  filters: string[] = [];
 
   userData: any;
   observations: Observations[];
@@ -46,7 +49,11 @@ export class ApproveObsComponent implements OnInit {
   displayedColumns: any;
   admin: any;
 
+
+
   yearControl = new FormControl('');
+  partialControl = new FormControl('');
+  filterTypeControl = new FormControl('');
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
@@ -58,14 +65,20 @@ export class ApproveObsComponent implements OnInit {
               private adminStatus: AdminService,
               public router: Router) { }
 
+  onClick(name) {
+    
+  }
+
+  filterss = [{name:"Breeding Season", value:"2019"}, {name:"Tag", value:"T3456"}];
+
   ngOnInit() {
 
-    this.apiService.readNotApproved().subscribe((observations: any)=>{
+    this.apiService.readNotApproved(null).subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['SealID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'Sex', 'Age Class', 'viewSeal', 'approveObs' ];
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal', 'approveObs' ];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['SealID', 'TagNumber1', 'TagNumber2', 'Mark', 'Year', 'Sex',  'Age Class', 'viewSeal', 'approveObs'];
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal', 'approveObs'];
         this.notReady = false;
       }
       this.observations = observations;
@@ -115,6 +128,17 @@ export class ApproveObsComponent implements OnInit {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  }
+
+  getPartialTag() {
+    console.log(this.partialControl.value);
+    var part = {'part': this.partialControl.value};
+    console.log(JSON.stringify(part));
+    this.apiService.getPartials(JSON.stringify(part)).then(matches => {
+          this.runSealQuery(matches);
+        });
+
+    // need to get the query and then runSealQuery(queryData)
   }
 
   downloadCSV() {
@@ -172,30 +196,27 @@ export class ApproveObsComponent implements OnInit {
   }
 
   filterObs() {
-    var tempObs = this.observations;
+    this.apiService.readNotApproved(this.filterss).subscribe((observations: any)=>{
+      if(this.isAdmin) {
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
+        this.notReady = false;
+      } else {
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
+        this.notReady = false;
+      }
+      this.observations = observations;
+      this.runSealQuery(observations);
+      this.facetSetup(observations);
+    });
 
-    if(this.filterYear != "Any") {
-      tempObs = tempObs.filter(elem => String(elem.Year) == this.filterYear);
-
-    }
-
-    // **** ADD THESE WHEN YOU GET THE QUERY INFO **********/
-    // if(this.filterAge != "Any") {
-    //   tempObs = tempObs.filter(function(elem, index, self) {
-    //   return String(elem.AgeClass) == this.filterAge;
-    //   });
-    // }
-
-    // if(this.filterGender != "Any") {
-    //   tempObs = tempObs.filter(function(elem, index, self) {
-    //   return String(elem.Sex) == this.filterGender;
-    //   });
-    // }
-    this.runSealQuery(tempObs);
-
+  }
+  approveObs(row : any){
+    console.log("here");
+    return this.apiService.approveObs(row.ObservationID);
   }
 
   resetObs() {
+    this.selectedYear = undefined;
     this.selectedYear = undefined;
     this.runSealQuery(this.observations);
   }
@@ -213,7 +234,7 @@ export class ApproveObsComponent implements OnInit {
       var getAdStatus = JSON.stringify({'email': this.userData.email});
       this.apiService.getAdminStatus(getAdStatus).then(msg => {
         this.admin = msg
-        this.admin = this.admin[0].isAdmin;
+        this.admin = this.admin[0].isAdmin;                                    
         this.adminStatus.updatePermissionLevel(this.admin);
         this.setPriveleges();
       });
@@ -234,8 +255,7 @@ export class ApproveObsComponent implements OnInit {
     this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
     console.log('about to call delete');
 
-    // this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
+    this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs(null));
 
  }
-
 }

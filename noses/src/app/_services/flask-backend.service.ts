@@ -37,7 +37,7 @@ export class FlaskBackendService {
   /**
    * 
    */
-  readObs(filterObj: Array<Object>): Observable<Observations[]>{
+  readObs(filterObj: Array<Object> = null): Observable<Observations[]>{
     if(filterObj == null || filterObj.length == 0){
       return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allobservations` );
     }else{
@@ -48,8 +48,12 @@ export class FlaskBackendService {
     return this.httpClient.get<Seal[]>(`${this.FLASK_API_SERVER}/allseals` );
   }
 
-  readNotApproved(): Observable<Observations[]>{
-    return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/notapproved`);
+  readNotApproved(filterObj: Array<Object> = null): Observable<Observations[]>{
+    if(filterObj == null || filterObj.length == 0){
+      return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/notapproved` );
+    }else{
+      return this.httpClient.post<Observations[]>(`${this.FLASK_API_SERVER}/notapproved`, filterObj, this.httpOptions );
+    }
   }
 
   addObservations(user: string): Observable<string>{
@@ -61,6 +65,15 @@ export class FlaskBackendService {
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/delete`, obs, this.httpOptions);
   }
 
+async approveObs(obsId: number) {
+    console.log("here2");
+    var id;
+    await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/approveobs`, obsId, this.httpOptions).toPromise().then(data => {
+        id = data;
+      });
+  
+      return id;
+}
 
   // users section
   

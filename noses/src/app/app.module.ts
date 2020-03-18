@@ -21,7 +21,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent, DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
-import { ApproveObsComponent } from './approve-obs/approve-obs.component';
+import { ApproveObservationsComponent } from './approve-observations/approve-observations.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 import { MenuComponent } from './menu/menu.component';
 import { AllObservationsComponent } from './all-observations/all-observations.component';
@@ -118,7 +118,7 @@ const config = {
     VerifyEmailComponent,
     SealPageComponent,
     ManageAccountsComponent,
-    ApproveObsComponent,
+    ApproveObservationsComponent,
     EditUserDialogComponent,
     MenuComponent,
     AllObservationsComponent,
