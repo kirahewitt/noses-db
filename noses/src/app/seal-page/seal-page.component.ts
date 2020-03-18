@@ -160,7 +160,7 @@ export class SealPageComponent implements OnInit {
       this.newestObservation_forAgeClass = retval;
       this.sealAgeClassDisplayString = this.newestObservation_forAgeClass.AgeClass;
     });
-    
+
   }
 
 
@@ -169,8 +169,10 @@ export class SealPageComponent implements OnInit {
    */
   public convertDateObjToDateString(dateObj : Date) : string {
       let result : string = "";
+      var d = new Date(dateObj);
+
       console.log("\n\n WE ARE INSIDE THE CONVERSION FUNCTION \n\n");
-      result += (dateObj.getMonth() + 1).toString() + "/" + (dateObj.getDate()).toString() + "/" + dateObj.getFullYear().toString();
+      result += (d.getMonth() + 1).toString() + "/" + (d.getDate()).toString() + "/" + d.getFullYear().toString();
       return result;
   }
 
