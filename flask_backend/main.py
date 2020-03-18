@@ -325,7 +325,7 @@ def get_tags_with_sealId():
       rows = cursor.fetchall()
       resp = jsonify(rows)
 
-      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID \n\n")
+      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID - GETTAGS \n\n")
       print(rows)
 
       return resp
@@ -338,6 +338,63 @@ def get_tags_with_sealId():
   finally:
     cursor.close()
     conn.close()
+
+
+
+
+
+
+# Retrieves the list of unique tags for all the observations currently associated with a particular seal.
+@app.route('/getmarks_with_sealID', methods=['POST', 'GET'])
+def get_marks_with_sealId():
+
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    if request.method == 'POST':
+
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      print(_json)
+
+      # store the id of the seal we want to access
+      sealId = _json
+      
+      query = (" SELECT DISTINCT OMarks.MarkID, OMarks.Mark, OMarks.MarkPosition, OMarks.markDate, OMarks.Year, OMarks.MarkSeal " + 
+
+               " FROM (SELECT Marks.MarkID, Marks.Mark, Marks.MarkPosition, Marks.markDate, Marks.Year, Marks.MarkSeal, ObserveMarks.ObservationID " + 
+               "       FROM Marks, ObserveMarks " + 
+               "       WHERE Marks.MarkID = ObserveMarks.MarkID) as OMarks, " + 
+                    
+               "      (SELECT obs.ObservationID " + 
+               "       FROM Observations as obs, ObserveSeal as obsSeal " + 
+               "       WHERE obs.ObservationID = obsSeal.ObservationID AND SealID =" + surr_apos(str(sealId)) + ") as ObsForSeal " + 
+
+               " WHERE OMarks.ObservationID = ObsForSeal.ObservationID; ")
+
+      # execute the query
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID - GETMARKS \n\n")
+      print(rows)
+
+      return resp
+    else:
+      return jsonify("no seal was clicked")
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
 
 
 

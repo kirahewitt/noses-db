@@ -8,6 +8,7 @@ import { DossierViewStructure } from '../_supporting_classes/DossierViewStructur
 import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
 import { SqlTag } from '../_supporting_classes/SqlTag';
 import { SqlObservation } from '../_supporting_classes/SqlObservation';
+import { SqlMark } from '../_supporting_classes/SqlMark';
 
 
 /**
@@ -42,9 +43,12 @@ export class SealPageComponent implements OnInit {
   // CREATE A NEW LOCAL VARIABLE TO STORE THE SEAL INFORMATION
   public sealDossier_main: DossierViewStructure;
   public observedTagList: SqlTag[];
+  public observedMarkList: SqlMark[];
   public identifyingObservation: SqlObservation;
   public mostRecentObservation: SqlObservation;
   public tagListDisplayString: string;
+  public markListDisplayStringList: string[];
+  public markListDisplayString: string;
   public sealSexDisplayString: string;
   public sealAgeClassDisplayString: string;
   
@@ -55,6 +59,7 @@ export class SealPageComponent implements OnInit {
    * Constructor injects the necessary services into this component.
    * @param sealDataService 
    * @param apiService 
+   * @param dossierHelperService 
    */
   constructor(private sealDataService: SealDataService, private apiService: FlaskBackendService, private dossierHelperService : DossierViewHelperService) { 
     this.sealDossier_main = new DossierViewStructure();
@@ -76,8 +81,10 @@ export class SealPageComponent implements OnInit {
 
     // original subscription for seal information
     this.sealDataService.currentSeal_observable.subscribe(currentSeal  => {
+
       this.seal = currentSeal;
       this.jseal = JSON.stringify(currentSeal);
+
       this.datas = this.apiService.getSeal(this.jseal).then(msg => {
         this.dataSource = new MatTableDataSource(<any> msg);
         this.dataSource.paginator = this.paginator;
@@ -99,19 +106,48 @@ export class SealPageComponent implements OnInit {
       }
     });
 
+    // Subscription to unique marks via new service
+    this.dossierHelperService.getUniqueMarkListDatastream().subscribe((retval : SqlMark[]) => {
+      
+      console.log("SUB - Marks for seal Id: retrieved data:");
+      console.log(retval);
+      
+      this.observedMarkList = retval;
+
+      // make nice-ish displays of the marks with years [MARK123 @ 2010]
+      this.markListDisplayStringList = [];
+      for (let mark of this.observedMarkList) {
+        var tempDisplayString = "[" + mark.Mark + " @ " + mark.Year + "]";
+        this.markListDisplayStringList.push(tempDisplayString);
+      }
+
+      console.log("SUB - Marks for seal Id: constructed list of strings:");
+      console.log(this.markListDisplayStringList);
+
+      this.markListDisplayString = "";
+      for (let displayString of this.markListDisplayStringList) {
+        this.markListDisplayString += displayString + " ";
+      }
+
+      console.log("SUB - Marks for seal Id: final markListDisplayString");
+      console.log(this.markListDisplayString);
+
+    });
+
     // Subscription to the Identifying observation
     this.dossierHelperService.getIdentifyingObservationDatastream().subscribe((retval : SqlObservation) => {
       this.identifyingObservation = retval;
       this.sealSexDisplayString = this.identifyingObservation.Sex;
     });
 
+    // Subscription for most recent observation
     this.dossierHelperService.getMostRecentObservation_Observable().subscribe((retval : SqlObservation) => {
       this.mostRecentObservation = retval;
       this.sealAgeClassDisplayString = this.mostRecentObservation.AgeClass;
     });
 
     // trigger the dossier helper service to populate based on the desired seal Id
-    this.dossierHelperService.populateViaSealId(2);
+    // this.dossierHelperService.populateViaSealId(2);
   }
 
 

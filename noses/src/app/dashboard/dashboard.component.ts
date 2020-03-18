@@ -5,78 +5,104 @@ import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgres
 import { FormControl } from '@angular/forms';
 import { AuthService } from "../_services/auth.service";
 import { AngularFireAuth } from "@angular/fire/auth";
-import {
-  AngularFirestore,
-  AngularFirestoreDocument
-} from "@angular/fire/firestore";
+// import { AngularFirestore, AngularFirestoreDocument} from "@angular/fire/firestore";
 import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
+import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
 
+
+export interface tableJsonStructure {
+  Age
+}
+
+/**
+ * 
+ */
 @Component({
   selector: 'dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-
 export class DashboardComponent implements OnInit {
 
-  userData: any;
-  observations: Observations[];
-  dataSource: any;
+  public userData: any;
+  public observations: Observations[];
+  public dataSource: any;
 
-  obsID: any;
-  tag1: string;
-  mark1: string;
-  uniqDates: any = [];
-  uniqAgeClass: any = ["SA", "W", "P", "Any"]; // when I get the data I will change this
-  uniqGender: any = ["M", "F ", "Any"]; // when I get the data I will change this
+  public obsID: any;
+  public tag1: string;
+  public mark1: string;
+  public uniqDates: any = [];
+  public uniqAgeClass: any = ["SA", "W", "P", "Any"]; // when I get the data I will change this
+  public uniqGender: any = ["M", "F ", "Any"]; // when I get the data I will change this
 
-  filterSealsBy: any;
-  filterYear: String;
-  filterAge: String;
-  filterGender: String;
+  public filterSealsBy: any;
+  public filterYear: String;
+  public filterAge: String;
+  public filterGender: String;
 
-  selectedYear: any;
+  public selectedYear: any;
 
-  filterTag1: any;
-  filterTag2: any;
-  filterMark1: any;
-  isAdmin=false;
-  notReady = true;
-  displayedColumns: any;
-  admin: any;
+  public filterTag1: any;
+  public filterTag2: any;
+  public filterMark1: any;
+  public isAdmin=false;
+  public notReady = true;
+  public displayedColumns: any;
+  public admin: any;
 
-
-
-  yearControl = new FormControl('');
-  partialControl = new FormControl('');
+  public yearControl = new FormControl('');
+  public partialControl = new FormControl('');
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
 
+  /**
+   * 
+   * @param apiService 
+   * @param authService 
+   * @param afAuth 
+   * @param sealData 
+   * @param adminStatus 
+   * @param router 
+   * @param dossierHelperService 
+   */
   constructor(private apiService: FlaskBackendService,
               public authService: AuthService,
               public afAuth: AngularFireAuth,
               private sealData: SealDataService,
               private adminStatus: AdminService,
-              public router: Router) { }
+              public router: Router,
+              private dossierHelperService: DossierViewHelperService) { }
 
+
+  /**
+   * 
+   */
   ngOnInit() {
+    
+    // subscribe to the api service which provides the data we'll populate the table with
+    let sealsObservable = this.apiService.readSeals();
+    sealsObservable.subscribe( (observations: any) => {
 
-    this.apiService.readSeals().subscribe((observations: any)=>{
-      if(this.isAdmin) {
+      if (this.isAdmin) {
         this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal' ];
         this.notReady = false;
-      } else {
+      } 
+      else {
         this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal'];
         this.notReady = false;
       }
+
       this.observations = observations;
       console.log(observations[3])
+
       this.runSealQuery(observations);
       this.facetSetup(observations);
     });
+
+    // subscribe to Google's Firebase authentication service
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.userData = user;
@@ -84,7 +110,8 @@ export class DashboardComponent implements OnInit {
         JSON.parse(localStorage.getItem("user"));
         this.setAdmin();
         // console.log(this.userData)
-      } else {
+      } 
+      else {
         localStorage.setItem("user", null);
         JSON.parse(localStorage.getItem("user"));
       }
@@ -92,28 +119,38 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  objectToCSV(data: any) {
+
+  /**
+   * 
+   * @param data 
+   */
+  public objectToCSV(data: any) {
     const headers = Object.keys(data[0]);
     const csvRows = [];
+
     csvRows.push(headers.join(','));
-    // console.log(csvRows);
+
     for (const row of data) {
       const values = headers.map(header => {
         const escaped = String(row[header]).replace(/"/g, '\\"');
         return `"${escaped}"`;
       });
-      // console.log(values.join(','));
       csvRows.push(values.join(','));
     }
 
     return csvRows.join('\n');
-
   }
 
-  download(data: any) {
+
+  /**
+   * 
+   * @param data 
+   */
+  public download(data: any) {
     const blob = new Blob([data], {type: 'text/csv'});
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
+
     a.setAttribute('hidden', '');
     a.setAttribute('href', url);
     a.setAttribute('download', 'seals.csv');
@@ -122,25 +159,41 @@ export class DashboardComponent implements OnInit {
     document.body.removeChild(a);
   }
 
-  getPartialTag() {
+
+  /**
+   * 
+   */
+  public getPartialTag() {
+
     console.log(this.partialControl.value);
     var part = {'part': this.partialControl.value};
+
     console.log(JSON.stringify(part));
-    this.apiService.getPartials(JSON.stringify(part)).then(matches => {
-          this.runSealQuery(matches);
-        });
+    this.apiService.getPartials(JSON.stringify(part))
+      .then(matches => {
+        this.runSealQuery(matches);
+      });
 
     // need to get the query and then runSealQuery(queryData)
   }
 
-  downloadCSV() {
+
+  /**
+   * 
+   */
+  public downloadCSV() {
     console.log("in download");
     var data = this.dataSource.filteredData;
     var csvObj = this.objectToCSV(data);
     this.download(csvObj);
   }
 
-  runSealQuery(obs: any) {
+
+  /**
+   * 
+   * @param obs 
+   */
+  public runSealQuery(obs: any) {
     this.dataSource = new MatTableDataSource(<any> obs);
     console.log(this.dataSource.data[0]);
     this.dataSource.paginator = this.paginator;
@@ -154,7 +207,12 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  facetSetup(obs: any) {
+
+  /**
+   * 
+   * @param obs 
+   */
+  public facetSetup(obs: any) {
 
     // get uniq dates
     var uniq: string[] = []
@@ -172,22 +230,41 @@ export class DashboardComponent implements OnInit {
     this.uniqDates.push("Any");
   }
 
-  selectDate(event: any) {
+
+  /**
+   * 
+   * @param event 
+   */
+  public selectDate(event: any) {
     this.filterYear = String(event.value);
     console.log(this.filterYear);
   }
 
-  selectGender(event: any) {
+
+  /**
+   * 
+   * @param event 
+   */
+  public selectGender(event: any) {
     this.filterGender = String(event.value);
     console.log(this.filterGender);
   }
 
-  selectAge(event: any) {
+
+  /**
+   * 
+   * @param event 
+   */
+  public selectAge(event: any) {
     this.filterAge = String(event.value);
     console.log(this.filterAge)
   }
 
-  filterObs() {
+
+  /**
+   * 
+   */
+  public filterObs() {
     var tempObs = this.observations;
 
     if(this.filterYear != "Any") {
@@ -212,35 +289,68 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  resetObs() {
+
+  /**
+   * 
+   */
+  public resetObs() {
     this.selectedYear = undefined;
     this.selectedYear = undefined;
     this.runSealQuery(this.observations);
   }
 
-  applyFilter(filterValue: string) {
+
+  /**
+   * 
+   * @param filterValue 
+   */
+  public applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  selectSeal(row) {
+
+  /**
+   * This function is trigged by the html template when one of the blue elephant seal icons is clicked.
+   * The input to this function is a json object representing one row of the table. 
+   * @param row : The row in which the blue seal was clicked. These happen to correspond exactly to the sealIds. Json object.
+   */
+  public selectSeal(row : any) {
+
+    // console.log("---------------------------------");
+    // console.log("Entered the 'selectSeal() method!");
+    // console.log("DATA RECEIVED AS INPUT TO `selectSeal()`:");
+    // console.log(row);
+
+    let selectedSealdId: number = row['SealID'];
+    this.dossierHelperService.populateViaSealId(selectedSealdId);
+
     this.sealData.setCurrentSealState(row);
     this.router.navigate(["seal-page"]);
   }
 
-  setAdmin() {
-      var getAdStatus = JSON.stringify({'email': this.userData.email});
-      this.apiService.getAdminStatus(getAdStatus).then(msg => {
-        this.admin = msg
-        this.admin = this.admin[0].isAdmin;
-        this.adminStatus.updatePermissionLevel(this.admin);
-        this.setPriveleges();
-      });
+
+  /**
+   * 
+   */
+  public setAdmin() {
+    var getAdStatus = JSON.stringify({'email': this.userData.email});
+    this.apiService.getAdminStatus(getAdStatus).then(msg => {
+      this.admin = msg
+      this.admin = this.admin[0].isAdmin;
+      this.adminStatus.updatePermissionLevel(this.admin);
+      this.setPriveleges();
+    });
   }
 
-  setPriveleges() {
-    if(this.admin == 3) {
+
+  /**
+   * 
+   */
+  public setPriveleges() {
+    if (this.admin == 3) {
       this.isAdmin = true;
-    } else if(this.admin == 2) {
+    } 
+    else if (this.admin == 2) {
       this.isAdmin = true;
     }
     else {
@@ -248,11 +358,15 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  deleteSeal(row) {
+  
+  /**
+   * 
+   * @param row 
+   */
+  public deleteSeal(row) {
     this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
     console.log('about to call delete');
 
     this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
-
- }
+  }
 }

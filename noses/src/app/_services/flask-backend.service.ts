@@ -9,6 +9,7 @@ import { Seal } from '../_supporting_classes/Seal';
 import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
 import { SqlObservation } from '../_supporting_classes/SqlObservation';
 import { SqlTag } from '../_supporting_classes/SqlTag';
+import { SqlMark } from '../_supporting_classes/SqlMark';
 
 
 /**
@@ -267,30 +268,62 @@ export class FlaskBackendService {
   /** 
    * 
    */
-  public getTags_bySealId(sealId:number) : Observable<SqlTag[]> {
+  public getTags_bySealId(sealId : number) : Observable<SqlTag[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/gettags-with-sealid`;
 
-    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
-      .pipe(
-        map( (jsonResponse : any) => {
-          var tagList : SqlTag[] = [];
+    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
+      map( (jsonResponse : any) => {
+        var tagList : SqlTag[] = [];
 
-          for (let json_tag of jsonResponse) {
-            var tag : SqlTag = new SqlTag();
+        for (let json_tag of jsonResponse) {
+          var tag : SqlTag = new SqlTag();
 
-            tag.TagColor = json_tag['TagColor'];
-            tag.TagDate = json_tag['TagDate'];
-            tag.TagNumber = json_tag['TagNumber'];
-            tag.TagPosition = json_tag['TagPosition'];
-            tag.TagSeal = json_tag['TagSeal'];
-            tag.isLost = json_tag['isLost'];
-            
-            tagList.push(tag);
-          }
+          tag.TagColor = json_tag['TagColor'];
+          tag.TagDate = json_tag['TagDate'];
+          tag.TagNumber = json_tag['TagNumber'];
+          tag.TagPosition = json_tag['TagPosition'];
+          tag.TagSeal = json_tag['TagSeal'];
+          tag.isLost = json_tag['isLost'];
+          
+          tagList.push(tag);
+        }
 
-          return tagList;
-        })
-      );
+        return tagList;
+      })
+    );
+    return obs;
+  }
+
+
+
+  /** 
+   * 
+   */
+  public getMarks_bySealId(sealId : number) : Observable<SqlMark[]> {
+
+    let flask_endpoint = `${this.FLASK_API_SERVER}/getmarks_with_sealID`;
+    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
+      map( (jsonResponse : any) => {
+        
+        var markList : SqlMark[] = [];
+
+        for (let json_mark of jsonResponse) {
+          var mark : SqlMark = new SqlMark();
+
+          mark.MarkID = json_mark['MarkID'];
+          mark.Mark = json_mark['Mark'];
+          mark.MarkPosition = json_mark['MarkPosition'];
+          mark.markDate = json_mark['markDate'];
+          mark.Year = json_mark['Year'];
+          mark.ObservationID = json_mark['ObservationID'];
+          mark.MarkSeal = json_mark['MarkSeal'];
+          
+          markList.push(mark);
+        }
+
+        return markList;
+      })
+    );
     return obs;
   }
 

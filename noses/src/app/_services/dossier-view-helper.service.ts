@@ -5,6 +5,7 @@ import { FlaskBackendService } from './flask-backend.service';
 import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
 import { SqlObservation } from '../_supporting_classes/SqlObservation';
 import { SqlTag } from '../_supporting_classes/SqlTag';
+import { SqlMark } from '../_supporting_classes/SqlMark';
 
 
 /**
@@ -41,6 +42,9 @@ export class DossierViewHelperService {
 
   private uniqueTagList: SqlTag[];
   public uniqueTagList_updateStream : BehaviorSubject<SqlTag[]>;
+  
+  private uniqueMarkList: SqlMark[];
+  public uniqueMarkList_updateStream : BehaviorSubject<SqlMark[]>;
 
   private identifyingObservation: SqlObservation;
   public identifyingObservation_updateStream : BehaviorSubject<SqlObservation>;
@@ -56,6 +60,7 @@ export class DossierViewHelperService {
    * @param apiService A reference to the Angular Service that communicates with our Flask REST API.
    */
   constructor(private apiService: FlaskBackendService) { 
+
     this.dossierViewStructure = new DossierViewStructure();
     this.dossierViewStructure_updateStream = new BehaviorSubject<DossierViewStructure>(this.dossierViewStructure);
 
@@ -64,6 +69,9 @@ export class DossierViewHelperService {
 
     this.uniqueTagList = [];
     this.uniqueTagList_updateStream = new BehaviorSubject<SqlTag[]>(this.uniqueTagList);
+
+    this.uniqueMarkList = [];
+    this.uniqueMarkList_updateStream = new BehaviorSubject<SqlMark[]>(this.uniqueMarkList);
 
     this.identifyingObservation = new SqlObservation;
     this.identifyingObservation_updateStream = new BehaviorSubject<SqlObservation>(this.identifyingObservation);
@@ -100,6 +108,14 @@ export class DossierViewHelperService {
   /**
    * 
    */
+  public getUniqueMarkListDatastream() {
+    return this.uniqueMarkList_updateStream;
+  }
+
+
+  /**
+   * 
+   */
   public getIdentifyingObservationDatastream() {
     return this.identifyingObservation_updateStream;
   }
@@ -121,31 +137,32 @@ export class DossierViewHelperService {
    */
   public populateViaSealId(givenSealId: number) {
 
+    // get information on the desired Seals tuple
     let sealTuple_observable = this.apiService.getSeal_bySealId(givenSealId);
     sealTuple_observable.subscribe( (resp : SqlSealDossier) => {
-      
-      // update the local private object
       this.dossierViewStructure.dossierId = resp.sealId;
       this.dossierViewStructure.identifyingObservationId = resp.identifyingObservationId;
       this.dossierViewStructure.sex = resp.sex;
-
-      // signal pass the new state of the object to the datastream and all the subscribers
       this.dossierViewStructure_updateStream.next(this.dossierViewStructure);
     });
 
-
+    // get all the tags for this seal
     let uniqueTagsForSeal_observable = this.apiService.getTags_bySealId(givenSealId);
     uniqueTagsForSeal_observable.subscribe( (tagList : SqlTag[]) => {
-
-      // print the observations to make sure it actually worked
-      console.log("RETRIEVED tags FOR SEAL ID: " + givenSealId.toString());
-      console.log(tagList);
-
       this.uniqueTagList = tagList;
       this.uniqueTagList_updateStream.next(this.uniqueTagList);
     });
 
 
+    // get all the unique marks for this seal
+    let uniqueMarksForSeal_observable = this.apiService.getMarks_bySealId(givenSealId);
+    uniqueMarksForSeal_observable.subscribe( (markList : SqlMark[]) => {
+      this.uniqueMarkList = markList;
+      this.uniqueMarkList_updateStream.next(this.uniqueMarkList);
+    });
+
+
+    // identifying observation
     let identifyingObservation_observable = this.apiService.getIdentifyingObservation_bySealId(givenSealId);
     identifyingObservation_observable.subscribe( (IDingObs : SqlObservation) => {
       this.identifyingObservation = IDingObs;
