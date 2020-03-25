@@ -113,10 +113,17 @@ def makeConnection():
         #                                host='ambari-head.csc.calpoly.edu',
         #                                database='kbleich')
 
-        cnx = connection.MySQLConnection(user='root',
-                                        password='password',
-                                        host='localhost',
+        # cnx = connection.MySQLConnection(user='root',
+        #                                 password='password',
+        #                                 host='localhost',
+        #                                 database='sealDB')
+
+        # Config: AWS iorourke@calpoly.edu
+        cnx = connection.MySQLConnection(user='admin',
+                                        password='CS492_ij',
+                                        host='database-this-is-the-last-time.cvrgneqrnjcb.us-east-2.rds.amazonaws.com',
                                         database='sealDB')
+
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")

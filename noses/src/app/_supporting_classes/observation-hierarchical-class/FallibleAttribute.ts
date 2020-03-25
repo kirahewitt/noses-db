@@ -5,10 +5,10 @@
  * We don't have to use all these fields, just wanted to give us the option.
  */
 export class FallibleAttribute<T> {
-  isValid : boolean;
-  lastAttemptedValue : string;
-  currentValue : T;
-  errorMessage: string;  
+  isValid? : boolean;
+  lastAttemptedValue? : string;
+  currentValue? : T;
+  errorMessage? : string;  
 
   constructor() {
     this.isValid = null;

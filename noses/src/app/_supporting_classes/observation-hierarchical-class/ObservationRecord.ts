@@ -28,7 +28,7 @@ export class ObservationRecord {
   moltPercentage : FallibleAttribute<MeasuredValue>;
   sealStandardLength : FallibleAttribute<MeasuredValue>;
   sealCurvilinearLength : FallibleAttribute<MeasuredValue>;
-  sealAuxiliaryGirth : FallibleAttribute<MeasuredValue>;
+  sealAxillaryGirth : FallibleAttribute<MeasuredValue>;
   sealMass : FallibleAttribute<MeasuredValue>;
   sealTare : FallibleAttribute<MeasuredValue>;
   sealMassTare : FallibleAttribute<MeasuredValue>;
@@ -62,7 +62,7 @@ export class ObservationRecord {
     this.moltPercentage = new FallibleAttribute<MeasuredValue>();
     this.sealStandardLength = new FallibleAttribute<MeasuredValue>();
     this.sealCurvilinearLength = new FallibleAttribute<MeasuredValue>();
-    this.sealAuxiliaryGirth = new FallibleAttribute<MeasuredValue>();
+    this.sealAxillaryGirth = new FallibleAttribute<MeasuredValue>();
     this.sealMass = new FallibleAttribute<MeasuredValue>();
     this.sealTare = new FallibleAttribute<MeasuredValue>();
     this.sealMassTare = new FallibleAttribute<MeasuredValue>();

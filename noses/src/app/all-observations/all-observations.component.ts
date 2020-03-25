@@ -21,6 +21,8 @@ import { SelectFilterType } from "./filter-type-selector"
 })
 export class AllObservationsComponent implements OnInit {
 
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+
   filters: string[] = [];
 
   userData: any;
@@ -49,15 +51,22 @@ export class AllObservationsComponent implements OnInit {
   displayedColumns: any;
   admin: any;
 
-
-
   yearControl = new FormControl('');
   partialControl = new FormControl('');
   filterTypeControl = new FormControl('');
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  filterss = [{name:"Breeding Season", value:"2019"}, {name:"Tag", value:"T3456"}];
 
 
+  /**
+   * 
+   * @param apiService 
+   * @param authService 
+   * @param afAuth 
+   * @param sealData 
+   * @param adminStatus 
+   * @param router 
+   */
   constructor(private apiService: FlaskBackendService,
               public authService: AuthService,
               public afAuth: AngularFireAuth,
@@ -65,15 +74,15 @@ export class AllObservationsComponent implements OnInit {
               private adminStatus: AdminService,
               public router: Router) { }
 
-  onClick(name) {
-    
-  }
 
-  filterss = [{name:"Breeding Season", value:"2019"}, {name:"Tag", value:"T3456"}];
 
+
+  /**
+   * 
+   */
   ngOnInit() {
 
-    this.apiService.readObs(null).subscribe((observations: any)=>{
+    this.apiService.readObs().subscribe( (observations: any) => {
       if(this.isAdmin) {
         this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
         this.notReady = false;
@@ -85,6 +94,7 @@ export class AllObservationsComponent implements OnInit {
       this.runSealQuery(observations);
       this.facetSetup(observations);
     });
+    
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.userData = user;
@@ -100,11 +110,13 @@ export class AllObservationsComponent implements OnInit {
 
   }
 
-  objectToCSV(data: any) {
+  public objectToCSV(data: any) {
     const headers = Object.keys(data[0]);
     const csvRows = [];
+
     csvRows.push(headers.join(','));
     // console.log(csvRows);
+
     for (const row of data) {
       const values = headers.map(header => {
         const escaped = String(row[header]).replace(/"/g, '\\"');
@@ -115,10 +127,9 @@ export class AllObservationsComponent implements OnInit {
     }
 
     return csvRows.join('\n');
-
   }
 
-  download(data: any) {
+  public download(data: any) {
     const blob = new Blob([data], {type: 'text/csv'});
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -130,7 +141,7 @@ export class AllObservationsComponent implements OnInit {
     document.body.removeChild(a);
   }
 
-  getPartialTag() {
+  public getPartialTag() {
     console.log(this.partialControl.value);
     var part = {'part': this.partialControl.value};
     console.log(JSON.stringify(part));
@@ -141,14 +152,14 @@ export class AllObservationsComponent implements OnInit {
     // need to get the query and then runSealQuery(queryData)
   }
 
-  downloadCSV() {
+  public downloadCSV() {
     console.log("in download");
     var data = this.dataSource.filteredData;
     var csvObj = this.objectToCSV(data);
     this.download(csvObj);
   }
 
-  runSealQuery(obs: any) {
+  public runSealQuery(obs: any) {
     this.dataSource = new MatTableDataSource(<any> obs);
     console.log(this.dataSource.data[0]);
     this.dataSource.paginator = this.paginator;
@@ -162,7 +173,7 @@ export class AllObservationsComponent implements OnInit {
 
   }
 
-  facetSetup(obs: any) {
+  public facetSetup(obs: any) {
 
     // get uniq dates
     var uniq: string[] = []
@@ -180,63 +191,72 @@ export class AllObservationsComponent implements OnInit {
     this.uniqDates.push("Any");
   }
 
-  selectDate(event: any) {
+  public selectDate(event: any) {
     this.filterYear = String(event.value);
     console.log(this.filterYear);
   }
 
-  selectGender(event: any) {
+  public selectGender(event: any) {
     this.filterGender = String(event.value);
     console.log(this.filterGender);
   }
 
-  selectAge(event: any) {
+  public selectAge(event: any) {
     this.filterAge = String(event.value);
     console.log(this.filterAge)
   }
 
-  filterObs() {
-    this.apiService.readObs(this.filterss).subscribe((observations: any)=>{
-      if(this.isAdmin) {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
-        this.notReady = false;
-      } else {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
-        this.notReady = false;
-      }
-      this.observations = observations;
-      this.runSealQuery(observations);
-      this.facetSetup(observations);
-    });
+  public filterObs() {
+    var tempObs = this.observations;
+
+    if(this.filterYear != "Any") {
+      tempObs = tempObs.filter(elem => String(elem.Year) == this.filterYear);
+
+    }
+
+    // **** ADD THESE WHEN YOU GET THE QUERY INFO **********/
+    // if(this.filterAge != "Any") {
+    //   tempObs = tempObs.filter(function(elem, index, self) {
+    //   return String(elem.AgeClass) == this.filterAge;
+    //   });
+    // }
+
+    // if(this.filterGender != "Any") {
+    //   tempObs = tempObs.filter(function(elem, index, self) {
+    //     console.log("here");
+    //   return String(elem.Sex) == this.filterGender;
+    //   });
+    // }
+    this.runSealQuery(tempObs);
 
   }
 
-  resetObs() {
+  public resetObs() {
     this.selectedYear = undefined;
     this.selectedYear = undefined;
     this.runSealQuery(this.observations);
   }
 
-  applyFilter(filterValue: string) {
+  public applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  selectSeal(row) {
-    this.sealData.changeMessage(row);
+  public selectSeal(row) {
+    this.sealData.setCurrentSealState(row);
     this.router.navigate(["seal-page"]);
   }
 
-  setAdmin() {
-      var getAdStatus = JSON.stringify({'email': this.userData.email});
-      this.apiService.getAdminStatus(getAdStatus).then(msg => {
-        this.admin = msg
-        this.admin = this.admin[0].isAdmin;
-        this.adminStatus.updatePermissionLevel(this.admin);
-        this.setPriveleges();
-      });
+  public setAdmin() {
+    var getAdStatus = JSON.stringify({'email': this.userData.email});
+    this.apiService.getAdminStatus(getAdStatus).then(msg => {
+      this.admin = msg
+      this.admin = this.admin[0].isAdmin;
+      this.adminStatus.updatePermissionLevel(this.admin);
+      this.setPriveleges();
+    });
   }
 
-  setPriveleges() {
+  public setPriveleges() {
     if(this.admin == 3) {
       this.isAdmin = true;
     } else if(this.admin == 2) {
@@ -247,11 +267,10 @@ export class AllObservationsComponent implements OnInit {
     }
   }
 
-  deleteSeal(row) {
+  public deleteSeal(row) {
     this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
     console.log('about to call delete');
 
-    this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs(null));
-
- }
+    this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
+  }
 }

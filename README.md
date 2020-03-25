@@ -22,13 +22,13 @@ Features
 Get Started
 =================
 1. Clone the repo
-2. Make sure you have Angular Version 7, Flask with Python 3
+2. Make sure you have Angular Version 8.3.19, Flask with Python 3
 4. Run the backend:
 * cd into flask-backend
 * `python main.py`, making sure you run it with Python Version 3
 3. cd into the Angular project file noses/
 * `npm install`
-* `ng serve`
+* `npm start`
 * Install Dependencies until it works.
 
 

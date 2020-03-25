@@ -18,6 +18,7 @@ import { SealComponent } from './seal/seal.component';
 import { MarkTestComponent } from './mark-test/mark-test.component';
 import { TtlAngMaterialStartPageComponent } from './angular-material-tutorial-components/ttl-ang-material-start-page/ttl-ang-material-start-page.component';
 import { ObsFormMainComponent } from './_components/observation_form/obs-form-main/obs-form-main.component';
+import { UserPofileMainComponent } from './_components/UserProfile/user-pofile-main/user-pofile-main.component';
 
 const routes: Routes = [
 { path: '', redirectTo: '/sign-in', pathMatch: 'full'},
@@ -37,7 +38,8 @@ const routes: Routes = [
 { path: 'mark', component: MarkTestComponent},
 { path: 'seal', component: SealComponent},
 { path: 'ang-material-tutorial', component: TtlAngMaterialStartPageComponent },
-{ path: 'observation-form', component: ObsFormMainComponent}
+{ path: 'observation-form', component: ObsFormMainComponent},
+{ path: 'user-profile-main', component: UserPofileMainComponent}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

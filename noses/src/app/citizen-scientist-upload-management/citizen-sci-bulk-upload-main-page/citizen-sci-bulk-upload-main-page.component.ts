@@ -9,6 +9,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import { MatTableDataSource, MatSnackBar } from '@angular/material';
 import { FlaskBackendService } from 'src/app/_services/flask-backend.service';
 import { AuthService } from 'src/app/_services/auth.service';
+// import { DatePipe } from '@angular/common';
 
 
 export interface TupleStructForTable {
@@ -32,7 +33,7 @@ export interface TupleStructForTable {
 })
 export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
-    private fileName: string;
+    public fileName: string;
     private fileData: any[];
     private tupleTableStructList: TupleStructForTable[];
 
@@ -40,6 +41,9 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     public displayedColumns: string[];
     public dataSource: MatTableDataSource<TupleStructForTable>;
     public currentUserEmail : string;
+
+    public dateForDisplay : string;
+
 
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
@@ -57,12 +61,13 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         private authService : AuthService) 
     {
         this.fileName = "No File Selected";
-        this.displayedColumns = ["position", "date", "locationCode", "comment"];
+        this.displayedColumns = ["position", "tag1_idValue"];
         this.fileData = [];
         this.observationTuples = [];
         this.tupleTableStructList = []; 
 
         this.currentUserEmail = "";
+        this.dateForDisplay = "";
         
     }
 
@@ -112,6 +117,15 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     }
 
 
+    /**
+     * Receives a Javascript Date object and converts it to a string of the form MM/DD/YYYY
+     */
+    public convertDateObjToDateString(dateObj : Date) {
+        let result : string = "";
+        result += (dateObj.getMonth() + 1).toString() + "/" + (dateObj.getDate()).toString() + "/" + dateObj.getFullYear().toString();
+        return result;
+    }
+
 
     private overwriteModifiedTuple(observationIndex: number, result: any)
     {
@@ -147,8 +161,8 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         tupleToOverwrite.sealStandardLength_units = result.sealStandardLength_units;
         tupleToOverwrite.sealCurvilinearLength = result.sealCurvilinearLength;
         tupleToOverwrite.sealCurvilinearLength_units = result.sealCurvilinearLength_units;
-        tupleToOverwrite.sealAuxiliaryGirth = result.sealAuxiliaryGirth;
-        tupleToOverwrite.sealAuxiliaryGirth_units = result.sealAuxiliaryGirth_units;
+        tupleToOverwrite.sealAxillaryGirth = result.sealAxillaryGirth;
+        tupleToOverwrite.sealAxillaryGirth_units = result.sealAxillaryGirth_units;
         tupleToOverwrite.sealMass = result.sealMass;
         tupleToOverwrite.sealMass_units = result.sealMass_units;
         tupleToOverwrite.sealTare = result.sealTare;
@@ -212,35 +226,34 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     }
 
 
-    /**
-     * Checks whether the data is valid and can be uploaded. Displays a message answering that
-     *  question. Then if it can be uploaded, it extacts the list of json objects from the SpreadsheetTuple
-     *  list and sends it to the server.
-     */
-    public uploadData() {
-        var snackbarMessage: string;
-        
-        if (this.getErroneousObservationIndices().length > 0) {
-            snackbarMessage = "WARNING: You cannot submit this upload until you correct all errors.";
-            this.displaySnackbarMessage(snackbarMessage);
-        }
-        else {
-            snackbarMessage = "SUCCESS: This data has been successfully validated. Sending to DB.";
-            this.displaySnackbarMessage(snackbarMessage);
+  /**
+   * Checks whether the data is valid and can be uploaded. Displays a message answering that
+   *  question. Then if it can be uploaded, it extacts the list of json objects from the SpreadsheetTuple
+   *  list and sends it to the server.
+   */
+  public uploadData() {
+    var snackbarMessage: string;
+    
+    if (this.getErroneousObservationIndices().length > 0) {
+      snackbarMessage = "WARNING: You cannot submit this upload until you correct all errors.";
+      this.displaySnackbarMessage(snackbarMessage);
+    }
+    else {
+      snackbarMessage = "SUCCESS: This data has been successfully validated. Sending to DB.";
+      this.displaySnackbarMessage(snackbarMessage);
 
-            var extractedJsonData = this.getExtractedJsonData();
-
-            console.log("EXTRACTED JSON DATA");
-            console.log(extractedJsonData);
-
+      var extractedJsonData = this.getExtractedJsonData();
 
             var fullData = [extractedJsonData, {"isApproved" : 0}];
             this.apiService.addObservations(JSON.stringify(fullData)).subscribe(() => this.apiService.readObs(null));
+      console.log("EXTRACTED JSON DATA");
+      console.log(extractedJsonData);
 
-        }
 
-        
-    }
+      var fullData = [extractedJsonData, {"isApproved" : 0}];
+      this.apiService.addObservations(JSON.stringify(fullData)).subscribe(() => this.apiService.readObs());
+    }    
+  }
 
 
     public getExtractedJsonData() {

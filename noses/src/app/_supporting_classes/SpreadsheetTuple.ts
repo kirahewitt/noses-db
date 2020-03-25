@@ -45,7 +45,7 @@ var jsonName_sealMoltPercentage = "Molt (%)";
 var jsonName_currentSeason = "Season";
 var jsonName_sealStandardLength =  "St. Length";
 var jsonName_sealCurvilinearLength = "Crv. Length";
-var jsonName_sealAuxiliaryGirth = "Ax. Girth";
+var jsonName_sealAxillaryGirth = "Ax. Girth";
 var jsonName_sealMass = "Mass";
 var jsonName_sealTare = "Tare";
 var jsonName_sealMassTare = "Mass-Tare";
@@ -82,7 +82,7 @@ var SpreadsheetAttributeList = [jsonName_fieldLeaderInitials,
                                 jsonName_currentSeason,
                                 jsonName_sealStandardLength,
                                 jsonName_sealCurvilinearLength,
-                                jsonName_sealAuxiliaryGirth,
+                                jsonName_sealAxillaryGirth,
                                 jsonName_sealMass,
                                 jsonName_sealTare,
                                 jsonName_sealMassTare,
@@ -118,7 +118,7 @@ var jsonName_to_objectName_map =  [ {jsonName: jsonName_fieldLeaderInitials, obj
                                     {jsonName: jsonName_currentSeason, objectName: "currentSeason"},
                                     {jsonName: jsonName_sealStandardLength, objectName: "sealStandardLength"},
                                     {jsonName: jsonName_sealCurvilinearLength, objectName: "sealCurvilinearLength"},
-                                    {jsonName: jsonName_sealAuxiliaryGirth, objectName: "sealAuxiliaryGirth"},
+                                    {jsonName: jsonName_sealAxillaryGirth, objectName: "sealAxillaryGirth"},
                                     {jsonName: jsonName_sealMass, objectName: "sealMass"},
                                     {jsonName: jsonName_sealTare, objectName: "sealTare"},
                                     {jsonName: jsonName_sealMassTare, objectName: "sealMassTare"},
@@ -182,8 +182,8 @@ export class SpreadsheetTuple {
   sealStandardLength_units : string;
   sealCurvilinearLength : number;
   sealCurvilinearLength_units : string;
-  sealAuxiliaryGirth : number;
-  sealAuxiliaryGirth_units : string;
+  sealAxillaryGirth : number;
+  sealAxillaryGirth_units : string;
   sealMass : number;
   sealMass_units : string;
   sealTare : number;
@@ -276,8 +276,8 @@ export class SpreadsheetTuple {
     this.originalJsonInput = JSON.parse(JSON.stringify(source.originalJsonInput));
     this.processingErrorList = JSON.parse(JSON.stringify(source.processingErrorList));
     this.sealAgeCode = Object.assign("", source.sealAgeCode);
-    this.sealAuxiliaryGirth = source.sealAuxiliaryGirth;
-    this.sealAuxiliaryGirth_units = Object.assign("", source.sealAuxiliaryGirth_units);
+    this.sealAxillaryGirth = source.sealAxillaryGirth;
+    this.sealAxillaryGirth_units = Object.assign("", source.sealAxillaryGirth_units);
     this.sealCurvilinearLength = source.sealCurvilinearLength;
     this.sealCurvilinearLength_units = Object.assign("", source.sealCurvilinearLength_units);
     this.sealFirstSeenAsWeaner = JSON.parse(JSON.stringify(source.sealFirstSeenAsWeaner));
@@ -680,7 +680,7 @@ export class SpreadsheetTuple {
         
       }
 
-      else if (field[KEY] == jsonName_sealAuxiliaryGirth) {
+      else if (field[KEY] == jsonName_sealAxillaryGirth) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
         //    "<numeric value>"  and then we just assume default units
@@ -688,7 +688,7 @@ export class SpreadsheetTuple {
 
         }
         else {
-          tuple.sealAuxiliaryGirth = parseFloat(valueAsString);
+          tuple.sealAxillaryGirth = parseFloat(valueAsString);
         }
         
       }
@@ -821,7 +821,7 @@ export class SpreadsheetTuple {
 
     sealStdLen = (this.sealStandardLength == null) ? "" : this.sealStandardLength.toString();
     sealCurvLen = (this.sealCurvilinearLength == null) ? "" : this.sealCurvilinearLength.toString();
-    sealAuxG = (this.sealAuxiliaryGirth == null) ? "" : this.sealAuxiliaryGirth.toString();
+    sealAuxG = (this.sealAxillaryGirth == null) ? "" : this.sealAxillaryGirth.toString();
     sealMass = (this.sealMass == null) ? "" : this.sealMass.toString();
     sealTare = (this.sealTare == null) ? "" : this.sealTare.toString();
     sealMassTare = (this.sealMassTare == null) ? "" : this.sealMassTare.toString();
@@ -854,7 +854,7 @@ export class SpreadsheetTuple {
     //                             jsonName_currentSeason : this.currentSeason,
     //                             jsonName_sealStandardLength : sealStdLen,
     //                             jsonName_sealCurvilinearLength : sealCurvLen,
-    //                             jsonName_sealAuxiliaryGirth : sealAuxG,
+    //                             jsonName_sealAxillaryGirth : sealAuxG,
     //                             jsonName_sealMass : sealMass,
     //                             jsonName_sealTare : sealTare,
     //                             jsonName_sealMassTare : sealMassTare,

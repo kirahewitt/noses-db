@@ -7,7 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ObsFormMainComponent implements OnInit {
 
-  constructor() { }
+
+  public form;
+
+  constructor() {
+    
+   }
 
   ngOnInit() {
   }

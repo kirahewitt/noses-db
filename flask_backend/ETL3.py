@@ -109,15 +109,25 @@ def surr_apos(origStr):
 # # test
 def makeConnection():
     try:
+        # Config: DB - csc 366
         #cnx = connection.MySQLConnection(user='kbleich',
         #                                password='abc123',
         #                                host='ambari-head.csc.calpoly.edu',
         #                                database='kbleich')
 
-        cnx = connection.MySQLConnection(user='root',
-                                        password='password',
-                                        host='localhost',
+        # Config: localhost
+        # cnx = connection.MySQLConnection(user='root',
+        #                                 password='password',
+        #                                 host='localhost',
+        #                                 database='sealDB')
+
+        # Config: AWS iorourke@calpoly.edu
+        cnx = connection.MySQLConnection(user='admin',
+                                        password='CS492_ij',
+                                        host='database-this-is-the-last-time.cvrgneqrnjcb.us-east-2.rds.amazonaws.com',
                                         database='sealDB')
+
+
         return cnx
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -194,7 +204,7 @@ def getOrAddObserver(cnx, cursor, fieldLeader):
     initials = fieldLeader.split(', ')[0].replace('\'', '')
     fInitial = initials[0]
     lInitial = initials[1]
-    check = "SELECT ObsID from Observers o where o.FirstName LIKE '" + fInitial + "%' and o.LastName LIKE '" + lInitial + "%'";
+    check = "SELECT ObsID from Observers o where o.FirstName LIKE '" + fInitial + "%' and o.LastName LIKE '" + lInitial + "%'"
     print(check)
     cursor.execute(check)
     row = cursor.fetchone()
