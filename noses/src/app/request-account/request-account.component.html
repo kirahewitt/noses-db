@@ -1,75 +1,4 @@
 <h1 class="title is-2 title-container">Account Information for Request</h1>
-<!-- <div class="outer-most-container">
-    <div class="outer-filter-container">
-        
-
-        <div class="positioned-filter-container" [formGroup]="form">
-            <div class="filter-row">
-              <div class="filter-row-item">
-                <h1 class="title is-3">First Name:</h1>
-              </div>
-              <div class="filter-row-item">
-                <h1 class="title is-3">Last Name:</h1>
-              </div>
-              <div class="filter-row-item">
-                <h1 class="title is-3">Username:</h1>
-              </div>
-              <div class="filter-row-item">
-                <h1 class="title is-3">Password:</h1>
-              </div>
-              <div class="filter-row-item">
-                <h1 class="title is-3">Confirm Password:</h1>
-              </div>
-            </div>
-            <div class="filter-row">
-
-              <div class="filter-row-item">
-                <input formControlName="firstName_fControl" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter First Name">
-              </div>
-
-              <div class="filter-row-item">
-                <input formControlName="lastName_fControl" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Last Name">
-              </div>
-
-              <div class="filter-row-item">
-                <input formControlName="username_fControl" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Username">
-              </div>
-
-              <div class="filter-row-item">
-                <input formControlName="password_fControl" type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Password">
-              </div>
-
-              <div class="filter-row-item">
-                <input formControlName="passwordForCheck_fControl" type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Password Again">
-              </div>
-
-            </div>
-            <div class="filter-row">
-              <div class="filter-row-item">
-
-              </div>
-              <div class="filter-row-item">
-              
-              </div>
-              <div class="filter-row-item">
-              
-              </div>
-              <div class="filter-row-item">
-            
-              </div>
-              <div class="filter-row-item">
-            
-              </div>
-            </div>
-        </div>
-
-
-       
-        
-
-    </div>
-</div> -->
-
 
 <!-- form using angular materials -->
 <div class="container">
@@ -109,21 +38,17 @@
       </mat-form-field>
     </p>
 
-
-    
-
-  
   </form>
 </div>
   
 
 
-<button type="button" class="btn btn-success button-right" (click)="submitUserAccountRequest()">Submit</button>
+<button type="button" class="btn btn-success button-right" (click)="submitUserAccountRequest()" routerLink="/sign-in">Submit</button>
 
 <!-- old version which still has the router redirect -->
 <!-- <button type="button" class="btn btn-success button-right" (click)="submitUserAccountRequest()" routerLink="/sign-in">Submit</button> -->
 
-<!-- <button type="button" class="btn btn-success button-right" data-toggle="modal" data-target="#exampleModal">Submit</button> -->
+<button type="button" class="btn btn-success button-right" data-toggle="modal" data-target="#exampleModal">Submit</button>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
