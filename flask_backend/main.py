@@ -116,7 +116,8 @@ def update_user():
     conn.close()
 
 
-## Not sure if this needs to be POST only
+## Adds a new user account request as a parallel pair of tuples belonging 
+## to the Users and Observations entity sets.
 @app.route('/submit-new-userAccountRequest', methods=['POST', 'GET'])
 def submit_new_userAccountRequest():
 
@@ -137,37 +138,18 @@ def submit_new_userAccountRequest():
       email = _json['email']
       password = _json['password']
 
-
-      #check the values of the variables
-      print("firstName: ")
-      print(firstName)
-      print("lastName: ")
-      print(lastName)
-      print("email: ")
-      print(email)
-      print("password: ")
-      print(password)
-
       # determine the next UserID and the next ObsID, for the Users and Observers entity sets, respectively.
       nextUserId = int(getLatestUser()) + 1
       nextObserverId = int(getLatestObserver()) + 1
-
-      print("nextUserId: ")
-      print(nextUserId)
-      print("nextObserverId: ")
-      print(nextObserverId)
-
 
       # verify that we're not going to attempt to add a user for an email already in use
       emailAlreadyInUse = isEmailInUseByAnyUser(email)
       if (emailAlreadyInUse):
         raise Exception("A verified user with that email already exists in this system.") 
 
-
       # try to make the observer tuple first
-      isObserverInsertSuccess = submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, password, nextObserverId)
+      submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, password, nextObserverId)
 
-      
       # store user vars
       userQuery_nextUserId = str(nextUserId)
       userQuery_username = email                       # given
@@ -202,13 +184,7 @@ def submit_new_userAccountRequest():
       rows = cursor.fetchall()
       resp = jsonify(rows)
 
-      
-
-      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID \n\n")
-      print(rows)
-
       conn.commit()
-      
       return resp
 
     else:
@@ -227,6 +203,7 @@ def submit_new_userAccountRequest():
 def getLatestObserver():
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
+  
   try:
     query_latestObserverID = "SELECT * FROM Observers ORDER BY ObsID DESC LIMIT 1;"
     cursor.execute(query_latestObserverID)
@@ -248,6 +225,7 @@ def getLatestObserver():
 def getLatestUser():
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
+
   try:
     query_latestUserID = "SELECT * FROM Users ORDER BY UserID DESC LIMIT 1;"
     cursor.execute(query_latestUserID)
@@ -271,19 +249,15 @@ def isEmailInUseByAnyUser(email):
   cursor = conn.cursor(pymysql.cursors.DictCursor)
 
   try:
-    # verify that the email isn't being used in the Users table
-      query = (" SELECT * " +
-               " FROM  Users " +
-               " WHERE Email = " + surr_apos(email) + ";")
-      cursor.execute(query)
-      rows = cursor.fetchall()
-      resp = jsonify(rows)
+    query = (" SELECT * " +
+              " FROM  Users " +
+              " WHERE Email = " + surr_apos(email) + ";")
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    resp = jsonify(rows)
 
-      print("*** received response for initial query")
-
-      emailAlreadyInUse = len(rows) > 0
-
-      return emailAlreadyInUse
+    emailAlreadyInUse = len(rows) > 0
+    return emailAlreadyInUse
 
   except Exception as e:
     print("Error(submit_new_userAccountRequest_ObserverHelper): ")
@@ -292,8 +266,6 @@ def isEmailInUseByAnyUser(email):
   finally:
     cursor.close()
     conn.close()
-
-
 
 
 ## Receives the information to create the observer
@@ -308,36 +280,19 @@ def submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, pas
   cursor = conn.cursor(pymysql.cursors.DictCursor)
 
   try:
-    if request.method == 'POST':
+    query = (" INSERT INTO Observers (ObsID, FirstName, LastName, isVerifiedByAdmin) VALUES( " + 
+              " " + str(nextObserverId) + ", " +
+              " " + surr_apos(firstName) + ", " +
+              " " + surr_apos(lastName) + ", " +
+              " " + str(0) + ");")
+    print("*** printing the query we made:")
+    print(query)
 
-      # (1) make a new object/query to insert the Observer(make sure this query causes the DB to return the row) 
-      query = (" INSERT INTO Observers (ObsID, FirstName, LastName, isVerifiedByAdmin) VALUES( " + 
-               " " + str(nextObserverId) + ", " +
-               " " + surr_apos(firstName) + ", " +
-               " " + surr_apos(lastName) + ", " +
-               " " + str(0) + ");")
-      print("*** printing the query we made:")
-      print(query)
-
-      # (2) execute the query 
-      cursor.execute(query)
-      print(" *** after cursor.execute")
-      rows = cursor.fetchall()
-  
-      # display all the observers now
-      query = ("SELECT * FROM Observers;")
-      cursor.execute(query)
-      rows = cursor.fetchall()
-      
-      print("rows of table after running the sql insertion query")
-      print(rows)
-
-      conn.commit()
-      return str(1)
-
-    else:
-      return jsonify("There was an error in 'submit_new_userAccountRequest_ObserverHelper()'.")
-
+    # (2) execute the query 
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    conn.commit()
+    
   except Exception as e:
     print("Error(submit_new_userAccountRequest_ObserverHelper): ")
     print(e)
@@ -345,9 +300,6 @@ def submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, pas
   finally:
     cursor.close()
     conn.close()
-
-
-
 
 
 ## Gets the relevant information for a seal with the provided ID
