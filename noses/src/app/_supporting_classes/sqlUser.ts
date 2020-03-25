@@ -19,8 +19,24 @@ export interface sqlUser_full {
   HashedPassword: string;
 }
 
+export class user_forCreateNewUser {
+  public firstName? : string;
+  public lastName? : string;
+  public email? : string;
+  public password? : string;
+  public passwordConfirm? : string;
+  
+  constructor() {
+    this.firstName = "";
+    this.lastName = "";
+    this.email = "";
+    this.password = "";
+    this.passwordConfirm = "";
+  }
+}
+
 export interface sqlObserver_full {
-  ObsID: number;
-  FirstName: string;
-  LastName: string;
+  ObsID : number;
+  FirstName : string;
+  LastName : string;
 }

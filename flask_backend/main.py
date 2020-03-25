@@ -116,6 +116,239 @@ def update_user():
     conn.close()
 
 
+## Not sure if this needs to be POST only
+@app.route('/submit-new-userAccountRequest', methods=['POST', 'GET'])
+def submit_new_userAccountRequest():
+
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    if request.method == 'POST':
+
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      print(_json)
+
+      # store all the variables
+      firstName = _json['firstName']
+      lastName = _json['lastName']
+      email = _json['email']
+      password = _json['password']
+
+
+      #check the values of the variables
+      print("firstName: ")
+      print(firstName)
+      print("lastName: ")
+      print(lastName)
+      print("email: ")
+      print(email)
+      print("password: ")
+      print(password)
+
+      # determine the next UserID and the next ObsID, for the Users and Observers entity sets, respectively.
+      nextUserId = int(getLatestUser()) + 1
+      nextObserverId = int(getLatestObserver()) + 1
+
+      print("nextUserId: ")
+      print(nextUserId)
+      print("nextObserverId: ")
+      print(nextObserverId)
+
+
+      # verify that we're not going to attempt to add a user for an email already in use
+      emailAlreadyInUse = isEmailInUseByAnyUser(email)
+      if (emailAlreadyInUse):
+        raise Exception("A verified user with that email already exists in this system.") 
+
+
+      # try to make the observer tuple first
+      isObserverInsertSuccess = submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, password, nextObserverId)
+
+      
+      # store user vars
+      userQuery_nextUserId = str(nextUserId)
+      userQuery_username = email                       # given
+      userQuery_password = password                    # given
+      userQuery_initials = firstName[0] + lastName[0]  # get first character of first and last name for initials
+      userQuery_isAdmin = str(0)                       # can't be an admin b/c this is just a request
+      userQuery_affiliation = ""                       # won't have any affiliation by default
+      userQuery_email = email                          # given
+      userQuery_obsID = str(nextObserverId)            # 
+      userQuery_isVerifiedByAdmin = str(0)             # Can't be a verified user because this is just a request.
+
+      # make a new object/query for the user
+      # username, password, initials, isAdmin, affiliation, email, obsID, isVerifiedByAdmin
+      query = (" INSERT INTO Users (UserID, Username, Password, Initials, isAdmin, Affiliation, Email, ObsID, isVerifiedByAdmin) VALUES( " + 
+               " " + userQuery_nextUserId + ", " + 
+               " " + surr_apos(userQuery_username) + ", " + 
+               " " + surr_apos(userQuery_password) + ", " + 
+               " " + surr_apos(userQuery_initials) + ", " + 
+               " " + userQuery_isAdmin + ", " + 
+               " " + surr_apos(userQuery_affiliation) + ", " + 
+               " " + surr_apos(userQuery_email) + ", " + 
+               " " + userQuery_obsID + ", " + 
+               " " + userQuery_isVerifiedByAdmin + ") " + ";")
+
+      print("query to execute:")
+      print(query)
+
+      # execute the query
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      
+
+      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID \n\n")
+      print(rows)
+
+      conn.commit()
+      
+      return resp
+
+    else:
+      return jsonify("Error: Could not add User ")
+
+  except Exception as e:
+    print("Error(submit-new-userAccountRequest): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+## Retrieves the Observers tuple with the highest integer value
+def getLatestObserver():
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+  try:
+    query_latestObserverID = "SELECT * FROM Observers ORDER BY ObsID DESC LIMIT 1;"
+    cursor.execute(query_latestObserverID)
+    rows = cursor.fetchall()
+
+    obsId = rows[0]['ObsID']
+    return obsId
+
+  except Exception as e:
+    print("Error(getLatestObserver): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+## Retrieves the Users tuple with the highest integer value
+def getLatestUser():
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+  try:
+    query_latestUserID = "SELECT * FROM Users ORDER BY UserID DESC LIMIT 1;"
+    cursor.execute(query_latestUserID)
+    rows = cursor.fetchall()
+    
+    userId = rows[0]['UserID']
+    return userId
+    
+  except Exception as e:
+    print("Error(getLatestUser): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+## Deftermines is a particular email is already in use by some user
+def isEmailInUseByAnyUser(email):
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    # verify that the email isn't being used in the Users table
+      query = (" SELECT * " +
+               " FROM  Users " +
+               " WHERE Email = " + surr_apos(email) + ";")
+      cursor.execute(query)
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      print("*** received response for initial query")
+
+      emailAlreadyInUse = len(rows) > 0
+
+      return emailAlreadyInUse
+
+  except Exception as e:
+    print("Error(submit_new_userAccountRequest_ObserverHelper): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
+
+## Receives the information to create the observer
+## This method has a few jobs
+##  (1) determine whether a user with that name already exists
+##  (2) if user exists, return an id of -1, otherwise, use one query to create the user, and user another query to retrieve its Observation ID and return that.
+##
+## NOTE: this method a boolean indicating whether adding the observer was successful.
+def submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, password, nextObserverId):
+  
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    if request.method == 'POST':
+
+      # (1) make a new object/query to insert the Observer(make sure this query causes the DB to return the row) 
+      query = (" INSERT INTO Observers (ObsID, FirstName, LastName, isVerifiedByAdmin) VALUES( " + 
+               " " + str(nextObserverId) + ", " +
+               " " + surr_apos(firstName) + ", " +
+               " " + surr_apos(lastName) + ", " +
+               " " + str(0) + ");")
+      print("*** printing the query we made:")
+      print(query)
+
+      # (2) execute the query 
+      cursor.execute(query)
+      print(" *** after cursor.execute")
+      rows = cursor.fetchall()
+  
+      # display all the observers now
+      query = ("SELECT * FROM Observers;")
+      cursor.execute(query)
+      rows = cursor.fetchall()
+      
+      print("rows of table after running the sql insertion query")
+      print(rows)
+
+      conn.commit()
+      return str(1)
+
+    else:
+      return jsonify("There was an error in 'submit_new_userAccountRequest_ObserverHelper()'.")
+
+  except Exception as e:
+    print("Error(submit_new_userAccountRequest_ObserverHelper): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
+
 
 ## Gets the relevant information for a seal with the provided ID
 @app.route('/getseal-with-sealid', methods=['POST', 'GET'])

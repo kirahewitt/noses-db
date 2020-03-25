@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observations } from  '../_supporting_classes/Observations';
-import { sqlUser, sqlUser_full } from '../_supporting_classes/sqlUser';
+import { sqlUser, sqlUser_full, user_forCreateNewUser } from '../_supporting_classes/sqlUser';
 import { Observable, of } from  'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { SealDataService } from "./seal-data.service";
@@ -133,6 +133,22 @@ export class FlaskBackendService {
 
 
   /**
+   * @param userDetails : The specified firstname, lastname, username/email, and password of the user
+   */
+  public submitUserAccountRequest(userDetails: user_forCreateNewUser) {
+    let userDetails_json = JSON.stringify(userDetails);
+    let flask_endpoint = `${this.FLASK_API_SERVER}/submit-new-userAccountRequest`;
+
+    let obs = this.httpClient
+      .post(flask_endpoint, userDetails_json, this.httpOptions)
+      .pipe(
+        catchError(this.handleError<any>('submitNewUserAccountRequest', [])),
+      );
+
+    return obs;
+  }
+
+  /**
    * This function is going to return an Observable of SqlSealDossier. 
    * 
    * Since the Flask API returns information in JSON form, we have to pass the JSON through a
@@ -205,7 +221,6 @@ export class FlaskBackendService {
       );
     return obs;
   }
-
 
 
   /** 
