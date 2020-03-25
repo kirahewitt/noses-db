@@ -10,6 +10,7 @@ import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
 import { SqlObservation } from '../_supporting_classes/SqlObservation';
 import { SqlTag } from '../_supporting_classes/SqlTag';
 import { SqlMark } from '../_supporting_classes/SqlMark';
+import { ResetPasswordFormObject } from '../_supporting_classes/ResetPasswordFormObject';
 
 
 /**
@@ -147,6 +148,25 @@ export class FlaskBackendService {
 
     return obs;
   }
+
+
+  /**
+   * @param userDetails : The specified firstname, lastname, username/email, and password of the user
+   */
+  public submitUserPasswordChangeRequest(userPasswordData: ResetPasswordFormObject) {
+    let userPasswordData_json = JSON.stringify(userPasswordData);
+    let flask_endpoint = `${this.FLASK_API_SERVER}/submit-userPasswordChangeRequest`;
+
+    let obs = this.httpClient
+      .post(flask_endpoint, userPasswordData_json, this.httpOptions)
+      .pipe(
+        catchError(this.handleError<any>('submitUserPasswordChangeRequest', [])),
+      );
+
+    return obs;
+  }
+
+
 
   /**
    * This function is going to return an Observable of SqlSealDossier. 

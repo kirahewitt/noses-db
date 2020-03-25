@@ -116,6 +116,76 @@ def update_user():
     conn.close()
 
 
+@app.route('/submit-userPasswordChangeRequest', methods=['POST', 'GET'])
+def submit_userPasswordChangeRequest():
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    
+    if request.method == 'POST':
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      print(_json)
+
+      email = _json['email']
+      oldPassword = _json['oldPassword']
+      newPassword = _json['newPassword']
+
+      # get the current password 
+      currentPassword = get_password_forUserEmail(email)
+
+      if (currentPassword == oldPassword):
+        updatePasswordQuery = ("UPDATE Users SET Password=" + surr_apos(newPassword) + " WHERE Email=" + surr_apos(email) + ";")
+
+        cursor.execute(updatePasswordQuery)
+
+        # store the response and return it as json
+        rows = cursor.fetchall()
+        resp = jsonify(rows)
+        conn.commit()
+
+        return jsonify("Success: The overwrite of the former password was successful")
+
+      else:
+        return jsonify("Error: The value in 'Old Password' is incorrect.")
+
+    else:
+      return jsonify("Error: Received unexpected GET request. Expected POST")
+      
+  except Exception as e:
+    print("Error(submit-userPasswordChangeRequest): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
+# Gets the current password for a particular user
+def get_password_forUserEmail(email):
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    query = ("SELECT * FROM Users WHERE Email=" + surr_apos(email) + ";")
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    currentPassword = rows[0]['Password']
+    return currentPassword
+
+  except Exception as e:
+    print("Error(get_password_forUserEmail): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
 ## Adds a new user account request as a parallel pair of tuples belonging 
 ## to the Users and Observations entity sets.
 @app.route('/submit-new-userAccountRequest', methods=['POST', 'GET'])
@@ -188,7 +258,7 @@ def submit_new_userAccountRequest():
       return resp
 
     else:
-      return jsonify("Error: Could not add User ")
+      return jsonify("Error: Received unexpected GET request. Expected POST")
 
   except Exception as e:
     print("Error(submit-new-userAccountRequest): ")
@@ -203,7 +273,7 @@ def submit_new_userAccountRequest():
 def getLatestObserver():
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
-  
+
   try:
     query_latestObserverID = "SELECT * FROM Observers ORDER BY ObsID DESC LIMIT 1;"
     cursor.execute(query_latestObserverID)
