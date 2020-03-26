@@ -68,10 +68,10 @@ def remove_user():
       _json = request.json
       email = _json['email']
       print(_json)
-      cursor.execute("Update Users Set isAdmin=0 where email=\'" + email + "\';")
+      cursor.execute("Update Users Set isAdmin=-1 where email=\'" + email + "\';")
 
       conn.commit()
-      cursor.execute("SELECT * from Users Where isAdmin > 0;")
+      cursor.execute("SELECT * from Users Where isAdmin >= 0;")
 
       rows = cursor.fetchall()
       resp = jsonify(rows)
@@ -102,7 +102,7 @@ def update_user():
 
       cursor.execute("Update Users Set isAdmin="+ str(priv) + " where email=\'" + email + "\';")
       conn.commit()
-      cursor.execute("SELECT * from Users Where isAdmin > 0;")
+      cursor.execute("SELECT * from Users Where isAdmin >= 0;")
 
       rows = cursor.fetchall()
       resp = jsonify(rows)
@@ -428,6 +428,9 @@ def get_IDing_observations_with_sealId():
   try:
     if request.method == 'POST':
 
+      # print("\n\n\n\nvalue of _json")
+      # print(_json)
+
       # get the input from the person accessing this REST endpoint
       _json = request.json
       sealId = _json
@@ -458,6 +461,59 @@ def get_IDing_observations_with_sealId():
     conn.close()
 
 
+@app.route("/removeUserHavingEmail", methods=['POST'])
+def removeUserHavingEmail():
+
+  print("\n\n\n\n MADE IT TO THE BEGINNING OF 'removeUserHavingEmail'")
+
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+
+    if request.method == 'POST':
+      _json = request.json
+      email = _json['email']
+      query = ("Update Users Set isAdmin=-1 where email=" + surr_apos(email) + ";")
+
+      print("\n\nQeuery for 'deleting' the tuple\n\n")
+      print(query)
+
+      cursor.execute(query)
+      rows = cursor.fetchall()
+      conn.commit()
+
+
+      query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email " + 
+                " FROM Observers as O, Users as U " +
+                " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
+
+      print("\n\nQeuery for getting all the rows")
+      print(query)
+
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      # output results for sanity check
+      print("Result of getAllUsers - Flask API")
+      print(rows)
+
+      return resp
+    else:
+      print("Request method was for GET instead of POST")
+    
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
 
 ## get all users
 @app.route('/getAll_UserObserver_Data', methods=['POST', 'GET'])
@@ -472,7 +528,7 @@ def getAllUserObserverData():
 
     query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email " + 
               " FROM Observers as O, Users as U " +
-              " WHERE U.ObsID = O.ObsID;")
+              " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
 
 
     cursor.execute(query)
@@ -886,7 +942,7 @@ def add_user():
 
     try:
         if request.method == 'GET':
-            cursor.execute("SELECT * from Users Where isAdmin > 0;")
+            cursor.execute("SELECT * from Users Where isAdmin >= 0;")
             rows = cursor.fetchall()
             resp = jsonify(rows)
             return resp
@@ -928,7 +984,7 @@ def add_user():
             cursor.execute(updateUserEmailCmd)
             conn.commit()
                 
-            cursor.execute("SELECT * from Users Where isAdmin > 0;")
+            cursor.execute("SELECT * from Users Where isAdmin >= 0;")
 
             rows = cursor.fetchall()
             resp = jsonify(rows)

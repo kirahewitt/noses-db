@@ -49,7 +49,9 @@
 
       <ng-container matColumnDef="remUser">
         <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let lewanite"> <button (click)="removeUser(lewanite)" class="btn btn-rem-user">Remove User</button></td>
+        <td mat-cell *matCellDef="let lewanite"> 
+          <button (click)="removeUser_viaObservable(lewanite)" class="btn btn-rem-user">Remove User</button>
+        </td>
       </ng-container>
 
 

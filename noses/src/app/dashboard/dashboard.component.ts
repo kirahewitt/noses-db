@@ -69,7 +69,6 @@ export class DashboardComponent implements OnInit {
    * @param dossierHelperService 
    */
   constructor(private apiService: FlaskBackendService, private sealData: SealDataService, private adminStatus: AdminService, public router: Router, private dossierHelperService: DossierViewHelperService) { 
-    this.sealDossierList_forDisplay = [];
   }
 
 

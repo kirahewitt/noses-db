@@ -243,6 +243,41 @@ export class FlaskBackendService {
   }
 
 
+  /**
+   * 
+   */
+  public removeUserHavingEmail(jsonUsrObsObj:any): Observable<User_Observer_Obj[]> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/removeUserHavingEmail`;
+
+    
+    let obs = this.httpClient.post(flask_endpoint, jsonUsrObsObj, this.httpOptions).pipe(
+      catchError(this.handleError<any>('getObservations_bySealId', [])),
+      map(jsonResponse => {
+        var userObjList : User_Observer_Obj[] = [];
+
+        console.log("removeUserHavingEMail -- PROCESSING response from DB")
+
+        for (let json_user of jsonResponse) {
+          var tempUser : User_Observer_Obj = new User_Observer_Obj();
+          tempUser.firstName = json_user['FirstName'];
+          tempUser.lastName = json_user['LastName'];
+          tempUser.isVerifiedByAdmin = json_user['isVerifiedByAdmin'];
+          tempUser.userId = json_user['UserID'];
+          tempUser.username = json_user["Username"];
+          tempUser.initials = json_user["Initials"];
+          tempUser.isAdmin = json_user['isAdmin'];
+          tempUser.affiliation = json_user['Affiliation'];
+          tempUser.email = json_user['Email'];
+          tempUser.obsId = json_user['ObsID'];
+          userObjList.push(tempUser);
+        }
+
+        return userObjList;
+      })
+    );
+    return obs;
+  }
+
    /**
    * New version of the get users api call. 
    */
