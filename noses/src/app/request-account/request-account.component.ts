@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { sqlUser_full, user_forCreateNewUser } from '../_supporting_classes/sqlUser';
 import { FlaskBackendService } from '../_services/flask-backend.service';
 
@@ -37,11 +37,12 @@ export class RequestAccountComponent implements OnInit {
    */
   public ngOnInit() {
     this.form = this.formBuilder.group({
-      firstName        : [this.newUser.firstName, []],
-      lastName         : [this.newUser.lastName, []],
-      email         : [this.newUser.email, []],
-      password         : [this.newUser.password, []],
-      passwordConfirm : [this.newUser.passwordConfirm, []]
+      //                 [<initial value>,              <validator methods>]
+      firstName        : [this.newUser.firstName,       Validators.required],
+      lastName         : [this.newUser.lastName,        Validators.required],
+      email            : [this.newUser.email,           Validators.required],
+      password         : [this.newUser.password,        Validators.required],
+      passwordConfirm  : [this.newUser.passwordConfirm, Validators.required]
     });
   }
 
@@ -64,6 +65,14 @@ export class RequestAccountComponent implements OnInit {
       // in here we can do the routing.
       console.log("Request Account component has received confirmation that adding the user is complete!")
     });
+  }
+
+  /**
+   * Note this interesting syntax... We've defined this using the same structure as other callback functions
+   * Very similar to the syntax we use when interacting with subscriptions.
+   */
+  public hasError = (controlName: string, errorName: string) => {
+      return this.form.controls[controlName].hasError(errorName);
   }
 
 }

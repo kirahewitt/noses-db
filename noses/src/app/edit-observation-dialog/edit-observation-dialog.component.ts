@@ -139,7 +139,8 @@ export class EditObservationDialogComponent implements OnInit {
 
 
     /**
-     * 
+     * Note this interesting syntax... We've defined this using the same structure as other callback functions
+     * Very similar to the syntax we use when interacting with subscriptions.
      */
     public hasError = (controlName: string, errorName: string) => {
         return this.form.controls[controlName].hasError(errorName);

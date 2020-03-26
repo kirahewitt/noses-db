@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FlaskBackendService } from '../_services/flask-backend.service';
 import { ResetPasswordFormObject } from '../_supporting_classes/ResetPasswordFormObject';
 
@@ -12,8 +12,6 @@ import { ResetPasswordFormObject } from '../_supporting_classes/ResetPasswordFor
   styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
-
-
   public form : FormGroup;
   public resetPassFormObj : ResetPasswordFormObject; 
 
@@ -32,10 +30,10 @@ export class ResetPasswordComponent implements OnInit {
    */
   ngOnInit() {
     this.form = this.formBuilder.group({
-      email: [this.resetPassFormObj.email, []],
-      oldPassword: [this.resetPassFormObj.oldPassword, []],
-      newPassword: [this.resetPassFormObj.newPassword, []],
-      newPasswordConfirm: [this.resetPassFormObj.newPasswordConfirm, []]
+      email: [this.resetPassFormObj.email, Validators.required],
+      oldPassword: [this.resetPassFormObj.oldPassword, Validators.required],
+      newPassword: [this.resetPassFormObj.newPassword, Validators.required],
+      newPasswordConfirm: [this.resetPassFormObj.newPasswordConfirm, Validators.required]
     });
   }
 
@@ -54,6 +52,14 @@ export class ResetPasswordComponent implements OnInit {
     submitUserPasswordData_obs.subscribe( () => {
       console.log("Reset Password component... Operation Complete");
     });
+  }
+
+  /**
+   * Note this interesting syntax... We've defined this using the same structure as other callback functions
+   * Very similar to the syntax we use when interacting with subscriptions.
+   */
+  public hasError = (controlName: string, errorName: string) => {
+      return this.form.controls[controlName].hasError(errorName);
   }
 
 }

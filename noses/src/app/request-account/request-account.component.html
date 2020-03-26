@@ -7,6 +7,7 @@
       <mat-form-field>
         <mat-label> First Name: </mat-label>
         <input matInput formControlName="firstName" value="{{newUser.firstName}}" class="input" type="text" placeholder="Text input">
+        <mat-error *ngIf="hasError('firstName', 'required')"> This field is required. </mat-error> 
       </mat-form-field>
     </p>
     
@@ -14,6 +15,7 @@
       <mat-form-field>
         <mat-label> Last Name: </mat-label>
         <input matInput formControlName="lastName" value="{{newUser.lastName}}" class="input" type="text" placeholder="Text input">
+        <mat-error *ngIf="hasError('lastName', 'required')"> This field is required. </mat-error> 
       </mat-form-field>
     </p>
       
@@ -21,6 +23,7 @@
       <mat-form-field>
         <mat-label> Username: </mat-label>
         <input matInput formControlName="email" value="{{newUser.email}}"  class="input" type="text" placeholder="Text input">
+        <mat-error *ngIf="hasError('email', 'required')"> This field is required. </mat-error> 
       </mat-form-field>
     </p>
       
@@ -28,6 +31,7 @@
       <mat-form-field>
         <mat-label> Password: </mat-label>
         <input matInput formControlName="password" value="{{newUser.password}}"  class="input" type="text" placeholder="Text input">
+        <mat-error *ngIf="hasError('password', 'required')"> This field is required. </mat-error> 
       </mat-form-field>
     </p>
       
@@ -35,6 +39,7 @@
       <mat-form-field>
         <mat-label> Confirm Password: </mat-label>
         <input matInput formControlName="passwordConfirm" value="{{newUser.passwordConfirm}}"  class="input" type="text" placeholder="Text input">
+        <mat-error *ngIf="hasError('passwordConfirm', 'required')"> This field is required. </mat-error> 
       </mat-form-field>
     </p>
 
@@ -43,9 +48,7 @@
   
 
 <!-- One submit for ... -->
-<button type="button" class="btn btn-success button-right" (click)="submitUserAccountRequest()" routerLink="/sign-in">Submit</button>
-<button type="button" class="btn btn-success button-right" data-toggle="modal" data-target="#exampleModal">Submit</button>
-
+<button type="button" class="btn btn-success button-right" (click)="submitUserAccountRequest()" data-toggle="modal" data-target="#exampleModal">Submit</button>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
