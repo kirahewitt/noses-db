@@ -55,7 +55,6 @@
                 <input matInput formControlName="passwordConfirm" value="{{newUser.passwordConfirm}}" [errorStateMatcher]="passwordErrorStateMatcher"  class="input" type="text" placeholder="Text input">
                 <mat-error *ngIf="hasError('passwordConfirm', 'required')"> This field is required. </mat-error> 
                 <mat-error *ngIf="form.hasError('passwordPairMismatch')"> Passwords must match. </mat-error>
-                
               </mat-form-field>
             </p>
           </div>

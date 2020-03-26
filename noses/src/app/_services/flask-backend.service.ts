@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observations } from  '../_supporting_classes/Observations';
-import { sqlUser, sqlUser_full, user_forCreateNewUser } from '../_supporting_classes/sqlUser';
+import { sqlUser, sqlUser_full, user_forCreateNewUser, User_Observer_Obj } from '../_supporting_classes/sqlUser';
 import { Observable, of } from  'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { SealDataService } from "./seal-data.service";
@@ -88,7 +88,7 @@ export class FlaskBackendService {
    * 
    * @param obs 
    */
-  async addUser(obs: string) {
+  async getPromise_addUser(obs: string) {
     let flask_endpoint = `${this.FLASK_API_SERVER}/adduser`;
 
     await this.httpClient.post<string>(flask_endpoint, obs, this.httpOptions).toPromise()
@@ -107,6 +107,9 @@ export class FlaskBackendService {
     let flask_endpoint = `${this.FLASK_API_SERVER}/adduser`;
     return this.httpClient.get<sqlUser[]>(flask_endpoint);
   }
+
+
+ 
 
 
   /**
@@ -167,6 +170,8 @@ export class FlaskBackendService {
   }
 
 
+  
+
 
   /**
    * This function is going to return an Observable of SqlSealDossier. 
@@ -196,6 +201,40 @@ export class FlaskBackendService {
           return newSealDossier;
         })
       );
+
+    return obs;
+  }
+
+
+   /**
+   * New version of the get users api call. 
+   */
+  public getUserList(): Observable<User_Observer_Obj[]> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/getAll_UserObserver_Data`;
+
+    let obs = this.httpClient.get(flask_endpoint).pipe(
+      catchError(this.handleError<any>('getAll_UserObserver_Data', [])),
+      map((jsonResponse : any) => {
+        var userObjList : User_Observer_Obj[] = [];
+
+        for (let json_user of jsonResponse) {
+          var tempUser : User_Observer_Obj = new User_Observer_Obj();
+          tempUser.firstName = json_user['FirstName'];
+          tempUser.lastName = json_user['LastName'];
+          tempUser.isVerifiedByAdmin = json_user['isVerifiedByAdmin'];
+          tempUser.userId = json_user['UserID'];
+          tempUser.username = json_user["Username"];
+          tempUser.initials = json_user["Initials"];
+          tempUser.isAdmin = json_user['isAdmin'];
+          tempUser.affiliation = json_user['Affiliation'];
+          tempUser.email = json_user['Email'];
+          tempUser.obsId = json_user['ObsID'];
+          userObjList.push(tempUser);
+        }
+
+        return userObjList;
+      })
+    );
 
     return obs;
   }

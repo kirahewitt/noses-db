@@ -459,12 +459,45 @@ def get_IDing_observations_with_sealId():
 
 
 
+## get all users
+@app.route('/getAll_UserObserver_Data', methods=['POST', 'GET'])
+def getAllUserObserverData():
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    # execute a query to get all the users
+    # query = (" SELECT * FROM Users, Observers WHERE Users.ObsID=Observers.ObsID;")
+    
+
+    query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email " + 
+              " FROM Observers as O, Users as U " +
+              " WHERE U.ObsID = O.ObsID;")
+
+
+    cursor.execute(query)
+
+    # store the response and return it as json
+    rows = cursor.fetchall()
+    resp = jsonify(rows)
+
+    # output results for sanity check
+    print("Result of getAllUsers - Flask API")
+    print(rows)
+
+    return resp
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
 
 
 
 
-
-#   getobservations-with-sealid
+## getobservations-with-sealid
 @app.route('/getobservations-with-sealid', methods=['POST', 'GET'])
 def get_observations_with_sealId():
 
