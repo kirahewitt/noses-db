@@ -206,6 +206,43 @@ export class FlaskBackendService {
   }
 
 
+  /**
+   * Retrieves a list of seal dossier Information
+   */
+  public getSealDossierList(): Observable<SqlSealDossier[]> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/getAll_SealDossier_Data`;
+
+    let obs = this.httpClient.get(flask_endpoint).pipe(
+      catchError(this.handleError<any>('getAll_SealDossier_Data', [])),
+      map( jsonResponse => {
+        var sealDossierList : SqlSealDossier[] = [];
+
+        for (let json_dossier of jsonResponse) {
+          var tempDossier: SqlSealDossier = new SqlSealDossier();
+          tempDossier.sealId = json_dossier['SealID'];
+          tempDossier.identifyingObservationId = json_dossier['ObservationID'];
+          tempDossier.sex = json_dossier['Sex'];
+          tempDossier.isDeprecated = json_dossier['isDeprecated'];
+          //tempDossier.uniqueMarkYearList = json_dossier['markYearList'];
+          // tempDossier.uniqueTagList = json_dossier['uniqueTagList'];
+          // tempDossier.ageClass = json_dossier['AgeClass'];
+          
+          
+          // tempDossier.lastSeen = json_dossier['LastSeen'];
+          
+
+
+          sealDossierList.push(tempDossier);
+        }
+
+        return sealDossierList;
+      })
+    );
+
+    return obs;
+  }
+
+
    /**
    * New version of the get users api call. 
    */

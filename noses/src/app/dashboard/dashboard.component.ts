@@ -10,6 +10,7 @@ import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
 import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
+import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
 
 
 export interface tableJsonStructure {
@@ -59,32 +60,27 @@ export class DashboardComponent implements OnInit {
 
 
   /**
-   * 
+   * Initializes local attributes of this component class's instance.
+   * Provides access to injected Angular Services.
    * @param apiService 
-   * @param authService 
-   * @param afAuth 
    * @param sealData 
    * @param adminStatus 
    * @param router 
    * @param dossierHelperService 
    */
-  constructor(private apiService: FlaskBackendService,
-              public authService: AuthService,
-              public afAuth: AngularFireAuth,
-              private sealData: SealDataService,
-              private adminStatus: AdminService,
-              public router: Router,
-              private dossierHelperService: DossierViewHelperService) { }
+  constructor(private apiService: FlaskBackendService, private sealData: SealDataService, private adminStatus: AdminService, public router: Router, private dossierHelperService: DossierViewHelperService) { 
+    this.sealDossierList_forDisplay = [];
+  }
 
 
   /**
-   * 
+   * Responsible for using observables to asynchonously populate the list of SqlSealDossier objects.
    */
-  ngOnInit() {
+  public ngOnInit() {
     
     // subscribe to the api service which provides the data we'll populate the table with
     let sealsObservable = this.apiService.readSeals();
-    sealsObservable.subscribe( (observations: any) => {
+    sealsObservable.subscribe( (response_observationList: any) => {
 
       if (this.isAdmin) {
         this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal' ];
@@ -95,27 +91,29 @@ export class DashboardComponent implements OnInit {
         this.notReady = false;
       }
 
-      this.observations = observations;
-      console.log(observations[3])
+      this.observations = response_observationList;
+      console.log(response_observationList[3])
 
-      this.runSealQuery(observations);
-      this.facetSetup(observations);
+      this.runSealQuery(response_observationList);
+      this.facetSetup(response_observationList);
     });
 
-    // subscribe to Google's Firebase authentication service
-    this.afAuth.authState.subscribe(user => {
-      if (user) {
-        this.userData = user;
-        localStorage.setItem("user", JSON.stringify(this.userData));
-        JSON.parse(localStorage.getItem("user"));
-        this.setAdmin();
-        // console.log(this.userData)
-      } 
-      else {
-        localStorage.setItem("user", null);
-        JSON.parse(localStorage.getItem("user"));
-      }
-    });
+    // // subscribe to Google's Firebase authentication service
+    // this.afAuth.authState.subscribe(user => {
+    //   if (user) {
+    //     this.userData = user;
+    //     localStorage.setItem("user", JSON.stringify(this.userData));
+    //     JSON.parse(localStorage.getItem("user"));
+    //     this.setAdmin();
+    //     // console.log(this.userData)
+    //   } 
+    //   else {
+    //     localStorage.setItem("user", null);
+    //     JSON.parse(localStorage.getItem("user"));
+    //   }
+    // });
+
+    
 
   }
 

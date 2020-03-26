@@ -53,7 +53,6 @@ export class ManageAccountsComponent implements OnInit {
   public users: sqlUser[];
   public dataSource: MatTableDataSource<sqlUser>;
   public userData: any;
-  public loggedInUser: any;
   public displayedColumns: string[] = ['Fullname', 'Affiliation', 'isAdmin', 'email', 'editUser', 'remUser' ];
   public show: boolean = false;
   public addUser_promise: any;
@@ -83,7 +82,6 @@ export class ManageAccountsComponent implements OnInit {
    * dialogue popups
    */
   constructor(private apiService: FlaskBackendService, public authService: AuthService, public afAuth: AngularFireAuth, public dialog: MatDialog) { 
-
     // OLD
     this.users = [];
 
@@ -99,20 +97,6 @@ export class ManageAccountsComponent implements OnInit {
    *  Sets up the subscriptions for ansynchronous data this component is dependent upon. 
    */
   public ngOnInit() {
-    this.loggedInUser = JSON.parse(localStorage.getItem("user"));
-
-    // console.log(this.loggedInUser);
-    // this.dataSource = new MatTableDataSource<sqlUser>(USER_DATA);
-
-    // OLD version that doesn't work
-    // let allUsers_obs = this.apiService.getUsers();
-    // allUsers_obs.subscribe((users: any)=>{
-    //   this.users = users;
-    //   this.dataSource = new MatTableDataSource<sqlUser>(users);
-    //   this.dataSource.paginator = this.paginator;
-    // });
-
-    // IMPROVED VERSION
     let userList_obs = this.apiService.getUserList();
     userList_obs.subscribe( (response : User_Observer_Obj[]) => {
       
