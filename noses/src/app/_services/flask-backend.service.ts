@@ -553,6 +553,34 @@ export class FlaskBackendService {
   }
 
 
+  public saveUserEditChanges(editedUser : User_Observer_Obj) : Observable<User_Observer_Obj[]> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/saveUserEditChanges`;
+
+    let obs = this.httpClient.post(flask_endpoint, editedUser, this.httpOptions).pipe(
+      catchError(this.handleError<any>('saveUserEditChanges', [])),
+      map( jsonResponse => {
+        var userObsList : User_Observer_Obj[] = [];
+
+        for (let json_uo of jsonResponse) {
+          var tempUO = new User_Observer_Obj();
+          tempUO.userId = json_uo['userId'];
+          tempUO.username = json_uo['username'];
+          tempUO.initials = json_uo['userId'];
+          tempUO.isAdmin = json_uo['isAdmin'];
+          tempUO.affiliation = json_uo['affiliation'];
+          tempUO.email = json_uo['email'];
+          tempUO.obsId = json_uo['obsId'];
+          tempUO.isVerifiedByAdmin = json_uo['isVerifiedByAdmin'];
+          tempUO.firstName = json_uo['firstName'];
+          tempUO.lastName = json_uo['lastName'];
+          userObsList.push(tempUO);
+        }
+        return userObsList;
+      })
+    );
+    return obs;
+  }
+
 
   /**
    * This function returns a promise to get some data.

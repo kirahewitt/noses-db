@@ -461,7 +461,48 @@ def get_IDing_observations_with_sealId():
     conn.close()
 
 
-@app.route("/removeUserHavingEmail", methods=['POST'])
+
+
+
+# @app.route("/saveUserEditChanges")
+# def saveUserEditChanges():
+#   conn = mysql.connect()
+#   cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+#   try:
+#     if request.method == 'POST':
+#       #do stuff
+
+#       _json = request.json
+#       userId = _json['userId']
+#       username = _json['username']
+#       initials = _json['initials']
+#       isAdmin = _json['isAdmin']
+#       affiliation = _json['affiliation']
+#       email = _json['email']
+#       obsId = _json['obsId']
+#       isVerifiedByAdmin = _json['isVerifiedByAdmin']
+#       firstName = _json['firstName']
+#       lastName = _json['lastName']
+
+#       query = ("Update Users ")
+
+#     else:
+#       print("Request method was for GET instead of POST")
+
+
+#   except Exception as e:
+#     print(e)
+
+#   finally:
+#     cursor.close()
+#     conn.close()
+
+
+
+
+#
+@app.route("/saveUserEditChanges", methods=['POST'])
 def removeUserHavingEmail():
 
   print("\n\n\n\n MADE IT TO THE BEGINNING OF 'removeUserHavingEmail'")

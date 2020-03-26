@@ -1,31 +1,152 @@
-<h1 mat-dialog-title>Edit User Priveleges</h1>
-<div mat-dialog-content>
+<h1 mat-dialog-title>Edit User Priveleges - UserId {{editedUser.userId}}</h1>
 
-    <div class="form-group">
+<div mat-dialog-content [formGroup]="form">
 
-    <div class="row">
-      <div class="col-md-1"></div>
 
-        <div class="col-md-1"></div>
-        <div class="col-md-4 select-admin">
-          <mat-form-field class="padded-select">
-            <mat-label>User Priveleges</mat-label>
-            <mat-select placeholder="Select User Priveleges" [(value)]="selectAdmin" [(ngModel)]="data.isAdmin">
-                <mat-option value="3">Admin Priveleges</mat-option>
-                <mat-option value="2">Can add/approve seal observations</mat-option>
-                <mat-option value="1">Seal observations need approval</mat-option>
-            </mat-select>
-          </mat-form-field>
+  <!-- <div class="form-group">
+
+          <div class="row">
+            <div class="col-md-1"></div>
+            
+            <div class="col-md-1"></div>
+
+            <div class="col-md-4 select-admin">
+              <mat-form-field class="padded-select">
+                <mat-label>User Priveleges</mat-label>
+                <mat-select placeholder="Select User Priveleges" [(value)]="selectAdmin" [(ngModel)]="data.isAdmin">
+                    <mat-option value="3">Admin Priveleges</mat-option>
+                    <mat-option value="2">Can add/approve seal observations</mat-option>
+                    <mat-option value="1">Seal observations need approval</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+
+          <br>
+          <br>
+          </div>
+  </div> -->
+
+  <div class="container">
+
+    <form [formGroup]="form">
+
+      <div class="row">
+
+        <!-- left column -->
+        <div class="col-md-4"></div>
+
+        <!-- middle column -->
+        <div class="col-md-4">
+
+           <!-- firstName -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> firstName: </mat-label>
+              <input matInput formControlName="firstName" value="{{editedUser.firstName}}" class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('firstName', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+
+          <!-- lastName -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> lastName: </mat-label>
+              <input matInput formControlName="lastName" value="{{editedUser.lastName}}" class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('lastName', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+          <!-- initials (calculated) ****** -->
+          <!-- <p>
+            <mat-form-field class="full-width">
+              <mat-label> Initials: </mat-label>
+              <input matInput formControlName="initials" value="{{editedUser.firstName[0] + editedUser.lastName[0]}}" class="input" type="text" placeholder="Text input" readonly>
+              <mat-error *ngIf="hasError('initials', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p> -->
+
+
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Username: </mat-label>
+              <input matInput formControlName="username" value="{{editedUser.username}}" class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('username', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+          
+
+          <!-- isAdmin, dropdown box ***** -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Permissions Level: </mat-label>
+              <input matInput formControlName="isAdmin"  value="{{editedUser.isAdmin}}" class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('isAdmin', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+
+          <!-- affiliation -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Affiliation: </mat-label>
+              <input matInput formControlName="affiliation" value="{{editedUser.affiliation}}" class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('affiliation', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+          <!-- email -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Email: </mat-label>
+              <input matInput formControlName="email" value="{{editedUser.email}}" class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('email', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+
+          <!-- obsId (cannot change) ****** -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> obsId: </mat-label>
+              <input matInput formControlName="obsId" value="{{editedUser.obsId}}" class="input" type="text" placeholder="Text input" readonly>
+              <mat-error *ngIf="hasError('obsId', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+
+          <!--isVerifiedByAdmin Toggle... allows approval ****** -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> isVerifiedByAdmin: </mat-label>
+              <input matInput formControlName="isVerifiedByAdmin" value="{{editedUser.isVerifiedByAdmin}}" class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('isVerifiedByAdmin', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+
+
+         
+
         </div>
 
+        <!-- right column -->
+        <div class="col-md-4"></div>
 
-    <br>
-    <br>
+
+      </div>
+
+    </form>
+
   </div>
-    </div>
-  <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">No Thanks</button>
-    <button class="btn btn-info"type="submit" [mat-dialog-close]="data">Ok</button>
-  </div>
+
 </div>
 
+<mat-dialog-actions>
+  <button mat-button class="mat-raised-button" (click)="onNoClick()">Cancel</button> 
+  <!-- <button mat-button class="mat-raised-button mat-primary" (click)="save()">Save</button> -->
+  <!-- <button mat-button class="mat-raised-button mat-primary" [mat-dialog-close]="data">Save</button> -->
+  <button mat-button class="mat-raised-button mat-primary" (click)="save()" [disabled]="true">Save</button>
+</mat-dialog-actions>

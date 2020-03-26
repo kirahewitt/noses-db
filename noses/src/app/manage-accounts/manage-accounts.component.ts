@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firestore";
-import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatDialog, MatDialogRef, MatTooltip, MAT_DIALOG_DATA } from '@angular/material';
+import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatDialog, MatDialogRef, MatTooltip, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FlaskBackendService } from '../_services/flask-backend.service';
 import { sqlUser, User_Observer_Obj } from '../_supporting_classes/sqlUser';
@@ -24,6 +24,43 @@ export interface DialogData {
   email: string;
 }
 
+
+
+export class User_Observer_Obj_v2 {
+
+  // fields for the Users entity set
+  public userId: number;
+  public username: string;
+  public initials: string;
+  public isAdmin: number;
+  public affiliation: string;
+  public email: string;
+  public obsId: number;
+  public isVerifiedByAdmin: number;
+  public firstName: string;
+  public lastName: string;
+  public oldPassword? : string;
+  public newPassword? : string;
+  public newPasswordConfirm? : string;
+
+  // fields for the Observers entity set
+
+  constructor() {
+    this.userId = -1;
+    this.username = "";
+    this.initials = "";
+    this.isAdmin = -1;
+    this.affiliation = "";
+    this.email = "";
+    this.obsId = -1;
+    this.isVerifiedByAdmin = -1;
+    this.firstName = "";
+    this.lastName = "";
+    this.oldPassword = "";
+    this.newPassword = "";
+    this.newPasswordConfirm = "";
+  }
+}
 
 
 
@@ -58,31 +95,23 @@ export class ManageAccountsComponent implements OnInit {
   public show: boolean = false;
   public addUser_promise: any;
 
-  public animal: string;
-  public name: string;
-
-  public loginID: string;
-  public fullname: string;
-  public password: string;
-  public isAdmin: number;
-  public affiliation: string;
-  public email: string;
-
   // objects for fixed manage-accounts
   public userList_forDisplay: User_Observer_Obj[];
   public dataSource_forDisplay: MatTableDataSource<User_Observer_Obj>;
   public columns_forDisplay: string[];
   public userLevelNames: string[];
 
+  public selectedUserObsObj: User_Observer_Obj;
+
 
   /**
    * @param apiService : A reference to the rest API
    * @param authService : Reference to the service responsible for authorizing a user
    * @param afAuth : Reference to the angular service for Firebase.
-   * @param dialog : Reference to the MatDialog service, which simplifies creating angular material 
+   * @param dialogMaterialService : Reference to the MatDialog service, which simplifies creating angular material 
    * dialogue popups
    */
-  constructor(private apiService: FlaskBackendService, public authService: AuthService, public afAuth: AngularFireAuth, public dialog: MatDialog, public changeDetectorRef: ChangeDetectorRef) { 
+  constructor(private apiService: FlaskBackendService, public authService: AuthService, public afAuth: AngularFireAuth, public dialogMaterialService: MatDialog, public changeDetectorRef: ChangeDetectorRef) { 
     // OLD
     this.users = [];
 
@@ -92,6 +121,8 @@ export class ManageAccountsComponent implements OnInit {
     this.userLevelNames = ["Awaiting Account Approval", "Citizen Scientist", "Field Leader", "Admin"];
     this.userList_forDisplay = [];
     this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay);
+
+    this.selectedUserObsObj = new User_Observer_Obj();
   }
 
 
@@ -111,8 +142,120 @@ export class ManageAccountsComponent implements OnInit {
       this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay);
       this.dataSource_forDisplay.paginator = this.paginator;
     });
-
   }
+
+
+  /**
+   * Causes a dialog to appear that contains a form, which is used to edit the records uploaded
+   *  to the browser, validated and corrected, and sent to the DB.
+   * @param userObsObj : An object containing all the main fields of the User.
+   */
+  public openEditUserDialog(userObsObj: User_Observer_Obj): void {
+    event.preventDefault();
+
+    //initialize the selectedUserObsObj w/ the input variable
+    this.selectedUserObsObj.userId = userObsObj.userId;
+    this.selectedUserObsObj.username = userObsObj.username;
+    this.selectedUserObsObj.initials = userObsObj.initials;
+    this.selectedUserObsObj.isAdmin = userObsObj.isAdmin;
+    this.selectedUserObsObj.affiliation = userObsObj.affiliation;
+    this.selectedUserObsObj.email = userObsObj.email;
+    this.selectedUserObsObj.obsId = userObsObj.obsId;
+    this.selectedUserObsObj.isVerifiedByAdmin = userObsObj.isVerifiedByAdmin;
+    this.selectedUserObsObj.firstName = userObsObj.firstName;
+    this.selectedUserObsObj.lastName = userObsObj.lastName;
+
+    // establish the settings for our dialog
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = "50%";
+    
+    // establish the data that will be passed to the dialog
+    dialogConfig.data = { masterObj: this.selectedUserObsObj };
+
+    // create a reference to the dialog
+    const dialogRef = this.dialogMaterialService.open(EditUserDialogComponent, dialogConfig);
+     
+    // set up a subcription to receive any modified data from the dialog after it is closed
+    dialogRef.afterClosed().subscribe( (result: User_Observer_Obj) => {
+      console.log("Dialog output: ", result);
+
+      if (result != undefined) {
+        console.log("Resulting object we receive from the edit dialog");
+        console.log(result);
+        
+        
+        // INVOKE AN OVERWRITE USER FIELD
+        // ... !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ...
+
+        let overwriteUser_obs = this.apiService.saveUserEditChanges(result);
+        overwriteUser_obs.subscribe( (userObsList : User_Observer_Obj[]) => {
+          this.userList_forDisplay = userObsList;
+          this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay);
+        });
+      }
+    });
+  }
+
+
+
+  // /**
+  //  * Opens a dialogue which allows you to add a new user.
+  //  */
+  // public openDialog(): void {
+
+  //   // // create a reference to the dialog
+  //   // const dialogRef = this.dialogMaterialService.open(DialogOverviewExampleDialog, {
+  //   //   width: '650px',
+  //   //   data: 
+  //   // });
+
+  //   // subscribe to the result of the closed dialogue to do stuff with the form data
+  //   let dialogResult_obs = dialogRef.afterClosed();
+  //   dialogResult_obs.subscribe(result => {
+      
+  //     console.log('The dialog was closed');
+
+  //     if(result !== undefined) {
+
+  //       console.log(result);
+  //       let result_json = JSON.stringify(result);
+
+
+  //       this.addUser_promise = this.apiService.getPromise_addUser(result_json);
+
+  //       this.addUser_promise.then(users => {
+          
+  //         // No way in hell should we ever just get the number 1 as a string from this asynchronous method. bullshit.
+  //         if (users == "1") {
+  //           alert("user not created, duplicate username or email");
+  //         } 
+  //         else {
+  //           this.dataSource = new MatTableDataSource(<any> users);
+  //           this.authService.SignUp(result.email, result.password);
+  //         }
+
+  //       });
+  //     }
+
+  //     // **** unable to create an account and NOT sign in with it...
+  //     // https://stackoverflow.com/questions/37730712/how-to-just-create-an-user-in-firebase-3-and-do-not-authenticate-it
+
+  //   });
+  // }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   /**
@@ -148,156 +291,79 @@ export class ManageAccountsComponent implements OnInit {
   public removeUser_viaObservable(userObsObj: User_Observer_Obj) {
     console.log("HERE IS THE ROW");
     console.log(userObsObj);
-    
-    
-    // console.log("BEFORE OBSERVALBE CREATED");
-    // console.log("value of the email");
-    // console.log(email)
-    
-
-    // console.log("AFTER OBSERVALBE CREATED");
-
-
-    // this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>();
 
     let usersAfterRemoval_obs: Observable<User_Observer_Obj[]> = this.apiService.removeUserHavingEmail(JSON.stringify(userObsObj));
 
     usersAfterRemoval_obs.subscribe((updatedUsers : User_Observer_Obj[]) => {
-      console.log("JUST STARTED BODY OF SUBSCRIBE");
       this.userList_forDisplay = updatedUsers;
-      console.log("2");
       this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(updatedUsers);
-      this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(updatedUsers);
-      console.log("3");
-      // this.dataSource_forDisplay.paginator = this.paginator;
-      console.log("4");
-      // this.dataSource_forDisplay.data = updatedUsers;
-
-      // this.changeDetectorRef.detectChanges();
-    });
-
-
-
-    // let userList_obs = this.apiService.getUserList();
-    // userList_obs.subscribe( (response : User_Observer_Obj[]) => {
-      
-    //   // verify that we're actually receiving the right stuff from the DB
-    //   console.log("Received Data in Angular Component from Subscription: ");
-    //   console.log(response);
-
-    //   // initialize the local variables.
-    //   this.userList_forDisplay = response;
-    //   this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay);
-    //   this.dataSource_forDisplay.paginator = this.paginator;
-    // });
-  }
-
-  /**
-   * Opens a dialogue which allows you to add a new user.
-   */
-  public openDialog(): void {
-
-    // create a reference to the dialog
-    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-      width: '650px',
-      data: { loginid: this.loginID, 
-              fullname: this.animal, 
-              password: this.password,
-              isAdmin: this.isAdmin, 
-              affiliation: this.affiliation, 
-              email: this.email }
-    });
-
-    // subscribe to the result of the closed dialogue to do stuff with the form data
-    let dialogResult_obs = dialogRef.afterClosed();
-    dialogResult_obs.subscribe(result => {
-      
-      console.log('The dialog was closed');
-
-      if(result !== undefined) {
-
-        console.log(result);
-        let result_json = JSON.stringify(result);
-
-
-        this.addUser_promise = this.apiService.getPromise_addUser(result_json);
-
-        this.addUser_promise.then(users => {
-          
-          // No way in hell should we ever just get the number 1 as a string from this asynchronous method. bullshit.
-          if (users == "1") {
-            alert("user not created, duplicate username or email");
-          } 
-          else {
-            this.dataSource = new MatTableDataSource(<any> users);
-            this.authService.SignUp(result.email, result.password);
-          }
-
-        });
-      }
-
-      // **** unable to create an account and NOT sign in with it...
-      // https://stackoverflow.com/questions/37730712/how-to-just-create-an-user-in-firebase-3-and-do-not-authenticate-it
-
     });
   }
 
+  
 
 
-  /**
-   * 
-   * @param row 
-   */
-  public openEditUserDialog(row: any): void {
 
-    const dialogRef = this.dialog.open(EditUserDialogComponent, {
-      width: '400px',
-      data: {isAdmin: this.isAdmin},
-    });
+  // /**
+  //  * 
+  //  * @param row 
+  //  */
+  // public openEditUserDialog(row: any): void {
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      if(result !== undefined) {
-        var user = { 'isAdmin':result['isAdmin'], 'email': row.email};
-        this.apiService.updateUser(JSON.stringify(user)).then(msg => {
-          this.dataSource = new MatTableDataSource(<any> msg);
-        });
-      }
-    });
-  }
+  //   const dialogRef = this.dialogMaterialService.open(EditUserDialogComponent, {
+  //     width: '400px',
+  //     data: {isAdmin: this.isAdmin},
+  //   });
 
-}
-
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: 'dialog-overview-example-dialog.html',
-  styleUrls: ['./manage-accounts.component.scss']
-})
-export class DialogOverviewExampleDialog {
-
-  selectAdmin = "No";
-  userObj: any;
-
-  loginID: string;
-  fullname: string;
-  password: string;
-  isAdmin: boolean;
-  affiliation: string;
-  email: string;
-
-  constructor(
-    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private apiService: FlaskBackendService) {}
-
-  onNoClick(): void {
-    // this.data = undefined;
-    this.dialogRef.close();
-  }
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     console.log('The dialog was closed');
+  //     if(result !== undefined) {
+  //       var user = { 'isAdmin':result['isAdmin'], 'email': row.email};
+  //       this.apiService.updateUser(JSON.stringify(user)).then(msg => {
+  //         this.dataSource = new MatTableDataSource(<any> msg);
+  //       });
+  //     }
+  //   });
+  // }
 
 
 
 }
+
+
+// /**
+//  * 
+//  */
+// @Component({
+//   selector: 'dialog-overview-example-dialog',
+//   templateUrl: 'dialog-overview-example-dialog.html',
+//   styleUrls: ['./manage-accounts.component.scss']
+// })
+// export class DialogOverviewExampleDialog {
+
+//   selectAdmin = "No";
+//   userObj: any;
+
+//   loginID: string;
+//   fullname: string;
+//   password: string;
+//   isAdmin: boolean;
+//   affiliation: string;
+//   email: string;
+
+//   constructor(
+//     public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
+//     @Inject(MAT_DIALOG_DATA) public data: DialogData,
+//     private apiService: FlaskBackendService) {}
+
+//   onNoClick(): void {
+//     // this.data = undefined;
+//     this.dialogRef.close();
+//   }
+
+
+
+// }
 
 
 
