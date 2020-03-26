@@ -232,21 +232,22 @@ def insert_observation(cnx, cursor, row, approvalStatus):
         print("Inside writeObs: {:s} {:s} {:s}".format(row[DATE], row[27], row[28]))
 
     print("BEFORE BUILDING STRING:")
+    print(json.dumps(row))
     statement = (   "INSERT INTO Observations(ObserverID, sex, date, MoltPercent, Comments, AgeClass, Year, SLOCode, isApproved, LastSeenPup, FirstSeenWeaner, WeanDateRange, EnteredInAno) "
                             " VALUES "
                             "(" + str(observerId) +
                             ", " + row[SEX] +
                             ", " + getDate(row[DATE]) +
-                            ", " + row[MOLT] +
+                            ", " + str(row[MOLT]) +
                             ", " + surr_apos(row[COMMENTS].replace("'", "")) +
-                            ", " + row[AGE] +
-                            ", " + row[YEAR] +
+                            ", " + str(row[AGE]) +
+                            ", " + str(row[YEAR]) +
                             ", " + row[LOC] +
                             ", " + str(approvalStatus) +
                             ", " + ((getDate(row[27])) if row[27] != "NULL" else row[27]) +
                             ", " + ((getDate(row[28])) if row[28] != "NULL" else row[28]) +
-                            ", " + row[29] +
-                            ", " + row[31] +
+                            ", " + str(row[29]) +
+                            ", " + str(row[31]) +
                             ");"
                 )
     print("AFTER BUILDING STRING")
@@ -347,7 +348,7 @@ def insert_mark(cnx, cursor, csvRow, obsID, sealID):
                 ", " + t_mark +          # mark
                 ", " + t_markPosition +                         # mark position 'b', 'l', 'r'
                 ", " + t_markDate +                  # date
-                ", " + t_year +                            # year
+                ", " + str(t_year) +                            # year
                 ", " + t_observationID + ");")                           # seal id
     print(statement)
 
@@ -419,12 +420,11 @@ def insert_tag(cnx, cursor, csvRow, tagNumber, observationID, sealID):
     TAGPOS  = 9
 
     print("making insert tag statement")
-    statement = ("INSERT INTO Tags(TagNumber, TagColor, TagPosition, TagDate, ObservationID) VALUES ("
+    statement = ("INSERT INTO Tags(TagNumber, TagColor, TagPosition, TagDate) VALUES ("
                 + str(tagNumber) + ", "        # mark
                 + getColor(tagNumber) + ", "          # TODO write getTagColor(row[whichTag][0])
                 + csvRow[TAGPOS] + ", "
-                + str(getDate(csvRow[2])) + ", "
-                + str(observationID) + ");")        # 
+                + str(getDate(csvRow[2])) + ");")        # 
     print(statement)
     try:
         cursor.execute(statement)
@@ -572,11 +572,13 @@ def processObservation(cnx, cursor, row, approvalStatus):
     divergentT = []
     divergentM = []
     merge = False
-
     # see if any of the identifiers in this observation match an existing seal/dossier
-    mID = getSealIdFromMark(cursor, row[MARK], row[YEAR])
+    mID = getSealIdFromMark(cursor, row[MARK], str(row[YEAR]))
+    print("marked")
     t1ID = getSealIDFromTag(cursor, row[TAG1])
-    t2ID = getSealIDFromTag(cursor, row[TAG2])
+    print("tagged")
+    if(row[TAG2]):
+        t2ID = getSealIDFromTag(cursor, row[TAG2])
 
     mainID = positiveMin([mID, t1ID, t2ID])
 

@@ -21,11 +21,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent, DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
-<<<<<<< HEAD
 import { ApproveObservationsComponent } from './approve-observations/approve-observations.component';
-=======
-import { ApproveObsComponent } from './approve-obs/approve-obs.component';
->>>>>>> 4c574e441213a7c6b4ba3b2d8fc8c86c4eb042d1
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 import { MenuComponent } from './menu/menu.component';
 import { AllObservationsComponent } from './all-observations/all-observations.component';

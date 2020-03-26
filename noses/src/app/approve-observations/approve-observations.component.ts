@@ -73,7 +73,7 @@ export class ApproveObservationsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.apiService.readNotApproved(null).subscribe((observations: any)=>{
+    this.apiService.readNotApproved().subscribe((observations: any)=>{
       if(this.isAdmin) {
         this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal', 'approveObs' ];
         this.notReady = false;
@@ -196,7 +196,7 @@ export class ApproveObservationsComponent implements OnInit {
   }
 
   filterObs() {
-    this.apiService.readNotApproved(this.filterss).subscribe((observations: any)=>{
+    this.apiService.readNotApproved().subscribe((observations: any)=>{
       if(this.isAdmin) {
         this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
         this.notReady = false;
@@ -211,7 +211,7 @@ export class ApproveObservationsComponent implements OnInit {
 
   }
   approveObs(row : any){
-    console.log("here");
+    console.log(row.ObservationID);
     return this.apiService.approveObs(row.ObservationID);
   }
 
@@ -226,7 +226,7 @@ export class ApproveObservationsComponent implements OnInit {
   }
 
   selectSeal(row) {
-    this.sealData.changeMessage(row);
+    this.sealData.setCurrentSealState(row);
     this.router.navigate(["seal-page"]);
   }
 
@@ -255,7 +255,7 @@ export class ApproveObservationsComponent implements OnInit {
     this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
     console.log('about to call delete');
 
-    this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs(null));
+    this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
 
  }
 }

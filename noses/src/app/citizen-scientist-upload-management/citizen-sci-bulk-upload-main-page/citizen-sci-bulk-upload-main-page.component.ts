@@ -245,7 +245,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
       var extractedJsonData = this.getExtractedJsonData();
 
             var fullData = [extractedJsonData, {"isApproved" : 0}];
-            this.apiService.addObservations(JSON.stringify(fullData)).subscribe(() => this.apiService.readObs(null));
+            this.apiService.addObservations(JSON.stringify(fullData)).subscribe(() => this.apiService.readObs());
       console.log("EXTRACTED JSON DATA");
       console.log(extractedJsonData);
 

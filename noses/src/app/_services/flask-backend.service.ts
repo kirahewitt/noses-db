@@ -41,34 +41,16 @@ export class FlaskBackendService {
   /**
    * 
    */
-<<<<<<< HEAD
-  readObs(filterObj: Array<Object> = null): Observable<Observations[]>{
-    if(filterObj == null || filterObj.length == 0){
-      return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allobservations` );
-    }else{
-      return this.httpClient.post<Observations[]>(`${this.FLASK_API_SERVER}/allobservations`, filterObj, this.httpOptions );
-    }
-=======
   public readObs(): Observable<Observations[]> {
     return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allobservations` );
->>>>>>> 4c574e441213a7c6b4ba3b2d8fc8c86c4eb042d1
   }
 
   public readSeals(): Observable<Seal[]>{
     return this.httpClient.get<Seal[]>(`${this.FLASK_API_SERVER}/allseals` );
   }
 
-<<<<<<< HEAD
-  readNotApproved(filterObj: Array<Object> = null): Observable<Observations[]>{
-    if(filterObj == null || filterObj.length == 0){
-      return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/notapproved` );
-    }else{
-      return this.httpClient.post<Observations[]>(`${this.FLASK_API_SERVER}/notapproved`, filterObj, this.httpOptions );
-    }
-=======
   public readNotApproved(): Observable<Observations[]>{
     return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/notapproved`);
->>>>>>> 4c574e441213a7c6b4ba3b2d8fc8c86c4eb042d1
   }
 
   public addObservations(user: string): Observable<string>{
@@ -82,17 +64,14 @@ export class FlaskBackendService {
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/delete`, obs, this.httpOptions);
   }
 
-<<<<<<< HEAD
-async approveObs(obsId: number) {
-    console.log("here2");
-    var id;
-    await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/approveobs`, obsId, this.httpOptions).toPromise().then(data => {
-        id = data;
-      });
-  
-      return id;
-}
-=======
+  async approveObs(obsId: number) {
+    console.log(obsId);
+    await this.httpClient.post<number>(`${this.FLASK_API_SERVER}/approveobs`, {"obsId": obsId}, this.httpOptions).toPromise()
+      .then(data => {
+      obsId = data["obsId"];
+    });
+    return obsId;
+  }
   
   /**
    * Handle Http operation that failed.
@@ -109,7 +88,6 @@ async approveObs(obsId: number) {
     };
   }
 
->>>>>>> 4c574e441213a7c6b4ba3b2d8fc8c86c4eb042d1
 
   // users section
   
@@ -506,11 +484,6 @@ async approveObs(obsId: number) {
 
 
   async getPartials(part: string) {
-<<<<<<< HEAD
-    await this.httpClient.post<string>(`${this.FLASK_API_SERVER}/allseals`, part, this.httpOptions).toPromise().then(data => {
-      this.rows = data
-    });
-=======
     let flask_endpoint = `${this.FLASK_API_SERVER}/partials`;
 
     await this.httpClient.post<string>(flask_endpoint, part, this.httpOptions).toPromise()
@@ -518,7 +491,6 @@ async approveObs(obsId: number) {
         this.rows = data
       });
 
->>>>>>> 4c574e441213a7c6b4ba3b2d8fc8c86c4eb042d1
     return this.rows
   }
 
