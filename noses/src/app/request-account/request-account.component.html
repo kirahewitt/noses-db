@@ -44,11 +44,14 @@
     </p>
 
   </form>
+
+  <!-- One submit for ... -->
+  <button type="button" class="btn btn-success button-right" [disabled]="form.invalid" (click)="submitUserAccountRequest()" data-toggle="modal" data-target="#exampleModal">Submit</button>
+  <button type="button" class="btn btn-danger button-left" routerLink="/sign-in">Cancel</button>
 </div>
   
 
-<!-- One submit for ... -->
-<button type="button" class="btn btn-success button-right" (click)="submitUserAccountRequest()" data-toggle="modal" data-target="#exampleModal">Submit</button>
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -71,5 +74,5 @@
 </div>
 
 
-  <button type="button" class="btn btn-danger button-left" routerLink="/sign-in">Cancel</button>
+  
 
