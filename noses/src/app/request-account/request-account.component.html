@@ -62,8 +62,8 @@
 
 
           <div class="button-section">
-            <button type="button" class="btn btn-success" [disabled]="form.invalid" (click)="submitUserAccountRequest()" data-toggle="modal" data-target="#exampleModal">Submit</button>
-            <button type="button" class="btn btn-danger" routerLink="/sign-in">Cancel</button>
+            <button mat-button class="mat-raised-button mat-primary" [disabled]="form.invalid" (click)="submitUserAccountRequest()" data-toggle="modal" data-target="#exampleModal">Submit</button>
+            <button mat-button class="mat-raised-button"             routerLink="/sign-in">Cancel</button> 
           </div>
         </div>
 
