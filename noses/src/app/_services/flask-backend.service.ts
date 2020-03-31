@@ -118,13 +118,10 @@ export class FlaskBackendService {
    */
   public getUser_obs(userEmail: string): Observable<sqlUser_full[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getuser`;
-    return this.httpClient.post<any>(flask_endpoint, userEmail, this.httpOptions);
+    return this.httpClient.post<any>(flask_endpoint, userEmail, this.httpOptions).pipe(
+      catchError(this.handleError<sqlUser_full[]>('getUser_obs', []))
+    );
   }
-
-
-
-
-
 
 
   /**
@@ -133,13 +130,38 @@ export class FlaskBackendService {
    * @param email 
    * @param password 
    */
-  public getLoginAuthenticator(email: string, password: string): Observable<sqlUser_full[]> {
-    let flask_endpoint = `${this.FLASK_API_SERVER}/getloginauthenticator`;
+  public getLoginAuthenticator_userObserver(email: string, password: string): Observable<User_Observer_Obj> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/getloginauthenticator_userObserver`;
     let inputAsJsonString = '{"email" : "' + email    + '", "password" : "' + password + '"}';
 
-    let loginAuth_obs = this.httpClient.post<sqlUser_full[]>(flask_endpoint, inputAsJsonString, this.httpOptions)
+    let loginAuth_obs = this.httpClient.post<User_Observer_Obj[]>(flask_endpoint, inputAsJsonString, this.httpOptions)
       .pipe(
-        // catchError(this.handleError<sqlUser_full[]>('getLoginAuthenticator', []))
+        catchError(this.handleError<User_Observer_Obj[]>('getLoginAuthenticator', [])),
+        map((retval : any[]) => {
+          var userData : User_Observer_Obj = new User_Observer_Obj();
+
+          // log data
+          console.log("INSIDE MAP METHOD");
+          console.log(retval);
+          console.log("ANOTHER");
+          console.log(retval[0]);
+
+          // if we got a real object, intialize the data, otherwise, don't
+          if (retval.length > 0) {
+            userData.firstName = retval[0]['FirstName'];
+            userData.lastName = retval[0]['LastName'];
+            userData.isVerifiedByAdmin = retval[0]['isVerifiedByAdmin'];
+            userData.userId = retval[0]['UserID'];
+            userData.username = retval[0]["Username"];
+            userData.initials = retval[0]["Initials"];
+            userData.isAdmin = retval[0]['isAdmin'];
+            userData.affiliation = retval[0]['Affiliation'];
+            userData.email = retval[0]['Email'];
+            userData.obsId = retval[0]['ObsID'];
+          }
+          
+          return userData;
+        })
       );
 
     return loginAuth_obs;

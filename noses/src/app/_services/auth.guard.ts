@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from "./auth.service";
 import { CanActivate, RouterStateSnapshot, Router } from '@angular/router';
+import { User_Observer_Obj } from '../_supporting_classes/sqlUser';
 
 
 
@@ -14,14 +15,26 @@ import { CanActivate, RouterStateSnapshot, Router } from '@angular/router';
 })
 export class AuthGuard implements CanActivate {
   
+  public loggedInUser: User_Observer_Obj;
+  public currentUserIsValid: boolean;
+
 
   /**
    * 
    * @param authService : A reference to an inject angular service called AuthService.
    * @param router : A reference to the Router instance for this application
    */
-  constructor(public authService: AuthService, public router: Router)
-  {}
+  constructor(public authService: AuthService, public router: Router) {
+    let loggedInUser_datastream = this.authService.IH_getUserData_bs();
+    loggedInUser_datastream.subscribe( (retval : User_Observer_Obj ) => {
+      this.loggedInUser = retval;
+    });
+
+    let currentUserIsValid_datastream = this.authService.IH_getUserIsValid_bs();
+    currentUserIsValid_datastream.subscribe( (retval : boolean) => {
+      this.currentUserIsValid = retval;
+    });
+  }
 
 
   /**
@@ -31,7 +44,7 @@ export class AuthGuard implements CanActivate {
    * @param state : The current router location of the user.
    */
   public canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if(this.authService.isLoggedIn !== true) {
+    if (this.currentUserIsValid !== true) {
       this.router.navigate(['sign-in'])
     }
     return true;

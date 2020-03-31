@@ -913,15 +913,16 @@ def get_user():
     conn.close()
 
 
+
 ## Returns the entire user tuple if the provided password was correct
-@app.route('/getloginauthenticator', methods=['POST', 'GET'])
-def get_login_authenticator():
+@app.route('/getloginauthenticator_userObserver', methods=['POST', 'GET'])
+def get_login_authenticator_userObserver():
 
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
 
   print("\n\n")
-  print("Contents of the data passed to /getloginauthenticator:")
+  print("Contents of the data passed to /getloginauthenticator_userObserver:")
   print(request)
   print("\n\n")
 
@@ -932,10 +933,10 @@ def get_login_authenticator():
       givenEmail = request.json['email']
       givenPassword = request.json['password']
 
-      # get the entire user object
-      getUserTupleQuery = (" SELECT * " +
-                           " FROM  Users " +
-                           " WHERE email = " + surr_apos(givenEmail) + ";")
+      getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email " + 
+                            " FROM Observers as O, Users as U " +
+                            " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + " AND U.Password = " + surr_apos(givenPassword) + ";")
+
       cursor.execute(getUserTupleQuery)
       rows = cursor.fetchall()
       resp = jsonify(rows)
@@ -944,25 +945,13 @@ def get_login_authenticator():
       if (len(rows) == 0):
         return jsonify("Email/Password combination does not exist in the DB.")
       
-
-      # grab the password out of the user tuple
-      actualPassword = rows[0]['Password']
-
-      # return results based on whether the password was correct
-      isCorrectPassword = givenPassword == actualPassword
-      if isCorrectPassword == True:
-        print("I'm ABOUT TO SEND BACK THIS RESPONSE")
-        print(resp)
-        return resp
-      else:
-        return jsonify("Incorrect Password")
+      return resp
 
   except Exception as e:
     print(e)
   finally:
     cursor.close()
     conn.close()
-
 
 
 ## Places a single apostrophe on either side of a provided string

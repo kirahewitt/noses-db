@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
 
 
   logoutClicked() {
-    this.authService.SignOut();
+    this.authService.IH_SignOut();
   }
 
   /**
