@@ -75,32 +75,55 @@ export class AuthService {
   }
 
 
-
-  
-
-
   /**
    * Sign in with email/password
+   * 
+   * Two callback functions:
+   *    (1) signinwithemailandpassword
+   *    (2) 
+   * 
+   * If the login is successful, the then callback is triggered.
+   * If the login attempt fails, the catch operation is triggered.
    * @param email potential email address of a user
    * @param password potential password of a user
    */
   public SignIn(email, password) {
-    return this.afAuth.auth
+    let promise = this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
-      .then(result => {
-        console.log("*******Login Successful!")
-        this.ngZone.run(() => {
-          this.router.navigate(["menu"]);
-        });
-        this.SetUserData(result.user);
-        console.log("LOGIN COMPLETE");
-        console.log("USER CREDENTIALS RETURNED BY SUCCESSFUL LOGIN:");
-        console.log(result.user);
-      })
+      .then(result => this.setAppropriateVariablesSoUserIsLoggedIn(result))
       .catch(error => {
           console.log("*******Login Failed!");
           window.alert(error.message);
       });
+    return promise;
+  }
+  
+
+  /**
+   * This method is called upon a successful login.
+   * How does this method ensure that the user it "logged in"?
+   * The SetUserData method should be setting some local variable with attributes of the FireBase user
+   *  we just used to log in. 
+   * 
+   * @param result 
+   */
+  public setAppropriateVariablesSoUserIsLoggedIn(result : any) {
+
+
+    console.log("*******Login Successful!")
+
+    // redirect the user to the home page.
+    this.ngZone.run(() => {
+      this.router.navigate(["menu"]);
+    });
+
+    // set local variables with user information
+    this.SetUserData(result.user);
+
+    // testing output
+    console.log("LOGIN COMPLETE");
+    console.log("USER CREDENTIALS RETURNED BY SUCCESSFUL LOGIN:");
+    console.log(result.user);
   }
 
 
@@ -138,7 +161,11 @@ export class AuthService {
   }
 
 
-  // Send email verfificaiton when new user sign up
+  /**
+   * Send email verfificaiton when new user sign up
+   * Notice that this implementation method doesn't rely on the api to know 
+   * to send an email when a new user is created. 
+   */
   public SendVerificationMail() {
     return this.afAuth.auth.currentUser.sendEmailVerification().then(() => {
       this.router.navigate(["verify-email"]);
@@ -178,11 +205,21 @@ export class AuthService {
    * Setting up user data when sign in with username/password, sign up with username/password 
    *  and sign in with social auth provider in Firestore database using 
    *  AngularFirestore + AngularFirestoreDocument service
+   * 
+   * Creates an angular firestore document to thold the information of the currently logged in user.
+   * It is initialized by providing a route to a users endpoint on the FireBase application
+   * 
+   * Notice that the userData variable has its structure defined in its declaration. 
+   * 
+   * 
    * @param user 
    */
   public SetUserData(user) : Promise<void> {
+
+    // create an angular firestore document to hold the information of the currently logged in user
     const userRef: AngularFirestoreDocument<any> = this.afs.doc( `users/${user.uid}` );
 
+    // structure to store relevant information of the user. 
     const userData: User = {
       uid: user.uid,
       email: user.email,
@@ -190,10 +227,9 @@ export class AuthService {
       photoURL: user.photoURL,
       emailVerified: user.emailVerified,
     };
+    const options = { merge: true }
 
-    return userRef.set(userData, {
-      merge: true
-    });
+    return userRef.set(userData, options);
   }
 
 }

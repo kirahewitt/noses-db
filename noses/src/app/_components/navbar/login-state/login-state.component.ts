@@ -17,12 +17,11 @@ import { AdminService } from 'src/app/_services/admin.service';
 })
 export class LoginStateComponent implements OnInit {
 
-  isSuperAdmin = false;
-  isAdmin = false;
-  privilegeLevel: any;
-  currentUserEmail : string;
+  public isSuperAdmin: boolean;
+  public isAdmin: boolean;
+  public privilegeLevel: any;
+  public currentUserEmail : string;
   
-
 
   /**
    * 
@@ -32,20 +31,27 @@ export class LoginStateComponent implements OnInit {
   constructor(public authService : AuthService, public adminStatus: AdminService) { 
     this.privilegeLevel = -42;
     this.currentUserEmail = "";
+    this.isSuperAdmin = false;
+    this.isAdmin = false;
   }
 
 
   /**
-   * 
+   * We only set the value of userData if it isn't undefined.
+   * subscribes to the current state of the adminStatus variable.
+   * subscribes to the state of the userData variable
    */
   ngOnInit() {
+
     this.adminStatus.currentPermissionStatus.subscribe(currentStatus  => {
       this.privilegeLevel = currentStatus;
       this.setPrivelege();
     });
-
+    
     this.authService.getUserData_obs().subscribe(userData => {
-      this.currentUserEmail = userData.email;
+      if (userData) {
+        this.currentUserEmail = userData.email;
+      }
     });
   }
 

@@ -940,6 +940,11 @@ def get_login_authenticator():
       rows = cursor.fetchall()
       resp = jsonify(rows)
       
+      # if the length is 0, return json containing "incorrect password"
+      if (len(rows) == 0):
+        return jsonify("Email/Password combination does not exist in the DB.")
+      
+
       # grab the password out of the user tuple
       actualPassword = rows[0]['Password']
 

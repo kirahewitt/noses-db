@@ -40,6 +40,25 @@ export class FlaskBackendService {
 
 
   /**
+   * Handle Http operation that failed.
+   * Let the app continue.
+   * @param operation - name of the operation that failed
+   * @param result - optional value to return as the observable result
+   */
+  private handleError<T> (operation = 'operation', result?: T) {
+    
+    return (error: any): Observable<T> => {
+
+      console.log(error);
+      console.log(`Flask Backend Service - ${operation} failed. Error Message: ${error.message}`);
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
+
+  }
+
+
+  /**
    * 
    */
   public readObs(): Observable<Observations[]> {
@@ -63,22 +82,6 @@ export class FlaskBackendService {
    */
   public deleteObs(obs: string) {
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/delete`, obs, this.httpOptions);
-  }
-
-  
-  /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param operation - name of the operation that failed
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T> (operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(error);
-      console.log(`Flask Backend Service - ${operation} failed: ${error.message}`);
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
   }
 
 
@@ -109,9 +112,6 @@ export class FlaskBackendService {
   }
 
 
- 
-
-
   /**
    * Gets the entire user tuple associated with the provided email.
    * @param userEmail : the email of a user.
@@ -119,9 +119,13 @@ export class FlaskBackendService {
   public getUser_obs(userEmail: string): Observable<sqlUser_full[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getuser`;
     return this.httpClient.post<any>(flask_endpoint, userEmail, this.httpOptions);
-    // return this.httpClient.get<string>(flask_endpoint, userEmail, this.httpOptions);
-
   }
+
+
+
+
+
+
 
   /**
    * Gives us access to methods in the flask api that allow us to authenticate a user via an 
@@ -132,8 +136,18 @@ export class FlaskBackendService {
   public getLoginAuthenticator(email: string, password: string): Observable<sqlUser_full[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getloginauthenticator`;
     let inputAsJsonString = '{"email" : "' + email    + '", "password" : "' + password + '"}';
-    return this.httpClient.post<any>(flask_endpoint, inputAsJsonString, this.httpOptions);
+
+    let loginAuth_obs = this.httpClient.post<sqlUser_full[]>(flask_endpoint, inputAsJsonString, this.httpOptions)
+      .pipe(
+        // catchError(this.handleError<sqlUser_full[]>('getLoginAuthenticator', []))
+      );
+
+    return loginAuth_obs;
   }
+
+
+
+
 
 
   /**
@@ -143,11 +157,9 @@ export class FlaskBackendService {
     let userDetails_json = JSON.stringify(userDetails);
     let flask_endpoint = `${this.FLASK_API_SERVER}/submit-new-userAccountRequest`;
 
-    let obs = this.httpClient
-      .post(flask_endpoint, userDetails_json, this.httpOptions)
-      .pipe(
-        catchError(this.handleError<any>('submitNewUserAccountRequest', [])),
-      );
+    let obs = this.httpClient.post(flask_endpoint, userDetails_json, this.httpOptions).pipe(
+      catchError(this.handleError<any>('submitNewUserAccountRequest', [])),
+    );
 
     return obs;
   }
@@ -160,11 +172,9 @@ export class FlaskBackendService {
     let userPasswordData_json = JSON.stringify(userPasswordData);
     let flask_endpoint = `${this.FLASK_API_SERVER}/submit-userPasswordChangeRequest`;
 
-    let obs = this.httpClient
-      .post(flask_endpoint, userPasswordData_json, this.httpOptions)
-      .pipe(
-        catchError(this.handleError<any>('submitUserPasswordChangeRequest', [])),
-      );
+    let obs = this.httpClient.post(flask_endpoint, userPasswordData_json, this.httpOptions).pipe(
+      catchError(this.handleError<any>('submitUserPasswordChangeRequest', [])),
+    );
 
     return obs;
   }
@@ -455,12 +465,7 @@ export class FlaskBackendService {
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
       catchError(this.handleError<any>('getNewestObservation_forAgeClass_bySealId', [])),
       map( (jsonResponse : any) => {
-
-        console.log("YOU CAN SEE ME");
-
         let json_obs = jsonResponse['0'];
-
-        console.log("SHOULD FAIL ON ME");
 
         var sqlobs = new SqlObservation();
         sqlobs.ObservationID = json_obs['ObservationID'];

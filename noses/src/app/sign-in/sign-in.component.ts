@@ -3,6 +3,7 @@ import { AuthService } from "../_services/auth.service";
 import { PasswordHasherService } from '../_services/password-hasher.service';
 import { FlaskBackendService } from '../_services/flask-backend.service';
 import { sqlUser_full } from '../_supporting_classes/sqlUser';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-sign-in',
@@ -15,42 +16,72 @@ export class SignInComponent implements OnInit {
 
   ngOnInit() { }
 
+
+  /**
+   * 
+   */
   public signOutClicked() {
     this.authService.SignOut();
   }
 
 
+  /**
+   * 
+   * @param username : Username of the user trying to be logged in
+   * @param password : Password of the user trying to be logged in
+   */
   public signInClicked(username, password) {
-
-    console.log("User is attempting to sign in.");
-    // console.log("Result of hashing the password: ");
-    // console.log(this.passwordHasher.hashPassword(password));      
-
-    this.authService.SignIn(username, password);
-  
     let emailAsJson = '{"email": "' + username + '"}';
 
+    console.log("\n\n signInClicked() ... User is attempting to sign in.");
 
+    // - Google FireBase/FireStore login
+    // this.authService.SignIn(username, password);
+  
+    // - Get Entire User
     let userSource_obs = this.apiService.getUser_obs(emailAsJson);
     userSource_obs.subscribe(retval => {
-      console.log("THIS SHOULD BE DOING SOMETHING");
       console.log("Result of getting user with password: ");
       console.log(JSON.stringify(retval));
     });
 
+    // - Login Via 'apiService'
     let loginAuthenticator_obs = this.apiService.getLoginAuthenticator(username, password);
-    loginAuthenticator_obs.subscribe(retval => {
-      
-      let betterval = JSON.stringify(retval);
+    loginAuthenticator_obs.subscribe(this.loginAuthenticator_obs_next, this.loginAuthenticator_obs_error);
 
-      if (retval.toString() != "Incorrect Password") {
-        console.log("PASSWORD IS CORRECT!!!");
-        console.log(betterval.toString());
-      }
-      else {
-        console.log("PASSWORD IS WRONG!!!");
-      }
-    });
+  }
 
+
+  /**
+   * This method serves as the callback for 'next:' paramater of the subscribe function.
+   * @param retval 
+   */
+  public loginAuthenticator_obs_next(retval : sqlUser_full[]) {
+    let betterval = JSON.stringify(retval);
+
+    if (retval.toString() != "Incorrect Password") {
+      console.log("PASSWORD IS CORRECT!!!");
+      console.log(betterval.toString());
+
+      console.log(retval.toString())
+    }
+    else {
+      console.log("PASSWORD IS WRONG!!!");
+    }
+  }
+
+
+  /**
+   * his method serves as the callback for 'error:' paramater of the subscribe function.
+   * @param error 
+   */
+  public loginAuthenticator_obs_error(error : HttpErrorResponse) {
+    console.log("\n\n\n\n\n\nENTERED ERROR CALBACK OF LOGIN AUTHENTICATOR");
+  
+    console.log("\nOutputting 'error' without forcing a type");
+    console.log(error);
+
+    console.log("\nChecking the type of 'error' without forcing a type");
+    console.log(typeof(error));
   }
 }
