@@ -42,6 +42,29 @@ export class AuthService {
     this.IH_userIsValid_bs = new BehaviorSubject<boolean>(this.IH_userIsValid);
     this.IH_userData = new User_Observer_Obj();
     this.IH_userData_bs = new BehaviorSubject<User_Observer_Obj>(this.IH_userData);
+
+    this.attemptInitByLocalStorage()
+  }
+
+
+  /**
+   * This method will check the local storage to see if there is a valid user there.
+   * This could happen if a user refreshed the application or opened a window in a new tab.
+   * 
+   */
+  public attemptInitByLocalStorage() {
+    let userData = JSON.parse(localStorage.getItem("UserObserver"));
+    let userDataIsValid = JSON.parse(localStorage.getItem("UserObserverIsValid"));
+
+    if (userData != null) {
+      this.IH_userData = userData;
+      this.IH_userData_bs.next(this.IH_userData);
+      this.IH_userIsValid = true;
+      this.IH_userIsValid_bs.next(this.IH_userIsValid);      
+    }
+    else {
+      this.setLocalStorageLoggedOutState();
+    }
   }
 
 
@@ -83,7 +106,11 @@ export class AuthService {
 
         // since it was successful, set is valid to true and pass it on its stream
         this.IH_userIsValid = true;
-        this.IH_userIsValid_bs.next(this.IH_userIsValid);        
+        this.IH_userIsValid_bs.next(this.IH_userIsValid);       
+
+        // update the local storage to have the UserObserver
+        localStorage.setItem("UserObserver", JSON.stringify(this.IH_userData)); 
+        localStorage.setItem("userObserverIsValid", JSON.stringify(this.IH_userIsValid)); 
 
         // redirect the user to the home page.
         this.ngZone.run(() => {
@@ -98,6 +125,8 @@ export class AuthService {
 
         // set the failure variable
         this.IH_userIsValid = false;
+
+        this.setLocalStorageLoggedOutState();
 
         window.alert("Email/Password combination did not match any existing users.");
       }
@@ -119,9 +148,19 @@ export class AuthService {
     this.IH_userData = new User_Observer_Obj();
     this.IH_userData_bs.next(this.IH_userData);
 
+    this.setLocalStorageLoggedOutState();
+
     this.router.navigate(["sign-in"]);
   }
 
+
+  /**
+   * set the current user local storage to be that of an invalid user(meaning no one is logged in)
+   */
+  public setLocalStorageLoggedOutState() {
+        localStorage.setItem("UserObserver", "null"); 
+        localStorage.setItem("userObserverIsValid", "{'userObserverIsValid' : 'false'}"); 
+  }
 
   // /**
   //  * Sign up with email/password
