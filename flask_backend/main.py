@@ -11,9 +11,37 @@ import json
 import logging
 #from werkzeug import generate_password_hash, check_password_hash
 from flask_cors import CORS, cross_origin
+from flask_mail import Mail, Message
 CORS(app)
 
 bleh = Flask(__name__)
+
+app.config['DEBUG'] = True
+app.config['TESTING'] = False
+app.config['MAIL_SERVER'] = "smtp.gmail.com" ## 
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True 
+app.config['MAIL_USERNAME'] = "noses.donotreply@gmail.com"
+app.config['MAIL_PASSWORD'] = "lF01P6GQ2hm2"
+app.config['MAIL_DEFAULT_SENDER'] = "noses.donotreply@gmail.com"
+app.config['MAIL_MAX_EMAILS'] = True
+mail = Mail(app)
+
+
+def sendSuccessEmailMessage(emailDestination, firstName):
+    print("\n\nINSIDE SEND SUCCESS EMAIL")
+
+    msg = Message(subject='Thanks for your interest in N.O.S.E.S.', 
+                  recipients=[emailDestination], 
+                  body=("Hi " + firstName + ",\n\n" + "Thanks for your interest in becoming a part of N.O.S.E.S. We will be in contact shortly to inform you whether your request for an account has been approved.\n\n" + "Best,\n\n" + "-The N.O.S.E.S. Team"))
+
+    print("Message content: ")
+    print(msg)
+
+    mail.send(msg)
+    return "Message sent!"
+
 
 # Deletes a particular observation from the database
 @app.route('/delete', methods=['POST', 'GET'])
@@ -249,12 +277,15 @@ def submit_new_userAccountRequest():
 
       # execute the query
       cursor.execute(query)
+      conn.commit()
 
       # store the response and return it as json
       rows = cursor.fetchall()
       resp = jsonify(rows)
+      
+      sendSuccessEmailMessage(email, firstName)
 
-      conn.commit()
+
       return resp
 
     else:
