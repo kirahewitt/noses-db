@@ -26,6 +26,8 @@ export class EditUserDialogComponent implements OnInit {
   public accountValidityStatusNames: string[];
   public accountValidityStatusIndices: number[];
 
+  public originalAccountStatus: number;
+
   /**
    * Constructor for this Angular Component. 
    * @param dialogRef 
@@ -43,8 +45,8 @@ export class EditUserDialogComponent implements OnInit {
     this.userLevelNames = ["Awaiting Account Approval", "Citizen Scientist", "Field Leader", "Admin"];
     this.userLevelIndices = [0, 1, 2, 3];
     
-    this.accountValidityStatusNames = ["Account Disabled", "Account Enabled"];
-    this.accountValidityStatusIndices = [0, 1];
+    this.accountValidityStatusNames = ["Awaiting Admin Response", "Account Enabled","Account Request Rejected"];
+    this.accountValidityStatusIndices = [0, 1, 2];
   }
 
 
