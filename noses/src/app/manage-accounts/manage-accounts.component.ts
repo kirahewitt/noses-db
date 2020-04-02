@@ -92,7 +92,6 @@ export class ManageAccountsComponent implements OnInit {
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
   public users: sqlUser[];
-  // public dataSource: MatTableDataSource<sqlUser>;
   public userData: any;
   public displayedColumns: string[] = ['Fullname', 'Affiliation', 'isAdmin', 'email', 'editUser', 'remUser' ];
   public show: boolean = false;
@@ -132,8 +131,6 @@ export class ManageAccountsComponent implements OnInit {
    *  Sets up the subscriptions for ansynchronous data this component is dependent upon. 
    */
   public ngOnInit() {
-    
-
     let userList_bs = this.manageAccountsService.getUserObserverList_datastream();
     userList_bs.subscribe( (response : User_Observer_Obj[]) => {
         console.log("Received Data in Angular Component from Subscription: ");

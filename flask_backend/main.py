@@ -1087,7 +1087,7 @@ def get_login_authenticator_userObserver():
       givenEmail = request.json['email']
       givenPassword = request.json['password']
 
-      getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email " + 
+      getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
                             " FROM Observers as O, Users as U " +
                             " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + " AND U.Password = " + surr_apos(givenPassword) + ";")
 
