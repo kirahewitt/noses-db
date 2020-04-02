@@ -1,0 +1,110 @@
+<h1 mat-dialog-title>Create New User</h1>
+
+<div mat-dialog-content [formGroup]="form">
+
+
+  <div class="container">
+
+    <form [formGroup]="form">
+
+      <div class="row">
+
+        <!-- left column -->
+        <div class="col-md-1"></div>
+
+        <!-- middle column -->
+        <div class="col-md-10">
+
+          <div class="row">
+            <div class="col-md-6">
+              <!-- firstName -->
+              <p>
+                <mat-form-field class="full-width">
+                  <mat-label> First Name: </mat-label>
+                  <input matInput formControlName="firstName" value="{{newUser.firstName}}" class="input" type="text" placeholder="Text input">
+                  <mat-error *ngIf="hasError('firstName', 'required')"> This field is required. </mat-error> 
+                </mat-form-field>
+              </p>
+            </div>
+
+            <div class="col-md-6">
+              <!-- lastName -->
+              <p>
+                <mat-form-field class="full-width">
+                  <mat-label> Last Name: </mat-label>
+                  <input matInput formControlName="lastName" value="{{newUser.lastName}}" class="input" type="text" placeholder="Text input">
+                  <mat-error *ngIf="hasError('lastName', 'required')"> This field is required. </mat-error> 
+                </mat-form-field>
+              </p>
+            </div>
+          </div>
+
+          <!-- email -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Email: </mat-label>
+              <input matInput formControlName="email" value="{{newUser.email}}" class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('email', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+            
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Password: </mat-label>
+              <input matInput formControlName="password" value="{{newUser.password}}"  class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('password', 'required')"> This field is required. </mat-error> 
+              
+            </mat-form-field>
+          </p>
+
+
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Confirm Password: </mat-label>
+              <input matInput formControlName="passwordConfirm" value="{{newUser.passwordConfirm}}" [errorStateMatcher]="passwordErrorStateMatcher"  class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('passwordConfirm', 'required')"> This field is required. </mat-error> 
+              <mat-error *ngIf="form.hasError('passwordPairMismatch')"> Passwords must match. </mat-error>
+            </mat-form-field>
+          </p>
+
+          <!-- affiliation -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Affiliation: </mat-label>
+              <input matInput formControlName="affiliation" value="{{newUser.affiliation}}" class="input" type="text" placeholder="Text input">
+              <mat-error *ngIf="hasError('affiliation', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Permissions Level: </mat-label>
+
+              <mat-select formControlName="isAdmin">
+                <mat-option *ngFor="let levelIndex of userLevelIndices" [value]="levelIndex">
+                  {{userLevelNames[levelIndex]}}
+                </mat-option>
+              </mat-select> 
+
+              <mat-error *ngIf="hasError('isAdmin', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+        </div>
+
+        <!-- right column -->
+        <div class="col-md-1"></div>
+
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+<mat-dialog-actions>
+  <button mat-button class="mat-raised-button mat-primary" (click)="save()" [disabled]="form.invalid">Save</button>
+  <button mat-button class="mat-raised-button" (click)="onNoClick()">Cancel</button> 
+</mat-dialog-actions>

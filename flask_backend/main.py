@@ -218,7 +218,7 @@ def submit_new_userAccountRequest():
         raise Exception("A verified user with that email already exists in this system.") 
 
       # try to make the observer tuple first
-      submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, password, nextObserverId)
+      submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, nextObserverId)
 
       # store user vars
       userQuery_nextUserId = str(nextUserId)
@@ -262,6 +262,102 @@ def submit_new_userAccountRequest():
 
   except Exception as e:
     print("Error(submit-new-userAccountRequest): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+@app.route("/addNewUser_forAdmin", methods=['POST'])
+def addNewUser_forAdmin():
+
+  print("\n\n\n\n MADE IT TO THE BEGINNING OF 'saveUserEditChanges'")
+
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+
+    if request.method == 'POST':
+      _json = request.json
+
+
+      # set aside all the variables we need from the input
+      firstName = _json['firstName']
+      lastName = _json['lastName']
+      email = _json['email']
+      password = _json['password']
+      isAdmin = _json['isAdmin']
+      affiliation = _json['affiliation']
+      
+      
+      # determine the next UserID and the next ObsID, for the Users and Observers entity sets, respectively.
+      nextUserId = int(getLatestUser()) + 1
+      nextObserverId = int(getLatestObserver()) + 1
+
+      # verify that we're not going to attempt to add a user for an email already in use
+      emailAlreadyInUse = isEmailInUseByAnyUser(email)
+      if (emailAlreadyInUse):
+        raise Exception("A verified user with that email already exists in this system.") 
+
+      # try to make the observer tuple first
+      submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, nextObserverId)
+
+      # store user vars
+      userQuery_nextUserId = str(nextUserId)
+      userQuery_username = email                       # given
+      userQuery_password = password                    # given
+      userQuery_initials = firstName[0] + lastName[0]  # get first character of first and last name for initials
+      userQuery_isAdmin = str(isAdmin)                       # can't be an admin b/c this is just a request
+      userQuery_affiliation = affiliation                       # won't have any affiliation by default
+      userQuery_email = email                          # given
+      userQuery_obsID = str(nextObserverId)            # 
+      userQuery_isVerifiedByAdmin = str(1)             # Can't be a verified user because this is just a request.
+
+      # make a new object/query for the user
+      # username, password, initials, isAdmin, affiliation, email, obsID, isVerifiedByAdmin
+      query = (" INSERT INTO Users (UserID, Username, Password, Initials, isAdmin, Affiliation, Email, ObsID, isVerifiedByAdmin) VALUES( " + 
+               " " + userQuery_nextUserId + ", " + 
+               " " + surr_apos(userQuery_username) + ", " + 
+               " " + surr_apos(userQuery_password) + ", " + 
+               " " + surr_apos(userQuery_initials) + ", " + 
+               " " + userQuery_isAdmin + ", " + 
+               " " + surr_apos(userQuery_affiliation) + ", " + 
+               " " + surr_apos(userQuery_email) + ", " + 
+               " " + userQuery_obsID + ", " + 
+               " " + userQuery_isVerifiedByAdmin + ") " + ";")
+
+      print("query to execute:")
+      print(query)
+
+      # execute the query
+      cursor.execute(query)
+      conn.commit()
+
+      query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+                " FROM Observers as O, Users as U " +
+                " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
+
+      print("\n\nQeuery for getting all the rows")
+      print(query)
+
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      # output results for sanity check
+      print("Result of getAllUsers - Flask API")
+      print(rows)
+
+      return resp
+    else:
+      print("Request method was for GET instead of POST")
+    
+
+  except Exception as e:
     print(e)
 
   finally:
@@ -344,7 +440,7 @@ def isEmailInUseByAnyUser(email):
 ##  (2) if user exists, return an id of -1, otherwise, use one query to create the user, and user another query to retrieve its Observation ID and return that.
 ##
 ## NOTE: this method a boolean indicating whether adding the observer was successful.
-def submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, password, nextObserverId):
+def submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, nextObserverId):
   
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -459,46 +555,6 @@ def get_IDing_observations_with_sealId():
   finally:
     cursor.close()
     conn.close()
-
-
-
-
-
-# @app.route("/saveUserEditChanges")
-# def saveUserEditChanges():
-#   conn = mysql.connect()
-#   cursor = conn.cursor(pymysql.cursors.DictCursor)
-
-#   try:
-#     if request.method == 'POST':
-#       #do stuff
-
-#       _json = request.json
-#       userId = _json['userId']
-#       username = _json['username']
-#       initials = _json['initials']
-#       isAdmin = _json['isAdmin']
-#       affiliation = _json['affiliation']
-#       email = _json['email']
-#       obsId = _json['obsId']
-#       isVerifiedByAdmin = _json['isVerifiedByAdmin']
-#       firstName = _json['firstName']
-#       lastName = _json['lastName']
-
-#       query = ("Update Users ")
-
-#     else:
-#       print("Request method was for GET instead of POST")
-
-
-#   except Exception as e:
-#     print(e)
-
-#   finally:
-#     cursor.close()
-#     conn.close()
-
-
 
 
 ## This function needs to perform an Update query, overwriting the values for the following attributes:

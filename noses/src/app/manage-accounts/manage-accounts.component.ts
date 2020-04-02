@@ -4,11 +4,13 @@ import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firest
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatDialog, MatDialogRef, MatTooltip, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FlaskBackendService } from '../_services/flask-backend.service';
-import { sqlUser, User_Observer_Obj } from '../_supporting_classes/sqlUser';
+import { sqlUser, User_Observer_Obj, user_forCreateNewUser_byAdmin } from '../_supporting_classes/sqlUser';
 import { AuthService } from "../_services/auth.service";
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
+import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component';
 import { Observable } from 'rxjs';
 import { ManageAccountsService } from '../_services/manage-accounts.service';
+
 
 
 
@@ -187,6 +189,39 @@ export class ManageAccountsComponent implements OnInit {
         console.log("Now sending the combined user observer object to the DB")
 
         this.manageAccountsService.updateUserObserverTuplePair(result);
+      }
+    });
+  }
+
+
+  /**
+   * 
+   */
+  public openAddUserDialog(): void {
+    event.preventDefault();
+
+    // establish the settings for our dialog
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = "50%";
+    
+    // // establish the data that will be passed to the dialog
+    // dialogConfig.data = null;
+
+    // create a reference to the dialog
+    const dialogRef = this.dialogMaterialService.open(NewUserDialogComponent, dialogConfig);
+     
+    // set up a subcription to receive any modified data from the dialog after it is closed
+    dialogRef.afterClosed().subscribe( (result: user_forCreateNewUser_byAdmin) => {
+      
+      if (result != undefined) {
+        console.log("Resulting object we receive from the edit dialog");
+        console.log(result);
+
+        console.log("Now sending the combined user observer object to the DB")
+
+        this.manageAccountsService.addNewUser(result);
       }
     });
   }

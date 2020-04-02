@@ -91,6 +91,7 @@ export class EditUserDialogComponent implements OnInit {
     userObserverForReturn.isVerifiedByAdmin = formObj.isVerifiedByAdmin;
 
     // rest of the fields must come from the original object
+    userObserverForReturn.obsId = this.editedUser.obsId;
     userObserverForReturn.userId = this.editedUser.userId;
     userObserverForReturn.username = this.editedUser.username;
     userObserverForReturn.initials = this.updateInitials(userObserverForReturn.firstName, userObserverForReturn.lastName);

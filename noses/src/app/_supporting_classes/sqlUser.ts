@@ -19,6 +19,7 @@ export interface sqlUser_full {
   HashedPassword: string;
 }
 
+
 export class user_forCreateNewUser {
   public firstName? : string;
   public lastName? : string;
@@ -34,6 +35,27 @@ export class user_forCreateNewUser {
     this.passwordConfirm = "";
   }
 }
+
+export class user_forCreateNewUser_byAdmin {
+  public firstName? : string;
+  public lastName? : string;
+  public email? : string;
+  public password? : string;
+  public passwordConfirm? : string;
+  public isAdmin: number;
+  public affiliation: string;
+  
+  constructor() {
+    this.firstName = "";
+    this.lastName = "";
+    this.email = "";
+    this.password = "";
+    this.passwordConfirm = "";
+    this.isAdmin = -1;
+    this.affiliation = "";
+  }
+}
+
 
 /**
  * Needed to create a version of the userObject which Components
@@ -75,6 +97,9 @@ export class User_Observer_Obj {
     this.lastName = "";
   }
 }
+
+
+
 
 export interface sqlObserver_full {
   ObsID : number;

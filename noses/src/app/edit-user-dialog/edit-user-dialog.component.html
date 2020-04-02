@@ -1,31 +1,7 @@
-<h1 mat-dialog-title>Edit User Priveleges - UserId {{editedUser.userId}}</h1>
+<h1 mat-dialog-title>Edit User Privileges - User ID: {{editedUser.userId}}</h1>
 
 <div mat-dialog-content [formGroup]="form">
 
-
-  <!-- <div class="form-group">
-
-          <div class="row">
-            <div class="col-md-1"></div>
-            
-            <div class="col-md-1"></div>
-
-            <div class="col-md-4 select-admin">
-              <mat-form-field class="padded-select">
-                <mat-label>User Priveleges</mat-label>
-                <mat-select placeholder="Select User Priveleges" [(value)]="selectAdmin" [(ngModel)]="data.isAdmin">
-                    <mat-option value="3">Admin Priveleges</mat-option>
-                    <mat-option value="2">Can add/approve seal observations</mat-option>
-                    <mat-option value="1">Seal observations need approval</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-
-          <br>
-          <br>
-          </div>
-  </div> -->
 
   <div class="container">
 
@@ -34,29 +10,39 @@
       <div class="row">
 
         <!-- left column -->
-        <div class="col-md-4"></div>
+        <div class="col-md-1"></div>
 
         <!-- middle column -->
-        <div class="col-md-4">
+        <div class="col-md-10">
 
-           <!-- firstName -->
-          <p>
-            <mat-form-field class="full-width">
-              <mat-label> firstName: </mat-label>
-              <input matInput formControlName="firstName" value="{{editedUser.firstName}}" class="input" type="text" placeholder="Text input">
-              <mat-error *ngIf="hasError('firstName', 'required')"> This field is required. </mat-error> 
-            </mat-form-field>
-          </p>
+        <div class="row">
+          <div class="col-md-6">
+            <!-- firstName -->
+            <p>
+              <mat-form-field class="full-width">
+                <mat-label> First Name: </mat-label>
+                <input matInput formControlName="firstName" value="{{editedUser.firstName}}" class="input" type="text" placeholder="Text input">
+                <mat-error *ngIf="hasError('firstName', 'required')"> This field is required. </mat-error> 
+              </mat-form-field>
+            </p>
+          </div>
+
+          <div class="col-md-6">
+            <!-- lastName -->
+            <p>
+              <mat-form-field class="full-width">
+                <mat-label> Last Name: </mat-label>
+                <input matInput formControlName="lastName" value="{{editedUser.lastName}}" class="input" type="text" placeholder="Text input">
+                <mat-error *ngIf="hasError('lastName', 'required')"> This field is required. </mat-error> 
+              </mat-form-field>
+            </p>
+          </div>
+        </div>
+
+            
 
 
-          <!-- lastName -->
-          <p>
-            <mat-form-field class="full-width">
-              <mat-label> lastName: </mat-label>
-              <input matInput formControlName="lastName" value="{{editedUser.lastName}}" class="input" type="text" placeholder="Text input">
-              <mat-error *ngIf="hasError('lastName', 'required')"> This field is required. </mat-error> 
-            </mat-form-field>
-          </p>
+              
 
           <!-- email -->
           <p>
@@ -79,13 +65,13 @@
 
           
           <!-- obsId  -->
-          <p>
+          <!-- <p>
             <mat-form-field class="full-width">
               <mat-label> Observer Id: </mat-label>
               <input matInput formControlName="obsId" value="{{editedUser.obsId}}" class="input" type="text" placeholder="Text input" readonly>
               <mat-error *ngIf="hasError('obsId', 'required')"> This field is required. </mat-error> 
             </mat-form-field>
-          </p>
+          </p> -->
 
 
           <p>
@@ -126,7 +112,7 @@
         </div>
 
         <!-- right column -->
-        <div class="col-md-4"></div>
+        <div class="col-md-1"></div>
 
 
       </div>

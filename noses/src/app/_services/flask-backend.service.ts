@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observations } from  '../_supporting_classes/Observations';
-import { sqlUser, sqlUser_full, user_forCreateNewUser, User_Observer_Obj } from '../_supporting_classes/sqlUser';
+import { sqlUser, sqlUser_full, user_forCreateNewUser, User_Observer_Obj, user_forCreateNewUser_byAdmin } from '../_supporting_classes/sqlUser';
 import { Observable, of } from  'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { SealDataService } from "./seal-data.service";
@@ -616,6 +616,46 @@ export class FlaskBackendService {
       })
     );
     return obs;
+  }
+
+
+  /**
+   * 
+   * @param newUser 
+   */
+  public addNewUser_byAdmin(newUser: user_forCreateNewUser_byAdmin) : Observable<User_Observer_Obj[]> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/addNewUser_forAdmin`;
+
+    console.log("Angular Service for Flask API received this user to update:");
+    console.log(newUser);
+
+    let obs = this.httpClient.post(flask_endpoint, newUser, this.httpOptions).pipe(
+      catchError(this.handleError<any>('addNewUser_byAdmin', [])),
+      map( jsonResponse => {
+        var userObsList : User_Observer_Obj[] = [];
+
+        console.log("Angular Service for Flask API received this json response and will now map it to an object ");
+        console.log(userObsList);
+
+        for (let json_uo of jsonResponse) {
+          var tempUO = new User_Observer_Obj();
+          tempUO.userId = json_uo['UserID'];
+          tempUO.username = json_uo['Username'];
+          tempUO.initials = json_uo['UserID'];
+          tempUO.isAdmin = json_uo['isAdmin'];
+          tempUO.affiliation = json_uo['Affiliation'];
+          tempUO.email = json_uo['Email'];
+          tempUO.obsId = json_uo['ObsID'];
+          tempUO.isVerifiedByAdmin = json_uo['isVerifiedByAdmin'];
+          tempUO.firstName = json_uo['FirstName'];
+          tempUO.lastName = json_uo['LastName'];
+          userObsList.push(tempUO);
+        }
+        return userObsList;
+      })
+    );
+    return obs;
+
   }
 
 

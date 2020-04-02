@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User_Observer_Obj } from '../_supporting_classes/sqlUser';
+import { User_Observer_Obj, user_forCreateNewUser_byAdmin } from '../_supporting_classes/sqlUser';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FlaskBackendService } from './flask-backend.service';
 
@@ -79,6 +79,27 @@ export class ManageAccountsService {
     // console.log(userObserver);
 
     let overwriteUser_obs = this.apiService.saveUserEditChanges(userObserver);
+    overwriteUser_obs.subscribe( (userObsListAfterUpdate : User_Observer_Obj[]) => {
+
+      // console.log("We have received from the DB the list of new users after the updates to the DB were performed:")
+      // console.log(userObsListAfterUpdate);
+
+      this.userObserverList = userObsListAfterUpdate;
+      this.userObserverList_bs.next(this.userObserverList);
+    });
+  }
+
+
+   /**
+   * 
+   * @param userObserver 
+   */
+  public addNewUser(newUser: user_forCreateNewUser_byAdmin) {
+
+    // console.log("Manage Accounts Service received this object and will send to DB:");
+    // console.log(userObserver);
+
+    let overwriteUser_obs = this.apiService.addNewUser_byAdmin(newUser);
     overwriteUser_obs.subscribe( (userObsListAfterUpdate : User_Observer_Obj[]) => {
 
       // console.log("We have received from the DB the list of new users after the updates to the DB were performed:")
