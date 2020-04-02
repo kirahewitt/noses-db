@@ -80,7 +80,8 @@ export class UserPofileMainComponent implements OnInit {
 
         console.log("Now sending the combined user observer object to the DB")
 
-        //this.manageAccountsService.updateUserObserverTuplePair(result);
+        this.authService.updateUserObserverTuplePair(result);
+        
       }
     });
   }

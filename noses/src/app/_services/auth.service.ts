@@ -83,6 +83,38 @@ export class AuthService {
 
 
   /**
+   * 
+   * @param userObserver 
+   */
+  public updateUserObserverTuplePair(userObserver: User_Observer_Obj) {
+
+    // console.log("Manage Accounts Service received this object and will send to DB:");
+    // console.log(userObserver);
+
+    let overwriteUser_obs = this.apiService.saveUserEditChanges(userObserver);
+    overwriteUser_obs.subscribe( (userObsListAfterUpdate : User_Observer_Obj[]) => {
+
+      // console.log("We have received from the DB the list of new users after the updates to the DB were performed:")
+      // console.log(userObsListAfterUpdate);
+
+      // get the desired userobserver from the list
+      for (let user of userObsListAfterUpdate) {
+        if (user.userId === userObserver.userId) {
+          this.IH_userData = user;
+          this.IH_userData_bs.next(this.IH_userData);
+
+          // since it was successful, set is valid to true and pass it on its stream
+          this.IH_userIsValid = true;
+          this.IH_userIsValid_bs.next(this.IH_userIsValid);       
+          break;
+        }
+      }
+
+      
+    });
+  }
+
+  /**
    * The behavior of this function will be similar to what is currently in the SignInComponent.
    * @param email : Email of the user attempting to log in
    * @param password : Password of the user attempting to log in
