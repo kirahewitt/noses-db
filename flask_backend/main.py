@@ -501,11 +501,17 @@ def get_IDing_observations_with_sealId():
 
 
 
-#
+## This function needs to perform an Update query, overwriting the values for the following attributes:
+##  In User:
+##    - Username, Initials, isAdmin, Affiliation, Email, isVerifiedByAdmin
+##  In Observer:
+##    - FirstName
+##    - LastName
+##    - isVerifiedByAdmin
 @app.route("/saveUserEditChanges", methods=['POST'])
-def removeUserHavingEmail():
+def saveUserEditChanges():
 
-  print("\n\n\n\n MADE IT TO THE BEGINNING OF 'removeUserHavingEmail'")
+  print("\n\n\n\n MADE IT TO THE BEGINNING OF 'saveUserEditChanges'")
 
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -514,18 +520,53 @@ def removeUserHavingEmail():
 
     if request.method == 'POST':
       _json = request.json
-      email = _json['email']
-      query = ("Update Users Set isAdmin=-1 where email=" + surr_apos(email) + ";")
 
-      print("\n\nQeuery for 'deleting' the tuple\n\n")
-      print(query)
 
-      cursor.execute(query)
+      #identifying value first
+      userID = _json['userId']
+      newUsername = _json['username']
+      newInitials = _json['initials']
+      newIsAdmin = _json['isAdmin']
+      newAffiliation = _json['affiliation']
+      newEmail = _json['email']
+      newIsVerifiedByAdmin = _json['isVerifiedByAdmin']
+
+      obsID = _json['obsId']
+      newFirstName = _json['firstName']
+      newLastName = _json['lastName']
+      
+
+
+      userUpdateQuery = ( " UPDATE Users " + 
+                          " SET isAdmin = " + str(newIsAdmin) +
+                          ", " + " Username = " + surr_apos(newUsername) +
+                          ", " + " Initials = " + surr_apos(newInitials) +
+                          ", " + " Affiliation = " + surr_apos(newAffiliation) +
+                          ", " + " Email = " + surr_apos(newEmail) +
+                          ", " + " isVerifiedByAdmin = " + str(newIsVerifiedByAdmin) +
+                          " WHERE userID=" + str(userID) + ";")
+
+      print("\n\nQeuery for 'updating' the tuple\n\n")
+      print(userUpdateQuery)
+
+      cursor.execute(userUpdateQuery)
       rows = cursor.fetchall()
       conn.commit()
 
+      observerUpdateQuery = ( " UPDATE Observers " + 
+                              " SET FirstName = " + surr_apos(newFirstName) +
+                              ", " + " LastName = " + surr_apos(newLastName) +
+                              ", " + " isVerifiedByAdmin = " + str(newIsVerifiedByAdmin) +
+                              " WHERE obsID=" + str(obsID) + ";")
 
-      query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email " + 
+      print("\n\nQeuery for 'updating' the tuple\n\n")
+      print(observerUpdateQuery)
+
+      cursor.execute(observerUpdateQuery)
+      rows = cursor.fetchall()
+      conn.commit()
+
+      query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
                 " FROM Observers as O, Users as U " +
                 " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
 
@@ -555,6 +596,63 @@ def removeUserHavingEmail():
     conn.close()
 
 
+@app.route("/removeUserHavingEmail", methods=['POST'])
+def removeUserHavingEmail():
+
+  print("\n\n\n\n MADE IT TO THE BEGINNING OF 'removeUserHavingEmail'")
+
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+
+    if request.method == 'POST':
+      _json = request.json
+
+
+      #identifying value first
+      userID = _json['userId']
+
+      userUpdateQuery = ( " UPDATE Users " + 
+                          " SET isAdmin = " + str(-1) +
+                          " WHERE userID=" + str(userID) + ";")
+
+      print("\n\nQeuery for 'updating' the tuple\n\n")
+      print(userUpdateQuery)
+
+      cursor.execute(userUpdateQuery)
+      rows = cursor.fetchall()
+      conn.commit()
+
+      query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+                " FROM Observers as O, Users as U " +
+                " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
+
+      print("\n\nQeuery for getting all the rows")
+      print(query)
+
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+      resp = jsonify(rows)
+
+      # output results for sanity check
+      print("Result of getAllUsers - Flask API")
+      print(rows)
+
+      return resp
+    else:
+      print("Request method was for GET instead of POST")
+    
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
 
 ## get all users
 @app.route('/getAll_UserObserver_Data', methods=['POST', 'GET'])
@@ -567,7 +665,7 @@ def getAllUserObserverData():
     # query = (" SELECT * FROM Users, Observers WHERE Users.ObsID=Observers.ObsID;")
     
 
-    query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email " + 
+    query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
               " FROM Observers as O, Users as U " +
               " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
 

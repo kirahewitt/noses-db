@@ -8,6 +8,7 @@ import { sqlUser, User_Observer_Obj } from '../_supporting_classes/sqlUser';
 import { AuthService } from "../_services/auth.service";
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
 import { Observable } from 'rxjs';
+import { ManageAccountsService } from '../_services/manage-accounts.service';
 
 
 
@@ -89,7 +90,7 @@ export class ManageAccountsComponent implements OnInit {
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
   public users: sqlUser[];
-  public dataSource: MatTableDataSource<sqlUser>;
+  // public dataSource: MatTableDataSource<sqlUser>;
   public userData: any;
   public displayedColumns: string[] = ['Fullname', 'Affiliation', 'isAdmin', 'email', 'editUser', 'remUser' ];
   public show: boolean = false;
@@ -111,16 +112,15 @@ export class ManageAccountsComponent implements OnInit {
    * @param dialogMaterialService : Reference to the MatDialog service, which simplifies creating angular material 
    * dialogue popups
    */
-  constructor(private apiService: FlaskBackendService, public authService: AuthService, public afAuth: AngularFireAuth, public dialogMaterialService: MatDialog, public changeDetectorRef: ChangeDetectorRef) { 
-    // OLD
-    this.users = [];
-
-    // NEW initialize the objects we need for improved class
+  constructor(private apiService: FlaskBackendService, public manageAccountsService: ManageAccountsService, public authService: AuthService, public afAuth: AngularFireAuth, public dialogMaterialService: MatDialog, public changeDetectorRef: ChangeDetectorRef) { 
     let tempUser: User_Observer_Obj = new User_Observer_Obj();
     this.columns_forDisplay = Object.getOwnPropertyNames(tempUser);
     this.userLevelNames = ["Awaiting Account Approval", "Citizen Scientist", "Field Leader", "Admin"];
+
+    // set up the table for an empty list of users
     this.userList_forDisplay = [];
     this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay);
+    
 
     this.selectedUserObsObj = new User_Observer_Obj();
   }
@@ -130,17 +130,17 @@ export class ManageAccountsComponent implements OnInit {
    *  Sets up the subscriptions for ansynchronous data this component is dependent upon. 
    */
   public ngOnInit() {
-    let userList_obs = this.apiService.getUserList();
-    userList_obs.subscribe( (response : User_Observer_Obj[]) => {
-      
-      // verify that we're actually receiving the right stuff from the DB
-      console.log("Received Data in Angular Component from Subscription: ");
-      console.log(response);
+    
 
-      // initialize the local variables.
-      this.userList_forDisplay = response;
-      this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay);
-      this.dataSource_forDisplay.paginator = this.paginator;
+    let userList_bs = this.manageAccountsService.getUserObserverList_datastream();
+    userList_bs.subscribe( (response : User_Observer_Obj[]) => {
+        console.log("Received Data in Angular Component from Subscription: ");
+        console.log(response);
+
+        // initialize the local variables.
+        this.userList_forDisplay = response;
+        this.dataSource_forDisplay.data = this.userList_forDisplay;
+        this.dataSource_forDisplay.paginator = this.paginator;
     });
   }
 
@@ -179,72 +179,17 @@ export class ManageAccountsComponent implements OnInit {
      
     // set up a subcription to receive any modified data from the dialog after it is closed
     dialogRef.afterClosed().subscribe( (result: User_Observer_Obj) => {
-      console.log("Dialog output: ", result);
-
+      
       if (result != undefined) {
         console.log("Resulting object we receive from the edit dialog");
         console.log(result);
-        
-        
-        // INVOKE AN OVERWRITE USER FIELD
-        // ... !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ...
 
-        let overwriteUser_obs = this.apiService.saveUserEditChanges(result);
-        overwriteUser_obs.subscribe( (userObsList : User_Observer_Obj[]) => {
-          this.userList_forDisplay = userObsList;
-          this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay);
-        });
+        console.log("Now sending the combined user observer object to the DB")
+
+        this.manageAccountsService.updateUserObserverTuplePair(result);
       }
     });
   }
-
-
-
-  // /**
-  //  * Opens a dialogue which allows you to add a new user.
-  //  */
-  // public openDialog(): void {
-
-  //   // // create a reference to the dialog
-  //   // const dialogRef = this.dialogMaterialService.open(DialogOverviewExampleDialog, {
-  //   //   width: '650px',
-  //   //   data: 
-  //   // });
-
-  //   // subscribe to the result of the closed dialogue to do stuff with the form data
-  //   let dialogResult_obs = dialogRef.afterClosed();
-  //   dialogResult_obs.subscribe(result => {
-      
-  //     console.log('The dialog was closed');
-
-  //     if(result !== undefined) {
-
-  //       console.log(result);
-  //       let result_json = JSON.stringify(result);
-
-
-  //       this.addUser_promise = this.apiService.getPromise_addUser(result_json);
-
-  //       this.addUser_promise.then(users => {
-          
-  //         // No way in hell should we ever just get the number 1 as a string from this asynchronous method. bullshit.
-  //         if (users == "1") {
-  //           alert("user not created, duplicate username or email");
-  //         } 
-  //         else {
-  //           this.dataSource = new MatTableDataSource(<any> users);
-  //           this.authService.SignUp(result.email, result.password);
-  //         }
-
-  //       });
-  //     }
-
-  //     // **** unable to create an account and NOT sign in with it...
-  //     // https://stackoverflow.com/questions/37730712/how-to-just-create-an-user-in-firebase-3-and-do-not-authenticate-it
-
-  //   });
-  // }
-
 
 
 
@@ -292,82 +237,17 @@ export class ManageAccountsComponent implements OnInit {
     console.log("HERE IS THE ROW");
     console.log(userObsObj);
 
-    let usersAfterRemoval_obs: Observable<User_Observer_Obj[]> = this.apiService.removeUserHavingEmail(JSON.stringify(userObsObj));
+    this.manageAccountsService.removeUser(userObsObj);
 
+    let usersAfterRemoval_obs: Observable<User_Observer_Obj[]> = this.apiService.removeUserHavingEmail(JSON.stringify(userObsObj));
     usersAfterRemoval_obs.subscribe((updatedUsers : User_Observer_Obj[]) => {
       this.userList_forDisplay = updatedUsers;
       this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(updatedUsers);
     });
   }
 
-  
-
-
-
-  // /**
-  //  * 
-  //  * @param row 
-  //  */
-  // public openEditUserDialog(row: any): void {
-
-  //   const dialogRef = this.dialogMaterialService.open(EditUserDialogComponent, {
-  //     width: '400px',
-  //     data: {isAdmin: this.isAdmin},
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     console.log('The dialog was closed');
-  //     if(result !== undefined) {
-  //       var user = { 'isAdmin':result['isAdmin'], 'email': row.email};
-  //       this.apiService.updateUser(JSON.stringify(user)).then(msg => {
-  //         this.dataSource = new MatTableDataSource(<any> msg);
-  //       });
-  //     }
-  //   });
-  // }
-
-
 
 }
-
-
-// /**
-//  * 
-//  */
-// @Component({
-//   selector: 'dialog-overview-example-dialog',
-//   templateUrl: 'dialog-overview-example-dialog.html',
-//   styleUrls: ['./manage-accounts.component.scss']
-// })
-// export class DialogOverviewExampleDialog {
-
-//   selectAdmin = "No";
-//   userObj: any;
-
-//   loginID: string;
-//   fullname: string;
-//   password: string;
-//   isAdmin: boolean;
-//   affiliation: string;
-//   email: string;
-
-//   constructor(
-//     public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
-//     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-//     private apiService: FlaskBackendService) {}
-
-//   onNoClick(): void {
-//     // this.data = undefined;
-//     this.dialogRef.close();
-//   }
-
-
-
-// }
-
-
-
-
 
 
 

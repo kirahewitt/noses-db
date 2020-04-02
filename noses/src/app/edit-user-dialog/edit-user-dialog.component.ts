@@ -22,6 +22,9 @@ export class EditUserDialogComponent implements OnInit {
   public form : FormGroup; // need an object to hold the form object
   public editedUser : User_Observer_Obj; // need an object to fill the form
   public userLevelNames: string[]
+  public userLevelIndices: number[];
+  public accountValidityStatusNames: string[];
+  public accountValidityStatusIndices: number[];
 
   /**
    * Constructor for this Angular Component. 
@@ -29,11 +32,7 @@ export class EditUserDialogComponent implements OnInit {
    * @param injectedData 
    * @param apiService 
    */
-  constructor(private formBuilder : FormBuilder, 
-      private apiService: FlaskBackendService, 
-      public dialogRef: MatDialogRef<EditUserDialogComponent>, 
-      @Inject(MAT_DIALOG_DATA) public injectedData) 
-  {
+  constructor(private formBuilder : FormBuilder, private apiService: FlaskBackendService, public dialogRef: MatDialogRef<EditUserDialogComponent>, @Inject(MAT_DIALOG_DATA) public injectedData) {
     this.editedUser = new User_Observer_Obj();
 
     // save the injected data as an actual object whose type i know
@@ -42,6 +41,10 @@ export class EditUserDialogComponent implements OnInit {
     console.log(this.editedUser);
 
     this.userLevelNames = ["Awaiting Account Approval", "Citizen Scientist", "Field Leader", "Admin"];
+    this.userLevelIndices = [0, 1, 2, 3];
+    
+    this.accountValidityStatusNames = ["Account Disabled", "Account Enabled"];
+    this.accountValidityStatusIndices = [0, 1];
   }
 
 
@@ -51,16 +54,13 @@ export class EditUserDialogComponent implements OnInit {
    */
   public ngOnInit() {
     this.form = this.formBuilder.group({
-      userId  : [this.editedUser.userId, Validators.required],
-      username  : [this.editedUser.username, Validators.required],
-      initials  : [this.editedUser.initials, Validators.required],
-      isAdmin  : [this.editedUser.isAdmin, Validators.required],
-      affiliation  : [this.editedUser.affiliation, Validators.required],
-      email : [this.editedUser.email, Validators.required],
-      obsId : [this.editedUser.obsId, Validators.required],
-      isVerifiedByAdmin : [this.editedUser, Validators.required],
       firstName : [this.editedUser.firstName, Validators.required],
       lastName : [this.editedUser.lastName, Validators.required],
+      email : [this.editedUser.email, Validators.required],
+      isAdmin  : [this.editedUser.isAdmin, Validators.required],
+      affiliation  : [this.editedUser.affiliation, []],
+      obsId : [this.editedUser.obsId, Validators.required],
+      isVerifiedByAdmin : [this.editedUser.isVerifiedByAdmin, Validators.required],
     });
   }
 
@@ -73,13 +73,49 @@ export class EditUserDialogComponent implements OnInit {
       return this.form.controls[controlName].hasError(errorName);
   }
   
-
   /**
    * Closes the form and returns the value of the form as its current state.
    */
   public save() {
-    this.dialogRef.close(this.form.value);
+    console.log(this.form.value)
+    let formObj: User_Observer_Obj = this.form.value;
+    var userObserverForReturn: User_Observer_Obj = new User_Observer_Obj();
+    
+    // these fields were part of the form
+    userObserverForReturn.firstName = formObj.firstName;
+    userObserverForReturn.lastName = formObj.lastName;
+    userObserverForReturn.email = formObj.email;
+    userObserverForReturn.isAdmin = formObj.isAdmin;
+    userObserverForReturn.affiliation = formObj.affiliation;
+    userObserverForReturn.obsId = formObj.obsId;
+    userObserverForReturn.isVerifiedByAdmin = formObj.isVerifiedByAdmin;
+
+    // rest of the fields must come from the original object
+    userObserverForReturn.userId = this.editedUser.userId;
+    userObserverForReturn.username = this.editedUser.username;
+    userObserverForReturn.initials = this.updateInitials(userObserverForReturn.firstName, userObserverForReturn.lastName);
+
+    this.dialogRef.close(userObserverForReturn);
   }
+
+  /**
+   * gets the initials of the user based on the first and last name, in case these
+   * fields were edited.
+   */
+  public updateInitials(fName: string, lName: string) {
+    var result: string = "";
+    
+    if (fName.length > 0) {
+      result += fName[0];
+    }
+
+    if (lName.length > 0) {
+      result += lName[0];
+    }
+
+    return result;
+  }
+
 
   /**
    * Returns the name of the rank for the number provided.
@@ -94,11 +130,13 @@ export class EditUserDialogComponent implements OnInit {
     }
   }
 
+
   /**
    * 
    */
   onNoClick(): void {
-    // this.data = undefined;
+    console.log("Inside OnNoClick()");
+    console.log(this.form.value);
     this.dialogRef.close();
   }
 

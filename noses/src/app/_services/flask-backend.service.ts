@@ -580,26 +580,36 @@ export class FlaskBackendService {
   }
 
 
+  /**
+   * Saves the changes made to the users and receives an updated list of users after the changes have been made.
+   * @param editedUser 
+   */
   public saveUserEditChanges(editedUser : User_Observer_Obj) : Observable<User_Observer_Obj[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/saveUserEditChanges`;
+
+    console.log("Angular Service for Flask API received this user to update:");
+    console.log(editedUser);
 
     let obs = this.httpClient.post(flask_endpoint, editedUser, this.httpOptions).pipe(
       catchError(this.handleError<any>('saveUserEditChanges', [])),
       map( jsonResponse => {
         var userObsList : User_Observer_Obj[] = [];
 
+        console.log("Angular Service for Flask API received this json response and will now map it to an object ");
+        console.log(userObsList);
+
         for (let json_uo of jsonResponse) {
           var tempUO = new User_Observer_Obj();
-          tempUO.userId = json_uo['userId'];
-          tempUO.username = json_uo['username'];
-          tempUO.initials = json_uo['userId'];
+          tempUO.userId = json_uo['UserID'];
+          tempUO.username = json_uo['Username'];
+          tempUO.initials = json_uo['UserID'];
           tempUO.isAdmin = json_uo['isAdmin'];
-          tempUO.affiliation = json_uo['affiliation'];
-          tempUO.email = json_uo['email'];
-          tempUO.obsId = json_uo['obsId'];
+          tempUO.affiliation = json_uo['Affiliation'];
+          tempUO.email = json_uo['Email'];
+          tempUO.obsId = json_uo['ObsID'];
           tempUO.isVerifiedByAdmin = json_uo['isVerifiedByAdmin'];
-          tempUO.firstName = json_uo['firstName'];
-          tempUO.lastName = json_uo['lastName'];
+          tempUO.firstName = json_uo['FirstName'];
+          tempUO.lastName = json_uo['LastName'];
           userObsList.push(tempUO);
         }
         return userObsList;
