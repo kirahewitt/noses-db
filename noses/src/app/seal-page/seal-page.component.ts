@@ -89,7 +89,13 @@ export class SealPageComponent implements OnInit {
       this.jseal = JSON.stringify(currentSeal);
 
       this.datas = this.apiService.getSeal(this.jseal).then(msg => {
-        this.dataSource = new MatTableDataSource(<any> msg);
+        this.dataSource = new MatTableDataSource(<any> msg.Observations);
+        this.seal.Sex = msg.Sex;
+        this.seal.AgeClass = msg.AgeClass;
+        this.seal.Marks = msg.Marks;
+        this.seal.Tags = msg.Tags;
+        this.seal.BreedingSeason = msg.BreedingSeason;
+        this.seal.LastSeen = msg.LastSeen;
         this.dataSource.paginator = this.paginator;
       });
     });

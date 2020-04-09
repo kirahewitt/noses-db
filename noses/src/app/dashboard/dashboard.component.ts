@@ -10,6 +10,7 @@ import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
 import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
+import { MdbTableDirective } from 'angular-bootstrap-md';
 import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
 
 
@@ -57,7 +58,12 @@ export class DashboardComponent implements OnInit {
   public partialControl = new FormControl('');
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-
+  @ViewChild(MdbTableDirective, { static: true })
+  public mdbTable: MdbTableDirective; 
+  public elements: any = []; 
+  public headElements = ['SealID', 'Tags', 'Marks', 'Sex', 'Age Class', 'View Seal'];
+  public searchText: string = ''; 
+  public previous: string;
 
   /**
    * Initializes local attributes of this component class's instance.
@@ -79,8 +85,17 @@ export class DashboardComponent implements OnInit {
     
     // subscribe to the api service which provides the data we'll populate the table with
     let sealsObservable = this.apiService.readSeals();
-    sealsObservable.subscribe( (response_observationList: any) => {
+    sealsObservable.subscribe( (observations: any) => {
+      this.elements = observations.map(x => Object.assign({}, x));;
+            observations.forEach((element, ind) => {
+                this.elements[ind].Tags = element.Tags.filter(this.onlyUnique).join(', ');
+                this.elements[ind].Marks = element.Marks.filter(this.onlyUnique).join(', ');
 
+            });
+            this.mdbTable.setDataSource(this.elements);
+            console.log(this.elements);
+            console.log(this.mdbTable.getDataSource());
+            this.previous = this.mdbTable.getDataSource();
       if (this.isAdmin) {
         this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal' ];
         this.notReady = false;
@@ -90,11 +105,11 @@ export class DashboardComponent implements OnInit {
         this.notReady = false;
       }
 
-      this.observations = response_observationList;
-      console.log(response_observationList[3])
+      //this.observations = response_observationList;
+      //console.log(response_observationList[3])
 
-      this.runSealQuery(response_observationList);
-      this.facetSetup(response_observationList);
+      //this.runSealQuery(response_observationList);
+      //this.facetSetup(response_observationList);
     });
 
     // // subscribe to Google's Firebase authentication service
@@ -365,5 +380,22 @@ export class DashboardComponent implements OnInit {
     console.log('about to call delete');
 
     this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
-  }
+
+ }
+ public searchItems() {
+  const prev = this.mdbTable.getDataSource();
+  console.log(this.searchText);
+  if (!this.searchText) {
+      this.mdbTable.setDataSource(this.previous); 
+      this.elements = this.mdbTable.getDataSource(); 
+  } 
+  if (this.searchText) {
+      this.elements = this.mdbTable.searchLocalDataByMultipleFields(this.searchText, ['Tags','Marks', 'Sex', 'AgeClass']); 
+      this.mdbTable.setDataSource(prev); 
+  } 
+}
+
+public onlyUnique(value, index, self) { 
+  return self.indexOf(value) === index;
+}
 }
