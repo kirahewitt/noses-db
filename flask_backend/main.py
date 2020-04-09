@@ -28,11 +28,10 @@ app.config['MAIL_DEFAULT_SENDER'] = "noses.donotreply@gmail.com"
 app.config['MAIL_MAX_EMAILS'] = True
 mail = Mail(app)
 
-
 def sendSuccessEmailMessage(emailDestination, firstName):
     print("\n\nINSIDE SEND SUCCESS EMAIL")
 
-    msg = Message(subject='Thanks for your interest in N.O.S.E.S.', 
+    msg = Message(subject='[N.O.S.E.S.]: Thanks for your interest in N.O.S.E.S.', 
                   recipients=[emailDestination], 
                   body=("Hi " + firstName + ",\n\n" + "Thanks for your interest in becoming a part of N.O.S.E.S. We will be in contact shortly to inform you whether your request for an account has been approved.\n\n" + "Best,\n\n" + "-The N.O.S.E.S. Team"))
 
@@ -41,6 +40,47 @@ def sendSuccessEmailMessage(emailDestination, firstName):
 
     mail.send(msg)
     return "Message sent!"
+
+
+## This method is used by a user with admin level permmissions to create a new user account.
+def sendEmailMessage_newAccountCreatedForUser(emailDestination, firstName, lastName, tempPassword):
+    print("\n\nINSIDE SEND SUCCESS EMAIL")
+
+    msg = Message(subject='[N.O.S.E.S.]: Your new account is waiting for you!', 
+                  recipients=[emailDestination], 
+                  body=("Hi " + firstName + ",\n\n" + 
+                        "A new account has been created for you on the N.O.S.E.S. system. Your login credentials are as follows:\n\n"  +
+
+                        "username: \t" + emailDestination + "\n" +
+                        "temporary password: \t" + tempPassword + "\n\n" +
+
+                        "You can change your password at any time via the 'Reset Password' button on the Sign In page." + "\n\n" +
+                        
+                        "Best,\n\n" + "-The N.O.S.E.S. Team"))
+
+    print("Message content: ")
+    print(msg)
+
+    mail.send(msg)
+    return "Message sent!"
+
+
+## This method is used by a user with admin level permmissions to create a new user account.
+def sendEmailMessage_passwordChangedNotification(emailDestination, firstName):
+    print("\n\nINSIDE SEND EMAIL -- passwordChangedNotification")
+
+    msg = Message(subject='[N.O.S.E.S.]: Password Change Notification', 
+                  recipients=[emailDestination], 
+                  body=("Hi " + firstName + ",\n\n" + 
+                        "The purpose of this message is to notify you that your password has just been changed. If you didn't change this password, contact your system administrator.\n\n"  +
+                        "Best,\n\n" + "-The N.O.S.E.S. Team"))
+
+    print("Message content: ")
+    print(msg)
+
+    mail.send(msg)
+    return "Message sent!"
+
 
 
 # Deletes a particular observation from the database
@@ -170,9 +210,21 @@ def submit_userPasswordChangeRequest():
         cursor.execute(updatePasswordQuery)
 
         # store the response and return it as json
-        rows = cursor.fetchall()
-        resp = jsonify(rows)
+        # rows = cursor.fetchall()
+        # resp = jsonify(rows)
         conn.commit()
+
+
+        # get the name of the user:
+
+        rows = getUserObserver_viaEmail(email)
+        
+        print("HERES THE VALUE OF 'resp':")
+        print(rows)
+        print("\n\n")
+
+        firstName = rows[0]['FirstName']
+        sendEmailMessage_passwordChangedNotification(email, firstName)
 
         return jsonify("Success: The overwrite of the former password was successful")
 
@@ -300,6 +352,7 @@ def submit_new_userAccountRequest():
     conn.close()
 
 
+## A route used by a user with admin level permissions to create a new user account.
 @app.route("/addNewUser_forAdmin", methods=['POST'])
 def addNewUser_forAdmin():
 
@@ -382,6 +435,8 @@ def addNewUser_forAdmin():
       # output results for sanity check
       print("Result of getAllUsers - Flask API")
       print(rows)
+
+      sendEmailMessage_newAccountCreatedForUser(email, firstName, lastName, password)
 
       return resp
     else:
@@ -768,6 +823,42 @@ def getAllUserObserverData():
     print(rows)
 
     return resp
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
+## Gets a specific user observer via a provided email
+def getUserObserver_viaEmail(email):
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    # execute a query to get all the users
+    # query = (" SELECT * FROM Users, Observers WHERE Users.ObsID=Observers.ObsID;")
+    
+
+    query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+              " FROM Observers as O, Users as U " +
+              " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 AND U.Email =" + surr_apos(email) + ";")
+
+
+    cursor.execute(query)
+
+    # store the response and return it as json
+    rows = cursor.fetchall()
+    resp = jsonify(rows)
+
+    # output results for sanity check
+    print("Result of getSingleUser - Flask API")
+    print(rows)
+
+    return rows
 
   except Exception as e:
     print(e)
