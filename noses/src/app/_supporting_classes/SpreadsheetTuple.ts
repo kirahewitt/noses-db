@@ -156,6 +156,7 @@ export class SpreadsheetTuple {
   currentSeason : string;
 
   // seal attributes
+  sealId : number;
   sealSex : string;
   sealAgeCode : string;
   sealHasPupQuantity : number;

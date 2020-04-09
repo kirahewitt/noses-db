@@ -58,8 +58,25 @@
                             <p>
                                 <mat-form-field appearance="outline" class="full-width">
                                     <mat-label>Location Code</mat-label>
-                                    <input #locationcode matInput formControlName="locationCode" (input)="observationTuple.locationCode = locationcode.value"  placeholder="Location Code">
-                                </mat-form-field>    
+                                    <select matNativeControl class="mdb-select md-form colorful-select dropdown-primary" (change)="observationTuple.locationCode = $event.target.value">
+                                        <option value="ACL">ACL</option>
+                                        <option value="ACU">ACU</option>
+                                        <option value="ALL">ALL</option>
+                                        <option value="ALLn">ALLn</option>
+                                        <option value="ALLs">ALLs</option>
+                                        <option value="ALU">ALU</option>
+                                        <option value="DCC">DCC</option>
+                                        <option value="DCL">DCL</option>
+                                        <option value="DCU">DCU</option>
+                                        <option value="LTC">LTC</option>
+                                        <option value="LTL">LTL</option>
+                                        <option value="LTU">LTU</option>
+                                        <option value="VAFB">VAFB</option>
+                                        <option value="VP3DC">VP3DC</option>
+                                        <option value="VP3L">VP3L</option>
+                                        <option value="VP3U">VP3U</option>
+                                      </select>
+                                    </mat-form-field>    
                             </p>
 
 
@@ -180,15 +197,22 @@
                                     <div class="md-form">
                                       <input
                                         type="text"
-                                        [(ngModel)]="searchText"
                                         class="form-control"
-                                        id="search"
+                                        (keyup)="searchItems()"
+                                        #search
+                                        (input)="searchText = search.value"
                                         mdbInput
                                       />
                                       <label for="search">Search</label>
                                     </div>
                                   </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12 mx-auto">
+                                    <h4 >Selected Seal Id: {{observationTuple.sealId}} </h4>
+                                    <button *ngIf="sealSelected(observationTuple.sealId)" type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0" (click)="selectSeal(0)">Clear</button>
+                                </div>
+                            </div>
                                 <table mdbTable class="z-depth-1">
                                   <thead>
                                     <tr>
@@ -200,19 +224,29 @@
                                       </th>
                                     </tr>
                                   </thead>
-                                  <tbody>
+                                  <tbody style="display: block; overflow: auto; max-height: 300px;">
                                     <tr *ngFor="let el of elements; let i = index">
-                                      <th scope="row">{{el.id}}</th>
-                                      <td class="red-text">{{el.first}}</td>
-                                      <td>{{el.last}}</td>
-                                      <td>{{el.handle}}</td>
+                                      <th scope="row">{{el.SealID}}</th>
+                                      <td class="">{{el.Tags}}</td>
+                                      <td>{{el.Marks}}</td>
+                                      <td>{{el.Sex}}</td>
+                                      <td>{{el.AgeClass}}</td>
+                                      <td>
+                                          <span (click)="viewSeal(el)" class="hippo">
+                                             <img src="assets/cropped_silhouette_smaller_1_blue.png" height="30" width="56" />
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="table-remove">
+                                                <button type="button" mdbBtn color="primary" rounded="true" size="sm" class="my-0" (click)="selectSeal(el.SealID)">Select</button>
+                                              </span>
+                                        </td>
                                     </tr>
                                   </tbody>
                                 </table>
                               </div>
 
                             <h2>Animal Identification:</h2>
-                            <label class="checkbox-inline left"><input type="checkbox" checked="{{newSeal}}"> New Seal</label>
 
 
                              <p>

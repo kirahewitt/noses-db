@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Routes, RouterModule } from '@angular/router';
@@ -45,13 +46,6 @@ import { LoginStateComponent } from './_components/navbar/login-state/login-stat
 import { MatFormFieldModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import {A11yModule} from '@angular/cdk/a11y';
-import {DragDropModule} from '@angular/cdk/drag-drop';
-import {PortalModule} from '@angular/cdk/portal';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import {CdkStepperModule} from '@angular/cdk/stepper';
-import {CdkTableModule} from '@angular/cdk/table';
-import {CdkTreeModule} from '@angular/cdk/tree';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
@@ -152,6 +146,7 @@ const config = {
     DialogOverviewExampleDialog
   ],
   imports: [
+    MDBBootstrapModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,
@@ -182,12 +177,6 @@ const config = {
     NgbModule
   ],
   exports: [
-
-    A11yModule,
-    CdkStepperModule,
-    CdkTableModule,
-    CdkTreeModule,
-    DragDropModule,
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
@@ -223,8 +212,6 @@ const config = {
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    PortalModule,
-    ScrollingModule,
     MatFormFieldModule,
     FlexLayoutModule,
     RouterModule,
@@ -239,6 +226,7 @@ const config = {
     DialogOverviewExampleDialog,
   ],
   providers: [AuthService, AuthGuard, ValidationService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

@@ -51,6 +51,7 @@ _FIRSTSEEN = 28
 _RANGE = 29
 _COMMENTS = 30
 _ENTERANO = 31
+_SEALID = 32
 
 from Observation import Observation
 ###########################################################################
@@ -581,7 +582,8 @@ def processObservation(cnx, cursor, row, approvalStatus):
         t2ID = getSealIDFromTag(cursor, row[TAG2])
 
     mainID = positiveMin([mID, t1ID, t2ID])
-
+    if row[_SEALID] > 0:
+        mainID = row[_SEALID]
     print("test4")
 
     # turn the row into an object to make our lives easier
@@ -591,7 +593,7 @@ def processObservation(cnx, cursor, row, approvalStatus):
     #processMarks(observationRecord, cursor, row, approvalStatus)
 
     # if we don't find the marks or tags
-    if(mID == -1 and t1ID == -1 and t2ID == -1):
+    if(row[_SEALID] <= 0 and mID == -1 and t1ID == -1 and t2ID == -1):
         mainID = addSeal(cnx, cursor, row, observationID)
     else:
 
@@ -717,7 +719,10 @@ def startUpdate(obj, cnx):
                 val["Range (days)"],
                 val["Comments"],
                 val["Entered in Ano"]]
-
+        if "SealId" in val:
+            row.append(val["SealId"])
+        else:
+            row.append(0)
         print("before conditions")
         tableName = "Beach"
         sloCode = row[LOC]

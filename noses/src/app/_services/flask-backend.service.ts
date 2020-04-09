@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observations } from  '../_supporting_classes/Observations';
 import { sqlUser, sqlUser_full } from '../_supporting_classes/sqlUser';
-import { Observable, of } from  'rxjs';
+import { Observable, of, throwError } from  'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { SealDataService } from "./seal-data.service";
 import { Seal } from '../_supporting_classes/Seal';
@@ -54,7 +54,7 @@ export class FlaskBackendService {
   }
 
   public addObservations(user: string): Observable<string>{
-    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addobservations`, user, this.httpOptions);
+    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addobservations`, user, this.httpOptions).pipe(catchError(this.alertError));
   }
 
   /** 
@@ -84,8 +84,14 @@ export class FlaskBackendService {
       console.error(error);
       console.log(`Flask Backend Service - ${operation} failed: ${error.message}`);
       // Let the app keep running by returning an empty result.
+      window.alert("Something went wrong. Try Again.")
       return of(result as T);
     };
+  }
+  private alertError(error){
+
+    window.alert("Something went wrong. Try Again.")
+    return throwError(error);
   }
 
 

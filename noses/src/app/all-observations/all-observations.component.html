@@ -1,45 +1,5 @@
 <h1 class="title is-2 title-container">All Observations</h1>
-<div class="outer-most-container">
-    <div class="outer-filter-container">
-        <div class="positioned-filter-container">
-            <div class="filter-row">
-                <h2>Add Filter:</h2>
-            </div>
-            <div class="filter-row">
-                <div class="filter-row-item">
-                    <div class="form-group down">
-                        <select class="form-control" id="sel1" #filterName>
-                            <option>Tag</option>
-                            <option>Mark</option>
-                            <option>Sex</option>
-                            <option>Age Class</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="filter-row-item">
-                    <form>
-                        <div>
-                            <input type="email" class="form-control" placeholder="Filter Value" #filterValue>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="filter-row">
-                <button type="button" class="btn btn-primary" (click)="filterss.push({name:filterName.value, value:filterValue.value});filterObs()">Add</button>
-            </div>
-        </div>
-    </div>
-    <div class="outer-filter-container">
-        <div class="positioned-filter-container">
-            <div class="filter-row sized">
-                <h2>Active Filters:</h2>
-            </div>
-            <div class="filter-row">
-                <app-filter-block [filterss]=filterss style="width:100%; height:70%"></app-filter-block>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <div>
 
@@ -50,7 +10,51 @@
 
       <div class="col-md-12 margins">
         <div class="table-column">
-
+            <div class="container">
+                <div class="row">
+                  <div class="col-md-12 mx-auto">
+                    <div class="md-form">
+                      <input
+                        type="text"
+                        class="form-control"
+                        (keyup)="searchItems()"
+                        #search
+                        (input)="searchText = search.value"
+                        mdbInput
+                      />
+                      <label for="search">Search</label>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <table mdbTable class="z-depth-1">
+                <thead>
+                  <tr>
+                    <th
+                      *ngFor="let head of headElements; let i = index"
+                      scope="col"
+                    >
+                      {{head}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody style="display: block; overflow: auto; max-height: 300px;">
+                  <tr *ngFor="let el of elements; let i = index">
+                    <td>{{el.ObservationID}}</td>
+                    <td class="">{{el.AgeClass}}</td>
+                    <td>{{el.Sex}}</td>
+                    <td>{{el.Tags}}</td>
+                    <td>{{el.Marks}}</td>
+                    <td>{{el.Comments}}</td>
+                    <td>
+                        <span (click)="selectSeal(el)" class="hippo">
+                           <img src="assets/cropped_silhouette_smaller_1_blue.png" height="30" width="56" />
+                          </span>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!--
             <table mat-table class="table table-hover mat-elevation-z4" [dataSource]="dataSource">
 
                 <ng-container matColumnDef="ObservationID">
@@ -97,7 +101,7 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
             <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-
+-->
         </div>
 
 
