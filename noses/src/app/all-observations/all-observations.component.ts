@@ -14,6 +14,7 @@ import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
 import { SelectFilterType } from "./filter-type-selector"
+import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
 
 @Component({
   selector: 'app-all-observations',
@@ -78,6 +79,7 @@ export class AllObservationsComponent implements OnInit {
               public afAuth: AngularFireAuth,
               private sealData: SealDataService,
               private adminStatus: AdminService,
+              private dossierHelperService: DossierViewHelperService,
               public router: Router) { }
 
 
@@ -256,6 +258,9 @@ export class AllObservationsComponent implements OnInit {
   }
 
   public selectSeal(row) {
+    let selectedSealdId: number = row['SealID'];
+    this.dossierHelperService.populateViaSealId(selectedSealdId);
+
     this.sealData.setCurrentSealState(row);
     this.router.navigate(["seal-page"]);
   }
