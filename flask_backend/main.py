@@ -9,6 +9,7 @@ from flask import flash, request
 from flask import g, Flask
 import json
 import logging
+import bcrypt
 #from werkzeug import generate_password_hash, check_password_hash
 from flask_cors import CORS, cross_origin
 from flask_mail import Mail, Message
@@ -197,26 +198,37 @@ def submit_userPasswordChangeRequest():
       _json = request.json
       print(_json)
 
+      # get the fields out of the json
       email = _json['email']
       oldPassword = _json['oldPassword']
       newPassword = _json['newPassword']
 
       # get the current password 
-      currentPassword = get_password_forUserEmail(email)
+      hashedPassword_inDatabase = get_password_forUserEmail(email)
 
-      if (currentPassword == oldPassword):
-        updatePasswordQuery = ("UPDATE Users SET Password=" + surr_apos(newPassword) + " WHERE Email=" + surr_apos(email) + ";")
+      # apply utf8 encodings to the old password guess and the hashed pw in the db
+      encoded_oldPassword = oldPassword.encode('utf8')
+      encoded_hashedPassword_inDatabase = convert_dbPassword_string_to_unicodeString(hashedPassword_inDatabase)
+
+      # print("\nencoded_oldPassword:")
+      # print(encoded_oldPassword)
+      # print("\nencoded_oldPassword:")
+      # print(encoded_hashedPassword_inDatabase)
+
+      passwordIsCorrect = bcrypt.checkpw( encoded_oldPassword , encoded_hashedPassword_inDatabase )
+      
+      if passwordIsCorrect:
+
+        salt = bcrypt.gensalt(rounds=12)
+        encoded_newPassword = str(bcrypt.hashpw(newPassword.encode('utf8'), salt))
+        
+        updatePasswordQuery = ("UPDATE Users SET Password=\"" + encoded_newPassword + "\" WHERE Email=" + surr_apos(email) + ";")
 
         cursor.execute(updatePasswordQuery)
-
-        # store the response and return it as json
-        # rows = cursor.fetchall()
-        # resp = jsonify(rows)
         conn.commit()
 
 
         # get the name of the user:
-
         rows = getUserObserver_viaEmail(email)
         
         print("HERES THE VALUE OF 'resp':")
@@ -303,7 +315,6 @@ def submit_new_userAccountRequest():
       # store user vars
       userQuery_nextUserId = str(nextUserId)
       userQuery_username = email                       # given
-      userQuery_password = password                    # given
       userQuery_initials = firstName[0] + lastName[0]  # get first character of first and last name for initials
       userQuery_isAdmin = str(0)                       # can't be an admin b/c this is just a request
       userQuery_affiliation = ""                       # won't have any affiliation by default
@@ -311,12 +322,16 @@ def submit_new_userAccountRequest():
       userQuery_obsID = str(nextObserverId)            # 
       userQuery_isVerifiedByAdmin = str(0)             # Can't be a verified user because this is just a request.
 
+      # generate hash for provided password
+      salt = bcrypt.gensalt(rounds=12)
+      userQuery_password = str(bcrypt.hashpw(password.encode('utf8'), salt))
+
       # make a new object/query for the user
       # username, password, initials, isAdmin, affiliation, email, obsID, isVerifiedByAdmin
       query = (" INSERT INTO Users (UserID, Username, Password, Initials, isAdmin, Affiliation, Email, ObsID, isVerifiedByAdmin) VALUES( " + 
                " " + userQuery_nextUserId + ", " + 
-               " " + surr_apos(userQuery_username) + ", " + 
-               " " + surr_apos(userQuery_password) + ", " + 
+               " " + surr_apos(userQuery_username) + ", " +
+               " \"" + userQuery_password + "\", " + 
                " " + surr_apos(userQuery_initials) + ", " + 
                " " + userQuery_isAdmin + ", " + 
                " " + surr_apos(userQuery_affiliation) + ", " + 
@@ -391,7 +406,6 @@ def addNewUser_forAdmin():
       # store user vars
       userQuery_nextUserId = str(nextUserId)
       userQuery_username = email                       # given
-      userQuery_password = password                    # given
       userQuery_initials = firstName[0] + lastName[0]  # get first character of first and last name for initials
       userQuery_isAdmin = str(isAdmin)                       # can't be an admin b/c this is just a request
       userQuery_affiliation = affiliation                       # won't have any affiliation by default
@@ -399,12 +413,16 @@ def addNewUser_forAdmin():
       userQuery_obsID = str(nextObserverId)            # 
       userQuery_isVerifiedByAdmin = str(1)             # Can't be a verified user because this is just a request.
 
+      # generate hash for provided password
+      salt = bcrypt.gensalt(rounds=12)
+      userQuery_password = str(bcrypt.hashpw(password.encode('utf8'), salt))
+
       # make a new object/query for the user
       # username, password, initials, isAdmin, affiliation, email, obsID, isVerifiedByAdmin
       query = (" INSERT INTO Users (UserID, Username, Password, Initials, isAdmin, Affiliation, Email, ObsID, isVerifiedByAdmin) VALUES( " + 
                " " + userQuery_nextUserId + ", " + 
                " " + surr_apos(userQuery_username) + ", " + 
-               " " + surr_apos(userQuery_password) + ", " + 
+               " \"" + userQuery_password + "\", " + 
                " " + surr_apos(userQuery_initials) + ", " + 
                " " + userQuery_isAdmin + ", " + 
                " " + surr_apos(userQuery_affiliation) + ", " + 
@@ -1209,19 +1227,50 @@ def get_login_authenticator_userObserver():
       givenEmail = request.json['email']
       givenPassword = request.json['password']
 
-      getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+      # get the hashed password for the user
+      getUserTupleQuery_forHash =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID, U.Password " + 
                             " FROM Observers as O, Users as U " +
-                            " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + " AND U.Password = " + surr_apos(givenPassword) + ";")
+                            " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + ";")
 
-      cursor.execute(getUserTupleQuery)
+      # get query results
+      cursor.execute(getUserTupleQuery_forHash)
       rows = cursor.fetchall()
-      resp = jsonify(rows)
+      hashedPassword_inDatabase = rows[0]['Password']
+
+      # rebuild the hashed password as utf... doesn't recognize the string as utf otherwise.
+      encoded_givenPassword = givenPassword.encode('utf8')
+      encoded_hashedPassword_inDatabase = convert_dbPassword_string_to_unicodeString(hashedPassword_inDatabase)
+
+      # print("\n\nHERE's THE ENCODED PASSWORD FROM USER:")
+      # print(encoded_givenPassword)
+      # print("\n\n")
+
+      # print("\ntype of encoded_hashedPassword_inDatabase")
+      # print(type(encoded_hashedPassword_inDatabase))
+
+      passwordIsCorrect = bcrypt.checkpw( encoded_givenPassword , encoded_hashedPassword_inDatabase )
       
-      # if the length is 0, return json containing "incorrect password"
-      if (len(rows) == 0):
+      if passwordIsCorrect:
+        # get the user without the password
+        getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+                              " FROM Observers as O, Users as U " +
+                              " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + ";")
+
+        # run query and get the result.
+        cursor.execute(getUserTupleQuery)
+        rows = cursor.fetchall()
+        resp = jsonify(rows)
+        
+        # if the length is 0, return json containing "incorrect password"
+        if (len(rows) == 0):
+          return jsonify("Email/Password combination does not exist in the DB.")
+
+        return resp
+
+      else:
         return jsonify("Email/Password combination does not exist in the DB.")
       
-      return resp
+      
 
   except Exception as e:
     print(e)
@@ -1230,94 +1279,19 @@ def get_login_authenticator_userObserver():
     conn.close()
 
 
+## this function requires that the value it receives have the format b'....',
+## b/c that's the representation of a unicode string
+def convert_dbPassword_string_to_unicodeString(inputStr):
+  inputLength = len(inputStr)
+  encodedString = inputStr[2 : inputLength-1].encode('utf8')
+  return encodedString
+
+
 ## Places a single apostrophe on either side of a provided string
 ## and returns the result.
 def surr_apos(origStr):
   retStr = "\'" + origStr + "\'"
   return retStr
-
-
-
-
-
-## Adds a new user to the database
-## Having a new user involves two entity sets: Users and Observers
-## (1) Adds a new user tuple. this insertion omits the email value.
-## (2) Adds a new observer tuple. Only includes the valueID and email.
-## (3) Updates the user tuple we created in step 1 with the email belonging to the observer we just created.
-## Then it queries the  database again and returns all the user tuples.
-@app.route('/adduser', methods=['POST', 'GET'])
-def add_user():
-    conn = mysql.connect()
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-
-    try:
-        if request.method == 'GET':
-            cursor.execute("SELECT * from Users Where isAdmin >= 0;")
-            rows = cursor.fetchall()
-            resp = jsonify(rows)
-            return resp
-
-        if request.method == 'POST':
-            _json = request.json
-            print(_json)
-            print(_json['isAdmin'])
-            initials = "".join([x[0] for x in _json['fullname'].split(' ')])
-            insertObserverCmd = (   "INSERT INTO Observers(FirstName, LastName)"
-                                    " VALUES "
-                                    "(" + surr_apos(_json['fullname'].split(" ")[0]) + 
-                                    ", " + surr_apos(_json['fullname'].split(" ")[-1]) + 
-                                    ");"
-                                )
-
-            cursor.execute(insertObserverCmd)
-            getLast_statement = "SELECT LAST_INSERT_ID();"
-            cursor.execute(getLast_statement)
-            row = cursor.fetchone()
-            print(row)
-            print(_json)
-            observerID = row["LAST_INSERT_ID()"]
-            insertUserCmd = (   "INSERT INTO Users(Username, Initials, Password, PermissionsLevel, Affiliation, ObsID)"
-                                " VALUES " 
-                                "(" + surr_apos(_json['loginID']) +
-                                ", " + surr_apos(initials) +
-                                ", " + surr_apos(_json['password']) +
-                                ", " + _json['isAdmin'] +
-                                ", " + surr_apos(_json['affiliation']) +
-                                ", " + str(observerID) +
-                                ");"
-                            )
-            
-            updateUserEmailCmd = (  "UPDATE Users" 
-                                    " SET Email=" + surr_apos(_json['email']) + 
-                                    " WHERE UserName=" + surr_apos(_json['loginID']) + ";"
-                                )
-
-            print("\n")
-            print("insert user cmd:     " + insertUserCmd)
-            print("insert observer cmd: " + insertObserverCmd)
-            print("update user email:   " + updateUserEmailCmd + "\n")
-
-            cursor.execute(insertUserCmd)
-            cursor.execute(updateUserEmailCmd)
-            conn.commit()
-                
-            cursor.execute("SELECT * from Users Where isAdmin >= 0;")
-
-            rows = cursor.fetchall()
-            resp = jsonify(rows)
-            return resp
-
-        else:
-            return jsonify("no seal was clicked")
-
-    except Exception as e:
-        print(e)
-        return jsonify(1)
-
-    finally:
-        cursor.close()
-        conn.close()
 
 
 ## Attempts to insert records for a list of observations.
