@@ -28,46 +28,6 @@ export interface DialogData {
 }
 
 
-
-export class User_Observer_Obj_v2 {
-
-  // fields for the Users entity set
-  public userId: number;
-  public username: string;
-  public initials: string;
-  public isAdmin: number;
-  public affiliation: string;
-  public email: string;
-  public obsId: number;
-  public isVerifiedByAdmin: number;
-  public firstName: string;
-  public lastName: string;
-  public oldPassword? : string;
-  public newPassword? : string;
-  public newPasswordConfirm? : string;
-
-  // fields for the Observers entity set
-
-  constructor() {
-    this.userId = -1;
-    this.username = "";
-    this.initials = "";
-    this.isAdmin = -1;
-    this.affiliation = "";
-    this.email = "";
-    this.obsId = -1;
-    this.isVerifiedByAdmin = -1;
-    this.firstName = "";
-    this.lastName = "";
-    this.oldPassword = "";
-    this.newPassword = "";
-    this.newPasswordConfirm = "";
-  }
-}
-
-
-
-
 /**
  * ---------------------------------------------------------------------------------------------------------
  * COMPONENT - ManageAccountsComponent

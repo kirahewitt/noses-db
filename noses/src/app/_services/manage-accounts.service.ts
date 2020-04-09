@@ -96,8 +96,8 @@ export class ManageAccountsService {
    */
   public addNewUser(newUser: user_forCreateNewUser_byAdmin) {
 
-    // console.log("Manage Accounts Service received this object and will send to DB:");
-    // console.log(userObserver);
+    console.log("Manage Accounts Service received this object and will send to DB:");
+    console.log(newUser);
 
     let overwriteUser_obs = this.apiService.addNewUser_byAdmin(newUser);
     overwriteUser_obs.subscribe( (userObsListAfterUpdate : User_Observer_Obj[]) => {

@@ -430,14 +430,14 @@ def addNewUser_forAdmin():
                " " + userQuery_obsID + ", " + 
                " " + userQuery_isVerifiedByAdmin + ") " + ";")
 
-      print("query to execute:")
+      print("\nquery to execute (ADDING NEW USER AS ADMIN):")
       print(query)
 
       # execute the query
       cursor.execute(query)
       conn.commit()
 
-      query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+      query =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID, U.isVerifiedByAdmin " + 
                 " FROM Observers as O, Users as U " +
                 " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
 
@@ -530,7 +530,7 @@ def isEmailInUseByAnyUser(email):
     return emailAlreadyInUse
 
   except Exception as e:
-    print("Error(submit_new_userAccountRequest_ObserverHelper): ")
+    print("Error(isEmailInUseByAnyUser): ")
     print(e)
 
   finally:
@@ -726,7 +726,7 @@ def saveUserEditChanges():
       rows = cursor.fetchall()
       conn.commit()
 
-      query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+      query =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
                 " FROM Observers as O, Users as U " +
                 " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
 
@@ -784,7 +784,7 @@ def removeUserHavingEmail():
       rows = cursor.fetchall()
       conn.commit()
 
-      query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+      query =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
                 " FROM Observers as O, Users as U " +
                 " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
 
@@ -825,7 +825,7 @@ def getAllUserObserverData():
     # query = (" SELECT * FROM Users, Observers WHERE Users.ObsID=Observers.ObsID;")
     
 
-    query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+    query =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
               " FROM Observers as O, Users as U " +
               " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0;")
 
@@ -861,7 +861,7 @@ def getUserObserver_viaEmail(email):
     # query = (" SELECT * FROM Users, Observers WHERE Users.ObsID=Observers.ObsID;")
     
 
-    query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+    query =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
               " FROM Observers as O, Users as U " +
               " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 AND U.Email =" + surr_apos(email) + ";")
 
@@ -1228,7 +1228,7 @@ def get_login_authenticator_userObserver():
       givenPassword = request.json['password']
 
       # get the hashed password for the user
-      getUserTupleQuery_forHash =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID, U.Password " + 
+      getUserTupleQuery_forHash =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID, U.Password " + 
                             " FROM Observers as O, Users as U " +
                             " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + ";")
 
@@ -1252,7 +1252,7 @@ def get_login_authenticator_userObserver():
       
       if passwordIsCorrect:
         # get the user without the password
-        getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+        getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
                               " FROM Observers as O, Users as U " +
                               " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + ";")
 
