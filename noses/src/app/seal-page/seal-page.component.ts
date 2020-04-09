@@ -9,6 +9,8 @@ import { DossierViewHelperService } from '../_services/dossier-view-helper.servi
 import { SqlTag } from '../_supporting_classes/SqlTag';
 import { SqlObservation } from '../_supporting_classes/SqlObservation';
 import { SqlMark } from '../_supporting_classes/SqlMark';
+import { User_Observer_Obj } from '../_supporting_classes/sqlUser';
+import { AuthService } from '../_services/auth.service';
 
 
 /**
@@ -21,24 +23,15 @@ import { SqlMark } from '../_supporting_classes/SqlMark';
 })
 export class SealPageComponent implements OnInit {
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: false}) sealPagePaginator: MatPaginator;
 
   public seal: any;
   public sealRow: Observations;
   public jseal: any;
   public dataSource: any;
   public datas: any;
-  public displayedColumns: string[] = ['ObservationID', 'AgeClass', 'sex', 'date', 'SLOCode','Comments',  'Edit', 'actions'];
+  public displayedColumns: string[];
   public show: any = false;
-
-  public sealForm = new FormGroup({
-    ageClass: new FormControl(''),
-    sex: new FormControl(''),
-    date: new FormControl(''),
-    slo: new FormControl(''),
-    comments: new FormControl('')
-  });
-
 
   // CREATE A NEW LOCAL VARIABLE TO STORE THE SEAL INFORMATION
   public sealDossier_main: DossierViewStructure;
@@ -53,8 +46,22 @@ export class SealPageComponent implements OnInit {
   public sealSexDisplayString: string;
   public sealAgeClassDisplayString: string;
   public sealMostRecentSightingDisplayString: string;
+
+  public allObservationsList: SqlObservation[];
+  public allObservationsList_dataSource: MatTableDataSource<SqlObservation>;
+
+  public loggedInUser: User_Observer_Obj;
+  public currentUserIsValid: boolean;
+  public isAdmin:boolean;
+  public isAtLeastFieldLeader:boolean;
   
-  
+  public sealForm = new FormGroup({
+    ageClass: new FormControl(''),
+    sex: new FormControl(''),
+    date: new FormControl(''),
+    slo: new FormControl(''),
+    comments: new FormControl('')
+  });
 
 
   /**
@@ -63,41 +70,44 @@ export class SealPageComponent implements OnInit {
    * @param apiService 
    * @param dossierHelperService 
    */
-  constructor(private sealDataService: SealDataService, private apiService: FlaskBackendService, private dossierHelperService : DossierViewHelperService) { 
+  constructor(private dossierHelperService : DossierViewHelperService, private apiService: FlaskBackendService, public authService: AuthService) { 
+    this.allObservationsList = [];
+    this.allObservationsList_dataSource = new MatTableDataSource<SqlObservation>(this.allObservationsList);
+
     this.sealDossier_main = new DossierViewStructure();
+
+    // let tempObservation: SqlObservation = new SqlObservation();
+    // this.displayedColumns = Object.getOwnPropertyNames(tempObservation);
+    this.displayedColumns = ['ObservationID', 'AgeClass', 'Sex', 'Date', 'SLOCode','Comments',  'Edit', 'Delete'];
+
+
+    let loggedInUser_datastream = this.authService.IH_getUserData_bs();
+    loggedInUser_datastream.subscribe( (retval : User_Observer_Obj ) => {
+      this.loggedInUser = retval;
+      this.updatePrivelege();
+    });
+
+    let currentUserIsValid_datastream = this.authService.IH_getUserIsValid_bs();
+    currentUserIsValid_datastream.subscribe( (retval : boolean) => {
+      this.currentUserIsValid = retval;
+      this.updatePrivelege();
+    });
   }
 
 
   /**
-   * Initializes the local attributes of this class by calling the initSubscriptions method.
+   * Initializes the local attributes of this class by cSqlObservationalling the initSubscriptions method.
    */
-  ngOnInit() {
-    this.initSubscriptions();
-  }
+  public ngOnInit() {
+    let allObservations_bs = this.dossierHelperService.getObservationListDatastream();
+    allObservations_bs.subscribe( (retval : SqlObservation[]) => {
+      console.log("\nRECEIVED Data in `seal-page.component.ts` SUBSCRIPTION:")
+      console.log(retval);
 
-
-  /**
-   * Subscribes to relevant datastreams.
-   */
-  private initSubscriptions() {
-
-
-    // original subscription for seal information
-    this.sealDataService.currentSeal_observable.subscribe(currentSeal  => {
-
-      this.seal = currentSeal;
-      this.jseal = JSON.stringify(currentSeal);
-
-      this.datas = this.apiService.getSeal(this.jseal).then(msg => {
-        this.dataSource = new MatTableDataSource(<any> msg.Observations);
-        this.seal.Sex = msg.Sex;
-        this.seal.AgeClass = msg.AgeClass;
-        this.seal.Marks = msg.Marks;
-        this.seal.Tags = msg.Tags;
-        this.seal.BreedingSeason = msg.BreedingSeason;
-        this.seal.LastSeen = msg.LastSeen;
-        this.dataSource.paginator = this.paginator;
-      });
+      // initialize the local variables.
+      this.allObservationsList = retval;
+      this.allObservationsList_dataSource.data = this.allObservationsList;
+      this.allObservationsList_dataSource.paginator = this.sealPagePaginator;
     });
 
 
@@ -166,8 +176,34 @@ export class SealPageComponent implements OnInit {
       this.newestObservation_forAgeClass = retval;
       this.sealAgeClassDisplayString = this.newestObservation_forAgeClass.AgeClass;
     });
-
   }
+
+
+  /**
+   * 
+   */
+  updatePrivelege() {
+    if (this.currentUserIsValid == false) {
+      this.isAdmin = false;
+      this.isAtLeastFieldLeader = false;
+    }
+    else {
+      if (this.loggedInUser.isAdmin == 3) {
+        this.isAdmin = true;
+        this.isAtLeastFieldLeader = true;
+      } 
+      else if(this.loggedInUser.isAdmin == 2) {
+        this.isAdmin = false;
+        this.isAtLeastFieldLeader = true;
+      } 
+      else  {
+        this.isAdmin = false;
+        this.isAtLeastFieldLeader = false;
+      }
+    }
+  }
+
+
 
 
   /**
@@ -196,39 +232,39 @@ export class SealPageComponent implements OnInit {
   }
 
 
-  /**
-   * this function needs to be rewritten to use BehaviorSubjects/Observables properly. 
-   * I'm pretty sure async/await isn't necessary.
-   * DO NOT CHANGE THIS RIGHT NOW
-   */
-  async onSubmit() {
+  // /**
+  //  * this function needs to be rewritten to use BehaviorSubjects/Observables properly. 
+  //  * I'm pretty sure async/await isn't necessary.
+  //  * DO NOT CHANGE THIS RIGHT NOW
+  //  */
+  // async onSubmit() {
 
-    if(this.sealForm.value.ageClass != "") {
+  //   if(this.sealForm.value.ageClass != "") {
 
-      var json_sealIdentifier = JSON.stringify({'obsID': this.sealRow.ObservationID, 'age': this.sealForm.value.ageClass});
+  //     var json_sealIdentifier = JSON.stringify({'obsID': this.sealRow.ObservationID, 'age': this.sealForm.value.ageClass});
       
-      await this.apiService.updateAgeClass(json_sealIdentifier).subscribe(() => {
+  //     await this.apiService.updateAgeClass(json_sealIdentifier).subscribe(() => {
 
-        this.apiService.readObs();
+  //       this.apiService.readObs();
 
-        this.sealDataService.currentSeal_observable.subscribe(subscription_response => {
-          this.seal = subscription_response;
-          this.jseal = JSON.stringify(subscription_response);
+  //       this.sealDataService.currentSeal_observable.subscribe(subscription_response => {
+  //         this.seal = subscription_response;
+  //         this.jseal = JSON.stringify(subscription_response);
 
-          // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
-          this.datas = this.apiService.getSeal(this.jseal);
+  //         // this.obsID = { 'SealID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
+  //         this.datas = this.apiService.getSeal(this.jseal);
 
-          this.datas.then(msg => {
-            this.dataSource = new MatTableDataSource(<any> msg);
-            this.sealForm.reset();
-            this.show = false;
-          });
+  //         this.datas.then(msg => {
+  //           this.dataSource = new MatTableDataSource(<any> msg);
+  //           this.sealForm.reset();
+  //           this.show = false;
+  //         });
 
-        });
-      });
+  //       });
+  //     });
 
-    }
-  }
+  //   }
+  // }
 
 
   /**

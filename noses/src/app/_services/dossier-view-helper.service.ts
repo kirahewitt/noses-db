@@ -55,6 +55,10 @@ export class DossierViewHelperService {
   private newestObs_forAgeClass: SqlObservation;
   public newestObs_forAgeClass_updateStream : BehaviorSubject<SqlObservation>;
 
+
+  private observationList: SqlObservation[];
+  public observationList_updateStream : BehaviorSubject<SqlObservation[]>;
+
   
 
 
@@ -84,6 +88,9 @@ export class DossierViewHelperService {
 
     this.newestObs_forAgeClass = new SqlObservation;
     this.newestObs_forAgeClass_updateStream = new BehaviorSubject<SqlObservation>(this.newestObs_forAgeClass);
+
+    this.observationList = [];
+    this.observationList_updateStream = new BehaviorSubject<SqlObservation[]>(this.observationList);
   }
 
 
@@ -144,12 +151,32 @@ export class DossierViewHelperService {
 
 
   /**
+   * 
+   */
+  public getObservationListDatastream() {
+    return this.observationList_updateStream;
+  }
+
+
+  /**
    * This method populates the attribute dossierViewStructure when it receives from an external caller a SealId.
    * After it finishes populating the dossierViewStructure, it calls the next method of the updatestream, providing the
    * dossierViewStructure as a parameter. This passes the current state of the dossierViewStructure onto the update stream,
    * ensuring that all subscribers to the update stream receive the latest copy of the data after the next() call is triggered.
    */
   public populateViaSealId(givenSealId: number) {
+  
+
+    // get all the observations for this seal
+    let allObsList_obs = this.apiService.getObservations_bySealId(givenSealId);
+    allObsList_obs.subscribe( (obsList : SqlObservation[]) => {
+      this.observationList = obsList;
+      this.observationList_updateStream.next(this.observationList);
+
+      console.log("\nCurrent Value of: observationList");
+      console.log(this.observationList);
+    });
+
 
     // get information on the desired Seals tuple
     let sealTuple_observable = this.apiService.getSeal_bySealId(givenSealId);
@@ -158,13 +185,21 @@ export class DossierViewHelperService {
       this.dossierViewStructure.identifyingObservationId = resp.identifyingObservationId;
       this.dossierViewStructure.sex = resp.sex;
       this.dossierViewStructure_updateStream.next(this.dossierViewStructure);
+
+      // console.log("\nCurrent Value of: dossierViewStructure");
+      // console.log(this.dossierViewStructure);
     });
+    
+
 
     // get all the tags for this seal
     let uniqueTagsForSeal_observable = this.apiService.getTags_bySealId(givenSealId);
     uniqueTagsForSeal_observable.subscribe( (tagList : SqlTag[]) => {
       this.uniqueTagList = tagList;
       this.uniqueTagList_updateStream.next(this.uniqueTagList);
+
+      // console.log("\nCurrent Value of: uniqueTagList");
+      // console.log(this.uniqueTagList);
     });
 
 
@@ -173,6 +208,9 @@ export class DossierViewHelperService {
     uniqueMarksForSeal_obs.subscribe( (markList : SqlMark[]) => {
       this.uniqueMarkList = markList;
       this.uniqueMarkList_updateStream.next(this.uniqueMarkList);
+
+      // console.log("\nCurrent Value of: uniqueMarkList");
+      // console.log(this.uniqueMarkList);
     });
 
 
@@ -181,6 +219,9 @@ export class DossierViewHelperService {
     IDingObservation_obs.subscribe( (IDingObs : SqlObservation) => {
       this.identifyingObservation = IDingObs;
       this.identifyingObservation_updateStream.next(this.identifyingObservation);
+
+      // console.log("\nCurrent Value of: identifyingObservation");
+      // console.log(this.identifyingObservation);
     });
 
 
@@ -189,6 +230,9 @@ export class DossierViewHelperService {
     mostRecentObs_forDate_obs.subscribe( (obs : SqlObservation) => {
       this.mostRecentObservation = obs;
       this.mostRecentObservation_updateStream.next(this.mostRecentObservation);
+
+      // console.log("\nCurrent Value of: mostRecentObservation");
+      // console.log(this.mostRecentObservation);
     });
 
     // get the age class from the last valid, approved observation FOR AGE CLASS
@@ -196,8 +240,13 @@ export class DossierViewHelperService {
     newestObs_forAgeClass_obs.subscribe( (obs : SqlObservation) => {
       this.newestObs_forAgeClass = obs;
       this.newestObs_forAgeClass_updateStream.next(this.newestObs_forAgeClass);
+
+      // console.log("\nCurrent Value of: newestObs_forAgeClass");
+      // console.log(this.newestObs_forAgeClass);
     });
 
+
+    
     
 
   }
