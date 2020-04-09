@@ -13,19 +13,27 @@
 
     <!-- bulma panel for generic profile information -->
     <article class="panel">
-      <p class="panel-heading">User Profile</p>
+      
+      <div class="panel-heading">
+        <p>{{loggedInUser.firstName}} {{loggedInUser.lastName}} ({{loggedInUser.initials}})</p>
+      </div>
 
       <div class="panel-block">
-        <p> Username: {{userData['Username']}}</p>
+        <p> Email: {{loggedInUser.email}}</p>
       </div>  
 
       <div class="panel-block">
-        <p> Initials: {{userData['Initials']}}</p>
+        <p> Account Level: {{loggedInUser.isAdmin}}</p>
       </div>  
 
       <div class="panel-block">
-        <p> Email: {{userData['Email']}}</p>
-      </div>  
+        <p> Affiliation: {{loggedInUser.affiliation}}</p>
+      </div>
+
+      <div class="panel-block">
+        <button mat-stroked-button (click)="openEditUserDialog()"><i class="fas fa-edit"></i></button>  
+      </div>
+      
 
     </article>
 

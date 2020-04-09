@@ -9,6 +9,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import { MatTableDataSource, MatSnackBar } from '@angular/material';
 import { FlaskBackendService } from 'src/app/_services/flask-backend.service';
 import { AuthService } from 'src/app/_services/auth.service';
+import { User_Observer_Obj } from 'src/app/_supporting_classes/sqlUser';
 // import { DatePipe } from '@angular/common';
 
 
@@ -40,10 +41,11 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     public observationTuples : SpreadsheetTuple[];
     public displayedColumns: string[];
     public dataSource: MatTableDataSource<TupleStructForTable>;
-    public currentUserEmail : string;
 
     public dateForDisplay : string;
 
+    public loggedInUser: User_Observer_Obj;
+    public currentUserIsValid: boolean;
 
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
@@ -54,21 +56,17 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
      * @param papa 
      * @param dialogMaterialService 
      */
-    constructor(private papa: Papa, 
-        public dialogMaterialService: MatDialog, 
-        private snackbarService : MatSnackBar,
-        private apiService: FlaskBackendService,
-        private authService : AuthService) 
-    {
-        this.fileName = "No File Selected";
-        this.displayedColumns = ["position", "tag1_idValue"];
-        this.fileData = [];
-        this.observationTuples = [];
-        this.tupleTableStructList = []; 
+    constructor(private papa: Papa, public dialogMaterialService: MatDialog, private snackbarService : MatSnackBar, private apiService: FlaskBackendService, private authService : AuthService) {
+      this.fileName = "No File Selected";
+      this.displayedColumns = ["position", "tag1_idValue"];
+      this.fileData = [];
+      this.observationTuples = [];
+      this.tupleTableStructList = []; 
 
-        this.currentUserEmail = "";
-        this.dateForDisplay = "";
-        
+      this.dateForDisplay = "";
+
+      this.loggedInUser = new User_Observer_Obj();
+      this.currentUserIsValid = false;   
     }
 
 
@@ -76,8 +74,14 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
      * 
      */
     ngOnInit() {
-      this.authService.getUserData_obs().subscribe(userData => {
-        this.currentUserEmail = userData.email;
+      let loggedInUser_datastream = this.authService.IH_getUserData_bs();
+      loggedInUser_datastream.subscribe( (retval : User_Observer_Obj ) => {
+        this.loggedInUser = retval;
+      });
+
+      let currentUserIsValid_datastream = this.authService.IH_getUserIsValid_bs();
+      currentUserIsValid_datastream.subscribe( (retval : boolean) => {
+        this.currentUserIsValid = retval;
       });
     }
 

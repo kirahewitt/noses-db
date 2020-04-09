@@ -1,10 +1,10 @@
 
 <!-- HTML that will appear if a user IS logged in -->
-<button *ngIf="authService.userData_fb != null && authService.isLoggedIn == true" mat-button="" class="mat-button mat-button-base navbar-anchor mat-menu-trigger "  [matMenuTriggerFor]="menu">
+<button *ngIf="currentUserIsValid === true" mat-button="" class="mat-button mat-button-base navbar-anchor mat-menu-trigger "  [matMenuTriggerFor]="menu">
     
     <span class="mat-button-wrapper">
       <i class="icon-spacing fas fa-user"></i>
-      <span>{{authService.userData_fb.email}}</span>
+      <span>{{loggedInUser.email}}</span>
     </span>
 
     <div class="mat-button-ripple mat-ripple" matripple=""></div>
@@ -17,18 +17,8 @@
 </mat-menu>
 
 
-<!-- USE THIS AS A REFERENCE -->
-<!-- <a mat-button="" routerLink="/dashboard" class="mat-button mat-button-base navbar-anchor"  >
-      <span class="mat-button-wrapper">
-        <span> All Seals </span>
-      </span>
-      <div class="mat-button-ripple mat-ripple" matripple=""></div>
-      <div class="mat-button-focus-overlay"></div>
-  </a> -->
-
-
 <!-- HTML that will appear if a user IS NOT logged in -->
-<a *ngIf="authService.isLoggedIn == false" mat-button="" routerLink="/sign-in" class="mat-button mat-button-base navbar-anchor " >
+<a *ngIf="currentUserIsValid === false" mat-button="" routerLink="/sign-in" class="mat-button mat-button-base navbar-anchor " >
     <span class="mat-button-wrapper">
       <i class="fas fa-sign-in-alt"></i>
       <span> Log In </span>

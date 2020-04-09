@@ -21,8 +21,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 //Components
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
-import { ManageAccountsComponent, DialogOverviewExampleDialog } from './manage-accounts/manage-accounts.component';
 import { ApproveObservationsComponent } from './approve-observations/approve-observations.component';
+import { ManageAccountsComponent /*, DialogOverviewExampleDialog*/ } from './manage-accounts/manage-accounts.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 import { MenuComponent } from './menu/menu.component';
 import { AllObservationsComponent } from './all-observations/all-observations.component';
@@ -93,6 +93,7 @@ import { ObsFormWeighingDataSubformComponent } from './_components/observation_f
 import { ObsFormCommentSectionComponent } from './_components/observation_form/obs-form-comment-section/obs-form-comment-section.component';
 import { ObsFormObserverCredentialsDisplayComponent } from './_components/observation_form/obs-form-observer-credentials-display/obs-form-observer-credentials-display.component';
 import { UserPofileMainComponent } from './_components/UserProfile/user-pofile-main/user-pofile-main.component';
+import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
 
 
 
@@ -134,7 +135,6 @@ const config = {
     SelectFilterType,
     LoginStateComponent,
     NavbarMainComponent,
-    DialogOverviewExampleDialog,
     ObsFormMainComponent,
     ObsFormMetadataSubformComponent,
     ObsFormAnimalIDSubformComponent,
@@ -143,7 +143,8 @@ const config = {
     ObsFormCommentSectionComponent,
     ObsFormObserverCredentialsDisplayComponent,
     UserPofileMainComponent,
-    DialogOverviewExampleDialog
+    NewUserDialogComponent,
+    // DialogOverviewExampleDialog
   ],
   imports: [
     MDBBootstrapModule.forRoot(),
@@ -221,9 +222,9 @@ const config = {
   ],
   entryComponents: [
     EditUserDialogComponent,
+    NewUserDialogComponent,
     EditObservationDialogComponent,
     TtlAngMaterialDialogComponent,
-    DialogOverviewExampleDialog,
   ],
   providers: [AuthService, AuthGuard, ValidationService],
   bootstrap: [AppComponent],

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/_services/auth.service';
 import { MatMenuModule} from '@angular/material/menu';
 import { AdminService } from 'src/app/_services/admin.service';
+import { User_Observer_Obj } from 'src/app/_supporting_classes/sqlUser';
 
 
 /**
@@ -17,12 +18,12 @@ import { AdminService } from 'src/app/_services/admin.service';
 })
 export class LoginStateComponent implements OnInit {
 
-  isSuperAdmin = false;
-  isAdmin = false;
-  privilegeLevel: any;
-  currentUserEmail : string;
-  
+  public isSuperAdmin: boolean;
+  public isAdmin: boolean;
 
+  public loggedInUser: User_Observer_Obj;
+  public currentUserIsValid: boolean;
+  
 
   /**
    * 
@@ -30,22 +31,31 @@ export class LoginStateComponent implements OnInit {
    * @param adminStatus 
    */
   constructor(public authService : AuthService, public adminStatus: AdminService) { 
-    this.privilegeLevel = -42;
-    this.currentUserEmail = "";
+    
+    this.isSuperAdmin = false;
+    this.isAdmin = false;
+
+    this.loggedInUser = new User_Observer_Obj();
+    this.currentUserIsValid = false;
   }
 
 
   /**
-   * 
+   * We only set the value of userData if it isn't undefined.
+   * subscribes to the current state of the adminStatus variable.
+   * subscribes to the state of the userData variable
    */
   ngOnInit() {
-    this.adminStatus.currentPermissionStatus.subscribe(currentStatus  => {
-      this.privilegeLevel = currentStatus;
-      this.setPrivelege();
+    let loggedInUser_datastream = this.authService.IH_getUserData_bs();
+    loggedInUser_datastream.subscribe( (retval : User_Observer_Obj ) => {
+      this.loggedInUser = retval;
+      this.updatePrivelege();
     });
 
-    this.authService.getUserData_obs().subscribe(userData => {
-      this.currentUserEmail = userData.email;
+    let currentUserIsValid_datastream = this.authService.IH_getUserIsValid_bs();
+    currentUserIsValid_datastream.subscribe( (retval : boolean) => {
+      this.currentUserIsValid = retval;
+      this.updatePrivelege();
     });
   }
 
@@ -54,23 +64,31 @@ export class LoginStateComponent implements OnInit {
    * 
    */
   logoutClicked() {
-    this.authService.SignOut();
+    this.authService.IH_SignOut();
   }
 
 
   /**
    * 
    */
-  setPrivelege() {
-    if(this.privilegeLevel == 3) {
-      this.isSuperAdmin = true;
-      this.isAdmin = true;
-    } else if(this.privilegeLevel == 2) {
-      this.isSuperAdmin = false;
-      this.isAdmin = true;
-    } else  {
+  updatePrivelege() {
+    if (this.currentUserIsValid == false) {
       this.isSuperAdmin = false;
       this.isAdmin = false;
+    }
+    else {
+      if (this.loggedInUser.isAdmin == 3) {
+        this.isSuperAdmin = true;
+        this.isAdmin = true;
+      } 
+      else if(this.loggedInUser.isAdmin == 2) {
+        this.isSuperAdmin = false;
+        this.isAdmin = true;
+      } 
+      else  {
+        this.isSuperAdmin = false;
+        this.isAdmin = false;
+      }
     }
   }
 }

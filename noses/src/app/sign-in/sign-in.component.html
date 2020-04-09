@@ -6,52 +6,6 @@
     <br>
     <br>
 
-    <!-- <div class="row">
-
-        <div class="col-md-4"></div>
-
-        
-        <div class="col-md-4 mat-elevation-z2 form-box">
-            
-            <div class="row">
-                <div class="col-md-12">
-                    <h3 style="text-align:center">Sign In</h3>
-                </div>
-            </div>
-            
-
-            
-            <div class="row">
-                <div class="formGroup col-md-12" style="text-align:center">
-                    <input type="text" class="form-control user-info" placeholder="Email" #userName required>
-                    <input type="password" class="form-control user-info" placeholder="Password" #userPassword required>
-                    <label class="checkbox">
-                            <input type="checkbox">
-                                Remember me
-                        </label>
-                </div>
-            </div>
-
-            
-            <div class="row">
-                <div class="formGroup col-md-12">
-                    <input type="button" class="btn btn-light-blue log" value="Login" (click)="authService.SignIn(userName.value, userPassword.value)">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="formGroup col-md-12" style="padding-top: 5%">
-                    <a routerLink="/request-account"><input type="button" class="btn btn-light-red log" value="Request Login" href="#"></a>
-                    <a routerLink="/reset"><input type="button" class="btn btn-light-blue log" value="Reset Password" href="#"></a>
-                </div>
-            </div>
-            
-        </div>
-    </div> -->
-
-
-
-
     <div style="text-align:center">
         <div class="displayTable">
             <div class="displayTableCell">
@@ -87,15 +41,16 @@
                             
                             <div class="row">
                                 <div class="formGroup col-md-12">
-                                  <!-- <input type="button" class="btn btn-light-blue log" value="Login" (click)="authService.SignIn(userName.value, userPassword.value)"> -->
-                                  <input type="button" class="btn btn-light-blue log" value="Login" (click)="signInClicked(userName.value, userPassword.value)">
+                                  <button mat-button class="mat-raised-button mat-primary" (click)="signInClicked(userName.value, userPassword.value)">Login</button>
                                 </div>
                             </div>
 
+                            <mat-divider></mat-divider>
+
                             <div class="row">
                                 <div class="formGroup col-md-12" style="padding-top: 5%">
-                                    <a routerLink="/request-account"><input type="button" class="btn btn-light-red log" value="Request Login" href="#"></a>
-                                    <a routerLink="/reset"><input type="button" class="btn btn-light-blue log" value="Reset Password" href="#"></a>
+                                    <button mat-button class="mat-raised-button mat-primary" routerLink="/request-account">Request User Account</button>
+                                    <button mat-button class="mat-raised-button mat-primary" routerLink="/reset">Reset Password</button>
                                 </div>
                             </div>
                             

@@ -8,6 +8,7 @@ import { ValidationService } from '../_services/validation.service';
 import {MdbTableDirective} from 'angular-bootstrap-md';
 import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
+import { User_Observer_Obj } from '../_supporting_classes/sqlUser';
 
 @Component({
   selector: 'app-new-observation',
@@ -25,6 +26,8 @@ export class NewObservationComponent implements OnInit {
     public sealNum = "None"
     public newSeal = true;
 
+    public loggedInUser: User_Observer_Obj;
+    public currentUserIsValid: boolean;
 
     /**
      * 
@@ -49,7 +52,8 @@ export class NewObservationComponent implements OnInit {
         private authService : AuthService,
         public router: Router) 
     { 
-
+      this.loggedInUser = new User_Observer_Obj();
+      this.currentUserIsValid = false;
     }
 
     
@@ -66,9 +70,16 @@ export class NewObservationComponent implements OnInit {
      * 
      */
     ngOnInit() {
-        this.authService.getUserData_obs().subscribe(userData => {
-            this.currentUserEmail = userData.email;
-         });
+
+        let loggedInUser_datastream = this.authService.IH_getUserData_bs();
+        loggedInUser_datastream.subscribe( (retval : User_Observer_Obj ) => {
+          this.loggedInUser = retval;
+        });
+
+        let currentUserIsValid_datastream = this.authService.IH_getUserIsValid_bs();
+        currentUserIsValid_datastream.subscribe( (retval : boolean) => {
+          this.currentUserIsValid = retval;
+        });
 
          this.observationTuple = new SpreadsheetTuple(null);
 

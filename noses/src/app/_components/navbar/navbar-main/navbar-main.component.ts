@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AuthService } from 'src/app/_services/auth.service';
 import { AdminService } from 'src/app/_services/admin.service';
+import { User_Observer_Obj } from 'src/app/_supporting_classes/sqlUser';
 
 
 
@@ -13,8 +14,10 @@ export class NavbarMainComponent implements OnInit {
 
   isSuperAdmin: boolean;
   isAdmin: boolean;
-  privilegeLevel: any;
 
+  public loggedInUser: User_Observer_Obj;
+  public currentUserIsValid: boolean;
+  
 
   /**
    * 
@@ -22,46 +25,65 @@ export class NavbarMainComponent implements OnInit {
    * @param adminStatus 
    */
   constructor(private authService : AuthService, private adminStatus: AdminService) { 
-    this.privilegeLevel = -42;
     this.isSuperAdmin = false;
     this.isAdmin = false;
-    console.log("Current permission Status: ");
-    console.log(this.privilegeLevel);
+
+    this.loggedInUser = new User_Observer_Obj();
+    this.currentUserIsValid = false;
   }
 
 
   /**
    * 
    */
-  ngOnInit() {
-    this.adminStatus.currentPermissionStatus.subscribe(currentStatus  => {
-      this.privilegeLevel = currentStatus;
-      this.setPrivelege();
+  public ngOnInit() {
+    let loggedInUser_datastream = this.authService.IH_getUserData_bs();
+    loggedInUser_datastream.subscribe( (retval : User_Observer_Obj ) => {
+      this.loggedInUser = retval;
+      this.updatePrivelege();
+    });
+
+    let currentUserIsValid_datastream = this.authService.IH_getUserIsValid_bs();
+    currentUserIsValid_datastream.subscribe( (retval : boolean) => {
+      this.currentUserIsValid = retval;
+      this.updatePrivelege();
     });
   }
 
   /**
    * 
    */
-  logoutClicked() {
-    this.authService.SignOut();
+  public logoutClicked() {
+    this.authService.IH_SignOut();
   }
 
 
   /**
-   * 
+   * Maintains the state of convenient variables that will be used to decide
+   * whether we display links or not.
    */
-  setPrivelege() {
-    if(this.privilegeLevel == 3) {
-      this.isSuperAdmin = true;
-      this.isAdmin = true;
-    } else if(this.privilegeLevel == 2) {
-      this.isSuperAdmin = false;
-      this.isAdmin = true;
-    } else  {
+  public updatePrivelege() {
+    if (this.currentUserIsValid == false) {
       this.isSuperAdmin = false;
       this.isAdmin = false;
     }
+    else {
+      if (this.loggedInUser.isAdmin == 3) {
+        this.isSuperAdmin = true;
+        this.isAdmin = true;
+      } 
+      else if(this.loggedInUser.isAdmin == 2) {
+        this.isSuperAdmin = false;
+        this.isAdmin = true;
+      } 
+      else  {
+        this.isSuperAdmin = false;
+        this.isAdmin = false;
+      }
+    }
+
+
+     
   }
 
 }

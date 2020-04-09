@@ -1,65 +1,86 @@
 <h1 class="title is-2 title-container">Account Information for Request</h1>
-<div class="outer-most-container">
-    <div class="outer-filter-container">
-        <div class="positioned-filter-container">
-            <div class="filter-row">
-              <div class="filter-row-item">
-                <h1 class="title is-3">First Name:</h1>
-              </div>
-              <div class="filter-row-item">
-                <h1 class="title is-3">Last Name:</h1>
-              </div>
-              <div class="filter-row-item">
-                <h1 class="title is-3">Username:</h1>
-              </div>
-              <div class="filter-row-item">
-                <h1 class="title is-3">Password:</h1>
-              </div>
-              <div class="filter-row-item">
-                <h1 class="title is-3">Confirm Password:</h1>
-              </div>
-            </div>
-            <div class="filter-row">
-              <div class="filter-row-item">
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter First Name">
-              </div>
-              <div class="filter-row-item">
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Last Name">
-              </div>
-              <div class="filter-row-item">
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Username">
-              </div>
-              <div class="filter-row-item">
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Password">
-              </div>
-              <div class="filter-row-item">
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Password Again">
-              </div>
-            </div>
-            <div class="filter-row">
-              <div class="filter-row-item">
 
-              </div>
-              <div class="filter-row-item">
-              
-              </div>
-              <div class="filter-row-item">
-              
-              </div>
-              <div class="filter-row-item">
+<!-- form using angular materials -->
+<div class="container">
+
+  
+    <form [formGroup]="form">
+
+      <div class="row">
+      
+        <!-- left column -->
+        <div class="col-md-4"></div>
+
+        <!-- middle column -->
+        <div class="col-md-4 card">
+
+
+          <div class="input-section">
+            <p>
+              <mat-form-field class="full-width">
+                <mat-label> First Name: </mat-label>
+                <input matInput formControlName="firstName" value="{{newUser.firstName}}" class="input" type="text" placeholder="Text input">
+                <mat-error *ngIf="hasError('firstName', 'required')"> This field is required. </mat-error> 
+              </mat-form-field>
+            </p>
             
-              </div>
-              <div class="filter-row-item">
-            
-              </div>
-            </div>
+            <p>
+              <mat-form-field class="full-width">
+                <mat-label> Last Name: </mat-label>
+                <input matInput formControlName="lastName" value="{{newUser.lastName}}" class="input" type="text" placeholder="Text input">
+                <mat-error *ngIf="hasError('lastName', 'required')"> This field is required. </mat-error> 
+              </mat-form-field>
+            </p>
+              
+            <p>
+              <mat-form-field class="full-width">
+                <mat-label> Email: </mat-label>
+                <input matInput formControlName="email" value="{{newUser.email}}"  class="input" type="text" placeholder="Text input">
+                <mat-error *ngIf="hasError('email', 'required')"> This field is required. </mat-error> 
+              </mat-form-field>
+            </p>
+              
+            <p>
+              <mat-form-field class="full-width">
+                <mat-label> Password: </mat-label>
+                <input matInput formControlName="password" value="{{newUser.password}}"  class="input" type="text" placeholder="Text input">
+                <mat-error *ngIf="hasError('password', 'required')"> This field is required. </mat-error> 
+                
+              </mat-form-field>
+            </p>
+              
+            <p>
+              <mat-form-field class="full-width">
+                <mat-label> Confirm Password: </mat-label>
+                <input matInput formControlName="passwordConfirm" value="{{newUser.passwordConfirm}}" [errorStateMatcher]="passwordErrorStateMatcher"  class="input" type="text" placeholder="Text input">
+                <mat-error *ngIf="hasError('passwordConfirm', 'required')"> This field is required. </mat-error> 
+                <mat-error *ngIf="form.hasError('passwordPairMismatch')"> Passwords must match. </mat-error>
+              </mat-form-field>
+            </p>
+          </div>
+
+
+          <div class="button-section">
+            <button mat-button class="mat-raised-button mat-primary" [disabled]="form.invalid" (click)="submitUserAccountRequest()" data-toggle="modal" data-target="#exampleModal">Submit</button>
+            <button mat-button class="mat-raised-button"             routerLink="/sign-in">Cancel</button> 
+          </div>
         </div>
-    </div>
+
+        <!-- right column -->
+        <div class="col-md-4"></div>
+
+      </div>
+
+    </form>
+  
+
+  <!-- One submit for ... -->
+  
+  
 </div>
+  
 
-<button type="button" class="btn btn-success button-right" routerLink="/sign-in">Submit</button>
 
-<button type="button" class="btn btn-success button-right" data-toggle="modal" data-target="#exampleModal">Submit</button>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -82,5 +103,5 @@
 </div>
 
 
-  <button type="button" class="btn btn-danger button-left" routerLink="/sign-in">Cancel</button>
+  
 
