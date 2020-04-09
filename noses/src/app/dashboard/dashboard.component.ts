@@ -85,17 +85,24 @@ export class DashboardComponent implements OnInit {
     
     // subscribe to the api service which provides the data we'll populate the table with
     let sealsObservable = this.apiService.readSeals();
-    sealsObservable.subscribe( (observations: any) => {
-      this.elements = observations.map(x => Object.assign({}, x));;
-            observations.forEach((element, ind) => {
-                this.elements[ind].Tags = element.Tags.filter(this.onlyUnique).join(', ');
-                this.elements[ind].Marks = element.Marks.filter(this.onlyUnique).join(', ');
+    sealsObservable.subscribe( (observations: any[]) => {
 
-            });
-            this.mdbTable.setDataSource(this.elements);
-            console.log(this.elements);
-            console.log(this.mdbTable.getDataSource());
-            this.previous = this.mdbTable.getDataSource();
+      // initialize elements to be the result of copying every element of the observations into a blank list of Objects
+      // this.elements = observations.map(x => Object.assign({}, x));
+      this.elements = observations;
+
+      // observations.forEach((element, ind) => {
+      //     this.elements[ind].Tags = element.Tags.filter(this.onlyUnique).join(', ');
+      //     this.elements[ind].Marks = element.Marks.filter(this.onlyUnique).join(', ');
+      // });
+
+      this.mdbTable.setDataSource(this.elements);
+
+      console.log(this.elements);
+      console.log(this.mdbTable.getDataSource());
+
+      this.previous = this.mdbTable.getDataSource();
+
       if (this.isAdmin) {
         this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal' ];
         this.notReady = false;
@@ -111,23 +118,7 @@ export class DashboardComponent implements OnInit {
       //this.runSealQuery(response_observationList);
       //this.facetSetup(response_observationList);
     });
-
-    // // subscribe to Google's Firebase authentication service
-    // this.afAuth.authState.subscribe(user => {
-    //   if (user) {
-    //     this.userData = user;
-    //     localStorage.setItem("user", JSON.stringify(this.userData));
-    //     JSON.parse(localStorage.getItem("user"));
-    //     this.setAdmin();
-    //     // console.log(this.userData)
-    //   } 
-    //   else {
-    //     localStorage.setItem("user", null);
-    //     JSON.parse(localStorage.getItem("user"));
-    //   }
-    // });
-
-    
+ 
 
   }
 
