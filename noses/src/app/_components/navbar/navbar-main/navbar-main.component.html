@@ -21,16 +21,6 @@
       <div class="mat-button-focus-overlay"></div>
   </a>
 
-  <!-- approve observations -->
-  <a *ngIf="currentUserIsValid === true" mat-button="" routerLink="/approve-obs" class="mat-button mat-button-base navbar-anchor"  >
-      <span class="mat-button-wrapper">
-        <span> Staging </span>
-      </span>
-      <div class="mat-button-ripple mat-ripple" matripple=""></div>
-      <div class="mat-button-focus-overlay"></div>
-  </a>
-
-
   <!-- All Observations -->
   <a *ngIf="currentUserIsValid === true" mat-button="" routerLink="/all-observations" class="mat-button mat-button-base navbar-anchor"  >
       <span class="mat-button-wrapper">
@@ -50,7 +40,6 @@
       <div class="mat-button-focus-overlay"></div>
   </a>
 
-
   <!-- Bulk Observation Upload -->
   <a *ngIf="currentUserIsValid === true" mat-button="" routerLink="/citizen-sci-bulk-upload" class="mat-button mat-button-base navbar-anchor"  >
       <span class="mat-button-wrapper">
@@ -60,9 +49,17 @@
       <div class="mat-button-focus-overlay"></div>
   </a>
 
+  <!-- approve observations -->
+  <a *ngIf="currentUserIsValid === true && isAtLeastFieldLeader === true" mat-button="" routerLink="/approve-obs" class="mat-button mat-button-base navbar-anchor"  >
+      <span class="mat-button-wrapper">
+        <span> Approve Observations </span>
+      </span>
+      <div class="mat-button-ripple mat-ripple" matripple=""></div>
+      <div class="mat-button-focus-overlay"></div>
+  </a>
 
   <!-- Manage Accounts -->
-  <a *ngIf="currentUserIsValid === true" mat-button="" routerLink="/manage-accounts" class="mat-button mat-button-base navbar-anchor"  >
+  <a *ngIf="currentUserIsValid === true && isAdmin === true" mat-button="" routerLink="/manage-accounts" class="mat-button mat-button-base navbar-anchor"  >
       <span class="mat-button-wrapper">
         <span> Manage Accounts </span>
       </span>

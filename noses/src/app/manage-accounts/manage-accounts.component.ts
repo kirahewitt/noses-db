@@ -66,6 +66,11 @@ export class ManageAccountsComponent implements OnInit {
   public selectedUserObsObj: User_Observer_Obj;
 
 
+  public loggedInUser: User_Observer_Obj;
+  public currentUserIsValid: boolean;
+  public isAdmin:boolean;
+  public isAtLeastFieldLeader:boolean;
+
   /**
    * @param apiService : A reference to the rest API
    * @param authService : Reference to the service responsible for authorizing a user
@@ -84,6 +89,21 @@ export class ManageAccountsComponent implements OnInit {
     
 
     this.selectedUserObsObj = new User_Observer_Obj();
+
+    this.isAtLeastFieldLeader = false;
+    this.isAdmin = false;
+
+    let loggedInUser_datastream = this.authService.IH_getUserData_bs();
+    loggedInUser_datastream.subscribe( (retval : User_Observer_Obj ) => {
+      this.loggedInUser = retval;
+      this.updatePrivelege();
+    });
+
+    let currentUserIsValid_datastream = this.authService.IH_getUserIsValid_bs();
+    currentUserIsValid_datastream.subscribe( (retval : boolean) => {
+      this.currentUserIsValid = retval;
+      this.updatePrivelege();
+    });
   }
 
 
@@ -184,17 +204,6 @@ export class ManageAccountsComponent implements OnInit {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
   /**
    * Returns the name of the rank for the number provided.
    * @param numericRank : A numeric representation of a NOSES rank.
@@ -238,5 +247,29 @@ export class ManageAccountsComponent implements OnInit {
     });
   }
 
+
+  /**
+   * 
+   */
+  updatePrivelege() {
+    if (this.currentUserIsValid == false) {
+      this.isAdmin = false;
+      this.isAtLeastFieldLeader = false;
+    }
+    else {
+      if (this.loggedInUser.isAdmin == 3) {
+        this.isAdmin = true;
+        this.isAtLeastFieldLeader = true;
+      } 
+      else if(this.loggedInUser.isAdmin == 2) {
+        this.isAdmin = false;
+        this.isAtLeastFieldLeader = true;
+      } 
+      else  {
+        this.isAdmin = false;
+        this.isAtLeastFieldLeader = false;
+      }
+    }
+  }
 
 }

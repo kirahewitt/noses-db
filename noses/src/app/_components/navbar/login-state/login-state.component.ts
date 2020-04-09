@@ -18,8 +18,8 @@ import { User_Observer_Obj } from 'src/app/_supporting_classes/sqlUser';
 })
 export class LoginStateComponent implements OnInit {
 
-  public isSuperAdmin: boolean;
   public isAdmin: boolean;
+  public isAtLeastFieldLeader: boolean;
 
   public loggedInUser: User_Observer_Obj;
   public currentUserIsValid: boolean;
@@ -32,8 +32,8 @@ export class LoginStateComponent implements OnInit {
    */
   constructor(public authService : AuthService, public adminStatus: AdminService) { 
     
-    this.isSuperAdmin = false;
     this.isAdmin = false;
+    this.isAtLeastFieldLeader = false;
 
     this.loggedInUser = new User_Observer_Obj();
     this.currentUserIsValid = false;
@@ -73,21 +73,21 @@ export class LoginStateComponent implements OnInit {
    */
   updatePrivelege() {
     if (this.currentUserIsValid == false) {
-      this.isSuperAdmin = false;
       this.isAdmin = false;
+      this.isAtLeastFieldLeader = false;
     }
     else {
       if (this.loggedInUser.isAdmin == 3) {
-        this.isSuperAdmin = true;
         this.isAdmin = true;
+        this.isAtLeastFieldLeader = true;
       } 
       else if(this.loggedInUser.isAdmin == 2) {
-        this.isSuperAdmin = false;
-        this.isAdmin = true;
+        this.isAdmin = false;
+        this.isAtLeastFieldLeader = true;
       } 
       else  {
-        this.isSuperAdmin = false;
         this.isAdmin = false;
+        this.isAtLeastFieldLeader = false;
       }
     }
   }
