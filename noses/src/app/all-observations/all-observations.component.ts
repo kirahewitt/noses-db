@@ -4,6 +4,7 @@ import { Observations } from  '../_supporting_classes/Observations';
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { AuthService } from "../_services/auth.service";
+import {MdbTableDirective} from 'angular-bootstrap-md';
 import { AngularFireAuth } from "@angular/fire/auth";
 import {
   AngularFirestore,
@@ -12,6 +13,7 @@ import {
 import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
+import { SelectFilterType } from "./filter-type-selector"
 
 @Component({
   selector: 'app-all-observations',
@@ -52,10 +54,16 @@ export class AllObservationsComponent implements OnInit {
 
   yearControl = new FormControl('');
   partialControl = new FormControl('');
+  filterTypeControl = new FormControl('');
 
   filterss = [{name:"Breeding Season", value:"2019"}, {name:"Tag", value:"T3456"}];
 
-
+  @ViewChild(MdbTableDirective, { static: true })
+  public mdbTable: MdbTableDirective; 
+  public elements: any = []; 
+  public headElements = ['ObservationID', 'Age Class', 'Sex', 'Tags', 'Marks', 'Comments', 'View Seal'];
+  public searchText: string = ''; 
+  public previous: string;
   /**
    * 
    * @param apiService 
@@ -85,10 +93,18 @@ export class AllObservationsComponent implements OnInit {
         this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
+        this.displayedColumns = ['ObservationID', 'Age Class', 'Sex', 'Tags', 'Marks', 'Comments', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;
+      this.elements = observations;
+      observations.forEach((element, ind) => {
+        this.elements[ind].Tags = element.Tags.join(', ');
+        this.elements[ind].Marks = element.Marks.join(', ');
+
+    });
+      this.mdbTable.setDataSource(this.elements);
+      this.previous = this.mdbTable.getDataSource();
       this.runSealQuery(observations);
       this.facetSetup(observations);
     });
@@ -271,4 +287,16 @@ export class AllObservationsComponent implements OnInit {
 
     this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
   }
+  public searchItems() {
+    const prev = this.mdbTable.getDataSource();
+    console.log(this.searchText);
+    if (!this.searchText) {
+        this.mdbTable.setDataSource(this.previous); 
+        this.elements = this.mdbTable.getDataSource(); 
+    } 
+    if (this.searchText) {
+        this.elements = this.mdbTable.searchLocalDataByMultipleFields(this.searchText, ['AgeClass', 'Sex', 'Comments','Tags','Marks']); 
+        this.mdbTable.setDataSource(prev); 
+    } 
+}
 }

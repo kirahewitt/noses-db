@@ -9,6 +9,7 @@ from flask import flash, request
 from flask import g, Flask
 import json
 import logging
+import bcrypt
 #from werkzeug import generate_password_hash, check_password_hash
 from flask_cors import CORS, cross_origin
 from flask_mail import Mail, Message
@@ -28,11 +29,10 @@ app.config['MAIL_DEFAULT_SENDER'] = "noses.donotreply@gmail.com"
 app.config['MAIL_MAX_EMAILS'] = True
 mail = Mail(app)
 
-
 def sendSuccessEmailMessage(emailDestination, firstName):
     print("\n\nINSIDE SEND SUCCESS EMAIL")
 
-    msg = Message(subject='Thanks for your interest in N.O.S.E.S.', 
+    msg = Message(subject='[N.O.S.E.S.]: Thanks for your interest in N.O.S.E.S.', 
                   recipients=[emailDestination], 
                   body=("Hi " + firstName + ",\n\n" + "Thanks for your interest in becoming a part of N.O.S.E.S. We will be in contact shortly to inform you whether your request for an account has been approved.\n\n" + "Best,\n\n" + "-The N.O.S.E.S. Team"))
 
@@ -41,6 +41,47 @@ def sendSuccessEmailMessage(emailDestination, firstName):
 
     mail.send(msg)
     return "Message sent!"
+
+
+## This method is used by a user with admin level permmissions to create a new user account.
+def sendEmailMessage_newAccountCreatedForUser(emailDestination, firstName, lastName, tempPassword):
+    print("\n\nINSIDE SEND SUCCESS EMAIL")
+
+    msg = Message(subject='[N.O.S.E.S.]: Your new account is waiting for you!', 
+                  recipients=[emailDestination], 
+                  body=("Hi " + firstName + ",\n\n" + 
+                        "A new account has been created for you on the N.O.S.E.S. system. Your login credentials are as follows:\n\n"  +
+
+                        "username: \t" + emailDestination + "\n" +
+                        "temporary password: \t" + tempPassword + "\n\n" +
+
+                        "You can change your password at any time via the 'Reset Password' button on the Sign In page." + "\n\n" +
+                        
+                        "Best,\n\n" + "-The N.O.S.E.S. Team"))
+
+    print("Message content: ")
+    print(msg)
+
+    mail.send(msg)
+    return "Message sent!"
+
+
+## This method is used by a user with admin level permmissions to create a new user account.
+def sendEmailMessage_passwordChangedNotification(emailDestination, firstName):
+    print("\n\nINSIDE SEND EMAIL -- passwordChangedNotification")
+
+    msg = Message(subject='[N.O.S.E.S.]: Password Change Notification', 
+                  recipients=[emailDestination], 
+                  body=("Hi " + firstName + ",\n\n" + 
+                        "The purpose of this message is to notify you that your password has just been changed. If you didn't change this password, contact your system administrator.\n\n"  +
+                        "Best,\n\n" + "-The N.O.S.E.S. Team"))
+
+    print("Message content: ")
+    print(msg)
+
+    mail.send(msg)
+    return "Message sent!"
+
 
 
 # Deletes a particular observation from the database
@@ -157,22 +198,45 @@ def submit_userPasswordChangeRequest():
       _json = request.json
       print(_json)
 
+      # get the fields out of the json
       email = _json['email']
       oldPassword = _json['oldPassword']
       newPassword = _json['newPassword']
 
       # get the current password 
-      currentPassword = get_password_forUserEmail(email)
+      hashedPassword_inDatabase = get_password_forUserEmail(email)
 
-      if (currentPassword == oldPassword):
-        updatePasswordQuery = ("UPDATE Users SET Password=" + surr_apos(newPassword) + " WHERE Email=" + surr_apos(email) + ";")
+      # apply utf8 encodings to the old password guess and the hashed pw in the db
+      encoded_oldPassword = oldPassword.encode('utf8')
+      encoded_hashedPassword_inDatabase = convert_dbPassword_string_to_unicodeString(hashedPassword_inDatabase)
+
+      # print("\nencoded_oldPassword:")
+      # print(encoded_oldPassword)
+      # print("\nencoded_oldPassword:")
+      # print(encoded_hashedPassword_inDatabase)
+
+      passwordIsCorrect = bcrypt.checkpw( encoded_oldPassword , encoded_hashedPassword_inDatabase )
+      
+      if passwordIsCorrect:
+
+        salt = bcrypt.gensalt(rounds=12)
+        encoded_newPassword = str(bcrypt.hashpw(newPassword.encode('utf8'), salt))
+        
+        updatePasswordQuery = ("UPDATE Users SET Password=\"" + encoded_newPassword + "\" WHERE Email=" + surr_apos(email) + ";")
 
         cursor.execute(updatePasswordQuery)
-
-        # store the response and return it as json
-        rows = cursor.fetchall()
-        resp = jsonify(rows)
         conn.commit()
+
+
+        # get the name of the user:
+        rows = getUserObserver_viaEmail(email)
+        
+        print("HERES THE VALUE OF 'resp':")
+        print(rows)
+        print("\n\n")
+
+        firstName = rows[0]['FirstName']
+        sendEmailMessage_passwordChangedNotification(email, firstName)
 
         return jsonify("Success: The overwrite of the former password was successful")
 
@@ -251,7 +315,6 @@ def submit_new_userAccountRequest():
       # store user vars
       userQuery_nextUserId = str(nextUserId)
       userQuery_username = email                       # given
-      userQuery_password = password                    # given
       userQuery_initials = firstName[0] + lastName[0]  # get first character of first and last name for initials
       userQuery_isAdmin = str(0)                       # can't be an admin b/c this is just a request
       userQuery_affiliation = ""                       # won't have any affiliation by default
@@ -259,12 +322,16 @@ def submit_new_userAccountRequest():
       userQuery_obsID = str(nextObserverId)            # 
       userQuery_isVerifiedByAdmin = str(0)             # Can't be a verified user because this is just a request.
 
+      # generate hash for provided password
+      salt = bcrypt.gensalt(rounds=12)
+      userQuery_password = str(bcrypt.hashpw(password.encode('utf8'), salt))
+
       # make a new object/query for the user
       # username, password, initials, isAdmin, affiliation, email, obsID, isVerifiedByAdmin
       query = (" INSERT INTO Users (UserID, Username, Password, Initials, isAdmin, Affiliation, Email, ObsID, isVerifiedByAdmin) VALUES( " + 
                " " + userQuery_nextUserId + ", " + 
-               " " + surr_apos(userQuery_username) + ", " + 
-               " " + surr_apos(userQuery_password) + ", " + 
+               " " + surr_apos(userQuery_username) + ", " +
+               " \"" + userQuery_password + "\", " + 
                " " + surr_apos(userQuery_initials) + ", " + 
                " " + userQuery_isAdmin + ", " + 
                " " + surr_apos(userQuery_affiliation) + ", " + 
@@ -300,6 +367,7 @@ def submit_new_userAccountRequest():
     conn.close()
 
 
+## A route used by a user with admin level permissions to create a new user account.
 @app.route("/addNewUser_forAdmin", methods=['POST'])
 def addNewUser_forAdmin():
 
@@ -338,7 +406,6 @@ def addNewUser_forAdmin():
       # store user vars
       userQuery_nextUserId = str(nextUserId)
       userQuery_username = email                       # given
-      userQuery_password = password                    # given
       userQuery_initials = firstName[0] + lastName[0]  # get first character of first and last name for initials
       userQuery_isAdmin = str(isAdmin)                       # can't be an admin b/c this is just a request
       userQuery_affiliation = affiliation                       # won't have any affiliation by default
@@ -346,12 +413,16 @@ def addNewUser_forAdmin():
       userQuery_obsID = str(nextObserverId)            # 
       userQuery_isVerifiedByAdmin = str(1)             # Can't be a verified user because this is just a request.
 
+      # generate hash for provided password
+      salt = bcrypt.gensalt(rounds=12)
+      userQuery_password = str(bcrypt.hashpw(password.encode('utf8'), salt))
+
       # make a new object/query for the user
       # username, password, initials, isAdmin, affiliation, email, obsID, isVerifiedByAdmin
       query = (" INSERT INTO Users (UserID, Username, Password, Initials, isAdmin, Affiliation, Email, ObsID, isVerifiedByAdmin) VALUES( " + 
                " " + userQuery_nextUserId + ", " + 
                " " + surr_apos(userQuery_username) + ", " + 
-               " " + surr_apos(userQuery_password) + ", " + 
+               " \"" + userQuery_password + "\", " + 
                " " + surr_apos(userQuery_initials) + ", " + 
                " " + userQuery_isAdmin + ", " + 
                " " + surr_apos(userQuery_affiliation) + ", " + 
@@ -382,6 +453,8 @@ def addNewUser_forAdmin():
       # output results for sanity check
       print("Result of getAllUsers - Flask API")
       print(rows)
+
+      sendEmailMessage_newAccountCreatedForUser(email, firstName, lastName, password)
 
       return resp
     else:
@@ -778,6 +851,42 @@ def getAllUserObserverData():
 
 
 
+## Gets a specific user observer via a provided email
+def getUserObserver_viaEmail(email):
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    # execute a query to get all the users
+    # query = (" SELECT * FROM Users, Observers WHERE Users.ObsID=Observers.ObsID;")
+    
+
+    query =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+              " FROM Observers as O, Users as U " +
+              " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 AND U.Email =" + surr_apos(email) + ";")
+
+
+    cursor.execute(query)
+
+    # store the response and return it as json
+    rows = cursor.fetchall()
+    resp = jsonify(rows)
+
+    # output results for sanity check
+    print("Result of getSingleUser - Flask API")
+    print(rows)
+
+    return rows
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
 ## get all the plain seal dossiers...
 ## this information can be supplemented by additional queries on the page.
 @app.route('/getAll_SealDossier_Data', methods=['GET'])
@@ -1118,19 +1227,50 @@ def get_login_authenticator_userObserver():
       givenEmail = request.json['email']
       givenPassword = request.json['password']
 
-      getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+      # get the hashed password for the user
+      getUserTupleQuery_forHash =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID, U.Password " + 
                             " FROM Observers as O, Users as U " +
-                            " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + " AND U.Password = " + surr_apos(givenPassword) + ";")
+                            " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + ";")
 
-      cursor.execute(getUserTupleQuery)
+      # get query results
+      cursor.execute(getUserTupleQuery_forHash)
       rows = cursor.fetchall()
-      resp = jsonify(rows)
+      hashedPassword_inDatabase = rows[0]['Password']
+
+      # rebuild the hashed password as utf... doesn't recognize the string as utf otherwise.
+      encoded_givenPassword = givenPassword.encode('utf8')
+      encoded_hashedPassword_inDatabase = convert_dbPassword_string_to_unicodeString(hashedPassword_inDatabase)
+
+      # print("\n\nHERE's THE ENCODED PASSWORD FROM USER:")
+      # print(encoded_givenPassword)
+      # print("\n\n")
+
+      # print("\ntype of encoded_hashedPassword_inDatabase")
+      # print(type(encoded_hashedPassword_inDatabase))
+
+      passwordIsCorrect = bcrypt.checkpw( encoded_givenPassword , encoded_hashedPassword_inDatabase )
       
-      # if the length is 0, return json containing "incorrect password"
-      if (len(rows) == 0):
+      if passwordIsCorrect:
+        # get the user without the password
+        getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, O.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+                              " FROM Observers as O, Users as U " +
+                              " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + ";")
+
+        # run query and get the result.
+        cursor.execute(getUserTupleQuery)
+        rows = cursor.fetchall()
+        resp = jsonify(rows)
+        
+        # if the length is 0, return json containing "incorrect password"
+        if (len(rows) == 0):
+          return jsonify("Email/Password combination does not exist in the DB.")
+
+        return resp
+
+      else:
         return jsonify("Email/Password combination does not exist in the DB.")
       
-      return resp
+      
 
   except Exception as e:
     print(e)
@@ -1139,87 +1279,19 @@ def get_login_authenticator_userObserver():
     conn.close()
 
 
+## this function requires that the value it receives have the format b'....',
+## b/c that's the representation of a unicode string
+def convert_dbPassword_string_to_unicodeString(inputStr):
+  inputLength = len(inputStr)
+  encodedString = inputStr[2 : inputLength-1].encode('utf8')
+  return encodedString
+
+
 ## Places a single apostrophe on either side of a provided string
 ## and returns the result.
 def surr_apos(origStr):
   retStr = "\'" + origStr + "\'"
   return retStr
-
-
-
-
-
-## Adds a new user to the database
-## Having a new user involves two entity sets: Users and Observers
-## (1) Adds a new user tuple. this insertion omits the email value.
-## (2) Adds a new observer tuple. Only includes the valueID and email.
-## (3) Updates the user tuple we created in step 1 with the email belonging to the observer we just created.
-## Then it queries the  database again and returns all the user tuples.
-@app.route('/adduser', methods=['POST', 'GET'])
-def add_user():
-    conn = mysql.connect()
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-
-    try:
-        if request.method == 'GET':
-            cursor.execute("SELECT * from Users Where isAdmin >= 0;")
-            rows = cursor.fetchall()
-            resp = jsonify(rows)
-            return resp
-
-        if request.method == 'POST':
-            _json = request.json
-            print(_json)
-            print(_json['isAdmin'])
-
-            insertUserCmd = (   "INSERT INTO Users(LoginID, FullName, Password, isAdmin, Affiliation)"
-                                " VALUES " 
-                                "(" + surr_apos(_json['loginID']) +
-                                ", " + surr_apos(_json['fullname']) +
-                                ", " + surr_apos(_json['password']) +
-                                ", " + _json['isAdmin'] +
-                                ", " + surr_apos(_json['affiliation']) +
-                                ");"
-                            )
-            insertObserverCmd = (   "INSERT INTO Observers(email, FieldLeader, DataRecorderName, LoginID)"
-                                    " VALUES "
-                                    "(" + surr_apos(_json['email']) + 
-                                    ", " + surr_apos("") +
-                                    ", " + surr_apos("") +
-                                    ", " + surr_apos(_json['loginID']) +
-                                    ");"
-                                )
-            updateUserEmailCmd = (  "UPDATE Users" 
-                                    " SET email=" + surr_apos(_json['email']) + 
-                                    " WHERE LoginID=" + surr_apos(_json['loginID']) + ";"
-                                )
-
-            print("\n")
-            print("insert user cmd:     " + insertUserCmd)
-            print("insert observer cmd: " + insertObserverCmd)
-            print("update user email:   " + updateUserEmailCmd + "\n")
-
-            cursor.execute(insertUserCmd)
-            cursor.execute(insertObserverCmd)
-            cursor.execute(updateUserEmailCmd)
-            conn.commit()
-                
-            cursor.execute("SELECT * from Users Where isAdmin >= 0;")
-
-            rows = cursor.fetchall()
-            resp = jsonify(rows)
-            return resp
-
-        else:
-            return jsonify("no seal was clicked")
-
-    except Exception as e:
-        print(e)
-        return jsonify(1)
-
-    finally:
-        cursor.close()
-        conn.close()
 
 
 ## Attempts to insert records for a list of observations.
@@ -1625,8 +1697,6 @@ def getAllSeals():
         cursor = conn.cursor(pymysql.cursors.DictCursor)
         statement = "Select s.SealID, CONCAT('[', GROUP_CONCAT(DISTINCT T1.AgeClass SEPARATOR ', '), ']')  AgeClass, s.Sex, CONCAT('[', GROUP_CONCAT(DISTINCT T1.TagNumber SEPARATOR ', '), ']')  Tags, CONCAT('[', group_concat(distinct T1.Mark separator ', '), ']') Marks from Seals s left join (Select s2.SealID, ot.TagNumber, m.Mark, o.AgeClass from Seals s2 left join ObserveSeal os1 on os1.SealID = s2.SealID left join ObserveTags ot on ot.ObservationID = os1.ObservationID left join ObserveMarks om on om.ObservationID = os1.ObservationID inner join Marks m on m.MarkID = om.MarkID inner join Observations o on o.ObservationID = os1.ObservationID order by o.Date desc) T1 on T1.SealID = s.SealID group by s.SealID order by s.SealID asc"
         # print(statement)
-        if request.method == 'POST':
-            pass
         cursor.execute(statement)
         #cursor.execute("DELETE FROM tbl_user WHERE user_id=%s", id)
         rows = cursor.fetchall()
@@ -1647,9 +1717,10 @@ def getAllObservations():
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
-        statement = "Select o.*, os.SealID, json_arrayagg(ot.TagNumber) Tags, json_arrayagg(m.Mark) Marks from Observations o left join ObserveTags ot on ot.ObservationID = o.ObservationID left join ObserveMarks om on om.ObservationID = o.ObservationID inner join Marks m on om.MarkID = m.MarkID inner join ObserveSeal os on os.ObservationID = o.ObservationID group by o.ObservationID order by o.ObservationID asc"
+        statement = "Select o.*, os.SealID, json_arrayagg(ot.TagNumber) Tags, json_arrayagg(m.Mark) Marks from Observations o left join ObserveTags ot on ot.ObservationID = o.ObservationID left join ObserveMarks om on om.ObservationID = o.ObservationID inner join Marks m on om.MarkID = m.MarkID inner join ObserveSeal os on os.ObservationID = o.ObservationID where o.isApproved > 0 group by o.ObservationID order by o.ObservationID asc"
         #"SELECT O.ObservationID , O.SealID , O.FieldLeader , O.Year , O.date , O.SLOCode , S.Sex , O.AgeClass , S.Mark , S.markDate , S.Mark2 , S.markDate2 , S.T1 , S.T2 , O.MoltPercent , O.Season , O.StandardLength , O.CurvilinearLength , O.AxillaryGirth , O.TotalMass , O.LastSeenPup , O.FirstSeenWeaner , O.Rnge , O.Comments , O.EnteredAno FROM (  SELECT seals.* FROM (  SELECT COUNT(*) count, inn.sealID FROM  (SELECT AllTags.T1, AllTags.T2,  AllMarks.*, Seals.Sex, age.AgeClass  FROM Seals, (SELECT Observations.AgeClass, ObserveSeal.SealID FROM Observations, ObserveSeal, (SELECT MAX(Observations.ObservationID) ID FROM Seals, Observations, ObserveSeal WHERE Seals.SealID = ObserveSeal.SealID AND  Observations.ObservationID = ObserveSeal.ObservationID GROUP BY Seals.SealID) id WHERE Observations.ObservationID = id.ID and ObserveSeal.ObservationID = Observations.ObservationID) age,  (SELECT important.* FROM (SELECT inn.SealId, COUNT(*) count  FROM (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) inn GROUP BY inn.SealID) counts, (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) important WHERE important.SealID = counts.SealID AND  counts.count < 2 UNION ALL  SELECT  Seals.SealID,  M1.Mark, M1.markDate MarkDate, M2.Mark Mark2, M2.markDate MarkDate2 FROM Seals, (SELECT * FROM Marks) M1, (SELECT * FROM Marks) M2 WHERE M1.Mark < M2.Mark AND M1.MarkSeal = Seals.SealID AND M2.MarkSeal = Seals.SealID ) AllMarks, (SELECT important.SealID, important.T1, important.T2 FROM (SELECT inn.SealID, COUNT(*) count FROM (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) inn GROUP BY inn.SealID) counts, (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) important WHERE important.SealID = counts.sealID AND  counts.count < 2 UNION ALL  SELECT Seals.SealID, Tag1.TagNumber, Tag2.TagNumber FROM Seals, (SELECT * FROM Tags) Tag1, (SELECT * FROM Tags) Tag2 WHERE Seals.SealId = Tag1.TagSeal AND Seals.SealID = Tag2.TagSeal AND Tag1.TagNumber < Tag2.TagNumber ) AllTags WHERE AllTags.SealID = AllMarks.SealID AND Seals.SealID = AllTags.SealID AND age.SealID = AllMarks.SealID ) inn GROUP BY inn.sealID ) sealcounts,     (SELECT AllTags.T1, AllTags.T2,  AllMarks.*, Seals.Sex, age.AgeClass  FROM Seals, (SELECT Observations.AgeClass, ObserveSeal.SealID FROM Observations, ObserveSeal, (SELECT MAX(Observations.ObservationID) ID FROM Seals, Observations, ObserveSeal WHERE Seals.SealID = ObserveSeal.SealID AND  Observations.ObservationID = ObserveSeal.ObservationID GROUP BY Seals.SealID) id WHERE Observations.ObservationID = id.ID and ObserveSeal.ObservationID = Observations.ObservationID) age,  (SELECT important.* FROM (SELECT inn.SealId, COUNT(*) count  FROM (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) inn GROUP BY inn.SealID) counts, (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) important WHERE important.SealID = counts.SealID AND  counts.count < 2 UNION ALL  SELECT  Seals.SealID,  M1.Mark, M1.markDate MarkDate, M2.Mark Mark2, M2.markDate MarkDate2 FROM Seals, (SELECT * FROM Marks) M1, (SELECT * FROM Marks) M2 WHERE M1.Mark < M2.Mark AND M1.MarkSeal = Seals.SealID AND M2.MarkSeal = Seals.SealID ) AllMarks, (SELECT important.SealID, important.T1, important.T2 FROM (SELECT inn.SealID, COUNT(*) count FROM (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) inn GROUP BY inn.SealID) counts, (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) important WHERE important.SealID = counts.sealID AND  counts.count < 2 UNION ALL  SELECT Seals.SealID, Tag1.TagNumber, Tag2.TagNumber FROM Seals, (SELECT * FROM Tags) Tag1, (SELECT * FROM Tags) Tag2 WHERE Seals.SealId = Tag1.TagSeal AND Seals.SealID = Tag2.TagSeal AND Tag1.TagNumber < Tag2.TagNumber ) AllTags WHERE AllTags.SealID = AllMarks.SealID AND Seals.SealID = AllTags.SealID AND age.SealID = AllMarks.SealID ) seals WHERE seals.SealID = sealcounts.sealID AND sealcounts.count = 1) S,  (SELECT main.ObservationID , main.SealID , main.FieldLeader , main.Year , main.date , main.SLOCode , main.sex , main.AgeClass, main.moltPercent , main.Year Season , Measurements.StandardLength , Measurements.CurvilinearLength , Measurements.AxillaryGirth , Measurements.AnimalMass , Measurements.TotalMass, main.LastSeenPup , main.FirstSeenWeaner , main.Rnge , main.Comments , main.EnteredAno FROM (SELECT Observations.*, ObserveSeal.SealID FROM Observations, ObserveSeal WHERE ObserveSeal.ObservationID = Observations.ObservationID) main LEFT OUTER JOIN Measurements ON Measurements.ObservationID = main.ObservationID WHERE main.IsValid = 0) O WHERE O.SealID = S.SealID;"
         # print(statement)
+        print("here")
         if request.method == 'POST':
             pass
         cursor.execute(statement)
@@ -1672,20 +1743,50 @@ def getAllObservations():
 
 # The purpose of this method is to get all of the non-approved records. 
 @app.route('/notapproved', methods=['GET'])
-def getAllNonSeals():
+def getNotApproved():
+        
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
-        statement = "SELECT O.ObservationID , O.SealID , O.FieldLeader , O.Year , O.date , O.SLOCode , S.Sex , O.AgeClass , S.Mark , S.markDate , S.Mark2 , S.markDate2 , S.T1 , S.T2 , O.MoltPercent , O.Season , O.StandardLength , O.CurvilinearLength , O.AxillaryGirth , O.TotalMass , O.LastSeenPup , O.FirstSeenWeaner , O.Rnge , O.Comments , O.EnteredAno FROM (  SELECT seals.* FROM (  SELECT COUNT(*) count, inn.sealID FROM  (SELECT AllTags.T1, AllTags.T2,  AllMarks.*, Seals.Sex, age.AgeClass  FROM Seals, (SELECT Observations.AgeClass, ObserveSeal.SealID FROM Observations, ObserveSeal, (SELECT MAX(Observations.ObservationID) ID FROM Seals, Observations, ObserveSeal WHERE Seals.SealID = ObserveSeal.SealID AND  Observations.ObservationID = ObserveSeal.ObservationID GROUP BY Seals.SealID) id WHERE Observations.ObservationID = id.ID and ObserveSeal.ObservationID = Observations.ObservationID) age,  (SELECT important.* FROM (SELECT inn.SealId, COUNT(*) count  FROM (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) inn GROUP BY inn.SealID) counts, (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) important WHERE important.SealID = counts.SealID AND  counts.count < 2 UNION ALL  SELECT  Seals.SealID,  M1.Mark, M1.markDate MarkDate, M2.Mark Mark2, M2.markDate MarkDate2 FROM Seals, (SELECT * FROM Marks) M1, (SELECT * FROM Marks) M2 WHERE M1.Mark < M2.Mark AND M1.MarkSeal = Seals.SealID AND M2.MarkSeal = Seals.SealID ) AllMarks, (SELECT important.SealID, important.T1, important.T2 FROM (SELECT inn.SealID, COUNT(*) count FROM (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) inn GROUP BY inn.SealID) counts, (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) important WHERE important.SealID = counts.sealID AND  counts.count < 2 UNION ALL  SELECT Seals.SealID, Tag1.TagNumber, Tag2.TagNumber FROM Seals, (SELECT * FROM Tags) Tag1, (SELECT * FROM Tags) Tag2 WHERE Seals.SealId = Tag1.TagSeal AND Seals.SealID = Tag2.TagSeal AND Tag1.TagNumber < Tag2.TagNumber ) AllTags WHERE AllTags.SealID = AllMarks.SealID AND Seals.SealID = AllTags.SealID AND age.SealID = AllMarks.SealID ) inn GROUP BY inn.sealID ) sealcounts,     (SELECT AllTags.T1, AllTags.T2,  AllMarks.*, Seals.Sex, age.AgeClass  FROM Seals, (SELECT Observations.AgeClass, ObserveSeal.SealID FROM Observations, ObserveSeal, (SELECT MAX(Observations.ObservationID) ID FROM Seals, Observations, ObserveSeal WHERE Seals.SealID = ObserveSeal.SealID AND  Observations.ObservationID = ObserveSeal.ObservationID GROUP BY Seals.SealID) id WHERE Observations.ObservationID = id.ID and ObserveSeal.ObservationID = Observations.ObservationID) age,  (SELECT important.* FROM (SELECT inn.SealId, COUNT(*) count  FROM (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) inn GROUP BY inn.SealID) counts, (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) important WHERE important.SealID = counts.SealID AND  counts.count < 2 UNION ALL  SELECT  Seals.SealID,  M1.Mark, M1.markDate MarkDate, M2.Mark Mark2, M2.markDate MarkDate2 FROM Seals, (SELECT * FROM Marks) M1, (SELECT * FROM Marks) M2 WHERE M1.Mark < M2.Mark AND M1.MarkSeal = Seals.SealID AND M2.MarkSeal = Seals.SealID ) AllMarks, (SELECT important.SealID, important.T1, important.T2 FROM (SELECT inn.SealID, COUNT(*) count FROM (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) inn GROUP BY inn.SealID) counts, (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) important WHERE important.SealID = counts.sealID AND  counts.count < 2 UNION ALL  SELECT Seals.SealID, Tag1.TagNumber, Tag2.TagNumber FROM Seals, (SELECT * FROM Tags) Tag1, (SELECT * FROM Tags) Tag2 WHERE Seals.SealId = Tag1.TagSeal AND Seals.SealID = Tag2.TagSeal AND Tag1.TagNumber < Tag2.TagNumber ) AllTags WHERE AllTags.SealID = AllMarks.SealID AND Seals.SealID = AllTags.SealID AND age.SealID = AllMarks.SealID ) seals WHERE seals.SealID = sealcounts.sealID AND sealcounts.count = 1) S,  (SELECT main.ObservationID , main.SealID , main.FieldLeader , main.Year , main.date , main.SLOCode , main.sex , main.AgeClass, main.moltPercent , main.Year Season , Measurements.StandardLength , Measurements.CurvilinearLength , Measurements.AxillaryGirth , Measurements.AnimalMass , Measurements.TotalMass, main.LastSeenPup , main.FirstSeenWeaner , main.Rnge , main.Comments , main.EnteredAno FROM (SELECT Observations.*, ObserveSeal.SealID FROM Observations, ObserveSeal WHERE ObserveSeal.ObservationID = Observations.ObservationID) main LEFT OUTER JOIN Measurements ON Measurements.ObservationID = main.ObservationID WHERE main.IsValid = 1) O WHERE O.SealID = S.SealID;"
+        statement = "Select o.*, os.SealID, json_arrayagg(ot.TagNumber) Tags, json_arrayagg(m.Mark) Marks from Observations o left join ObserveTags ot on ot.ObservationID = o.ObservationID left join ObserveMarks om on om.ObservationID = o.ObservationID inner join Marks m on om.MarkID = m.MarkID inner join ObserveSeal os on os.ObservationID = o.ObservationID where o.isApproved = 0 group by o.ObservationID order by o.ObservationID asc"
+        #"SELECT O.ObservationID , O.SealID , O.FieldLeader , O.Year , O.date , O.SLOCode , S.Sex , O.AgeClass , S.Mark , S.markDate , S.Mark2 , S.markDate2 , S.T1 , S.T2 , O.MoltPercent , O.Season , O.StandardLength , O.CurvilinearLength , O.AxillaryGirth , O.TotalMass , O.LastSeenPup , O.FirstSeenWeaner , O.Rnge , O.Comments , O.EnteredAno FROM (  SELECT seals.* FROM (  SELECT COUNT(*) count, inn.sealID FROM  (SELECT AllTags.T1, AllTags.T2,  AllMarks.*, Seals.Sex, age.AgeClass  FROM Seals, (SELECT Observations.AgeClass, ObserveSeal.SealID FROM Observations, ObserveSeal, (SELECT MAX(Observations.ObservationID) ID FROM Seals, Observations, ObserveSeal WHERE Seals.SealID = ObserveSeal.SealID AND  Observations.ObservationID = ObserveSeal.ObservationID GROUP BY Seals.SealID) id WHERE Observations.ObservationID = id.ID and ObserveSeal.ObservationID = Observations.ObservationID) age,  (SELECT important.* FROM (SELECT inn.SealId, COUNT(*) count  FROM (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) inn GROUP BY inn.SealID) counts, (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) important WHERE important.SealID = counts.SealID AND  counts.count < 2 UNION ALL  SELECT  Seals.SealID,  M1.Mark, M1.markDate MarkDate, M2.Mark Mark2, M2.markDate MarkDate2 FROM Seals, (SELECT * FROM Marks) M1, (SELECT * FROM Marks) M2 WHERE M1.Mark < M2.Mark AND M1.MarkSeal = Seals.SealID AND M2.MarkSeal = Seals.SealID ) AllMarks, (SELECT important.SealID, important.T1, important.T2 FROM (SELECT inn.SealID, COUNT(*) count FROM (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) inn GROUP BY inn.SealID) counts, (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) important WHERE important.SealID = counts.sealID AND  counts.count < 2 UNION ALL  SELECT Seals.SealID, Tag1.TagNumber, Tag2.TagNumber FROM Seals, (SELECT * FROM Tags) Tag1, (SELECT * FROM Tags) Tag2 WHERE Seals.SealId = Tag1.TagSeal AND Seals.SealID = Tag2.TagSeal AND Tag1.TagNumber < Tag2.TagNumber ) AllTags WHERE AllTags.SealID = AllMarks.SealID AND Seals.SealID = AllTags.SealID AND age.SealID = AllMarks.SealID ) inn GROUP BY inn.sealID ) sealcounts,     (SELECT AllTags.T1, AllTags.T2,  AllMarks.*, Seals.Sex, age.AgeClass  FROM Seals, (SELECT Observations.AgeClass, ObserveSeal.SealID FROM Observations, ObserveSeal, (SELECT MAX(Observations.ObservationID) ID FROM Seals, Observations, ObserveSeal WHERE Seals.SealID = ObserveSeal.SealID AND  Observations.ObservationID = ObserveSeal.ObservationID GROUP BY Seals.SealID) id WHERE Observations.ObservationID = id.ID and ObserveSeal.ObservationID = Observations.ObservationID) age,  (SELECT important.* FROM (SELECT inn.SealId, COUNT(*) count  FROM (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) inn GROUP BY inn.SealID) counts, (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) important WHERE important.SealID = counts.SealID AND  counts.count < 2 UNION ALL  SELECT  Seals.SealID,  M1.Mark, M1.markDate MarkDate, M2.Mark Mark2, M2.markDate MarkDate2 FROM Seals, (SELECT * FROM Marks) M1, (SELECT * FROM Marks) M2 WHERE M1.Mark < M2.Mark AND M1.MarkSeal = Seals.SealID AND M2.MarkSeal = Seals.SealID ) AllMarks, (SELECT important.SealID, important.T1, important.T2 FROM (SELECT inn.SealID, COUNT(*) count FROM (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) inn GROUP BY inn.SealID) counts, (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) important WHERE important.SealID = counts.sealID AND  counts.count < 2 UNION ALL  SELECT Seals.SealID, Tag1.TagNumber, Tag2.TagNumber FROM Seals, (SELECT * FROM Tags) Tag1, (SELECT * FROM Tags) Tag2 WHERE Seals.SealId = Tag1.TagSeal AND Seals.SealID = Tag2.TagSeal AND Tag1.TagNumber < Tag2.TagNumber ) AllTags WHERE AllTags.SealID = AllMarks.SealID AND Seals.SealID = AllTags.SealID AND age.SealID = AllMarks.SealID ) seals WHERE seals.SealID = sealcounts.sealID AND sealcounts.count = 1) S,  (SELECT main.ObservationID , main.SealID , main.FieldLeader , main.Year , main.date , main.SLOCode , main.sex , main.AgeClass, main.moltPercent , main.Year Season , Measurements.StandardLength , Measurements.CurvilinearLength , Measurements.AxillaryGirth , Measurements.AnimalMass , Measurements.TotalMass, main.LastSeenPup , main.FirstSeenWeaner , main.Rnge , main.Comments , main.EnteredAno FROM (SELECT Observations.*, ObserveSeal.SealID FROM Observations, ObserveSeal WHERE ObserveSeal.ObservationID = Observations.ObservationID) main LEFT OUTER JOIN Measurements ON Measurements.ObservationID = main.ObservationID WHERE main.IsValid = 0) O WHERE O.SealID = S.SealID;"
         # print(statement)
+        print("here")
+        if request.method == 'POST':
+            pass
         cursor.execute(statement)
         #cursor.execute("DELETE FROM tbl_user WHERE user_id=%s", id)
         rows = cursor.fetchall()
-        resp = jsonify(rows)
+        finalRows = []
+        for row in rows:
+            newRow = {'ObservationID': row["ObservationID"], 'SealID': row["SealID"], 'AgeClass': row["AgeClass"], 'Sex': row["Sex"], 'Tags': json.loads(row["Tags"]), 'Marks': json.loads(row["Marks"]), 'Date': row["Date"], 'Comments': row["Comments"], 'Year': row["Year"], 'MoltPercent': row["MoltPercent"]}
+            finalRows.append(newRow)
+        resp = jsonify(finalRows)
         #resp.status_code = 200
 
 
         return resp
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/approveobs', methods=['POST'])
+def approveObs():
+        
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        if request.method == 'POST':
+            _json = request.json
+            id = _json["obsId"]
+            statement = "Update Observations o SET o.isApproved = 1 where o.ObservationID = " + str(id)
+            cursor.execute(statement)
+            conn.commit()
+            resp = id
+            return {"obsId": resp}
+        return -1
     except Exception as e:
         print(e)
     finally:

@@ -5,7 +5,7 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { AuthGuard } from "./_services/auth.guard";
 import { SealPageComponent } from './seal-page/seal-page.component';
 import { ManageAccountsComponent } from './manage-accounts/manage-accounts.component';
-import { ApproveObsComponent } from './approve-obs/approve-obs.component';
+import { ApproveObservationsComponent } from './approve-observations/approve-observations.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component'
 import { MenuComponent } from './menu/menu.component';
 import { AllObservationsComponent } from './all-observations/all-observations.component';
@@ -27,7 +27,7 @@ const routes: Routes = [
 { path: 'verify-email', component: VerifyEmailComponent},
 { path: 'seal-page', component: SealPageComponent},
 { path: 'manage-accounts', component: ManageAccountsComponent, canActivate: [AuthGuard]},
-{ path: 'approve-obs', component: ApproveObsComponent, canActivate: [AuthGuard]},
+{ path: 'approve-obs', component: ApproveObservationsComponent, canActivate: [AuthGuard]},
 { path: 'menu', component: MenuComponent, canActivate: [AuthGuard]},
 { path: 'all-observations', component: AllObservationsComponent, canActivate: [AuthGuard]},
 { path: 'reset', component: ResetPasswordComponent},

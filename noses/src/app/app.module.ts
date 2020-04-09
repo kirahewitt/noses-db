@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Routes, RouterModule } from '@angular/router';
@@ -20,8 +21,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 //Components
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { SealPageComponent } from './seal-page/seal-page.component';
+import { ApproveObservationsComponent } from './approve-observations/approve-observations.component';
 import { ManageAccountsComponent /*, DialogOverviewExampleDialog*/ } from './manage-accounts/manage-accounts.component';
-import { ApproveObsComponent } from './approve-obs/approve-obs.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
 import { MenuComponent } from './menu/menu.component';
 import { AllObservationsComponent } from './all-observations/all-observations.component';
@@ -45,13 +46,6 @@ import { LoginStateComponent } from './_components/navbar/login-state/login-stat
 import { MatFormFieldModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import {A11yModule} from '@angular/cdk/a11y';
-import {DragDropModule} from '@angular/cdk/drag-drop';
-import {PortalModule} from '@angular/cdk/portal';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import {CdkStepperModule} from '@angular/cdk/stepper';
-import {CdkTableModule} from '@angular/cdk/table';
-import {CdkTreeModule} from '@angular/cdk/tree';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
@@ -86,6 +80,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
+import {SelectFilterType} from "./all-observations/filter-type-selector"
 
 // form validation service
 import { ValidationService } from './_services/validation.service';
@@ -119,7 +114,7 @@ const config = {
     VerifyEmailComponent,
     SealPageComponent,
     ManageAccountsComponent,
-    ApproveObsComponent,
+    ApproveObservationsComponent,
     EditUserDialogComponent,
     MenuComponent,
     AllObservationsComponent,
@@ -137,6 +132,7 @@ const config = {
     EditObservationDialogComponent,
     TtlAngMaterialStartPageComponent,
     TtlAngMaterialDialogComponent,
+    SelectFilterType,
     LoginStateComponent,
     NavbarMainComponent,
     ObsFormMainComponent,
@@ -151,6 +147,7 @@ const config = {
     // DialogOverviewExampleDialog
   ],
   imports: [
+    MDBBootstrapModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,
@@ -181,12 +178,6 @@ const config = {
     NgbModule
   ],
   exports: [
-
-    A11yModule,
-    CdkStepperModule,
-    CdkTableModule,
-    CdkTreeModule,
-    DragDropModule,
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
@@ -222,8 +213,6 @@ const config = {
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    PortalModule,
-    ScrollingModule,
     MatFormFieldModule,
     FlexLayoutModule,
     RouterModule,
@@ -235,9 +224,10 @@ const config = {
     EditUserDialogComponent,
     NewUserDialogComponent,
     EditObservationDialogComponent,
-    TtlAngMaterialDialogComponent
+    TtlAngMaterialDialogComponent,
   ],
   providers: [AuthService, AuthGuard, ValidationService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

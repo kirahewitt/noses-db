@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observations } from  '../_supporting_classes/Observations';
 import { sqlUser, sqlUser_full, user_forCreateNewUser, User_Observer_Obj, user_forCreateNewUser_byAdmin } from '../_supporting_classes/sqlUser';
-import { Observable, of } from  'rxjs';
+import { Observable, of, throwError } from  'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { SealDataService } from "./seal-data.service";
 import { Seal } from '../_supporting_classes/Seal';
@@ -74,7 +74,7 @@ export class FlaskBackendService {
   }
 
   public addObservations(user: string): Observable<string>{
-    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addobservations`, user, this.httpOptions);
+    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addobservations`, user, this.httpOptions).pipe(catchError(this.alertError));
   }
 
   /** 
@@ -82,6 +82,22 @@ export class FlaskBackendService {
    */
   public deleteObs(obs: string) {
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/delete`, obs, this.httpOptions);
+  }
+
+  async approveObs(obsId: number) {
+    console.log(obsId);
+    await this.httpClient.post<number>(`${this.FLASK_API_SERVER}/approveobs`, {"obsId": obsId}, this.httpOptions).toPromise()
+      .then(data => {
+      obsId = data["obsId"];
+    });
+    return obsId;
+  }
+  
+
+  private alertError(error){
+
+    window.alert("Something went wrong. Try Again.")
+    return throwError(error);
   }
 
 

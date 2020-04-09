@@ -563,8 +563,9 @@ def processObservation(cnx, cursor, row, approvalStatus):
     t2ID = getSealIDFromTag(cursor, row[TAG2])
 
     mainID = positiveMin([mID, t1ID, t2ID])
-
-    print("test4")
+    if "SealId" in row and row["SealId"] > 0:
+        mainID = row["SealId"]
+    print("test4",)
 
     # turn the row into an object to make our lives easier
     #observationRecord = Observation(row)
@@ -573,7 +574,7 @@ def processObservation(cnx, cursor, row, approvalStatus):
     #processMarks(observationRecord, cursor, row, approvalStatus)
 
     # if we don't find the marks or tags
-    if(mID == -1 and t1ID == -1 and t2ID == -1):
+    if(("SealId" not in row or row["SealId"] <= 0) and mID == -1 and t1ID == -1 and t2ID == -1):
         mainID = addSeal(cnx, cursor, row, observationID)
     else:
 

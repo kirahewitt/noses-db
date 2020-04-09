@@ -51,6 +51,7 @@ _FIRSTSEEN = 28
 _RANGE = 29
 _COMMENTS = 30
 _ENTERANO = 31
+_SEALID = 32
 
 from Observation import Observation
 ###########################################################################
@@ -155,9 +156,9 @@ def canFind(cursor, tableName, value, column):
 # puts NULL where there is empty space and puts "'" around string values
 def swapNulls(row):
     for index in range(len(row)):
-        if (row[index] == ""):
+        if (isinstance(row[index], str) and row[index] == ""):
             row[index] = "NULL"
-        elif (index not in [YEAR, DATE, MOLT, SEASON,
+        elif (isinstance(row[index], str) and index not in [YEAR, DATE, MOLT, SEASON,
             STLENGTH, CRVLENGTH, AXGIRTH, MASS, TARE, MASSTARE,
             LASTSEEN, FIRSTSEEN]):
             row[index] = "'" + row[index] + "'"
@@ -232,21 +233,22 @@ def insert_observation(cnx, cursor, row, approvalStatus):
         print("Inside writeObs: {:s} {:s} {:s}".format(row[DATE], row[27], row[28]))
 
     print("BEFORE BUILDING STRING:")
+    print(json.dumps(row))
     statement = (   "INSERT INTO Observations(ObserverID, sex, date, MoltPercent, Comments, AgeClass, Year, SLOCode, isApproved, LastSeenPup, FirstSeenWeaner, WeanDateRange, EnteredInAno) "
                             " VALUES "
                             "(" + str(observerId) +
                             ", " + row[SEX] +
                             ", " + getDate(row[DATE]) +
-                            ", " + row[MOLT] +
+                            ", " + str(row[MOLT]) +
                             ", " + surr_apos(row[COMMENTS].replace("'", "")) +
-                            ", " + row[AGE] +
-                            ", " + row[YEAR] +
+                            ", " + str(row[AGE]) +
+                            ", " + str(row[YEAR]) +
                             ", " + row[LOC] +
                             ", " + str(approvalStatus) +
                             ", " + ((getDate(row[27])) if row[27] != "NULL" else row[27]) +
                             ", " + ((getDate(row[28])) if row[28] != "NULL" else row[28]) +
-                            ", " + row[29] +
-                            ", " + row[31] +
+                            ", " + str(row[29]) +
+                            ", " + str(row[31]) +
                             ");"
                 )
     print("AFTER BUILDING STRING")
@@ -347,7 +349,7 @@ def insert_mark(cnx, cursor, csvRow, obsID, sealID):
                 ", " + t_mark +          # mark
                 ", " + t_markPosition +                         # mark position 'b', 'l', 'r'
                 ", " + t_markDate +                  # date
-                ", " + t_year +                            # year
+                ", " + str(t_year) +                            # year
                 ", " + t_observationID + ");")                           # seal id
     print(statement)
 
@@ -419,12 +421,11 @@ def insert_tag(cnx, cursor, csvRow, tagNumber, observationID, sealID):
     TAGPOS  = 9
 
     print("making insert tag statement")
-    statement = ("INSERT INTO Tags(TagNumber, TagColor, TagPosition, TagDate, ObservationID) VALUES ("
+    statement = ("INSERT INTO Tags(TagNumber, TagColor, TagPosition, TagDate) VALUES ("
                 + str(tagNumber) + ", "        # mark
                 + getColor(tagNumber) + ", "          # TODO write getTagColor(row[whichTag][0])
                 + csvRow[TAGPOS] + ", "
-                + str(getDate(csvRow[2])) + ", "
-                + str(observationID) + ");")        # 
+                + str(getDate(csvRow[2])) + ");")        # 
     print(statement)
     try:
         cursor.execute(statement)
@@ -572,14 +573,17 @@ def processObservation(cnx, cursor, row, approvalStatus):
     divergentT = []
     divergentM = []
     merge = False
-
     # see if any of the identifiers in this observation match an existing seal/dossier
-    mID = getSealIdFromMark(cursor, row[MARK], row[YEAR])
+    mID = getSealIdFromMark(cursor, row[MARK], str(row[YEAR]))
+    print("marked")
     t1ID = getSealIDFromTag(cursor, row[TAG1])
-    t2ID = getSealIDFromTag(cursor, row[TAG2])
+    print("tagged")
+    if(row[TAG2]):
+        t2ID = getSealIDFromTag(cursor, row[TAG2])
 
     mainID = positiveMin([mID, t1ID, t2ID])
-
+    if row[_SEALID] > 0:
+        mainID = row[_SEALID]
     print("test4")
 
     # turn the row into an object to make our lives easier
@@ -589,7 +593,7 @@ def processObservation(cnx, cursor, row, approvalStatus):
     #processMarks(observationRecord, cursor, row, approvalStatus)
 
     # if we don't find the marks or tags
-    if(mID == -1 and t1ID == -1 and t2ID == -1):
+    if(row[_SEALID] <= 0 and mID == -1 and t1ID == -1 and t2ID == -1):
         mainID = addSeal(cnx, cursor, row, observationID)
     else:
 
@@ -667,14 +671,18 @@ def startUpdate(obj, cnx):
     print("\n\nSTART UPDATE...\n")
     cursor = cursor = cnx.cursor(pymysql.cursors.DictCursor)
 
-    print('in seal upload')
+    print('in seal upload', obj)
     y = json.loads(obj)
+    if isinstance(y[0], dict):
+        y = [y]
+        print(y)
     j_obj = y[0]
     
-    approvalStatus = y[1]["isApproved"]
+    approvalStatus = j_obj[0]["isApproved"]
     print("approval status is: " + str(approvalStatus))
 
     i = 0
+    print(j_obj[0])
     for val in j_obj:
         print("*" + str(i) + "*")
         
@@ -711,7 +719,10 @@ def startUpdate(obj, cnx):
                 val["Range (days)"],
                 val["Comments"],
                 val["Entered in Ano"]]
-
+        if "SealId" in val:
+            row.append(val["SealId"])
+        else:
+            row.append(0)
         print("before conditions")
         tableName = "Beach"
         sloCode = row[LOC]
