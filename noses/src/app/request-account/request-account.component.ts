@@ -64,6 +64,7 @@ export class RequestAccountComponent implements OnInit {
       firstName        : [this.newUser.firstName,       Validators.required],
       lastName         : [this.newUser.lastName,        Validators.required],
       email            : [this.newUser.email,           Validators.required],
+      username         : [this.newUser.username,        Validators.required],
       password         : [this.newUser.password,        Validators.required],
       passwordConfirm  : [this.newUser.passwordConfirm, Validators.required]
     }, 

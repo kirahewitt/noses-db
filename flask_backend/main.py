@@ -136,8 +136,9 @@ def remove_user():
       print("in delete users")
       _json = request.json
       email = _json['email']
+      username = _json['username']
       print(_json)
-      cursor.execute("Update Users Set isAdmin=-1 where email=\'" + email + "\';")
+      cursor.execute("Update Users Set isAdmin=-1 where username=\'" + username + "\';")
 
       conn.commit()
       cursor.execute("SELECT * from Users Where isAdmin >= 0;")
@@ -166,10 +167,11 @@ def update_user():
     if request.method == 'POST':
       _json = request.json
       email = _json['email']
+      username = _json['username']
       priv = _json['isAdmin']
       print(_json)
 
-      cursor.execute("Update Users Set isAdmin="+ str(priv) + " where email=\'" + email + "\';")
+      cursor.execute("Update Users Set isAdmin="+ str(priv) + " where username=\'" + username + "\';")
       conn.commit()
       cursor.execute("SELECT * from Users Where isAdmin >= 0;")
 
@@ -200,11 +202,12 @@ def submit_userPasswordChangeRequest():
 
       # get the fields out of the json
       email = _json['email']
+      username = _json['username']
       oldPassword = _json['oldPassword']
       newPassword = _json['newPassword']
 
       # get the current password 
-      hashedPassword_inDatabase = get_password_forUserEmail(email)
+      hashedPassword_inDatabase = get_password_forUsername(username)
 
       # apply utf8 encodings to the old password guess and the hashed pw in the db
       encoded_oldPassword = oldPassword.encode('utf8')
@@ -229,7 +232,7 @@ def submit_userPasswordChangeRequest():
 
 
         # get the name of the user:
-        rows = getUserObserver_viaEmail(email)
+        rows = getUserObserver_viaUsername(username)
         
         print("HERES THE VALUE OF 'resp':")
         print(rows)
@@ -257,12 +260,35 @@ def submit_userPasswordChangeRequest():
 
 
 # Gets the current password for a particular user
+# DEPRECATED. Better to access all data based on the username (which is unchanging)
 def get_password_forUserEmail(email):
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
 
   try:
     query = ("SELECT * FROM Users WHERE Email=" + surr_apos(email) + ";")
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    currentPassword = rows[0]['Password']
+    return currentPassword
+
+  except Exception as e:
+    print("Error(get_password_forUserEmail): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+# Gets the current password for a particular user
+def get_password_forUsername(username):
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    query = ("SELECT * FROM Users WHERE Username=" + surr_apos(username) + ";")
     cursor.execute(query)
     rows = cursor.fetchall()
 
@@ -298,6 +324,7 @@ def submit_new_userAccountRequest():
       firstName = _json['firstName']
       lastName = _json['lastName']
       email = _json['email']
+      username = _json['username']
       password = _json['password']
 
       # determine the next UserID and the next ObsID, for the Users and Observers entity sets, respectively.
@@ -305,16 +332,19 @@ def submit_new_userAccountRequest():
       nextObserverId = int(getLatestObserver()) + 1
 
       # verify that we're not going to attempt to add a user for an email already in use
-      emailAlreadyInUse = isEmailInUseByAnyUser(email)
-      if (emailAlreadyInUse):
+      if isEmailInUseByAnyUser(email):
         raise Exception("A verified user with that email already exists in this system.") 
 
+      # verify that we're not going to attempt to add a user for a username already in use
+      if isUsernameInUseByAnyUser(username):
+        raise Exception("A verified user with that username already exists in this system.") 
+
       # try to make the observer tuple first
-      submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, nextObserverId)
+      submit_new_userAccountRequest_ObserverHelper(firstName, lastName, nextObserverId)
 
       # store user vars
       userQuery_nextUserId = str(nextUserId)
-      userQuery_username = email                       # given
+      userQuery_username = username                    # given
       userQuery_initials = firstName[0] + lastName[0]  # get first character of first and last name for initials
       userQuery_isAdmin = str(0)                       # can't be an admin b/c this is just a request
       userQuery_affiliation = ""                       # won't have any affiliation by default
@@ -386,6 +416,7 @@ def addNewUser_forAdmin():
       firstName = _json['firstName']
       lastName = _json['lastName']
       email = _json['email']
+      username = _json['username']
       password = _json['password']
       isAdmin = _json['isAdmin']
       affiliation = _json['affiliation']
@@ -397,15 +428,19 @@ def addNewUser_forAdmin():
 
       # verify that we're not going to attempt to add a user for an email already in use
       emailAlreadyInUse = isEmailInUseByAnyUser(email)
-      if (emailAlreadyInUse):
+      if emailAlreadyInUse:
         raise Exception("A verified user with that email already exists in this system.") 
 
+      # verify that we're not going to attempt to add a user for a username already in use
+      if isUsernameInUseByAnyUser(username):
+        raise Exception("A verified user with that username already exists in this system.") 
+
       # try to make the observer tuple first
-      submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, nextObserverId)
+      submit_new_userAccountRequest_ObserverHelper(firstName, lastName, nextObserverId)
 
       # store user vars
       userQuery_nextUserId = str(nextUserId)
-      userQuery_username = email                       # given
+      userQuery_username = username                       # given
       userQuery_initials = firstName[0] + lastName[0]  # get first character of first and last name for initials
       userQuery_isAdmin = str(isAdmin)                       # can't be an admin b/c this is just a request
       userQuery_affiliation = affiliation                       # won't have any affiliation by default
@@ -513,7 +548,7 @@ def getLatestUser():
     conn.close()
 
 
-## Deftermines is a particular email is already in use by some user
+## Deftermines whether a particular email is already in use by some user
 def isEmailInUseByAnyUser(email):
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -537,6 +572,31 @@ def isEmailInUseByAnyUser(email):
     cursor.close()
     conn.close()
 
+  
+## Deftermines whether a particular username is already in use by some user
+def isUsernameInUseByAnyUser(username):
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    query = (" SELECT * " +
+              " FROM  Users " +
+              " WHERE Username = " + surr_apos(username) + ";")
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    resp = jsonify(rows)
+
+    usernameAlreadyInUse = len(rows) > 0
+    return usernameAlreadyInUse
+
+  except Exception as e:
+    print("Error(isEmailInUseByAnyUser): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
 
 ## Receives the information to create the observer
 ## This method has a few jobs
@@ -544,7 +604,7 @@ def isEmailInUseByAnyUser(email):
 ##  (2) if user exists, return an id of -1, otherwise, use one query to create the user, and user another query to retrieve its Observation ID and return that.
 ##
 ## NOTE: this method a boolean indicating whether adding the observer was successful.
-def submit_new_userAccountRequest_ObserverHelper(firstName, lastName, email, nextObserverId):
+def submit_new_userAccountRequest_ObserverHelper(firstName, lastName, nextObserverId):
   
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -852,6 +912,7 @@ def getAllUserObserverData():
 
 
 ## Gets a specific user observer via a provided email
+## DEPRECATED. better to access all data based on the unchanging value of Username
 def getUserObserver_viaEmail(email):
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -864,6 +925,40 @@ def getUserObserver_viaEmail(email):
     query =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
               " FROM Observers as O, Users as U " +
               " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 AND U.Email =" + surr_apos(email) + ";")
+
+
+    cursor.execute(query)
+
+    # store the response and return it as json
+    rows = cursor.fetchall()
+    resp = jsonify(rows)
+
+    # output results for sanity check
+    print("Result of getSingleUser - Flask API")
+    print(rows)
+
+    return rows
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+
+
+## Gets a specific user observer via a provided username
+def getUserObserver_viaUsername(username):
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    
+    query =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
+              " FROM Observers as O, Users as U " +
+              " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 AND U.Username =" + surr_apos(username) + ";")
 
 
     cursor.execute(query)
@@ -1224,13 +1319,13 @@ def get_login_authenticator_userObserver():
     if request.method == 'POST':
 
       # pull the email/password combo out of the json provided by the caller
-      givenEmail = request.json['email']
+      givenUsername = request.json['username']
       givenPassword = request.json['password']
 
       # get the hashed password for the user
       getUserTupleQuery_forHash =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID, U.Password " + 
-                            " FROM Observers as O, Users as U " +
-                            " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + ";")
+                                    " FROM Observers as O, Users as U " +
+                                    " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.Username = " + surr_apos(givenUsername) + ";")
 
       # get query results
       cursor.execute(getUserTupleQuery_forHash)
@@ -1254,7 +1349,7 @@ def get_login_authenticator_userObserver():
         # get the user without the password
         getUserTupleQuery =  (" SELECT O.FirstName, O.LastName, U.isVerifiedByAdmin, U.UserID, U.Username, U.Initials, U.isAdmin, U.Affiliation, U.Email, O.ObsID " + 
                               " FROM Observers as O, Users as U " +
-                              " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.email = " + surr_apos(givenEmail) + ";")
+                              " WHERE U.ObsID = O.ObsID AND U.isAdmin>=0 " + " AND U.Username = " + surr_apos(givenUsername) + ";")
 
         # run query and get the result.
         cursor.execute(getUserTupleQuery)

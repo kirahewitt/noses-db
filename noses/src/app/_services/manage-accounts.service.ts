@@ -42,7 +42,7 @@ export class ManageAccountsService {
    * Refreshes the list of users by reaching out to the Flask API
    */
   public refreshUserList() {
-    let userList_obs = this.apiService.getUserList();
+    let userList_obs = this.apiService.getAll_UserObservers();
     userList_obs.subscribe( (response : User_Observer_Obj[]) => {
       
       // verify that we're actually receiving the right stuff from the DB
@@ -78,7 +78,7 @@ export class ManageAccountsService {
     // console.log("Manage Accounts Service received this object and will send to DB:");
     // console.log(userObserver);
 
-    let overwriteUser_obs = this.apiService.saveUserEditChanges(userObserver);
+    let overwriteUser_obs = this.apiService.saveChanges_userObserver(userObserver);
     overwriteUser_obs.subscribe( (userObsListAfterUpdate : User_Observer_Obj[]) => {
 
       // console.log("We have received from the DB the list of new users after the updates to the DB were performed:")
@@ -99,7 +99,7 @@ export class ManageAccountsService {
     console.log("Manage Accounts Service received this object and will send to DB:");
     console.log(newUser);
 
-    let overwriteUser_obs = this.apiService.addNewUser_byAdmin(newUser);
+    let overwriteUser_obs = this.apiService.create_newUser_adminOnly(newUser);
     overwriteUser_obs.subscribe( (userObsListAfterUpdate : User_Observer_Obj[]) => {
 
       // console.log("We have received from the DB the list of new users after the updates to the DB were performed:")

@@ -168,7 +168,7 @@ export class DossierViewHelperService {
   
 
     // get all the observations for this seal
-    let allObsList_obs = this.apiService.getObservations_bySealId(givenSealId);
+    let allObsList_obs = this.apiService.getAll_Observations_bySealId(givenSealId);
     allObsList_obs.subscribe( (obsList : SqlObservation[]) => {
       this.observationList = obsList;
       this.observationList_updateStream.next(this.observationList);
@@ -193,7 +193,7 @@ export class DossierViewHelperService {
 
 
     // get all the tags for this seal
-    let uniqueTagsForSeal_observable = this.apiService.getTags_bySealId(givenSealId);
+    let uniqueTagsForSeal_observable = this.apiService.getAll_Tags_bySealId(givenSealId);
     uniqueTagsForSeal_observable.subscribe( (tagList : SqlTag[]) => {
       this.uniqueTagList = tagList;
       this.uniqueTagList_updateStream.next(this.uniqueTagList);
@@ -204,7 +204,7 @@ export class DossierViewHelperService {
 
 
     // get all the unique marks for this seal
-    let uniqueMarksForSeal_obs = this.apiService.getMarks_bySealId(givenSealId);
+    let uniqueMarksForSeal_obs = this.apiService.getAll_Marks_bySealId(givenSealId);
     uniqueMarksForSeal_obs.subscribe( (markList : SqlMark[]) => {
       this.uniqueMarkList = markList;
       this.uniqueMarkList_updateStream.next(this.uniqueMarkList);
@@ -215,7 +215,7 @@ export class DossierViewHelperService {
 
 
     // identifying observation
-    let IDingObservation_obs = this.apiService.getIdentifyingObservation_bySealId(givenSealId);
+    let IDingObservation_obs = this.apiService.get_identifyingObservation_bySealId(givenSealId);
     IDingObservation_obs.subscribe( (IDingObs : SqlObservation) => {
       this.identifyingObservation = IDingObs;
       this.identifyingObservation_updateStream.next(this.identifyingObservation);
@@ -226,7 +226,7 @@ export class DossierViewHelperService {
 
 
     // get the age class from the last valid, approved observation FOR DATE
-    let mostRecentObs_forDate_obs = this.apiService.getMostRecentObservation_bySealId(givenSealId);
+    let mostRecentObs_forDate_obs = this.apiService.get_mostRecentObservation_bySealId(givenSealId);
     mostRecentObs_forDate_obs.subscribe( (obs : SqlObservation) => {
       this.mostRecentObservation = obs;
       this.mostRecentObservation_updateStream.next(this.mostRecentObservation);
@@ -236,7 +236,7 @@ export class DossierViewHelperService {
     });
 
     // get the age class from the last valid, approved observation FOR AGE CLASS
-    let newestObs_forAgeClass_obs = this.apiService.getNewestObservation_forAgeClass_bySealId(givenSealId);
+    let newestObs_forAgeClass_obs = this.apiService.get_newestObservation_forAgeClass_bySealId(givenSealId);
     newestObs_forAgeClass_obs.subscribe( (obs : SqlObservation) => {
       this.newestObs_forAgeClass = obs;
       this.newestObs_forAgeClass_updateStream.next(this.newestObs_forAgeClass);

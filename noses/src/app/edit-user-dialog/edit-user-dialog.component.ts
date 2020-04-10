@@ -59,6 +59,7 @@ export class EditUserDialogComponent implements OnInit {
       firstName : [this.editedUser.firstName, Validators.required],
       lastName : [this.editedUser.lastName, Validators.required],
       email : [this.editedUser.email, Validators.required],
+      username : [this.editedUser.username, Validators.required],
       isAdmin  : [this.editedUser.isAdmin, Validators.required],
       affiliation  : [this.editedUser.affiliation, []],
       obsId : [this.editedUser.obsId, Validators.required],
@@ -87,6 +88,7 @@ export class EditUserDialogComponent implements OnInit {
     userObserverForReturn.firstName = formObj.firstName;
     userObserverForReturn.lastName = formObj.lastName;
     userObserverForReturn.email = formObj.email;
+    userObserverForReturn.username = formObj.username;
     userObserverForReturn.isAdmin = formObj.isAdmin;
     userObserverForReturn.affiliation = formObj.affiliation;
     userObserverForReturn.obsId = formObj.obsId;
@@ -95,7 +97,6 @@ export class EditUserDialogComponent implements OnInit {
     // rest of the fields must come from the original object
     userObserverForReturn.obsId = this.editedUser.obsId;
     userObserverForReturn.userId = this.editedUser.userId;
-    userObserverForReturn.username = this.editedUser.username;
     userObserverForReturn.initials = this.updateInitials(userObserverForReturn.firstName, userObserverForReturn.lastName);
 
     this.dialogRef.close(userObserverForReturn);

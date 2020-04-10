@@ -91,7 +91,7 @@ export class AuthService {
     // console.log("Manage Accounts Service received this object and will send to DB:");
     // console.log(userObserver);
 
-    let overwriteUser_obs = this.apiService.saveUserEditChanges(userObserver);
+    let overwriteUser_obs = this.apiService.saveChanges_userObserver(userObserver);
     overwriteUser_obs.subscribe( (userObsListAfterUpdate : User_Observer_Obj[]) => {
 
       // console.log("We have received from the DB the list of new users after the updates to the DB were performed:")
@@ -116,13 +116,13 @@ export class AuthService {
 
   /**
    * The behavior of this function will be similar to what is currently in the SignInComponent.
-   * @param email : Email of the user attempting to log in
+   * @param username : Email of the user attempting to log in
    * @param password : Password of the user attempting to log in
    */
-  public IH_SignIn(email, password) {
+  public IH_SignIn(username, password) {
 
     // - Login Via 'apiService'
-    let loginAuthenticator_obs = this.apiService.getLoginAuthenticator_userObserver(email, password);
+    let loginAuthenticator_obs = this.apiService.getLoginAuthenticator_userObserver(username, password);
     loginAuthenticator_obs.subscribe( (retval : User_Observer_Obj) => {
       let resp_json = JSON.stringify(retval);
 

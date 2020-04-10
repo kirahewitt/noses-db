@@ -39,6 +39,16 @@
                 <mat-error *ngIf="hasError('email', 'required')"> This field is required. </mat-error> 
               </mat-form-field>
             </p>
+
+
+            <p>
+              <mat-form-field class="full-width">
+                <mat-label> Username: </mat-label>
+                <input matInput formControlName="username" value="{{newUser.username}}"  class="input" type="text" placeholder="Text input">
+                <mat-error *ngIf="hasError('username', 'required')"> This field is required. </mat-error> 
+              </mat-form-field>
+            </p>
+
               
             <p>
               <mat-form-field class="full-width">

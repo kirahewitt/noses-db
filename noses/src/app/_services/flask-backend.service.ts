@@ -48,7 +48,6 @@ export class FlaskBackendService {
   private handleError<T> (operation = 'operation', result?: T) {
     
     return (error: any): Observable<T> => {
-
       console.log(error);
       console.log(`Flask Backend Service - ${operation} failed. Error Message: ${error.message}`);
       // Let the app keep running by returning an empty result.
@@ -146,9 +145,9 @@ export class FlaskBackendService {
    * @param email 
    * @param password 
    */
-  public getLoginAuthenticator_userObserver(email: string, password: string): Observable<User_Observer_Obj> {
+  public getLoginAuthenticator_userObserver(username: string, password: string): Observable<User_Observer_Obj> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getloginauthenticator_userObserver`;
-    let inputAsJsonString = '{"email" : "' + email    + '", "password" : "' + password + '"}';
+    let inputAsJsonString = '{"username" : "' + username    + '", "password" : "' + password + '"}';
 
     let loginAuth_obs = this.httpClient.post<User_Observer_Obj[]>(flask_endpoint, inputAsJsonString, this.httpOptions)
       .pipe(
@@ -292,7 +291,8 @@ export class FlaskBackendService {
 
 
   /**
-   * 
+   * This is the endpoint that is responsible for "deleting a user" 
+   * We don't actually delete the user, we are just making the user inactive.
    */
   public removeUserHavingEmail(jsonUsrObsObj:any): Observable<User_Observer_Obj[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/removeUserHavingEmail`;
@@ -329,7 +329,7 @@ export class FlaskBackendService {
    /**
    * New version of the get users api call. 
    */
-  public getUserList(): Observable<User_Observer_Obj[]> {
+  public getAll_UserObservers(): Observable<User_Observer_Obj[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getAll_UserObserver_Data`;
 
     let obs = this.httpClient.get(flask_endpoint).pipe(
@@ -363,7 +363,7 @@ export class FlaskBackendService {
   /** 
    * 
    */
-  public getObservations_bySealId(sealId:number) : Observable<SqlObservation[]> {
+  public getAll_Observations_bySealId(sealId:number) : Observable<SqlObservation[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getobservations-with-sealid`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
@@ -402,10 +402,13 @@ export class FlaskBackendService {
   }
 
 
+
+
+
   /** 
    * 
    */
-  public getIdentifyingObservation_bySealId(sealId:number) : Observable<SqlObservation> {
+  public get_identifyingObservation_bySealId(sealId:number) : Observable<SqlObservation> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/get-IDing-observations-with-sealid`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
@@ -446,7 +449,7 @@ export class FlaskBackendService {
    * 
    * @param sealId 
    */
-  public getMostRecentObservation_bySealId(sealId : number) : Observable<SqlObservation> {
+  public get_mostRecentObservation_bySealId(sealId : number) : Observable<SqlObservation> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/get-most-recent-observation-with-sealid`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
@@ -497,7 +500,7 @@ export class FlaskBackendService {
    * 
    * @param sealId 
    */
-  public getNewestObservation_forAgeClass_bySealId(sealId : number) : Observable<SqlObservation> {
+  public get_newestObservation_forAgeClass_bySealId(sealId : number) : Observable<SqlObservation> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/get_newest_obs_with_sealID_ageClass`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
@@ -534,7 +537,7 @@ export class FlaskBackendService {
   /** 
    * 
    */
-  public getTags_bySealId(sealId : number) : Observable<SqlTag[]> {
+  public getAll_Tags_bySealId(sealId : number) : Observable<SqlTag[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/gettags-with-sealid`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
@@ -566,7 +569,7 @@ export class FlaskBackendService {
   /** 
    * 
    */
-  public getMarks_bySealId(sealId : number) : Observable<SqlMark[]> {
+  public getAll_Marks_bySealId(sealId : number) : Observable<SqlMark[]> {
 
     let flask_endpoint = `${this.FLASK_API_SERVER}/getmarks_with_sealID`;
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
@@ -600,7 +603,7 @@ export class FlaskBackendService {
    * Saves the changes made to the users and receives an updated list of users after the changes have been made.
    * @param editedUser 
    */
-  public saveUserEditChanges(editedUser : User_Observer_Obj) : Observable<User_Observer_Obj[]> {
+  public saveChanges_userObserver(editedUser : User_Observer_Obj) : Observable<User_Observer_Obj[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/saveUserEditChanges`;
 
     console.log("Angular Service for Flask API received this user to update:");
@@ -636,10 +639,10 @@ export class FlaskBackendService {
 
 
   /**
-   * 
+   * This method is only suppoed to be accessed by admin level users. It is called by the manage accounts component.
    * @param newUser 
    */
-  public addNewUser_byAdmin(newUser: user_forCreateNewUser_byAdmin) : Observable<User_Observer_Obj[]> {
+  public create_newUser_adminOnly(newUser: user_forCreateNewUser_byAdmin) : Observable<User_Observer_Obj[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/addNewUser_forAdmin`;
 
     console.log("Angular Service for Flask API received this user to update:");

@@ -48,8 +48,18 @@
           <p>
             <mat-form-field class="full-width">
               <mat-label> Email: </mat-label>
-              <input matInput formControlName="email" value="{{editedUser.email}}" class="input" type="text" placeholder="Text input" readonly>
+              <input matInput formControlName="email" value="{{editedUser.email}}" class="input" type="text" placeholder="Text input">
               <mat-error *ngIf="hasError('email', 'required')"> This field is required. </mat-error> 
+            </mat-form-field>
+          </p>
+
+
+          <!-- username -->
+          <p>
+            <mat-form-field class="full-width">
+              <mat-label> Username: </mat-label>
+              <input matInput formControlName="username" value="{{editedUser.username}}" class="input" type="text" placeholder="Text input" readonly>
+              <mat-error *ngIf="hasError('username', 'required')"> This field is required. </mat-error> 
             </mat-form-field>
           </p>
 

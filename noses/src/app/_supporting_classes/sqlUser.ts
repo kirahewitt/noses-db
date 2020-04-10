@@ -24,6 +24,7 @@ export class user_forCreateNewUser {
   public firstName? : string;
   public lastName? : string;
   public email? : string;
+  public username? : string;
   public password? : string;
   public passwordConfirm? : string;
   
@@ -31,6 +32,7 @@ export class user_forCreateNewUser {
     this.firstName = "";
     this.lastName = "";
     this.email = "";
+    this.username = "";
     this.password = "";
     this.passwordConfirm = "";
   }
@@ -40,6 +42,7 @@ export class user_forCreateNewUser_byAdmin {
   public firstName? : string;
   public lastName? : string;
   public email? : string;
+  public username? : string;
   public password? : string;
   public passwordConfirm? : string;
   public isAdmin: number;
@@ -49,6 +52,7 @@ export class user_forCreateNewUser_byAdmin {
     this.firstName = "";
     this.lastName = "";
     this.email = "";
+    this.username = "";
     this.password = "";
     this.passwordConfirm = "";
     this.isAdmin = -1;
