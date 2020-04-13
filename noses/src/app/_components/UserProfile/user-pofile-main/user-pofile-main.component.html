@@ -10,33 +10,66 @@
 
 <div class="row">
   <div class="col-md-3">
+    <div class="padding-left-25">
+      <!-- bulma panel for generic profile information -->
+      <article class="panel">
+        
+        <div class="panel-heading">
+          <p>{{loggedInUser.firstName}} {{loggedInUser.lastName}} ({{loggedInUser.initials}})</p>
+        </div>
 
-    <!-- bulma panel for generic profile information -->
-    <article class="panel">
-      
-      <div class="panel-heading">
-        <p>{{loggedInUser.firstName}} {{loggedInUser.lastName}} ({{loggedInUser.initials}})</p>
-      </div>
+        <div class="panel-block profile-image-panelBlock">
 
-      <div class="panel-block">
-        <p> Email: {{loggedInUser.email}}</p>
-      </div>  
+          <figure class="image">
+            <img class="fixed-image-height" src="{{imageDataSource}}">
+          </figure>
+        </div>
 
-      <div class="panel-block">
-        <p> Account Level: {{loggedInUser.isAdmin}}</p>
-      </div>  
+        <div class="panel-tabs">
+          <a class="is-active">Profile Info</a>
+        </div>
 
-      <div class="panel-block">
-        <p> Affiliation: {{loggedInUser.affiliation}}</p>
-      </div>
+        <div class="panel-block">
+          <p> Email: {{loggedInUser.email}}</p>
+        </div>  
 
-      <div class="panel-block">
-        <button mat-stroked-button (click)="openEditUserDialog()"><i class="fas fa-edit"></i></button>  
-      </div>
-      
+        <div class="panel-block">
+          <p> Account Level: {{loggedInUser.isAdmin}}</p>
+        </div>  
 
-    </article>
+        <div class="panel-block">
+          <p> Affiliation: {{loggedInUser.affiliation}}</p>
+        </div>
 
+        <div class="panel-block">
+          <button mat-stroked-button (click)="openEditUserDialog()">Edit Profile Info</button>  
+        </div>
+
+
+       
+        
+        <!-- file selector -->
+        <div class="panel-block">
+          
+            <div class="file has-name">
+
+                <label class="file-label no-margin-label">
+                  <input hidden #uploader type="file" accept=".png" (change)="handleFileSelect($event)">
+
+                  <span class="file-cta btn-primary" (click)="uploader.click()">
+                      <span class="file-icon"><i class="fas fa-upload"></i></span>
+                      <span class="file-label"> Choose a file… </span>
+                  </span>
+
+                  <span class="file-name"> {{ fileName }} </span>
+
+                </label>
+            </div>          
+        </div>
+
+
+      </article>
+    </div>
 
   </div>
 </div>

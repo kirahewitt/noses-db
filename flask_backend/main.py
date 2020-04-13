@@ -211,7 +211,7 @@ def submit_userPasswordChangeRequest():
 
       # apply utf8 encodings to the old password guess and the hashed pw in the db
       encoded_oldPassword = oldPassword.encode('utf8')
-      encoded_hashedPassword_inDatabase = convert_dbPassword_string_to_unicodeString(hashedPassword_inDatabase)
+      encoded_hashedPassword_inDatabase = convert_byte_string_to_unicodeString(hashedPassword_inDatabase)
 
       # print("\nencoded_oldPassword:")
       # print(encoded_oldPassword)
@@ -382,7 +382,6 @@ def submit_new_userAccountRequest():
       
       sendSuccessEmailMessage(email, firstName)
 
-
       return resp
 
     else:
@@ -397,7 +396,253 @@ def submit_new_userAccountRequest():
     conn.close()
 
 
+##
+## Method that handles all the logic of adding a new image to be used as a user's profile image.
+## Needs to have access to the desired user's id, as well as the image information
+## While it seems like a waste of space to let users' old profile images take up space on the DB, 
+##  the Image entity set to represent images associated with BOTH seals and Users. 
+##
+## The process of updating the database with all the information for the relationship of a user's profile image involves three steps:
+##  1. Add the picture to the Image entity set
+##  2. Record who uploaded the image -- add a tuple to the ImageUploadedBy entity set
+##  3. Record that this image is now for the user's profile -- add a tuple to ImageForProfile entity set
+##
+## Super important part of this is that the connection created by this method is passed to all the other methods.
+## This is key, because we don't want to apply all the changes we make to these tables unless every step was successful.
+##
+@app.route('/uploadImage_forUserProfile', methods=['POST', 'GET'])
+def uploadImage_forUserProfile():
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    _json = request.json
+    userId = _json['userId']
+    pictureData = _json['pictureData']
+    caption = _json['caption']
+
+
+    print("\n\nNOW OUTPUTTING THE TYPE OF 'getLatestImageId()':")
+    tempVal = getLatestImageId()
+    print(type(getLatestImageId()))
+    print(type(tempVal))
+
+
+    nextImageId = int(getLatestImageId()) + 1
+    
+    # put the image in the DB
+
+    insertTuple_Image(conn, cursor, nextImageId, pictureData, caption)
+
+    # add/update the recorded association of the user with this new image
+    insertTuple_Image_for_UserAccount(conn, cursor, userId, nextImageId)
+
+    print("made it just before commit")
+
+    # only commit after both previous methods succeed.
+    conn.commit()
+
+    return "success"
+
+  except Exception as e:
+    print(e)
+
+  finally:
+      cursor.close()
+      conn.close()
+
+
+## 
+## Retrieves the profile image for the user provided in the request.
+## 
+@app.route("/getUserProfileImage", methods=['POST'])
+def getUserProfileImage():
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    username = request.json['username']
+
+    # make the query
+    query = ( " SELECT Users.UserID, Users.Username, Image.pictureData " + 
+              " FROM Image, Users, Image_for_UserAccount as IFU " +
+              " WHERE Users.userID = IFU.userId AND IFU.imageId = Image.id AND Users.Username = '" + username + "';")
+    
+    # print("getUserProfileImage -- finished making query:")
+    # print(query)
+
+    # execute the query
+    cursor.execute(query)
+
+    # print("getUserProfileImage -- Query finished executing, fetching rows...")
+
+    rows = cursor.fetchall()
+
+    # print("getUserProfileImage -- value of rows variable:")
+    # print(rows)
+  
+    if (len(rows) > 0):
+      desiredData = rows[0]['pictureData']
+
+      # print("getuserProfileImage -- desiredData ( what the mainpy will return for the user image)")
+      # print(desiredData)
+      # print("getuserProfileImage -- Type of desiredData")
+      # print(type(desiredData))
+
+      desiredData_str = str(desiredData)
+
+      # print("\n\n\n\ndesiredData as string:\n")
+      # print(desiredData_str)
+
+      imageUnicodeString = convert_withoutEncoding_byte_to_Unicode(desiredData_str)
+
+      # print("\n\n\n\ngetuserProfileImage -- made the imageUnicodeString:\n")
+      # print(imageUnicodeString)
+
+      imageJson = {"pictureData" : imageUnicodeString }
+
+      # print("getuserProfileImage -- made the jsonObject")
+      # print(imageJson)
+
+      return jsonify(imageJson)
+
+    else:
+      return ""
+
+    
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+## 
+## Retrieves the id of the Image tuple with the highest integer value
+## 
+def getLatestImageId():
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    query_latestImageID = "SELECT * FROM Image ORDER BY id DESC LIMIT 1;"
+    cursor.execute(query_latestImageID)
+    rows = cursor.fetchall()
+    
+    if (len(rows) > 0):
+      latestId = rows[0]['id']
+    else:
+      latestId = 0
+
+    return latestId
+
+  except Exception as e:
+    print("Error(getLatestImageId)")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+## 
+## Inserts a tuple for the relationship -- associates an image with a user/observer's profile.
+## Allows an image to serves as a user's profile picture.
+## The entity set Image_for_UserAccount is expected to only associate one image for any user.
+##
+def insertTuple_Image_for_UserAccount(conn, cursor, userId, imageId):
+
+  print("insertTuple_Image_for_UserAccount(...)...")
+
+  tupleExists = tupleExists_Image_for_UserAccount(conn, cursor, userId, imageId)
+
+  if tupleExists:  
+    print("tuple exists!")
+    query = ("UPDATE Image_for_UserAccount SET imageId=%s WHERE userId=%s")
+    queryValues = (imageId, userId)
+    cursor.execute(query, queryValues)
+
+  else:
+    print("tuple doesn't exist!")
+    query = ("INSERT INTO Image_for_UserAccount(userId, imageId) Values(%s, %s)")
+    queryValues = (userId, imageId)
+    cursor.execute(query, queryValues)
+
+
+##
+## Determines whether there is already a tuple in the Image_for_UserAccount, for
+##  for the provided (userId, imageId) pair.
+##
+def tupleExists_Image_for_UserAccount(conn, cursor, userId, imageId):
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    # make the query
+    query = ("SELECT COUNT(*) FROM Image_for_UserAccount WHERE userId=%s")
+    queryValues = (str(userId))
+    
+    # execute the query
+    cursor.execute(query, queryValues)
+    rows = cursor.fetchall()
+
+    # get the count
+    count = rows[0]['COUNT(*)']
+
+    # if the value is > 0, there is already record. just return result of (value > 0)
+    return count > 0
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+## 
+## Inserts a tuple to record all the images uploaded by a user. 
+## 
+#def insertTuple_ImageUploadedBy()
+
+
+##
+## Inserts a tuple for the relationship that associates an image with the observation it belongs to.
+## That is, when someone makes an observation of a seal, and provides an image, this is used.
+## 
+#def insertTuple_ImageWithObservation()
+
+
+##
+## Will store an image in the database and if successful, returns the new .
+##
+def insertTuple_Image(conn, cursor, newImageId, pictureData, caption):
+  print("insertTuple_Image(...)...")
+
+  # make the query
+  query = (" INSERT INTO Image (id, pictureData, caption) VALUES(%s, %s, %s)")
+  queryValues = (str(newImageId), pictureData, caption)
+
+  # print("image id: " + str(newImageId))
+  # print("picture data: ")
+  # print(pictureData)
+  # print("caption: " + caption)
+
+  # execute the query
+  cursor.execute(query, queryValues)
+
+  # store the response and return it as json
+  rows = cursor.fetchall()
+  resp = jsonify(rows)
+  
+  return resp
+
+
+
+## 
 ## A route used by a user with admin level permissions to create a new user account.
+## 
 @app.route("/addNewUser_forAdmin", methods=['POST'])
 def addNewUser_forAdmin():
 
@@ -526,7 +771,9 @@ def getLatestObserver():
     conn.close()
 
 
-## Retrieves the Users tuple with the highest integer value
+##
+## Retrieves the id of the Users tuple with the highest integer value
+##
 def getLatestUser():
   conn = mysql.connect()
   cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -1334,7 +1581,7 @@ def get_login_authenticator_userObserver():
 
       # rebuild the hashed password as utf... doesn't recognize the string as utf otherwise.
       encoded_givenPassword = givenPassword.encode('utf8')
-      encoded_hashedPassword_inDatabase = convert_dbPassword_string_to_unicodeString(hashedPassword_inDatabase)
+      encoded_hashedPassword_inDatabase = convert_byte_string_to_unicodeString(hashedPassword_inDatabase)
 
       # print("\n\nHERE's THE ENCODED PASSWORD FROM USER:")
       # print(encoded_givenPassword)
@@ -1374,11 +1621,34 @@ def get_login_authenticator_userObserver():
     conn.close()
 
 
+
+def convert_withoutEncoding_byte_to_Unicode(inputStr):
+  inputLength = len(inputStr)
+
+  #chop the parts we don't want
+  choppedStr = inputStr[2 : inputLength-1]
+
+  return choppedStr
+
+
+##
 ## this function requires that the value it receives have the format b'....',
 ## b/c that's the representation of a unicode string
-def convert_dbPassword_string_to_unicodeString(inputStr):
+##
+def convert_byte_string_to_unicodeString(inputStr):
   inputLength = len(inputStr)
-  encodedString = inputStr[2 : inputLength-1].encode('utf8')
+  # print("inputlength: " + str(inputLength))
+
+  #chop the parts we don't want
+  choppedStr = inputStr[2 : inputLength-1]
+
+  # print("\nNew string after chopping: ")
+  # print(choppedStr)
+
+  encodedString = choppedStr.encode('utf8')
+
+  # print("\nNew string after encoding: ")
+  # print(encodedString)
   return encodedString
 
 

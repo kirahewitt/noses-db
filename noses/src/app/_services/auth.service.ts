@@ -24,6 +24,10 @@ export class AuthService {
   public IH_userData: User_Observer_Obj;                        // The actual data maintained by this angular service.
   public IH_userData_bs: BehaviorSubject<User_Observer_Obj>;    // Observable so other components can asynchronously access this user data.
 
+  // make a variable for the new image
+  public userProfileImage: string;
+  public userProfileImage_bs: BehaviorSubject<string>;
+
 
   /**
    * Constructs the Auth.Service... Constructed at the root level so once it exists the same instance
@@ -43,6 +47,10 @@ export class AuthService {
     this.IH_userData = new User_Observer_Obj();
     this.IH_userData_bs = new BehaviorSubject<User_Observer_Obj>(this.IH_userData);
 
+    // Needs to be initialized to correct blank object
+    this.userProfileImage = "";
+    this.userProfileImage_bs = new BehaviorSubject<string>(this.userProfileImage);
+
     this.attemptInitByLocalStorage()
   }
 
@@ -50,12 +58,12 @@ export class AuthService {
   /**
    * This method will check the local storage to see if there is a valid user there.
    * This could happen if a user refreshed the application or opened a window in a new tab.
-   * 
    */
   public attemptInitByLocalStorage() {
+
+    // do the user data
     let userData = JSON.parse(localStorage.getItem("UserObserver"));
     let userDataIsValid = JSON.parse(localStorage.getItem("UserObserverIsValid"));
-
     if (userData != null) {
       this.IH_userData = userData;
       this.IH_userData_bs.next(this.IH_userData);
@@ -64,6 +72,12 @@ export class AuthService {
     }
     else {
       this.setLocalStorageLoggedOutState();
+    }
+
+    let userProfilePic = JSON.parse(localStorage.getItem("userProfilePicture"));
+    if (userProfilePic != null) {
+      this.userProfileImage = userProfilePic;
+      this.userProfileImage_bs.next(this.userProfileImage);
     }
   }
 
@@ -77,14 +91,30 @@ export class AuthService {
     return this.IH_userData_bs;
   }
 
+
+  /**
+   * 
+   */
   public IH_getUserIsValid_bs() {
-    return this.IH_userIsValid_bs
+    return this.IH_userIsValid_bs;
   }
 
 
   /**
    * 
-   * @param userObserver 
+   */
+  public getUserImage_bs() {
+    return this.userProfileImage_bs;
+  }
+
+
+  /**
+   * This method receives a User_Observer object and passes it to the apiService to ensure that the
+   * User/Observer tuples are modified to match the state of the variable userObserver.
+   * 
+   * **make this method not get the whole damn list of users.** 
+   * 
+   * @param userObserver : the new state that should be applied to the relevant user and observer tuples. 
    */
   public updateUserObserverTuplePair(userObserver: User_Observer_Obj) {
 
@@ -114,6 +144,25 @@ export class AuthService {
     });
   }
 
+
+  /**
+   * This method should
+   *    1. call an apiService method that **sends** a user image as a string
+   *    2. overwrites the 
+   * @param imageAsString 
+   */
+  public updateUserImage(imageAsString: string) {
+    this.userProfileImage = imageAsString;
+    this.userProfileImage_bs.next(this.userProfileImage);
+
+    // we allow 
+    let saveNewUserImage_bs = this.apiService.saveUserImage_obs(this.IH_userData.userId, this.userProfileImage, "");
+    saveNewUserImage_bs.subscribe( () => {
+      console.log("We did a thing!");
+    });
+  }
+
+
   /**
    * The behavior of this function will be similar to what is currently in the SignInComponent.
    * @param username : Email of the user attempting to log in
@@ -121,7 +170,7 @@ export class AuthService {
    */
   public IH_SignIn(username, password) {
 
-    // - Login Via 'apiService'
+    // - set the IH_userData* objects Via 'apiService'
     let loginAuthenticator_obs = this.apiService.getLoginAuthenticator_userObserver(username, password);
     loginAuthenticator_obs.subscribe( (retval : User_Observer_Obj) => {
       let resp_json = JSON.stringify(retval);
@@ -164,6 +213,21 @@ export class AuthService {
       }
     });
 
+
+    // set the USER IMAGE
+    let userImage_obs = this.apiService.getUserProfileImage_obs(username);
+    userImage_obs.subscribe( (retval : string) => {
+
+      console.log("Upon Signing in, USER PROFILE PICTURE: ");
+      console.log(retval);
+
+      this.userProfileImage = retval;
+      this.userProfileImage_bs.next(this.userProfileImage);
+
+      // set local storage
+      localStorage.setItem("userProfilePicture", JSON.stringify(this.userProfileImage)); 
+    });
+
   }
   
 
@@ -180,6 +244,9 @@ export class AuthService {
     this.IH_userData = new User_Observer_Obj();
     this.IH_userData_bs.next(this.IH_userData);
 
+    this.userProfileImage = ""
+    this.userProfileImage_bs.next(this.userProfileImage);
+
     this.setLocalStorageLoggedOutState();
 
     this.router.navigate(["sign-in"]);
@@ -190,54 +257,11 @@ export class AuthService {
    * set the current user local storage to be that of an invalid user(meaning no one is logged in)
    */
   public setLocalStorageLoggedOutState() {
-        localStorage.setItem("UserObserver", "null"); 
-        localStorage.setItem("userObserverIsValid", "{'userObserverIsValid' : 'false'}"); 
+    localStorage.setItem("UserObserver", "null"); 
+    localStorage.setItem("userObserverIsValid", "{'userObserverIsValid' : 'false'}"); 
+    localStorage.setItem("userProfilePicture", "null");
   }
 
-  // /**
-  //  * Sign up with email/password
-  //  * @param email 
-  //  * @param password 
-  //  */
-  // public SignUp(email, password) {
-  //   var signupResult = this.afAuth.auth.createUserWithEmailAndPassword(email, password)
-  //     .then(result => {
-  //       /* Call the SendVerificaitonMail() function when new user sign up and returns promise */
-  //       this.SendVerificationMail();
-  //       // alert("New user successfully created and verification email was sent!");
-  //       // this.SetUserData(result.user); // i dont want admin to log in under another account
-  //     })
-  //     .catch(error => {
-  //       window.alert(error.message);
-  //     });
-
-  //   return signupResult;
-  // }
-
-
-  // /**
-  //  * Send email verfificaiton when new user sign up
-  //  * Notice that this implementation method doesn't rely on the api to know 
-  //  * to send an email when a new user is created. 
-  //  */
-  // public SendVerificationMail() {
-  //   return this.afAuth.auth.currentUser.sendEmailVerification().then(() => {
-  //     this.router.navigate(["verify-email"]);
-  //   });
-  // }
-
-
-  // // Reset Forgot password
-  // public ForgotPassword(passwordResetEmail): Promise<void> {
-  //   return this.afAuth.auth
-  //     .sendPasswordResetEmail(passwordResetEmail)
-  //     .then(() => {
-  //       window.alert("Password reset email sent, check your inbox.");
-  //     })
-  //     .catch(error => {
-  //       window.alert(error);
-  //     });
-  // }
 
 
 }

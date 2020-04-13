@@ -183,6 +183,70 @@ export class FlaskBackendService {
   }
 
 
+  
+  /**
+   * Provides an observable which returns a user's profile image.
+   * 
+   * We expect the data stored in the BLOB to be
+   * 
+   * @param username : The username of the user whose profile image we want to retrieve.
+   */
+  public getUserProfileImage_obs(username: string): Observable<string> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/getUserProfileImage`;
+
+    let inputAsJsonString = '{"username" : "' + username + '"}';
+
+
+    let blobSafe_httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json'} )
+    };
+
+    let userProfileImage_obs = this.httpClient.post<string>(flask_endpoint, inputAsJsonString, blobSafe_httpOptions).pipe(
+      catchError(this.handleError<any>('getUserProfileImage', [])),
+      map( retval => {
+        var profileImage : string = "";
+
+        // console.log("\n\nAngular Flask Service received user image -- MAP FUNCTION \n\n");
+        // console.log(retval);
+
+        // console.log("Here's the value of retval's pictureData field:");
+        // console.log(retval['pictureData']);
+
+        if (retval && retval != "") {
+          profileImage = retval['pictureData'];  
+        }
+
+        // console.log("Here's Profile Image after assigning it's value:");
+        // console.log(profileImage);
+
+        return profileImage;
+      })
+    );
+
+    return userProfileImage_obs;
+  }
+
+
+   
+
+  /**
+   * This function just submits a new user profile image to be saved for a particular user.
+   * Since it is only sending data and does not expect data back, map rxjs operator is unnecessary.
+   * @param userId 
+   * @param pictureData 
+   * @param caption 
+   */
+  public saveUserImage_obs(userId: number, pictureData: string, caption:string) {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/uploadImage_forUserProfile`;
+    
+    let inputAsJsonString = '{"userId" : ' + userId.toString() + ', "pictureData" : "' + pictureData + '", "caption" : "' + caption + '"}';
+
+    let obs = this.httpClient.post<string>(flask_endpoint, inputAsJsonString, this.httpOptions).pipe(
+      catchError(this.handleError<any>('saveUserImage_obs', [])),
+    );
+
+    return obs;
+  }
 
 
 

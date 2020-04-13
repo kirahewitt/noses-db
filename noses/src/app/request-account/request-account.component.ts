@@ -85,7 +85,7 @@ export class RequestAccountComponent implements OnInit {
     let pc = g.get('passwordConfirm').value;
     return p === pc ? null : {passwordPairMismatch : true};
   }
-
+  
 
   /**
    * Function which ultimately calls an angular service to send the new proposed user tuple to the DB.
