@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firestore";
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatDialog, MatDialogRef, MatTooltip, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
@@ -10,6 +10,7 @@ import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.co
 import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component';
 import { Observable } from 'rxjs';
 import { ManageAccountsService } from '../_services/manage-accounts.service';
+import { Sql_User_Profile_Pic } from '../_supporting_classes/SqlProfilePic';
 
 
 
@@ -53,7 +54,7 @@ export class ManageAccountsComponent implements OnInit {
 
   public users: sqlUser[];
   public userData: any;
-  public displayedColumns: string[] = ['Fullname', 'Affiliation', 'isAdmin', 'email', 'editUser', 'remUser' ];
+  public displayedColumns: string[] = ['profilePicture', 'Fullname', 'Affiliation', 'isAdmin', 'email', 'editUser', 'remUser' ];
   public show: boolean = false;
   public addUser_promise: any;
 
@@ -65,11 +66,13 @@ export class ManageAccountsComponent implements OnInit {
 
   public selectedUserObsObj: User_Observer_Obj;
 
-
   public loggedInUser: User_Observer_Obj;
   public currentUserIsValid: boolean;
   public isAdmin:boolean;
   public isAtLeastFieldLeader:boolean;
+
+  public userProfilePicList: Sql_User_Profile_Pic[];
+
 
   /**
    * @param apiService : A reference to the rest API
@@ -78,7 +81,7 @@ export class ManageAccountsComponent implements OnInit {
    * @param dialogMaterialService : Reference to the MatDialog service, which simplifies creating angular material 
    * dialogue popups
    */
-  constructor(private apiService: FlaskBackendService, public manageAccountsService: ManageAccountsService, public authService: AuthService, public afAuth: AngularFireAuth, public dialogMaterialService: MatDialog, public changeDetectorRef: ChangeDetectorRef) { 
+  constructor(private apiService: FlaskBackendService, public manageAccountsService: ManageAccountsService, public authService: AuthService, public afAuth: AngularFireAuth, public dialogMaterialService: MatDialog) { 
     let tempUser: User_Observer_Obj = new User_Observer_Obj();
     this.columns_forDisplay = Object.getOwnPropertyNames(tempUser);
     this.userLevelNames = ["Awaiting Account Approval", "Citizen Scientist", "Field Leader", "Admin"];
@@ -89,9 +92,17 @@ export class ManageAccountsComponent implements OnInit {
     
 
     this.selectedUserObsObj = new User_Observer_Obj();
-
     this.isAtLeastFieldLeader = false;
     this.isAdmin = false;
+
+    this.userProfilePicList = [];
+  }
+
+
+  /**
+   *  Sets up the subscriptions for ansynchronous data this component is dependent upon. 
+   */
+  public ngOnInit() {
 
     let loggedInUser_datastream = this.authService.IH_getUserData_bs();
     loggedInUser_datastream.subscribe( (retval : User_Observer_Obj ) => {
@@ -104,13 +115,7 @@ export class ManageAccountsComponent implements OnInit {
       this.currentUserIsValid = retval;
       this.updatePrivelege();
     });
-  }
 
-
-  /**
-   *  Sets up the subscriptions for ansynchronous data this component is dependent upon. 
-   */
-  public ngOnInit() {
     let userList_bs = this.manageAccountsService.getUserObserverList_datastream();
     userList_bs.subscribe( (response : User_Observer_Obj[]) => {
         console.log("Received Data in Angular Component from Subscription: ");
@@ -121,6 +126,14 @@ export class ManageAccountsComponent implements OnInit {
         this.dataSource_forDisplay.data = this.userList_forDisplay;
         this.dataSource_forDisplay.paginator = this.paginator;
     });
+
+
+    let userProfilePicList_bs = this.manageAccountsService.getUserProfileImageList_datastream();
+    userProfilePicList_bs.subscribe( (response: Sql_User_Profile_Pic[]) => {
+      this.userProfilePicList = response;
+    });
+
+
   }
 
 
@@ -245,6 +258,34 @@ export class ManageAccountsComponent implements OnInit {
       this.userList_forDisplay = updatedUsers;
       this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(updatedUsers);
     });
+  }
+
+
+  /**
+   * Looks through the list of profile pictures that we received from the service. If we find a match,
+   * we return that image data. If we don't find any matches in the list, we return the generic profile image.
+   * @param userId the user id
+   */
+  public getImageFor(userId: number) {
+    
+    // console.log("Here's the list of Profile pic objects");
+    // console.log(this.userProfilePicList);
+
+    if (this.userList_forDisplay.length > 0 && this.userProfilePicList.length > 0) {
+      
+      // console.log("GET IMAGE FOR STARTED. LOOKING FOR userid: " + userId.toString())
+      
+
+      for (let pic of this.userProfilePicList) {
+        if (pic.userId == userId) {
+          return pic.pictureData;
+        }
+        
+      }
+
+      return "assets/userimg.png";
+
+    }
   }
 
 

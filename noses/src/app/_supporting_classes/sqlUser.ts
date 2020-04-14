@@ -82,11 +82,9 @@ export class User_Observer_Obj {
   public email: string;
   public obsId: number;
   public isVerifiedByAdmin: number;
-
-  // fields for the Observers entity set
   public firstName: string;
   public lastName: string;
-
+  public profilePicture: string;
 
   constructor() {
     this.userId = -1;
@@ -99,6 +97,7 @@ export class User_Observer_Obj {
     this.isVerifiedByAdmin = -1;
     this.firstName = "";
     this.lastName = "";
+    this.profilePicture = "";
   }
 }
 

@@ -452,6 +452,58 @@ def uploadImage_forUserProfile():
       conn.close()
 
 
+##
+## getAll_UserProfileImages
+##
+@app.route("/getAll_UserProfileImages", methods=['POST', 'GET'])
+def getAll_UserProfileImages():
+
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    
+
+    # make the query
+    query = ( " SELECT Users.UserID, Image.id, Image.pictureData " + 
+              " FROM Users, Image, Image_for_UserAccount as IFU " +
+              " WHERE Users.userID = IFU.userId AND IFU.imageId = Image.id" + ";")
+    
+    print("getAll_UserProfileImages -- finished making query:")
+    print(query)
+
+    # execute the query
+    cursor.execute(query)
+
+    print("getAll_UserProfileImages -- Query finished executing, fetching rows...")
+
+    rows = cursor.fetchall()
+
+    print("getAll_UserProfileImages -- value of rows variable:")
+    print(rows)
+  
+    if (len(rows) > 0):
+
+      # get rid of the b'' wrapper  around the picture data
+      for row in rows:
+        temp = str(row['pictureData'])
+        row['pictureData'] = convert_withoutEncoding_byte_to_Unicode(temp)
+
+      return jsonify(rows)
+
+    else:
+      return jsonify("")
+
+    
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
 ## 
 ## Retrieves the profile image for the user provided in the request.
 ## 

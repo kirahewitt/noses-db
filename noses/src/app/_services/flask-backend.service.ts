@@ -11,6 +11,7 @@ import { SqlObservation } from '../_supporting_classes/SqlObservation';
 import { SqlTag } from '../_supporting_classes/SqlTag';
 import { SqlMark } from '../_supporting_classes/SqlMark';
 import { ResetPasswordFormObject } from '../_supporting_classes/ResetPasswordFormObject';
+import { Sql_User_Profile_Pic } from '../_supporting_classes/SqlProfilePic';
 
 
 /**
@@ -184,7 +185,7 @@ export class FlaskBackendService {
 
 
   
-  /**
+  /**ddddd
    * Provides an observable which returns a user's profile image.
    * 
    * We expect the data stored in the BLOB to be
@@ -196,12 +197,7 @@ export class FlaskBackendService {
 
     let inputAsJsonString = '{"username" : "' + username + '"}';
 
-
-    let blobSafe_httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json'} )
-    };
-
-    let userProfileImage_obs = this.httpClient.post<string>(flask_endpoint, inputAsJsonString, blobSafe_httpOptions).pipe(
+    let userProfileImage_obs = this.httpClient.post<string>(flask_endpoint, inputAsJsonString, this.httpOptions).pipe(
       catchError(this.handleError<any>('getUserProfileImage', [])),
       map( retval => {
         var profileImage : string = "";
@@ -225,6 +221,41 @@ export class FlaskBackendService {
 
     return userProfileImage_obs;
   }
+
+  
+
+  getAll_UserProfileImages_obs() : Observable<Sql_User_Profile_Pic[]> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/getAll_UserProfileImages`;
+
+    let obs = this.httpClient.get<Sql_User_Profile_Pic[]>(flask_endpoint).pipe(
+      catchError(this.handleError<any>('getAll_UserProfileImages', [])),
+      map( (pictureDataList : any) => {
+        var sqlUser_profilePic_list = [];
+
+        console.log("Map function receiving all user images as json");
+        console.log(pictureDataList);
+        
+
+        for (let pd of pictureDataList) {
+          var tempPd: Sql_User_Profile_Pic = new Sql_User_Profile_Pic();
+
+          tempPd.imageId = pd['id'];
+          tempPd.userId = pd['UserID'];
+          tempPd.pictureData = pd['pictureData'];
+
+          sqlUser_profilePic_list.push(tempPd);
+        }
+
+        return sqlUser_profilePic_list;
+      })
+    );
+
+    return obs;
+  }
+
+
+
+
 
 
    
@@ -464,9 +495,6 @@ export class FlaskBackendService {
       );
     return obs;
   }
-
-
-
 
 
   /** 
