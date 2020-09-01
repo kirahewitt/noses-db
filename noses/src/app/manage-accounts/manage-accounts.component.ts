@@ -59,8 +59,13 @@ export class ManageAccountsComponent implements OnInit {
   public addUser_promise: any;
 
   // objects for fixed manage-accounts
-  public userList_forDisplay: User_Observer_Obj[];
-  public dataSource_forDisplay: MatTableDataSource<User_Observer_Obj>;
+  public userList_forDisplay_FULL: User_Observer_Obj[];
+  public userList_forDisplay_activeAccounts: User_Observer_Obj[];
+  public userList_forDisplay_accountsAwaitingApproval: User_Observer_Obj[];
+
+  public dataSource_forDisplay_activeAccounts: MatTableDataSource<User_Observer_Obj>;
+  public dataSource_forDisplay_accountsAwaitingApproval: MatTableDataSource<User_Observer_Obj>;
+
   public columns_forDisplay: string[];
   public userLevelNames: string[];
 
@@ -87,8 +92,11 @@ export class ManageAccountsComponent implements OnInit {
     this.userLevelNames = ["Awaiting Account Approval", "Citizen Scientist", "Field Leader", "Admin"];
 
     // set up the table for an empty list of users
-    this.userList_forDisplay = [];
-    this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay);
+    this.userList_forDisplay_FULL = [];
+    this.userList_forDisplay_activeAccounts = [];
+    this.userList_forDisplay_accountsAwaitingApproval = [];
+    this.dataSource_forDisplay_activeAccounts = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay_activeAccounts);
+    
     
 
     this.selectedUserObsObj = new User_Observer_Obj();
@@ -122,9 +130,13 @@ export class ManageAccountsComponent implements OnInit {
         console.log(response);
 
         // initialize the local variables.
-        this.userList_forDisplay = response;
-        this.dataSource_forDisplay.data = this.userList_forDisplay;
-        this.dataSource_forDisplay.paginator = this.paginator;
+        this.userList_forDisplay_FULL = response;
+
+
+        this.constructActiveInactiveLists(this.userList_forDisplay_FULL);
+
+        this.dataSource_forDisplay_activeAccounts.data = this.userList_forDisplay_activeAccounts;
+        this.dataSource_forDisplay_activeAccounts.paginator = this.paginator;
     });
 
 
@@ -134,6 +146,30 @@ export class ManageAccountsComponent implements OnInit {
     });
 
 
+  }
+
+
+  /**
+   * Constructs two new lists from the list containing all the user objects.
+   * The first list consists of active user accounts, while the second will containg
+   * only user accounts which have been requested and are awaiting approval by an admin.
+   * @param userList : list of all the user tuples in the DB (with the exception of those which have been "deleted")
+   */
+  public constructActiveInactiveLists(userList: User_Observer_Obj[]) {
+    var activeList: User_Observer_Obj[] = [];
+    var inactiveList: User_Observer_Obj[] = [];
+
+    for (let user of userList) {
+      if (user.isVerifiedByAdmin == 1) {
+        activeList.push(user)
+      }
+      else {
+        inactiveList.push(user);
+      }
+    }
+
+    this.userList_forDisplay_activeAccounts = activeList;
+    this.userList_forDisplay_accountsAwaitingApproval = inactiveList;
   }
 
 
@@ -241,7 +277,7 @@ export class ManageAccountsComponent implements OnInit {
 
     this.apiService.removeUser(JSON.stringify(row)).then(msg => {
         // this.dataSource_forDisplay = new MatTableDataSource(<any> msg);
-        this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(msg);
+        this.dataSource_forDisplay_activeAccounts = new MatTableDataSource<User_Observer_Obj>(msg);
       });
   }
 
@@ -255,8 +291,11 @@ export class ManageAccountsComponent implements OnInit {
 
     let usersAfterRemoval_obs: Observable<User_Observer_Obj[]> = this.apiService.removeUserHavingEmail(JSON.stringify(userObsObj));
     usersAfterRemoval_obs.subscribe((updatedUsers : User_Observer_Obj[]) => {
-      this.userList_forDisplay = updatedUsers;
-      this.dataSource_forDisplay = new MatTableDataSource<User_Observer_Obj>(updatedUsers);
+      this.userList_forDisplay_FULL = updatedUsers;
+
+      this.constructActiveInactiveLists(this.userList_forDisplay_FULL);
+
+      this.dataSource_forDisplay_activeAccounts = new MatTableDataSource<User_Observer_Obj>(this.userList_forDisplay_activeAccounts);
     });
   }
 
@@ -268,13 +307,13 @@ export class ManageAccountsComponent implements OnInit {
    */
   public getImageFor(userId: number) {
     
-    // console.log("Here's the list of Profile pic objects");
-    // console.log(this.userProfilePicList);
+    console.log("Here's the list of Profile pic objects");
+    console.log(this.userProfilePicList);
 
-    if (this.userList_forDisplay.length > 0 && this.userProfilePicList.length > 0) {
+    if (this.userList_forDisplay_FULL.length > 0 && this.userProfilePicList.length > 0) {
       
-      // console.log("GET IMAGE FOR STARTED. LOOKING FOR userid: " + userId.toString())
-      
+      console.log("GET IMAGE FOR STARTED. LOOKING FOR userid: " + userId.toString())
+      console.log("GET IMAGE FOR STARTED. LOOKING FOR userid: " + userId.toString())
 
       for (let pic of this.userProfilePicList) {
         if (pic.userId == userId) {

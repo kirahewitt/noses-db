@@ -2,9 +2,19 @@
   width: 100%;
 }
 
+.full-width {
+  width: 100%;
+}
+
 td.mat-cell {
   padding-top: 10px;
 }
+
+
+.center-heading {
+  text-align: center;
+}
+
 .btn-edit-user {
   background-color: #28e6ff;
   border-radius: 30px;
@@ -62,7 +72,7 @@ td {
 }
 
 .green-row {
-  background: #8db600;
+  background: #bfd86d;
 }
 
 .yellow-row {

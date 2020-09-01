@@ -142,9 +142,10 @@ export class FlaskBackendService {
 
   /**
    * Gives us access to methods in the flask api that allow us to authenticate a user via an 
-   * Observable. The observable will produce true if the authentication is successful, false otherwise.
-   * @param email 
-   * @param password 
+   * Observable. The observable will produce a json object representing a user if the authentication 
+   * is successful, otherwise, it will produce an empty json object, or "{}".
+   * @param email : email we want to log into
+   * @param password : password for the email
    */
   public getLoginAuthenticator_userObserver(username: string, password: string): Observable<User_Observer_Obj> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getloginauthenticator_userObserver`;
@@ -202,8 +203,8 @@ export class FlaskBackendService {
       map( retval => {
         var profileImage : string = "";
 
-        // console.log("\n\nAngular Flask Service received user image -- MAP FUNCTION \n\n");
-        // console.log(retval);
+        console.log("\n\nAngular Flask Service received user image -- MAP FUNCTION \n\n");
+        console.log(retval);
 
         // console.log("Here's the value of retval's pictureData field:");
         // console.log(retval['pictureData']);

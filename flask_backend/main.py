@@ -202,7 +202,7 @@ def submit_userPasswordChangeRequest():
 
       # get the fields out of the json
       email = _json['email']
-      username = _json['username']
+      username = get_username_forEmail(email)
       oldPassword = _json['oldPassword']
       newPassword = _json['newPassword']
 
@@ -229,7 +229,6 @@ def submit_userPasswordChangeRequest():
 
         cursor.execute(updatePasswordQuery)
         conn.commit()
-
 
         # get the name of the user:
         rows = getUserObserver_viaUsername(username)
@@ -297,6 +296,28 @@ def get_password_forUsername(username):
 
   except Exception as e:
     print("Error(get_password_forUserEmail): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
+
+
+# Retrieves the username that is currently associated with the provided email
+def get_username_forEmail(email):
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    query = ("SELECT * FROM Users WHERE Email=" + surr_apos(email) + ";")
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    desiredUsername = rows[0]['Username']
+    return desiredUsername
+
+  except Exception as e:
+    print("Error(get_username_forEmail): ")
     print(e)
 
   finally:

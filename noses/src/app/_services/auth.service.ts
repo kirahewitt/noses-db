@@ -175,7 +175,7 @@ export class AuthService {
     loginAuthenticator_obs.subscribe( (retval : User_Observer_Obj) => {
       let resp_json = JSON.stringify(retval);
 
-      if (resp_json.toString() != "{}") {
+      if (resp_json.toString() != "{}" && resp_json.toString() != '{"profilePicture":""}') {
         // display success message
         
         console.log("Password CORRECT.");

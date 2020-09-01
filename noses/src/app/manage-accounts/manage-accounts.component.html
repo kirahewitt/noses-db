@@ -3,22 +3,38 @@
 <br>
 <br>
 <div class="row">
-  <div class="col-md-5"></div>
-  <div class="col-md-2">
-    <h4>Manage Accounts</h4>
+
+
+  <div class="col-md-1"></div>
+
+  <div class="col-md-10">
+    <h4 class="center-heading">Manage Accounts</h4>
   </div>
-   <div class="col-md-2"></div>
+
+  <div class="col-md-1"></div>
+
+  
+</div>
+<div class="row">
+  <div class="col-md-3"></div>
+  <div class="col-md-9"></div>
+  <div class="col-md-3">
     <button mat-button  [disabled]="isAdmin === false" class="mat-raised-button mat-primary" (click)="openAddUserDialog()"><i class="fas fa-plus add-obs"></i> Add User</button>
+  </div>
 </div>
 
 <br>
 <br>
 
-<div *ngIf="dataSource_forDisplay">
+
+
+<!-- Table for all active accounts -->
 <div class="row">
   <div class="col-md-1"></div>
   <div class="col-md-10">
-    <table mat-table [dataSource]="dataSource_forDisplay" class="table table-hover mat-elevation-z4">
+
+    <div *ngIf="userList_forDisplay_activeAccounts"></div>
+    <table mat-table [dataSource]="userList_forDisplay_activeAccounts" class="table table-hover mat-elevation-z4">
 
       <ng-container matColumnDef="profilePicture">
         <th mat-header-cell *matHeaderCellDef> <!--profile picture--> </th>
@@ -69,6 +85,86 @@
       <td mat-cell *matCellDef="let row">
     </table>
     <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+    </div>
   </div>
+  
+
+
+<!-- Table for accounts waiting for approval -->
+
+<br>
+<br>
+<div class="row">
+  <div class="col-md-1"></div>
+
+  <div class="col-md-10">
+    <h4 class="center-heading">Users Waiting for Account Activation</h4>
+  </div>
+
+  <div class="col-md-1"></div>
+
 </div>
-</div>
+
+<br>
+<br>
+
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+
+    <div *ngIf="userList_forDisplay_accountsAwaitingApproval"></div>
+    <table mat-table [dataSource]="userList_forDisplay_accountsAwaitingApproval" class="table table-hover mat-elevation-z4">
+
+      <ng-container matColumnDef="profilePicture">
+        <th mat-header-cell *matHeaderCellDef> <!--profile picture--> </th>
+        <td mat-cell *matCellDef="let lewanite"> 
+          <figure class="myimage">
+            <img class="fixed-image-height" src="{{getImageFor(lewanite.userId)}}">
+          </figure>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Fullname">
+        <th mat-header-cell *matHeaderCellDef>Name </th>
+        <td mat-cell *matCellDef="let lewanite"> {{lewanite.lastName}}, {{lewanite.firstName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isAdmin">
+        <th mat-header-cell *matHeaderCellDef>User Priveleges</th>
+        <td mat-cell *matCellDef="let lewanite">{{getRankName_FromNumber(lewanite.isAdmin)}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Affiliation">
+        <th mat-header-cell *matHeaderCellDef> Affiliation </th>
+        <td mat-cell *matCellDef="let lewanite"> {{lewanite.affiliation}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let lewanite"> {{lewanite.email}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="editUser">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let lewanite"> 
+          <button mat-button [disabled]="isAdmin === false" (click)="openEditUserDialog(lewanite)" class="mat-raised-button mat-primary">Edit User</button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="remUser">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let lewanite"> 
+          <button mat-button [disabled]="isAdmin === false" (click)="removeUser_viaObservable(lewanite)" class="mat-raised-button mat-warn">Remove User</button>
+        </td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row [ngClass]="{'red-row': row.isVerifiedByAdmin == 2, 'green-row': row.isVerifiedByAdmin == 1, 'yellow-row': row.isVerifiedByAdmin == 0}" *matRowDef="let row; columns: displayedColumns;"></tr> 
+      <td mat-cell *matCellDef="let row">
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+    </div>
+  </div>
