@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApproveObsComponent } from './approve-obs.component';
+import { FilterTypeSelectorComponent } from './filter-type-selector.component';
 
-describe('ApproveObsComponent', () => {
-  let component: ApproveObsComponent;
-  let fixture: ComponentFixture<ApproveObsComponent>;
+describe('FilterTypeSelectorComponent', () => {
+  let component: FilterTypeSelectorComponent;
+  let fixture: ComponentFixture<FilterTypeSelectorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ApproveObsComponent ]
+      declarations: [ FilterTypeSelectorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ApproveObsComponent);
+    fixture = TestBed.createComponent(FilterTypeSelectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

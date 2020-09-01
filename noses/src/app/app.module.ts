@@ -80,7 +80,6 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
-import {SelectFilterType} from "./all-observations/filter-type-selector"
 
 // form validation service
 import { ValidationService } from './_services/validation.service';
@@ -94,6 +93,7 @@ import { ObsFormCommentSectionComponent } from './_components/observation_form/o
 import { ObsFormObserverCredentialsDisplayComponent } from './_components/observation_form/obs-form-observer-credentials-display/obs-form-observer-credentials-display.component';
 import { UserPofileMainComponent } from './_components/UserProfile/user-pofile-main/user-pofile-main.component';
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
+import { FilterTypeSelectorComponent } from './_components/filter-type-selector/filter-type-selector.component';
 
 
 
@@ -132,7 +132,6 @@ const config = {
     EditObservationDialogComponent,
     TtlAngMaterialStartPageComponent,
     TtlAngMaterialDialogComponent,
-    SelectFilterType,
     LoginStateComponent,
     NavbarMainComponent,
     ObsFormMainComponent,
@@ -144,6 +143,7 @@ const config = {
     ObsFormObserverCredentialsDisplayComponent,
     UserPofileMainComponent,
     NewUserDialogComponent,
+    FilterTypeSelectorComponent,
     // DialogOverviewExampleDialog
   ],
   imports: [

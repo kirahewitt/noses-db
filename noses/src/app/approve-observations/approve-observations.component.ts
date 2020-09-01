@@ -12,7 +12,6 @@ import {
 import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
-import { SelectFilterType } from "./filter-type-selector"
 
 @Component({
   selector: 'app-approve-observations',
