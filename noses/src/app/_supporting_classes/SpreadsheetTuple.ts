@@ -201,6 +201,10 @@ export class SpreadsheetTuple {
   isApproved : boolean; // always default false for citizens' observations
   processingErrorList : TupleProcessingError[]; // records whether the data provided for each of the fields is valid.
 
+  isPup : boolean; // quick way of indicating it is a seal pup
+  isProcedure : boolean; // used to indicate that this observation of the seal was part of a procedure performed upon the seal, like that of weighing.
+  harem : number; // indicates the number of members in the individual's harem, if this particular individual is a bull.
+
 
   /**
    * 
@@ -235,6 +239,10 @@ export class SpreadsheetTuple {
     this.sealMoltPercentage = null;
 
     this.processingErrorList = [];
+
+    this.isPup = null;
+    this.isProcedure = null;
+    this.harem = null;
 
     if (tupleAsJson != null) {
       // the json field
@@ -302,6 +310,9 @@ export class SpreadsheetTuple {
     this.tag2_positionCode = Object.assign("", source.tag2_positionCode);
     this.weanDateRange = source.weanDateRange;
     this.year = source.year;
+    this.isPup = source.isPup;
+    this.isProcedure = source.isProcedure;
+    this.harem = source.harem;
   }
 
 

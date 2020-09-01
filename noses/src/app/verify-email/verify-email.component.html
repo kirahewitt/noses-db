@@ -19,9 +19,12 @@
 
       <!-- Content -->
       <br>
-      <div class="formGroup" *ngIf="authService.userData as user">
+      <!-- <div class="formGroup" *ngIf="authService.userData as user"> -->
+      <div class="formGroup" >
                 
-          <p class="text-center">We have sent a confirmation email to <strong>{{user.email}}</strong>.</p>
+          <!-- TODO: make this display the user's name!! -->
+          <!-- <p class="text-center">We have sent a confirmation email to <strong>{{user.email}}</strong>.</p> -->
+          <p class="text-center">We have sent a confirmation email to <strong>FIX LATER</strong>.</p>
           <p class="text-center">Please check your email and click on the link to verfiy your email address.</p>
 
           <!-- Calling SendVerificationMail() method using authService Api -->
@@ -29,10 +32,20 @@
           <br>
           <div class="row">
             <div class="formGroup col-md-12 text-center">
-              <button type="button" class="btn light-blue " (click)="authService.SendVerificationMail()">
+              
+              <!-- TODO: make this button functional !! -->
+              <!-- <button type="button" class="btn light-blue " (click)="authService.SendVerificationMail()">
+                <i class="fas fa-redo-alt"></i>
+                Resend Verification Email
+              </button> -->
+
+              <button type="button" class="btn light-blue " >
                 <i class="fas fa-redo-alt"></i>
                 Resend Verification Email
               </button>
+
+
+
             </div>
           </div>
 
