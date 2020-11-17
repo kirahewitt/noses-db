@@ -27,17 +27,16 @@ Prerequisites
 Get Started
 =================
 1. Clone the repo
-2. Make sure you have Angular Version 8.3.19, Flask with Python 3
-3. cd into the Angular project file noses-db/noses/
+2. cd into the Angular project file noses-db/noses/
 * `npm install`
 * `npm start`
 * NOTE: If any dependency errors are reported, install the dependecy using pip. Ex: `pip install flask`
-4. Run the backend:
+3. Run the backend:
 * Open a new terminal window/tab and cd into noese-db/flask-backend/
 * `python main.py` or `python3 main.py`, making sure you run it with Python Version 3 (may vary depending on your Python 3 installation)
 * NOTE: If any dependency errors are reported, install the dependecy using pip. Ex: `pip install flask`
-5. Open http://localhost:4200/ with both terminal windows open and running
-6. Quit each terminal window using CTRL+C when you are finished
+4. Open http://localhost:4200/ with both terminal windows open and running
+5. Quit each terminal window using CTRL+C when you are finished
 
 Common Errors
 =================
