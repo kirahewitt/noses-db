@@ -1650,6 +1650,11 @@ def get_login_authenticator_userObserver():
       # get query results
       cursor.execute(getUserTupleQuery_forHash)
       rows = cursor.fetchall()
+
+      # if the length is 0 (user does not exist), return json containing "incorrect password"
+      if (len(rows) == 0):
+        return jsonify("Email/Password combination does not exist in the DB.")
+
       hashedPassword_inDatabase = rows[0]['Password']
 
       # rebuild the hashed password as utf... doesn't recognize the string as utf otherwise.
@@ -2268,8 +2273,9 @@ def update_age():
 
 # This is required to get this python program to run.
 if __name__ == "__main__":
-    app.run(host='127.0.0.1',port=5000, debug=True)
-    #app.run(host='0.0.0.0',port=5000)
+    #app.run(host='127.0.0.1',port=5000, debug=True)
+    #app.run(host="0.0.0.0")
+    app.run(host='0.0.0.0',port=5000)
 
 
 
