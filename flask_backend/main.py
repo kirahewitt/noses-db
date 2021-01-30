@@ -2268,8 +2268,9 @@ def update_age():
 
 # This is required to get this python program to run.
 if __name__ == "__main__":
-    app.run(host='127.0.0.1',port=5000, debug=True)
-    #app.run(host='0.0.0.0',port=5000)
+    #app.run(host='127.0.0.1',port=5000, debug=True)
+    #app.run(host="0.0.0.0")
+    app.run(host='0.0.0.0',port=5000)
 
 
 

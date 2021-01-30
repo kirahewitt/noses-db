@@ -36,7 +36,7 @@ export class FlaskBackendService {
    * @param sealDataService a local reference to the application-wide angular service that keeps track of the currently selected seal.
    */
   constructor(private httpClient: HttpClient, private sealDataService: SealDataService) {
-    this.FLASK_API_SERVER = "http://127.0.0.1:5000"
+    this.FLASK_API_SERVER = "http://192.168.0.36:5000"
   }
 
 
