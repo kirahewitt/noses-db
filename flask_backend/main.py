@@ -7,6 +7,7 @@ from db_config import mysql
 from flask import jsonify
 from flask import flash, request
 from flask import g, Flask
+from flask import render_template
 import json
 import logging
 import bcrypt
@@ -82,7 +83,9 @@ def sendEmailMessage_passwordChangedNotification(emailDestination, firstName):
     mail.send(msg)
     return "Message sent!"
 
-
+@app.route('/', methods=['GET'])
+def root():
+	return render_template('index.html')
 
 # Deletes a particular observation from the database
 @app.route('/delete', methods=['POST', 'GET'])
