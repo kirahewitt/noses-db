@@ -185,8 +185,8 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
      * Parses the file received and produces a json representation of the object.
      * @param event 
      */
-    public handleFileSelect(event) {
-        var files = event.target.files; // FileList object
+    public handleFileSelect(files: FileList) {
+        // var files = event.target.files; // FileList object
         var file = files[0];
         this.fileName = file.name;
 
@@ -241,6 +241,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     if (this.getErroneousObservationIndices().length > 0) {
       snackbarMessage = "WARNING: You cannot submit this upload until you correct all errors.";
       this.displaySnackbarMessage(snackbarMessage);
+      console.log(this.getErroneousObservationIndices().toString)
     }
     else {
       snackbarMessage = "SUCCESS: This data has been successfully validated. Sending to DB.";
@@ -248,8 +249,6 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
       var extractedJsonData = this.getExtractedJsonData();
 
-            var fullData = [extractedJsonData, {"isApproved" : 0}];
-            this.apiService.addObservations(JSON.stringify(fullData)).subscribe(() => this.apiService.readObs());
       console.log("EXTRACTED JSON DATA");
       console.log(extractedJsonData);
 
@@ -289,6 +288,10 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
                 indexList.push(i);
                 let testErrorMessage = "ERRONEOUS OBSERVATION # -- " + i.toString();
                 console.log(testErrorMessage);
+                
+                for (var e of tuple.processingErrorList) {
+                  console.log(e.errorMessage)
+                }
             }
             i++;
         }

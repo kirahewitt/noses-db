@@ -678,7 +678,7 @@ def startUpdate(obj, cnx):
         print(y)
     j_obj = y[0]
     
-    approvalStatus = j_obj[0]["isApproved"]
+    approvalStatus = y[1]["isApproved"]
     print("approval status is: " + str(approvalStatus))
 
     i = 0
