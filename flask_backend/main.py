@@ -83,9 +83,9 @@ def sendEmailMessage_passwordChangedNotification(emailDestination, firstName):
     mail.send(msg)
     return "Message sent!"
 
-@app.route('/', methods=['GET'])
-def root():
-	return render_template('index.html')
+# @app.route('/', methods=['GET'])
+# def root():
+# 	return render_template('index.html')
 
 # Deletes a particular observation from the database
 @app.route('/delete', methods=['POST', 'GET'])
@@ -1751,10 +1751,12 @@ def add_observations():
     try:
         if request.method == 'POST':
 
-            print("yooooo")
+            print("1")
             _json = request.json
+            print("2")
             #print(_json)
             startUpdate(json.dumps(_json), conn)
+            print("3")
             return jsonify('data sent to upload function')
 
         else:
