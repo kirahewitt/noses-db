@@ -412,8 +412,15 @@ export class SpreadsheetTuple {
         let acceptableValueList = ["P", "W", "J", "SA1", "SA2", "SA3", "SA4", "A"]; //    
 
         if ((acceptableValueList.indexOf(valueAsString) > -1) == false) {
-          var error = new TupleProcessingError(jsonName_sealAgeCode, "Error: received invalid age code: " + valueAsString);
-          tuple.processingErrorList.push(error);
+          let value = parseInt(valueAsString);
+
+          if (value == NaN) {
+            var error = new TupleProcessingError(jsonName_sealAgeCode, "Error: received invalid age code: " + valueAsString);
+            tuple.processingErrorList.push(error);
+          }
+          else {
+            tuple.sealAgeCode = valueAsString;
+          }
         }
         else {
           tuple.sealAgeCode = valueAsString;
@@ -525,21 +532,29 @@ export class SpreadsheetTuple {
         //    Flipper Location   - "1" "2" "3" "4"
         //    Spike Orientation  - "so" "si"
       else if (field[KEY] == jsonName_tag1_positionCode) {
-        let positionCodeRegex = /^([LR][1234]-(so|si))$/gm;
-        let value = valueAsString;
+        // let positionCodeRegex = /^([LR][1234]-(so|si))$/gm;
+        // let value = valueAsString;
 
-        if (value.match(positionCodeRegex)) {
-          tuple.tag1_positionCode = value;
-        }
-        else {
-          if (value != "") {
-            var error = new TupleProcessingError(jsonName_tag1_positionCode, "Error: expected something in the set [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]. Instead: " + value);
-            tuple.processingErrorList.push(error);
-          }
-          else {
-            tuple.tag1_positionCode;
-          }
-        }
+        // if (value.match(positionCodeRegex)) {
+        //   tuple.tag1_positionCode = value;
+        // }
+        // else {
+        //   if (value != "") {
+        //     var error = new TupleProcessingError(jsonName_tag1_positionCode, "Error: expected something in the set [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]. Instead: " + value);
+        //     tuple.processingErrorList.push(error);
+        //   }
+        //   else {
+        //     tuple.tag1_positionCode;
+        //   }
+        // }
+        tuple.tag1_positionCode = valueAsString;
+        // if (valueAsString.charAt(0) == 'L' || valueAsString.charAt(0) == 'R' || valueAsString == "") {
+        //   tuple.tag1_positionCode = valueAsString;
+        // }
+        // else {
+        //   var error = new TupleProcessingError(jsonName_tag1_positionCode, "Error: expected something in the set [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]. Instead: " + value);
+        //   tuple.processingErrorList.push(error);
+        // }
       }
 
       // Y or N
@@ -570,21 +585,29 @@ export class SpreadsheetTuple {
       // regex: "/ ([LR][1234]-(so|si)) /gm"
       else if (field[KEY] == jsonName_tag2_positionCode) {
         
-        let positionCodeRegex = /([LR][1234]-(so|si))/gm;
-        let value = valueAsString;
+        // let positionCodeRegex = /([LR][1234]-(so|si))/gm;
+        // let value = valueAsString;
 
-        if (value.match(positionCodeRegex)) {
-          tuple.tag2_positionCode = value;
-        }
-        else {
-          if (value != "") {
-            var error = new TupleProcessingError(jsonName_tag2_positionCode, "Error: expected something in the set [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]. Instead: " + value);
-            tuple.processingErrorList.push(error);
-          }
-          else {
-            tuple.tag2_positionCode;
-          }
-        }
+        // if (value.match(positionCodeRegex)) {
+        //   tuple.tag2_positionCode = value;
+        // }
+        // else {
+        //   if (value != "") {
+        //     var error = new TupleProcessingError(jsonName_tag2_positionCode, "Error: expected something in the set [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]. Instead: " + value);
+        //     tuple.processingErrorList.push(error);
+        //   }
+        //   else {
+        //     tuple.tag2_positionCode;
+        //   }
+        // }
+        tuple.tag2_positionCode = valueAsString;
+        // if (valueAsString.charAt(0) == 'L' || valueAsString.charAt(0) == 'R' || valueAsString == "") {
+        //   tuple.tag2_positionCode = valueAsString;
+        // }
+        // else {
+        //   var error = new TupleProcessingError(jsonName_tag2_positionCode, "Error: expected something in the set [L1-so L1-si L2-so L2-si L3-so L3-si L4-so L4-si R1-so R1-si R2-so R2-si R3-so R3-si R4-so R4-si]. Instead: " + value);
+        //   tuple.processingErrorList.push(error);
+        // }
       }
 
       // / \b\d{1,3}\b[%]* /gm
