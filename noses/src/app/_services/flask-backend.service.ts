@@ -84,6 +84,11 @@ export class FlaskBackendService {
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/delete`, obs, this.httpOptions);
   }
 
+  public approveAllObs() {
+    console.log("Approve all flask-backend");
+    return this.httpClient.post<number>(`${this.FLASK_API_SERVER}/approveallobs`, {"id": 1}, this.httpOptions);
+  }
+
   async approveObs(obsId: number) {
     console.log(obsId);
     await this.httpClient.post<number>(`${this.FLASK_API_SERVER}/approveobs`, {"obsId": obsId}, this.httpOptions).toPromise()

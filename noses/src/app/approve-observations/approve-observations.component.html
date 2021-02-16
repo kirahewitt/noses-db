@@ -42,6 +42,10 @@
 </div>
 
 <div>
+    <button type="button" class="btn btn-primary" (click)="approveObs(-1)">Approve All</button>
+</div>
+
+<div>
 
     <div [hidden]="notReady">
     <div class="row">
@@ -97,6 +101,14 @@
                     <td mat-cell *matCellDef="let row"> 
                         <span (click)="approveObs(row)">
                             <button type="button" class="btn btn-outline-dark">Approve</button>
+                        </span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="deleteObs">
+                    <th mat-header-cell *matHeaderCellDef> Delete</th>
+                    <td mat-cell *matCellDef="let row"> 
+                        <span (click)="deleteSeal(row)">
+                            <button type="button" class="btn btn-outline-dark">Delete</button>
                         </span>
                     </td>
                 </ng-container>

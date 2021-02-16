@@ -74,10 +74,10 @@ export class ApproveObservationsComponent implements OnInit {
 
     this.apiService.readNotApproved().subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal', 'approveObs' ];
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal', 'approveObs', 'deleteObs' ];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal', 'approveObs'];
+        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal', 'approveObs', 'deleteObs'];
         this.notReady = false;
       }
       this.observations = observations;
@@ -210,8 +210,17 @@ export class ApproveObservationsComponent implements OnInit {
 
   }
   approveObs(row : any){
-    console.log(row.ObservationID);
-    return this.apiService.approveObs(row.ObservationID);
+    if (row == -1) {
+      return this.apiService.approveObs(row);
+    } else {
+      console.log(row.ObservationID);
+      return this.apiService.approveObs(row.ObservationID);
+    }
+  }
+
+  approveAllObs() {
+    console.log("Approve All clicked");
+    return this.apiService.approveAllObs();
   }
 
   resetObs() {
@@ -251,10 +260,11 @@ export class ApproveObservationsComponent implements OnInit {
   }
 
   deleteSeal(row) {
-    this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
+    // this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
+    console.log(row);
+    this.obsID = { 'obsID': row.ObservationID, 'tags': row.Tags, 'marks': row.Marks};
     console.log('about to call delete');
 
     this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
-
  }
 }

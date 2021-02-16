@@ -96,26 +96,40 @@ def delete_user():
         if request.method == 'POST':
             print("in delete")
             _json = request.json
+            print("obs")
             obs = _json['obsID']
-            tag1 = _json['tag1']
-            mark = _json['Mark']
+            print(obs)
+            print("tag")
+            tags = _json['tags']
+            print("mark")
+            marks = _json['marks']
 
-            cursor.execute("DELETE FROM ObserveSeal WHERE ObservationID=" + str(obs))
-            cursor.execute("DELETE FROM ObserveMarks WHERE ObservationID=" + str(obs))
-            cursor.execute("DELETE FROM ObserveTags WHERE ObservationID=" + str(obs)) 
+            print("1")
+            cursor.execute("DELETE FROM ObserveSeal WHERE ObservationID='" + str(obs) + "'")
+            print("2")
+            cursor.execute("DELETE FROM ObserveMarks WHERE ObservationID='" + str(obs) + "'")
+            print("3")
+            cursor.execute("DELETE FROM ObserveTags WHERE ObservationID='" + str(obs) + "'") 
 
-            if tag1 != None:
-                cursor.execute("DELETE FROM Tags WHERE TagNumber=" + tag1)
+            # for t in tags:
+            #     print("4")
+            #     if t is not None:
+            #       cursor.execute("DELETE FROM Tags WHERE TagNumber='" + str(t) + "'")
 
-            if mark != None:
-                cursor.execute("DELETE FROM Marks WHERE MarkID=" + str(mark))
+            # for m in  marks:
+            #     print("5")
+            #     if m is not None:
+            #       cursor.execute("DELETE FROM Marks WHERE Mark='" + str(m) + "'")
 
+            print("6")
             cursor.execute("DELETE FROM Seals WHERE ObservationID=" + str(obs))
+            print("7")
             cursor.execute("DELETE FROM Measurements WHERE ObservationID=" + str(obs))
+            print("8")
             cursor.execute("DELETE FROM Observations WHERE ObservationID=" + str(obs))
 
             conn.commit()
-            resp = jsonify('User deleted successfully!')
+            resp = jsonify('Observation deleted successfully!')
             resp.status_code = 200
             return jsonify('deleted something')
         else:
@@ -2229,7 +2243,11 @@ def approveObs():
         if request.method == 'POST':
             _json = request.json
             id = _json["obsId"]
-            statement = "Update Observations o SET o.isApproved = 1 where o.ObservationID = " + str(id)
+            print(id)
+            if (id == -1):
+              statement = "Update Observations o SET o.isApproved = 1 where o.isApproved = 0"
+            else:
+              statement = "Update Observations o SET o.isApproved = 1 where o.ObservationID = " + str(id)
             cursor.execute(statement)
             conn.commit()
             resp = id
@@ -2241,6 +2259,24 @@ def approveObs():
         cursor.close()
         conn.close()
 
+@app.route('/approveallobs', methods=['POST'])
+def approveAllObs():
+    print("/approveallobs")
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        if request.method == 'POST':
+            print("in post")
+            statement = "Update Observations o SET o.isApproved = 1 where o.isApproved = 0"
+            cursor.execute(statement)
+            conn.commit()
+            return 1
+        return -1
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
 
 # Generates a 404 error
 @app.errorhandler(404)
