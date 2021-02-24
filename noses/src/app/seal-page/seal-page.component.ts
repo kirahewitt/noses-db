@@ -231,6 +231,15 @@ export class SealPageComponent implements OnInit {
     }
   }
 
+  deleteObs(row) {
+    // this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
+    console.log(row);
+    var obsID = { 'obsID': row.ObservationID };
+    console.log('about to call delete');
+
+    this.apiService.deleteObs(JSON.stringify(obsID)).subscribe(() => this.apiService.readObs());
+ }
+
 
   // /**
   //  * this function needs to be rewritten to use BehaviorSubjects/Observables properly. 
