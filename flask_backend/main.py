@@ -110,7 +110,13 @@ def delete_user():
               markID = row['MarkID']
             else :
               markID = None
-
+            print("3")
+            cursor.execute("SELECT * FROM ObserveTags WHERE ObservationID=" + str(obs))
+            row = cursor.fetchone()
+            if row is not None:
+              tagID = row['TagNumber']
+            else:
+              tagID = None
 
             print("4")
             cursor.execute("DELETE FROM Measurements WHERE ObservationID=" + str(obs))
@@ -150,8 +156,21 @@ def delete_user():
                 nextObservation = row['ObservationID']
                 print("15")
                 cursor.execute("UPDATE Marks m SET m.ObservationID=" + str(nextObservation) + " WHERE m.MarkID=" + str(markID))
+
+            if tagID is not None:
+              print("16")
+              cursor.execute("SELECT * FROM ObserveTags WHERE TagNumber='" + str(tagID) + "'")
+              row = cursor.fetchone()
+
+              if row is None:
+                print("17")
+                cursor.execute("DELETE FROM Tags WHERE TagNumber='" + str(tagID) + "'")
+              else:
+                nextObservation = row['ObservationID']
+                print("18")
+                cursor.execute("UPDATE Tags t SET t.TagSeal=" + str(nextObservation) + " WHERE t.TagNumber='" + str(tagID) + "'")
             
-            print("3")
+            print("19")
             cursor.execute("DELETE FROM Observations WHERE ObservationID=" + str(obs))
             conn.commit()
             resp = jsonify('Observation deleted successfully!')
