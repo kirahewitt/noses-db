@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FlaskBackendService } from '../_services/flask-backend.service';
-import { Observations } from  '../_supporting_classes/Observations';
+import { Observations } from '../_supporting_classes/Observations';
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { AuthService } from "../_services/auth.service";
@@ -49,7 +49,7 @@ export class DashboardComponent implements OnInit {
   public filterTag1: any;
   public filterTag2: any;
   public filterMark1: any;
-  public isAdmin=false;
+  public isAdmin = false;
   public notReady = true;
   public displayedColumns: any;
   public admin: any;
@@ -57,12 +57,12 @@ export class DashboardComponent implements OnInit {
   public yearControl = new FormControl('');
   public partialControl = new FormControl('');
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MdbTableDirective, { static: true })
-  public mdbTable: MdbTableDirective; 
-  public elements: any = []; 
+  public mdbTable: MdbTableDirective;
+  public elements: any = [];
   public headElements = ['SealID', 'Tags', 'Marks', 'Sex', 'Age Class', 'View Seal'];
-  public searchText: string = ''; 
+  public searchText: string = '';
   public previous: string;
 
   /**
@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit {
    * @param router 
    * @param dossierHelperService 
    */
-  constructor(private apiService: FlaskBackendService, private sealData: SealDataService, private adminStatus: AdminService, public router: Router, private dossierHelperService: DossierViewHelperService) { 
+  constructor(private apiService: FlaskBackendService, private sealData: SealDataService, private adminStatus: AdminService, public router: Router, private dossierHelperService: DossierViewHelperService) {
   }
 
 
@@ -82,14 +82,15 @@ export class DashboardComponent implements OnInit {
    * Responsible for using observables to asynchonously populate the list of SqlSealDossier objects.
    */
   public ngOnInit() {
-    
+
     // subscribe to the api service which provides the data we'll populate the table with
     let sealsObservable = this.apiService.readSeals();
-    sealsObservable.subscribe( (observations: any[]) => {
+    sealsObservable.subscribe((observations: any[]) => {
 
       // initialize elements to be the result of copying every element of the observations into a blank list of Objects
       // this.elements = observations.map(x => Object.assign({}, x));
       this.elements = observations;
+      this.observations = observations;
 
       // observations.forEach((element, ind) => {
       //     this.elements[ind].Tags = element.Tags.filter(this.onlyUnique).join(', ');
@@ -104,9 +105,9 @@ export class DashboardComponent implements OnInit {
       this.previous = this.mdbTable.getDataSource();
 
       if (this.isAdmin) {
-        this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal' ];
+        this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal'];
         this.notReady = false;
-      } 
+      }
       else {
         this.displayedColumns = ['SealID', 'TagNumber1', 'Mark', 'Sex', 'Age Class', 'viewSeal'];
         this.notReady = false;
@@ -118,7 +119,7 @@ export class DashboardComponent implements OnInit {
       //this.runSealQuery(response_observationList);
       //this.facetSetup(response_observationList);
     });
- 
+
 
   }
 
@@ -150,7 +151,7 @@ export class DashboardComponent implements OnInit {
    * @param data 
    */
   public download(data: any) {
-    const blob = new Blob([data], {type: 'text/csv'});
+    const blob = new Blob([data], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
 
@@ -169,7 +170,7 @@ export class DashboardComponent implements OnInit {
   public getPartialTag() {
 
     console.log(this.partialControl.value);
-    var part = {'part': this.partialControl.value};
+    var part = { 'part': this.partialControl.value };
 
     console.log(JSON.stringify(part));
     this.apiService.getPartials(JSON.stringify(part))
@@ -197,11 +198,11 @@ export class DashboardComponent implements OnInit {
    * @param obs 
    */
   public runSealQuery(obs: any) {
-    this.dataSource = new MatTableDataSource(<any> obs);
+    this.dataSource = new MatTableDataSource(<any>obs);
     console.log(this.dataSource.data[0]);
     this.dataSource.paginator = this.paginator;
 
-    this.dataSource.filterPredicate = function(data, filter: string): boolean {
+    this.dataSource.filterPredicate = function (data, filter: string): boolean {
       this.filterTag1 = String(data.T1).toLowerCase();
       this.filterTag2 = String(data.T2).toLowerCase();
       this.filterMark1 = String(data.Mark).toLowerCase();
@@ -220,11 +221,11 @@ export class DashboardComponent implements OnInit {
     // get uniq dates
     var uniq: string[] = []
     for (var i in obs) {
-     uniq[i] = obs[i].Year
+      uniq[i] = obs[i].Year
     }
 
-    this.uniqDates = uniq.filter(function(elem, index, self) {
-    return index === self.indexOf(elem);
+    this.uniqDates = uniq.filter(function (elem, index, self) {
+      return index === self.indexOf(elem);
     });
 
     // **** use this for changing how to filter seals...probably need a reset button as well
@@ -270,7 +271,7 @@ export class DashboardComponent implements OnInit {
   public filterObs() {
     var tempObs = this.observations;
 
-    if(this.filterYear != "Any") {
+    if (this.filterYear != "Any") {
       tempObs = tempObs.filter(elem => String(elem.Year) == this.filterYear);
 
     }
@@ -317,7 +318,7 @@ export class DashboardComponent implements OnInit {
    * The input to this function is a json object representing one row of the table. 
    * @param row : The row in which the blue seal was clicked. These happen to correspond exactly to the sealIds. Json object.
    */
-  public selectSeal(row : any) {
+  public selectSeal(row: any) {
 
     // console.log("---------------------------------");
     // console.log("Entered the 'selectSeal() method!");
@@ -336,7 +337,7 @@ export class DashboardComponent implements OnInit {
    * 
    */
   public setAdmin() {
-    var getAdStatus = JSON.stringify({'email': this.userData.email});
+    var getAdStatus = JSON.stringify({ 'email': this.userData.email });
     this.apiService.getAdminStatus(getAdStatus).then(msg => {
       this.admin = msg
       this.admin = this.admin[0].isAdmin;
@@ -352,7 +353,7 @@ export class DashboardComponent implements OnInit {
   public setPriveleges() {
     if (this.admin == 3) {
       this.isAdmin = true;
-    } 
+    }
     else if (this.admin == 2) {
       this.isAdmin = true;
     }
@@ -361,32 +362,61 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  
+
   /**
    * 
    * @param row 
    */
   public deleteSeal(row) {
-    this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
+    this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID'] };
     console.log('about to call delete');
 
     this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
 
- }
- public searchItems() {
-  const prev = this.mdbTable.getDataSource();
-  console.log(this.searchText);
-  if (!this.searchText) {
-      this.mdbTable.setDataSource(this.previous); 
-      this.elements = this.mdbTable.getDataSource(); 
-  } 
-  if (this.searchText) {
-      this.elements = this.mdbTable.searchLocalDataByMultipleFields(this.searchText, ['Tags','Marks', 'Sex', 'AgeClass']); 
-      this.mdbTable.setDataSource(prev); 
-  } 
-}
+  }
 
-public onlyUnique(value, index, self) { 
-  return self.indexOf(value) === index;
-}
+  public matchRuleShort(str, rule) {
+    var escapeRegex = (str) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    return new RegExp("^" + rule.split("*").map(escapeRegex).join(".*") + "$").test(str);
+  }
+
+  public searchItems() {
+    const prev = this.mdbTable.getDataSource();
+    console.log(this.searchText);
+
+    if (this.searchText.indexOf('*') >= 0) {
+      var results = [];
+      for (var obs of this.observations) {
+        var mark: string = null;
+        var tag: string = null;
+        if (obs['Marks'] != null) {
+          mark = obs['Marks'] as unknown as string;
+          mark = mark.substring(1, mark.length-1);
+        }
+        if (obs['Tags'] != null) {
+          tag = obs['Tags'] as unknown as string;
+          tag = tag.substring(1, tag.length-1);
+        }
+        if (this.matchRuleShort(mark, this.searchText) || this.matchRuleShort(tag, this.searchText)) {
+          console.log(obs);
+          results.push(obs);
+        }
+      }
+      this.elements = results;
+    } else {
+
+      if (!this.searchText) {
+        this.mdbTable.setDataSource(this.previous);
+        this.elements = this.mdbTable.getDataSource();
+      }
+      if (this.searchText) {
+        this.elements = this.mdbTable.searchLocalDataByMultipleFields(this.searchText, ['Tags', 'Marks', 'Sex', 'AgeClass']);
+        this.mdbTable.setDataSource(prev);
+      }
+    }
+  }
+
+  public onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
 }

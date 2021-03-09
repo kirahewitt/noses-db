@@ -305,7 +305,6 @@ export class AllObservationsComponent implements OnInit {
 
     if (this.searchText.indexOf('*') >= 0) {
       var results = [];
-      console.log("Asterisk");
       for (var obs of this.observations) {
         if (this.matchRuleShort(obs['Marks'], this.searchText) || this.matchRuleShort(obs['Tags'], this.searchText)) {
           console.log(obs);
