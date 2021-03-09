@@ -62,7 +62,7 @@ export class AllObservationsComponent implements OnInit {
   @ViewChild(MdbTableDirective, { static: true })
   public mdbTable: MdbTableDirective;
   public elements: any = [];
-  public headElements = ['ObservationID', 'Age Class', 'Sex', 'Tags', 'Marks', 'Comments', 'View Seal'];
+  public headElements = ['Date', 'Age Class', 'Sex', 'Tags', 'Marks', 'View Seal'];
   public searchText: string = '';
   public previous: string;
   /**
@@ -92,10 +92,10 @@ export class AllObservationsComponent implements OnInit {
 
     this.apiService.readObs().subscribe((observations: any) => {
       if (this.isAdmin) {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
+        this.displayedColumns = ['Date', 'Age Class', 'Sex', 'Tags', 'Marks', 'viewSeal'];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['ObservationID', 'Age Class', 'Sex', 'Tags', 'Marks', 'Comments', 'viewSeal'];
+        this.displayedColumns = ['Date', 'Age Class', 'Sex', 'Tags', 'Marks', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;
@@ -287,6 +287,25 @@ export class AllObservationsComponent implements OnInit {
     }
   }
 
+    /**
+   * Receives a Javascript Date object and converts it to a string of the form MM/DD/YYYY
+   */
+     public convertDateObjToDateString(dateObj : Date) : string {
+      let result : string = "";
+
+      if (dateObj == null) {
+        return result;
+      }
+
+      // Date will be off by one day without this step
+      var temp = new Date(dateObj);
+      var d = new Date(temp.getTime() + Math.abs(temp.getTimezoneOffset()*60000));
+
+      console.log("\n\n WE ARE INSIDE THE CONVERSION FUNCTION \n\n");
+      result += (d.getMonth() + 1).toString() + "/" + (d.getDate()).toString() + "/" + d.getFullYear().toString();
+      return result;
+  }
+
   public deleteSeal(row) {
     this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID'] };
     console.log('about to call delete');
@@ -319,7 +338,7 @@ export class AllObservationsComponent implements OnInit {
         this.elements = this.mdbTable.getDataSource();
       }
       if (this.searchText) {
-        this.elements = this.mdbTable.searchLocalDataByMultipleFields(this.searchText, ['AgeClass', 'Sex', 'Comments', 'Tags', 'Marks']);
+        this.elements = this.mdbTable.searchLocalDataByMultipleFields(this.searchText, ['AgeClass', 'Sex', 'Tags', 'Marks']);
         this.mdbTable.setDataSource(prev);
       }
     }

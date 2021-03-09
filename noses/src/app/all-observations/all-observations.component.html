@@ -40,12 +40,11 @@
                 </thead>
                 <tbody style="display: block; overflow: auto; max-height: 300px;">
                   <tr *ngFor="let el of elements; let i = index">
-                    <td>{{el.ObservationID}}</td>
+                    <td>{{convertDateObjToDateString(el.Date)}}</td>
                     <td class="">{{el.AgeClass}}</td>
                     <td>{{el.Sex}}</td>
                     <td>{{el.Tags}}</td>
                     <td>{{el.Marks}}</td>
-                    <td>{{el.Comments}}</td>
                     <td>
                         <span (click)="selectSeal(el)" class="hippo">
                            <img src="assets/cropped_silhouette_smaller_1_blue.png" height="30" width="56" />
