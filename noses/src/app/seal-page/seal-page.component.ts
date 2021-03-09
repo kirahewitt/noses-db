@@ -78,7 +78,7 @@ export class SealPageComponent implements OnInit {
 
     // let tempObservation: SqlObservation = new SqlObservation();
     // this.displayedColumns = Object.getOwnPropertyNames(tempObservation);
-    this.displayedColumns = ['ObservationID', 'AgeClass', 'Sex', 'Date', 'SLOCode','Comments',  'Edit', 'Delete'];
+    this.displayedColumns = ['AgeClass', 'Sex', 'Date', 'SLOCode', 'Observer', 'Comments', 'LastSeenPup', 'FirstSeenWeaner', 'WeanDateRange', 'EnteredInAno',  'Edit', 'Delete'];
 
 
     let loggedInUser_datastream = this.authService.IH_getUserData_bs();
@@ -211,7 +211,14 @@ export class SealPageComponent implements OnInit {
    */
   public convertDateObjToDateString(dateObj : Date) : string {
       let result : string = "";
-      var d = new Date(dateObj);
+
+      if (dateObj == null) {
+        return result;
+      }
+
+      // Date will be off by one day without this step
+      var temp = new Date(dateObj);
+      var d = new Date(temp.getTime() + Math.abs(temp.getTimezoneOffset()*60000));
 
       console.log("\n\n WE ARE INSIDE THE CONVERSION FUNCTION \n\n");
       result += (d.getMonth() + 1).toString() + "/" + (d.getDate()).toString() + "/" + d.getFullYear().toString();

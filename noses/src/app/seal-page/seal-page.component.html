@@ -135,9 +135,34 @@
                 <td mat-cell *matCellDef="let obs"> {{ obs.SLOCode }} </td>
             </ng-container>
 
+            <ng-container matColumnDef="Observer">
+              <th mat-header-cell *matHeaderCellDef> Observer </th>
+              <td mat-cell *matCellDef="let obs"> {{ obs.ObserverID }} </td>
+            </ng-container>
+
             <ng-container matColumnDef="Comments">
-                <th mat-header-cell *matHeaderCellDef> Comments </th>
+                <th mat-header-cell *matHeaderCellDef> Comments</th>
                 <td mat-cell *matCellDef="let obs"> {{ obs.Comments }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="LastSeenPup">
+              <th mat-header-cell *matHeaderCellDef> Last Seen Pup </th>
+              <td mat-cell *matCellDef="let obs"> {{ convertDateObjToDateString(obs.LastSeenPup) }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="FirstSeenWeaner">
+              <th mat-header-cell *matHeaderCellDef> First Seen Weaner </th>
+              <td mat-cell *matCellDef="let obs"> {{ convertDateObjToDateString(obs.FirstSeenWeaner) }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="WeanDateRange">
+              <th mat-header-cell *matHeaderCellDef> Wean Date Range </th>
+              <td mat-cell *matCellDef="let obs"> {{ obs.WeanDateRange }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="EnteredInAno">
+              <th mat-header-cell *matHeaderCellDef> Entered in Año </th>
+              <td mat-cell *matCellDef="let obs"> {{ obs.EnteredInAno }} </td>
             </ng-container>
 
             <!-- Edit observation button-->
