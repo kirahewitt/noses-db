@@ -225,6 +225,14 @@ export class SealPageComponent implements OnInit {
       return result;
   }
 
+  public convertComments(comment: string) {
+    if (comment == "NULL") {
+      return "----";
+    }
+
+    return comment;
+  }
+
 
   /**
    * 
