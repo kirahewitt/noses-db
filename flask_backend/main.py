@@ -97,26 +97,29 @@ def delete_user():
             print("in delete")
             _json = request.json
             obs = _json['obsID']
+            markID = []
+            tagID = []
             print(obs)
 
             print("1")
             cursor.execute("SELECT * FROM ObserveSeal WHERE ObservationID=" + str(obs))
             row = cursor.fetchone()
-            sealID = row['SealID']
+            if row is not None:
+              sealID = row['SealID']
+            else:
+              sealID = None
             print("2")
             cursor.execute("SELECT * FROM ObserveMarks WHERE ObservationID=" + str(obs))
             row = cursor.fetchone()
-            if row is not None:
-              markID = row['MarkID']
-            else :
-              markID = None
+            while row is not None:
+              markID.append(row['MarkID'])
+              row = cursor.fetchone()
             print("3")
             cursor.execute("SELECT * FROM ObserveTags WHERE ObservationID=" + str(obs))
             row = cursor.fetchone()
-            if row is not None:
-              tagID = row['TagNumber']
-            else:
-              tagID = None
+            while row is not None:
+              tagID.append(row['TagNumber'])
+              row = cursor.fetchone()
 
             print("4")
             cursor.execute("DELETE FROM Measurements WHERE ObservationID=" + str(obs))
@@ -132,43 +135,48 @@ def delete_user():
             print("9")
             cursor.execute("DELETE FROM ObserveTags WHERE ObservationID=" + str(obs))
 
-            print("10")
-            cursor.execute("SELECT * FROM ObserveSeal WHERE SealID=" + str(sealID))
-            row = cursor.fetchone()
+            if sealID is not None:
+              print("10")
+              cursor.execute("SELECT * FROM ObserveSeal WHERE SealID=" + str(sealID))
+              row = cursor.fetchone()
+            else:
+              row = None
 
-            if row is None:
+            if row is None and sealID is not None:
               print("11")
               cursor.execute("DELETE FROM Seals WHERE SealID=" + str(sealID))
-            else:
+            elif sealID is not None:
               nextObservation = row['ObservationID']
               print("12 " + str(nextObservation))
               cursor.execute("UPDATE Seals s SET s.ObservationID=" + str(nextObservation) + " WHERE s.SealID=" + str(sealID))
 
-            if markID is not None:
-              print("13")
-              cursor.execute("SELECT * FROM ObserveMarks WHERE MarkID=" + str(markID))
-              row = cursor.fetchone()
+            if len(markID) > 0:
+              for m in markID:
+                print("13")
+                cursor.execute("SELECT * FROM ObserveMarks WHERE MarkID=" + str(m))
+                row = cursor.fetchone()
 
-              if row is None:
-                print("14")
-                cursor.execute("DELETE FROM Marks WHERE MarkID=" + str(markID))
-              else:
-                nextObservation = row['ObservationID']
-                print("15")
-                cursor.execute("UPDATE Marks m SET m.ObservationID=" + str(nextObservation) + " WHERE m.MarkID=" + str(markID))
+                if row is None:
+                  print("14")
+                  cursor.execute("DELETE FROM Marks WHERE MarkID=" + str(m))
+                else:
+                  nextObservation = row['ObservationID']
+                  print("15")
+                  cursor.execute("UPDATE Marks m SET m.ObservationID=" + str(nextObservation) + " WHERE m.MarkID=" + str(m))
 
-            if tagID is not None:
-              print("16")
-              cursor.execute("SELECT * FROM ObserveTags WHERE TagNumber='" + str(tagID) + "'")
-              row = cursor.fetchone()
+            if len(tagID) > 0:
+              for t in tagID:
+                print("16")
+                cursor.execute("SELECT * FROM ObserveTags WHERE TagNumber='" + str(t) + "'")
+                row = cursor.fetchone()
 
-              if row is None:
-                print("17")
-                cursor.execute("DELETE FROM Tags WHERE TagNumber='" + str(tagID) + "'")
-              else:
-                nextObservation = row['ObservationID']
-                print("18")
-                cursor.execute("UPDATE Tags t SET t.TagSeal=" + str(nextObservation) + " WHERE t.TagNumber='" + str(tagID) + "'")
+                if row is None:
+                  print("17")
+                  cursor.execute("DELETE FROM Tags WHERE TagNumber='" + str(t) + "'")
+                else:
+                  nextObservation = row['ObservationID']
+                  print("18")
+                  cursor.execute("UPDATE Tags t SET t.TagSeal=" + str(nextObservation) + " WHERE t.TagNumber='" + str(t) + "'")
             
             print("19")
             cursor.execute("DELETE FROM Observations WHERE ObservationID=" + str(obs))
