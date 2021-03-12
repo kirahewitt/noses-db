@@ -97,26 +97,29 @@ def delete_user():
             print("in delete")
             _json = request.json
             obs = _json['obsID']
+            markID = []
+            tagID = []
             print(obs)
 
             print("1")
             cursor.execute("SELECT * FROM ObserveSeal WHERE ObservationID=" + str(obs))
             row = cursor.fetchone()
-            sealID = row['SealID']
+            if row is not None:
+              sealID = row['SealID']
+            else:
+              sealID = None
             print("2")
             cursor.execute("SELECT * FROM ObserveMarks WHERE ObservationID=" + str(obs))
             row = cursor.fetchone()
-            if row is not None:
-              markID = row['MarkID']
-            else :
-              markID = None
+            while row is not None:
+              markID.append(row['MarkID'])
+              row = cursor.fetchone()
             print("3")
             cursor.execute("SELECT * FROM ObserveTags WHERE ObservationID=" + str(obs))
             row = cursor.fetchone()
-            if row is not None:
-              tagID = row['TagNumber']
-            else:
-              tagID = None
+            while row is not None:
+              tagID.append(row['TagNumber'])
+              row = cursor.fetchone()
 
             print("4")
             cursor.execute("DELETE FROM Measurements WHERE ObservationID=" + str(obs))
@@ -132,43 +135,48 @@ def delete_user():
             print("9")
             cursor.execute("DELETE FROM ObserveTags WHERE ObservationID=" + str(obs))
 
-            print("10")
-            cursor.execute("SELECT * FROM ObserveSeal WHERE SealID=" + str(sealID))
-            row = cursor.fetchone()
+            if sealID is not None:
+              print("10")
+              cursor.execute("SELECT * FROM ObserveSeal WHERE SealID=" + str(sealID))
+              row = cursor.fetchone()
+            else:
+              row = None
 
-            if row is None:
+            if row is None and sealID is not None:
               print("11")
               cursor.execute("DELETE FROM Seals WHERE SealID=" + str(sealID))
-            else:
+            elif sealID is not None:
               nextObservation = row['ObservationID']
               print("12 " + str(nextObservation))
               cursor.execute("UPDATE Seals s SET s.ObservationID=" + str(nextObservation) + " WHERE s.SealID=" + str(sealID))
 
-            if markID is not None:
-              print("13")
-              cursor.execute("SELECT * FROM ObserveMarks WHERE MarkID=" + str(markID))
-              row = cursor.fetchone()
+            if len(markID) > 0:
+              for m in markID:
+                print("13")
+                cursor.execute("SELECT * FROM ObserveMarks WHERE MarkID=" + str(m))
+                row = cursor.fetchone()
 
-              if row is None:
-                print("14")
-                cursor.execute("DELETE FROM Marks WHERE MarkID=" + str(markID))
-              else:
-                nextObservation = row['ObservationID']
-                print("15")
-                cursor.execute("UPDATE Marks m SET m.ObservationID=" + str(nextObservation) + " WHERE m.MarkID=" + str(markID))
+                if row is None:
+                  print("14")
+                  cursor.execute("DELETE FROM Marks WHERE MarkID=" + str(m))
+                else:
+                  nextObservation = row['ObservationID']
+                  print("15")
+                  cursor.execute("UPDATE Marks m SET m.ObservationID=" + str(nextObservation) + " WHERE m.MarkID=" + str(m))
 
-            if tagID is not None:
-              print("16")
-              cursor.execute("SELECT * FROM ObserveTags WHERE TagNumber='" + str(tagID) + "'")
-              row = cursor.fetchone()
+            if len(tagID) > 0:
+              for t in tagID:
+                print("16")
+                cursor.execute("SELECT * FROM ObserveTags WHERE TagNumber='" + str(t) + "'")
+                row = cursor.fetchone()
 
-              if row is None:
-                print("17")
-                cursor.execute("DELETE FROM Tags WHERE TagNumber='" + str(tagID) + "'")
-              else:
-                nextObservation = row['ObservationID']
-                print("18")
-                cursor.execute("UPDATE Tags t SET t.TagSeal=" + str(nextObservation) + " WHERE t.TagNumber='" + str(tagID) + "'")
+                if row is None:
+                  print("17")
+                  cursor.execute("DELETE FROM Tags WHERE TagNumber='" + str(t) + "'")
+                else:
+                  nextObservation = row['ObservationID']
+                  print("18")
+                  cursor.execute("UPDATE Tags t SET t.TagSeal=" + str(nextObservation) + " WHERE t.TagNumber='" + str(t) + "'")
             
             print("19")
             cursor.execute("DELETE FROM Observations WHERE ObservationID=" + str(obs))
@@ -2223,7 +2231,7 @@ def getAllObservations():
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
-        statement = "Select o.*, os.SealID, json_arrayagg(ot.TagNumber) Tags, json_arrayagg(m.Mark) Marks from Observations o left join ObserveTags ot on ot.ObservationID = o.ObservationID left join ObserveMarks om on om.ObservationID = o.ObservationID inner join Marks m on om.MarkID = m.MarkID inner join ObserveSeal os on os.ObservationID = o.ObservationID where o.isApproved > 0 group by o.ObservationID order by o.ObservationID asc"
+        statement = "Select o.*, os.SealID, json_arrayagg(ot.TagNumber) Tags, json_arrayagg(m.Mark) Marks from Observations o left join ObserveTags ot on ot.ObservationID = o.ObservationID left join ObserveMarks om on om.ObservationID = o.ObservationID left join Marks m on om.MarkID = m.MarkID left join ObserveSeal os on os.ObservationID = o.ObservationID where o.isApproved > 0 group by o.ObservationID order by o.ObservationID asc"
         #"SELECT O.ObservationID , O.SealID , O.FieldLeader , O.Year , O.date , O.SLOCode , S.Sex , O.AgeClass , S.Mark , S.markDate , S.Mark2 , S.markDate2 , S.T1 , S.T2 , O.MoltPercent , O.Season , O.StandardLength , O.CurvilinearLength , O.AxillaryGirth , O.TotalMass , O.LastSeenPup , O.FirstSeenWeaner , O.Rnge , O.Comments , O.EnteredAno FROM (  SELECT seals.* FROM (  SELECT COUNT(*) count, inn.sealID FROM  (SELECT AllTags.T1, AllTags.T2,  AllMarks.*, Seals.Sex, age.AgeClass  FROM Seals, (SELECT Observations.AgeClass, ObserveSeal.SealID FROM Observations, ObserveSeal, (SELECT MAX(Observations.ObservationID) ID FROM Seals, Observations, ObserveSeal WHERE Seals.SealID = ObserveSeal.SealID AND  Observations.ObservationID = ObserveSeal.ObservationID GROUP BY Seals.SealID) id WHERE Observations.ObservationID = id.ID and ObserveSeal.ObservationID = Observations.ObservationID) age,  (SELECT important.* FROM (SELECT inn.SealId, COUNT(*) count  FROM (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) inn GROUP BY inn.SealID) counts, (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) important WHERE important.SealID = counts.SealID AND  counts.count < 2 UNION ALL  SELECT  Seals.SealID,  M1.Mark, M1.markDate MarkDate, M2.Mark Mark2, M2.markDate MarkDate2 FROM Seals, (SELECT * FROM Marks) M1, (SELECT * FROM Marks) M2 WHERE M1.Mark < M2.Mark AND M1.MarkSeal = Seals.SealID AND M2.MarkSeal = Seals.SealID ) AllMarks, (SELECT important.SealID, important.T1, important.T2 FROM (SELECT inn.SealID, COUNT(*) count FROM (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) inn GROUP BY inn.SealID) counts, (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) important WHERE important.SealID = counts.sealID AND  counts.count < 2 UNION ALL  SELECT Seals.SealID, Tag1.TagNumber, Tag2.TagNumber FROM Seals, (SELECT * FROM Tags) Tag1, (SELECT * FROM Tags) Tag2 WHERE Seals.SealId = Tag1.TagSeal AND Seals.SealID = Tag2.TagSeal AND Tag1.TagNumber < Tag2.TagNumber ) AllTags WHERE AllTags.SealID = AllMarks.SealID AND Seals.SealID = AllTags.SealID AND age.SealID = AllMarks.SealID ) inn GROUP BY inn.sealID ) sealcounts,     (SELECT AllTags.T1, AllTags.T2,  AllMarks.*, Seals.Sex, age.AgeClass  FROM Seals, (SELECT Observations.AgeClass, ObserveSeal.SealID FROM Observations, ObserveSeal, (SELECT MAX(Observations.ObservationID) ID FROM Seals, Observations, ObserveSeal WHERE Seals.SealID = ObserveSeal.SealID AND  Observations.ObservationID = ObserveSeal.ObservationID GROUP BY Seals.SealID) id WHERE Observations.ObservationID = id.ID and ObserveSeal.ObservationID = Observations.ObservationID) age,  (SELECT important.* FROM (SELECT inn.SealId, COUNT(*) count  FROM (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) inn GROUP BY inn.SealID) counts, (SELECT  S.SealID,  Mark.Mark,  Mark.markDate,  Mark2.Mark Mark2, Mark2.markDate markDate2 FROM Seals S  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark  ON S.SealID = Mark.SealID  LEFT OUTER JOIN (SELECT Marks.MarkSeal SealID, Marks.Mark, Marks.MarkDate FROM Marks) Mark2  ON S.SealID = Mark2.SealID  AND Mark.Mark < Mark2.Mark) important WHERE important.SealID = counts.SealID AND  counts.count < 2 UNION ALL  SELECT  Seals.SealID,  M1.Mark, M1.markDate MarkDate, M2.Mark Mark2, M2.markDate MarkDate2 FROM Seals, (SELECT * FROM Marks) M1, (SELECT * FROM Marks) M2 WHERE M1.Mark < M2.Mark AND M1.MarkSeal = Seals.SealID AND M2.MarkSeal = Seals.SealID ) AllMarks, (SELECT important.SealID, important.T1, important.T2 FROM (SELECT inn.SealID, COUNT(*) count FROM (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) inn GROUP BY inn.SealID) counts, (SELECT S.SealID, Tag1.TagNumber T1, Tag2.TagNumber T2 FROM Seals S LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag1 ON S.SealID = Tag1.SealID LEFT OUTER JOIN (SELECT Tags.TagSeal SealID, Tags.TagNumber FROM Tags) Tag2 ON S.SealID = Tag2.SealID AND Tag1.TagNumber < Tag2.TagNumber) important WHERE important.SealID = counts.sealID AND  counts.count < 2 UNION ALL  SELECT Seals.SealID, Tag1.TagNumber, Tag2.TagNumber FROM Seals, (SELECT * FROM Tags) Tag1, (SELECT * FROM Tags) Tag2 WHERE Seals.SealId = Tag1.TagSeal AND Seals.SealID = Tag2.TagSeal AND Tag1.TagNumber < Tag2.TagNumber ) AllTags WHERE AllTags.SealID = AllMarks.SealID AND Seals.SealID = AllTags.SealID AND age.SealID = AllMarks.SealID ) seals WHERE seals.SealID = sealcounts.sealID AND sealcounts.count = 1) S,  (SELECT main.ObservationID , main.SealID , main.FieldLeader , main.Year , main.date , main.SLOCode , main.sex , main.AgeClass, main.moltPercent , main.Year Season , Measurements.StandardLength , Measurements.CurvilinearLength , Measurements.AxillaryGirth , Measurements.AnimalMass , Measurements.TotalMass, main.LastSeenPup , main.FirstSeenWeaner , main.Rnge , main.Comments , main.EnteredAno FROM (SELECT Observations.*, ObserveSeal.SealID FROM Observations, ObserveSeal WHERE ObserveSeal.ObservationID = Observations.ObservationID) main LEFT OUTER JOIN Measurements ON Measurements.ObservationID = main.ObservationID WHERE main.IsValid = 0) O WHERE O.SealID = S.SealID;"
         # print(statement)
         print("here")
