@@ -84,7 +84,7 @@
           </p> -->
 
 
-          <p>
+          <p *ngIf="editPermissions">
             <mat-form-field class="full-width">
               <mat-label> Permissions Level: </mat-label>
 
@@ -100,7 +100,7 @@
 
 
           <!--isVerifiedByAdmin Toggle... allows approval ****** -->
-          <p>
+          <p *ngIf="editPermissions">
             <mat-form-field class="full-width">
               <mat-label> Account Status: </mat-label>
 

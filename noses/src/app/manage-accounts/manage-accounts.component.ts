@@ -200,7 +200,7 @@ export class ManageAccountsComponent implements OnInit {
     dialogConfig.width = "50%";
     
     // establish the data that will be passed to the dialog
-    dialogConfig.data = { masterObj: this.selectedUserObsObj };
+    dialogConfig.data = { masterObj: this.selectedUserObsObj, editPermissions: true };
 
     // create a reference to the dialog
     const dialogRef = this.dialogMaterialService.open(EditUserDialogComponent, dialogConfig);

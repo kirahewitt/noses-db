@@ -27,6 +27,7 @@ export class EditUserDialogComponent implements OnInit {
   public accountValidityStatusIndices: number[];
 
   public originalAccountStatus: number;
+  public editPermissions: boolean;
 
   /**
    * Constructor for this Angular Component. 
@@ -38,7 +39,8 @@ export class EditUserDialogComponent implements OnInit {
     this.editedUser = new User_Observer_Obj();
 
     // save the injected data as an actual object whose type i know
-    this.editedUser = injectedData.masterObj; 
+    this.editedUser = injectedData.masterObj;
+    this.editPermissions = injectedData.editPermissions; 
     console.log("Current value of the user after overwriting with the injectedData...");
     console.log(this.editedUser);
 

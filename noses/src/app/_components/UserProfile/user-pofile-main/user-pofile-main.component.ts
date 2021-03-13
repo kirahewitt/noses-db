@@ -100,7 +100,7 @@ export class UserPofileMainComponent implements OnInit {
     console.log(this.loggedInUser);
     
     // establish the data that will be passed to the dialog
-    dialogConfig.data = { masterObj: this.loggedInUser };
+    dialogConfig.data = { masterObj: this.loggedInUser,  editPermissions: false };
 
     // create a reference to the dialog
     const dialogRef = this.dialogMaterialService.open(EditUserDialogComponent, dialogConfig);
