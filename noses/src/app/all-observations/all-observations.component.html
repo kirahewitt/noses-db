@@ -3,57 +3,49 @@
 
 <div>
 
-    <div [hidden]="notReady">
+  <div [hidden]="notReady">
     <div class="row">
 
       <!--left border-->
 
       <div class="col-md-12 margins">
         <div class="table-column">
-            <div class="container">
-                <div class="row">
-                  <div class="col-md-12 mx-auto">
-                    <div class="md-form">
-                      <input
-                        type="text"
-                        class="form-control"
-                        (keyup)="searchItems()"
-                        #search
-                        (input)="searchText = search.value"
-                        mdbInput
-                      />
-                      <label for="search">Search (Use * for unknown characters. Ex: PBM*8)</label>
-                    </div>
-                  </div>
+          <div class="container">
+            <div class="row">
+              <div class="col-md-12 mx-auto">
+                <div class="md-form">
+                  <input type="text" class="form-control" (keyup)="searchItems()" #search
+                    (input)="searchText = search.value" mdbInput />
+                  <label for="search">Search (Use * for unknown characters. Ex: PBM*8)</label>
                 </div>
+              </div>
             </div>
-            <table mdbTable class="z-depth-1">
-                <thead>
-                  <tr>
-                    <th
-                      *ngFor="let head of headElements; let i = index"
-                      scope="col"
-                    >
-                      {{head}}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody style="display: block; overflow: auto; max-height: 300px;">
-                  <tr *ngFor="let el of elements; let i = index">
-                    <td>{{convertDateObjToDateString(el.Date)}}</td>
-                    <td class="">{{el.AgeClass}}</td>
-                    <td>{{el.Sex}}</td>
-                    <td>{{el.Tags}}</td>
-                    <td>{{el.Marks}}</td>
-                    <td>
-                        <span (click)="selectSeal(el)" class="hippo">
-                           <img src="assets/cropped_silhouette_smaller_1_blue.png" height="30" width="56" />
-                          </span>
-                      </td>
-                  </tr>
-                </tbody>
-              </table>
-              <!--
+          </div>
+
+          <table mdbTable class="z-depth-1">
+            <thead>
+              <tr>
+                <th *ngFor="let head of headElements; let i = index" scope="col">
+                  {{head}}
+                </th>
+              </tr>
+            </thead>
+            <tbody style="display: block; overflow: auto; max-height: 300px;">
+              <tr *ngFor="let el of elements; let i = index">
+                <td>{{convertDateObjToDateString(el.Date)}}</td>
+                <td class="">{{el.AgeClass}}</td>
+                <td>{{el.Sex}}</td>
+                <td>{{el.Tags}}</td>
+                <td>{{el.Marks}}</td>
+                <td>
+                  <span (click)="selectSeal(el)" class="hippo">
+                    <img src="assets/cropped_silhouette_smaller_1_blue.png" height="30" width="56" />
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!--
             <table mat-table class="table table-hover mat-elevation-z4" [dataSource]="dataSource">
 
                 <ng-container matColumnDef="ObservationID">
@@ -105,17 +97,17 @@
 
 
 
-        </div>
       </div>
-
-      <!--right border-->
-      <div class="col-sm-1"></div>
     </div>
 
+    <!--right border-->
+    <div class="col-sm-1"></div>
   </div>
-    <br>
 
-    <button type="button" class="btn btn-danger button-right" routerLink="/menu">Back To Menu</button>
+</div>
+<br>
+
+<button type="button" class="btn btn-danger button-right" routerLink="/menu">Back To Menu</button>
 
 
 <!-- 
