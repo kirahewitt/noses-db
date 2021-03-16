@@ -206,7 +206,7 @@ export class ManageAccountsComponent implements OnInit {
     const dialogRef = this.dialogMaterialService.open(EditUserDialogComponent, dialogConfig);
      
     // set up a subcription to receive any modified data from the dialog after it is closed
-    dialogRef.afterClosed().subscribe( (result: User_Observer_Obj) => {
+    dialogRef.afterClosed().subscribe(result => {
       
       if (result != undefined) {
         console.log("Resulting object we receive from the edit dialog");
@@ -214,7 +214,10 @@ export class ManageAccountsComponent implements OnInit {
 
         console.log("Now sending the combined user observer object to the DB")
 
-        this.manageAccountsService.updateUserObserverTuplePair(result);
+        this.manageAccountsService.updateUserObserverTuplePair(result.user);
+        if (result.newPassword != "") {
+          this.manageAccountsService.updateUserPassword(result.user["email"], result.newPassword);
+        }
       }
     });
   }

@@ -62,6 +62,7 @@ export class EditUserDialogComponent implements OnInit {
       lastName : [this.editedUser.lastName, Validators.required],
       email : [this.editedUser.email, Validators.required],
       username : [this.editedUser.username, Validators.required],
+      newPassword : '',
       isAdmin  : [this.editedUser.isAdmin, Validators.required],
       affiliation  : [this.editedUser.affiliation, []],
       obsId : [this.editedUser.obsId, Validators.required],
@@ -83,25 +84,24 @@ export class EditUserDialogComponent implements OnInit {
    */
   public save() {
     console.log(this.form.value)
-    let formObj: User_Observer_Obj = this.form.value;
     var userObserverForReturn: User_Observer_Obj = new User_Observer_Obj();
     
     // these fields were part of the form
-    userObserverForReturn.firstName = formObj.firstName;
-    userObserverForReturn.lastName = formObj.lastName;
-    userObserverForReturn.email = formObj.email;
-    userObserverForReturn.username = formObj.username;
-    userObserverForReturn.isAdmin = formObj.isAdmin;
-    userObserverForReturn.affiliation = formObj.affiliation;
-    userObserverForReturn.obsId = formObj.obsId;
-    userObserverForReturn.isVerifiedByAdmin = formObj.isVerifiedByAdmin;
+    userObserverForReturn.firstName = this.form.value["firstName"];
+    userObserverForReturn.lastName = this.form.value["lastName"];
+    userObserverForReturn.email = this.form.value["email"];
+    userObserverForReturn.username = this.form.value["username"];
+    userObserverForReturn.isAdmin = this.form.value["isAdmin"];
+    userObserverForReturn.affiliation = this.form.value["affiliation"];
+    userObserverForReturn.obsId = this.form.value["obsId"];
+    userObserverForReturn.isVerifiedByAdmin = this.form.value["isVerifiedByAdmin"];
 
     // rest of the fields must come from the original object
     userObserverForReturn.obsId = this.editedUser.obsId;
     userObserverForReturn.userId = this.editedUser.userId;
     userObserverForReturn.initials = this.updateInitials(userObserverForReturn.firstName, userObserverForReturn.lastName);
 
-    this.dialogRef.close(userObserverForReturn);
+    this.dialogRef.close({ user: userObserverForReturn, newPassword: this.form.value["newPassword"] });
   }
 
   /**
@@ -143,6 +143,8 @@ export class EditUserDialogComponent implements OnInit {
   onNoClick(): void {
     console.log("Inside OnNoClick()");
     console.log(this.form.value);
+    console.log("email: " + this.form.value["email"]);
+    console.log("last name: " + this.form.value["lastName"]);
     this.dialogRef.close();
   }
 

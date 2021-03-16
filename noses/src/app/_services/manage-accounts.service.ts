@@ -6,7 +6,7 @@ import { Sql_User_Profile_Pic } from '../_supporting_classes/SqlProfilePic';
 
 
 export class Image_Model {
-  imageId : string;
+  imageId: string;
   userId: string;
   pictureData: string;
 }
@@ -30,13 +30,13 @@ export class ManageAccountsService {
 
   public userProfileImageList: Sql_User_Profile_Pic[];
   public userProfileImageList_bs: BehaviorSubject<Sql_User_Profile_Pic[]>;
-   
+
 
   /**
    * 
    * @param apiService Reference to Angular Service that talks to Flask API
    */
-  constructor(private apiService: FlaskBackendService) { 
+  constructor(private apiService: FlaskBackendService) {
     this.userObserverList = [];
     this.userObserverList_bs = new BehaviorSubject<User_Observer_Obj[]>(this.userObserverList);
 
@@ -56,7 +56,7 @@ export class ManageAccountsService {
   public getUserObserverList_datastream() {
     return this.userObserverList_bs;
   }
-  
+
 
   public getUserProfileImageList_datastream() {
     return this.userProfileImageList_bs;
@@ -68,8 +68,8 @@ export class ManageAccountsService {
    */
   public refreshUserList() {
     let userList_obs = this.apiService.getAll_UserObservers();
-    userList_obs.subscribe( (response : User_Observer_Obj[]) => {
-      
+    userList_obs.subscribe((response: User_Observer_Obj[]) => {
+
       // verify that we're actually receiving the right stuff from the DB
       // console.log("Received Data in Angular Service from Subscription: ");
       // console.log(response);
@@ -90,8 +90,8 @@ export class ManageAccountsService {
     console.log("MANAGE ACCOUNTS SERVICE - attempting to set up the subscription to the profile image list")
 
     let userImageList_obs: Observable<Sql_User_Profile_Pic[]> = this.apiService.getAll_UserProfileImages_obs();
-    userImageList_obs.subscribe( (response : Sql_User_Profile_Pic[]) => {
-      
+    userImageList_obs.subscribe((response: Sql_User_Profile_Pic[]) => {
+
       // verify we get the right stuff
       console.log("Manage Accounts Service received response for getAllUserProfileImageList");
       console.log(response);
@@ -106,15 +106,15 @@ export class ManageAccountsService {
    * 
    * @param userObsObj 
    */
-  public removeUser(userObsObj : User_Observer_Obj) {
+  public removeUser(userObsObj: User_Observer_Obj) {
     let usersAfterRemoval_obs: Observable<User_Observer_Obj[]> = this.apiService.removeUserHavingEmail(JSON.stringify(userObsObj));
-    usersAfterRemoval_obs.subscribe((updatedUsers : User_Observer_Obj[]) => {
+    usersAfterRemoval_obs.subscribe((updatedUsers: User_Observer_Obj[]) => {
       this.userObserverList = updatedUsers;
       this.userObserverList_bs.next(this.userObserverList);
     });
   }
 
-  
+
   /**
    * 
    * @param userObserver 
@@ -125,7 +125,7 @@ export class ManageAccountsService {
     // console.log(userObserver);
 
     let overwriteUser_obs = this.apiService.saveChanges_userObserver(userObserver);
-    overwriteUser_obs.subscribe( (userObsListAfterUpdate : User_Observer_Obj[]) => {
+    overwriteUser_obs.subscribe((userObsListAfterUpdate: User_Observer_Obj[]) => {
 
       // console.log("We have received from the DB the list of new users after the updates to the DB were performed:")
       // console.log(userObsListAfterUpdate);
@@ -136,17 +136,29 @@ export class ManageAccountsService {
   }
 
 
-   /**
+  /**
    * 
-   * @param userObserver 
+   * @param newPassword 
    */
+  public updateUserPassword(email: string, newPassword: string) {
+
+    let obs = this.apiService.updateUserPassword(email, newPassword);
+    obs.subscribe(response => {
+      console.log(response);
+    });
+  }
+
+  /**
+  * 
+  * @param userObserver 
+  */
   public addNewUser(newUser: user_forCreateNewUser_byAdmin) {
 
     console.log("Manage Accounts Service received this object and will send to DB:");
     console.log(newUser);
 
     let overwriteUser_obs = this.apiService.create_newUser_adminOnly(newUser);
-    overwriteUser_obs.subscribe( (userObsListAfterUpdate : User_Observer_Obj[]) => {
+    overwriteUser_obs.subscribe((userObsListAfterUpdate: User_Observer_Obj[]) => {
 
       // console.log("We have received from the DB the list of new users after the updates to the DB were performed:")
       // console.log(userObsListAfterUpdate);
@@ -156,5 +168,5 @@ export class ManageAccountsService {
     });
   }
 
-  
+
 }
