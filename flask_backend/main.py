@@ -255,6 +255,43 @@ def update_user():
     cursor.close()
     conn.close()
 
+@app.route('/updateuserpassword', methods=['POST', 'GET'])
+def updateuserpassword():
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    
+    if request.method == 'POST':
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      print(_json)
+
+      # get the fields out of the json
+      email = _json['email']
+      newPassword = _json['newPassword']
+
+      salt = bcrypt.gensalt(rounds=12)
+      encoded_newPassword = str(bcrypt.hashpw(newPassword.encode('utf8'), salt))
+      
+      updatePasswordQuery = ("UPDATE Users SET Password=\"" + encoded_newPassword + "\" WHERE Email=" + surr_apos(email) + ";")
+
+      cursor.execute(updatePasswordQuery)
+      conn.commit()
+
+      return jsonify("Success: The overwrite of the former password was successful")
+
+    else:
+      return jsonify("Error: Received unexpected GET request. Expected POST")
+      
+  except Exception as e:
+    print("Error(updateuserpassword): ")
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
 
 @app.route('/submit-userPasswordChangeRequest', methods=['POST', 'GET'])
 def submit_userPasswordChangeRequest():

@@ -148,7 +148,7 @@
 
       <ng-container matColumnDef="Comments">
         <th mat-header-cell *matHeaderCellDef> Comments</th>
-        <td mat-cell *matCellDef="let obs"> {{ obs.Comments }} </td>
+        <td mat-cell *matCellDef="let obs"> {{ convertComments(obs.Comments) }} </td>
       </ng-container>
 
       <ng-container matColumnDef="LastSeenPup">

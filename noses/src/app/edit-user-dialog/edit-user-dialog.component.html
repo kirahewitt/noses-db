@@ -15,41 +15,44 @@
         <!-- middle column -->
         <div class="col-md-10">
 
-        <div class="row">
-          <div class="col-md-6">
-            <!-- firstName -->
-            <p>
-              <mat-form-field class="full-width">
-                <mat-label> First Name: </mat-label>
-                <input matInput formControlName="firstName" value="{{editedUser.firstName}}" class="input" type="text" placeholder="Text input">
-                <mat-error *ngIf="hasError('firstName', 'required')"> This field is required. </mat-error> 
-              </mat-form-field>
-            </p>
+          <div class="row">
+            <div class="col-md-6">
+              <!-- firstName -->
+              <p>
+                <mat-form-field class="full-width">
+                  <mat-label> First Name: </mat-label>
+                  <input matInput formControlName="firstName" value="{{editedUser.firstName}}" class="input" type="text"
+                    placeholder="Text input">
+                  <mat-error *ngIf="hasError('firstName', 'required')"> This field is required. </mat-error>
+                </mat-form-field>
+              </p>
+            </div>
+
+            <div class="col-md-6">
+              <!-- lastName -->
+              <p>
+                <mat-form-field class="full-width">
+                  <mat-label> Last Name: </mat-label>
+                  <input matInput formControlName="lastName" value="{{editedUser.lastName}}" class="input" type="text"
+                    placeholder="Text input">
+                  <mat-error *ngIf="hasError('lastName', 'required')"> This field is required. </mat-error>
+                </mat-form-field>
+              </p>
+            </div>
           </div>
 
-          <div class="col-md-6">
-            <!-- lastName -->
-            <p>
-              <mat-form-field class="full-width">
-                <mat-label> Last Name: </mat-label>
-                <input matInput formControlName="lastName" value="{{editedUser.lastName}}" class="input" type="text" placeholder="Text input">
-                <mat-error *ngIf="hasError('lastName', 'required')"> This field is required. </mat-error> 
-              </mat-form-field>
-            </p>
-          </div>
-        </div>
-
-            
 
 
-              
+
+
 
           <!-- email -->
           <p>
             <mat-form-field class="full-width">
               <mat-label> Email: </mat-label>
-              <input matInput formControlName="email" value="{{editedUser.email}}" class="input" type="text" placeholder="Text input">
-              <mat-error *ngIf="hasError('email', 'required')"> This field is required. </mat-error> 
+              <input matInput formControlName="email" value="{{editedUser.email}}" class="input" type="text"
+                placeholder="Text input">
+              <mat-error *ngIf="hasError('email', 'required')"> This field is required. </mat-error>
             </mat-form-field>
           </p>
 
@@ -58,22 +61,32 @@
           <p>
             <mat-form-field class="full-width">
               <mat-label> Username: </mat-label>
-              <input matInput formControlName="username" value="{{editedUser.username}}" class="input" type="text" placeholder="Text input" readonly>
-              <mat-error *ngIf="hasError('username', 'required')"> This field is required. </mat-error> 
+              <input matInput formControlName="username" value="{{editedUser.username}}" class="input" type="text"
+                placeholder="Text input" readonly>
+              <mat-error *ngIf="hasError('username', 'required')"> This field is required. </mat-error>
             </mat-form-field>
           </p>
 
+          <!-- password -->
+          <p *ngIf="editPermissions">
+            <mat-form-field class="full-width">
+              <mat-label> Set New Password: </mat-label>
+              <input matInput formControlName="newPassword" class="input" type="text"
+                placeholder="Text input">
+            </mat-form-field>
+          </p>
 
           <!-- affiliation -->
           <p>
             <mat-form-field class="full-width">
               <mat-label> Affiliation: </mat-label>
-              <input matInput formControlName="affiliation" value="{{editedUser.affiliation}}" class="input" type="text" placeholder="Text input">
+              <input matInput formControlName="affiliation" value="{{editedUser.affiliation}}" class="input" type="text"
+                placeholder="Text input">
               <!-- <mat-error *ngIf="hasError('affiliation', 'required')"> This field is required. </mat-error>  -->
             </mat-form-field>
           </p>
 
-          
+
           <!-- obsId  -->
           <!-- <p>
             <mat-form-field class="full-width">
@@ -84,7 +97,7 @@
           </p> -->
 
 
-          <p>
+          <p *ngIf="editPermissions">
             <mat-form-field class="full-width">
               <mat-label> Permissions Level: </mat-label>
 
@@ -92,32 +105,33 @@
                 <mat-option *ngFor="let levelIndex of userLevelIndices" [value]="levelIndex">
                   {{userLevelNames[levelIndex]}}
                 </mat-option>
-              </mat-select> 
+              </mat-select>
 
-              <mat-error *ngIf="hasError('isAdmin', 'required')"> This field is required. </mat-error> 
+              <mat-error *ngIf="hasError('isAdmin', 'required')"> This field is required. </mat-error>
             </mat-form-field>
           </p>
 
 
           <!--isVerifiedByAdmin Toggle... allows approval ****** -->
-          <p>
+          <p *ngIf="editPermissions">
             <mat-form-field class="full-width">
               <mat-label> Account Status: </mat-label>
 
               <mat-select formControlName="isVerifiedByAdmin">
-                <mat-option *ngFor="let accountStatusIndex of accountValidityStatusIndices" [value]="accountStatusIndex">
+                <mat-option *ngFor="let accountStatusIndex of accountValidityStatusIndices"
+                  [value]="accountStatusIndex">
                   {{accountValidityStatusNames[accountStatusIndex]}}
                 </mat-option>
-              </mat-select> 
+              </mat-select>
 
               <!-- <input matInput formControlName="isVerifiedByAdmin" value="{{editedUser.isVerifiedByAdmin}}" class="input" type="text" placeholder="Text input"> -->
-              <mat-error *ngIf="hasError('isVerifiedByAdmin', 'required')"> This field is required. </mat-error> 
+              <mat-error *ngIf="hasError('isVerifiedByAdmin', 'required')"> This field is required. </mat-error>
             </mat-form-field>
           </p>
 
 
 
-         
+
 
         </div>
 
@@ -134,6 +148,6 @@
 </div>
 
 <mat-dialog-actions>
-  <button mat-button class="mat-raised-button" (click)="onNoClick()">Cancel</button> 
+  <button mat-button class="mat-raised-button" (click)="onNoClick()">Cancel</button>
   <button mat-button class="mat-raised-button mat-primary" (click)="save()" [disabled]="form.invalid">Save</button>
 </mat-dialog-actions>

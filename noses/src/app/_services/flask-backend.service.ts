@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observations } from  '../_supporting_classes/Observations';
+import { Observations } from '../_supporting_classes/Observations';
 import { sqlUser, sqlUser_full, user_forCreateNewUser, User_Observer_Obj, user_forCreateNewUser_byAdmin } from '../_supporting_classes/sqlUser';
-import { Observable, of, throwError } from  'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { SealDataService } from "./seal-data.service";
 import { Seal } from '../_supporting_classes/Seal';
@@ -23,7 +23,7 @@ import { Sql_User_Profile_Pic } from '../_supporting_classes/SqlProfilePic';
 export class FlaskBackendService {
 
   private rows: any;
-  private newUsers: any;  
+  private newUsers: any;
 
   private FLASK_API_SERVER: string;
   private httpOptions = {
@@ -46,8 +46,8 @@ export class FlaskBackendService {
    * @param operation - name of the operation that failed
    * @param result - optional value to return as the observable result
    */
-  private handleError<T> (operation = 'operation', result?: T) {
-    
+  private handleError<T>(operation = 'operation', result?: T) {
+
     return (error: any): Observable<T> => {
       console.log(error);
       console.log(`Flask Backend Service - ${operation} failed. Error Message: ${error.message}`);
@@ -62,18 +62,18 @@ export class FlaskBackendService {
    * 
    */
   public readObs(): Observable<Observations[]> {
-    return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allobservations` );
+    return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/allobservations`);
   }
 
-  public readSeals(): Observable<Seal[]>{
-    return this.httpClient.get<Seal[]>(`${this.FLASK_API_SERVER}/allseals` );
+  public readSeals(): Observable<Seal[]> {
+    return this.httpClient.get<Seal[]>(`${this.FLASK_API_SERVER}/allseals`);
   }
 
-  public readNotApproved(): Observable<Observations[]>{
+  public readNotApproved(): Observable<Observations[]> {
     return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/notapproved`);
   }
 
-  public addObservations(user: string): Observable<string>{
+  public addObservations(user: string): Observable<string> {
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addobservations`, user, this.httpOptions).pipe(catchError(this.alertError));
   }
 
@@ -86,20 +86,20 @@ export class FlaskBackendService {
 
   public approveAllObs() {
     console.log("Approve all flask-backend");
-    return this.httpClient.post<number>(`${this.FLASK_API_SERVER}/approveallobs`, {"id": 1}, this.httpOptions);
+    return this.httpClient.post<number>(`${this.FLASK_API_SERVER}/approveallobs`, { "id": 1 }, this.httpOptions);
   }
 
   async approveObs(obsId: number) {
     console.log(obsId);
-    await this.httpClient.post<number>(`${this.FLASK_API_SERVER}/approveobs`, {"obsId": obsId}, this.httpOptions).toPromise()
+    await this.httpClient.post<number>(`${this.FLASK_API_SERVER}/approveobs`, { "obsId": obsId }, this.httpOptions).toPromise()
       .then(data => {
-      obsId = data["obsId"];
-    });
+        obsId = data["obsId"];
+      });
     return obsId;
   }
-  
 
-  private alertError(error){
+
+  private alertError(error) {
 
     window.alert("Something went wrong. Try Again.")
     return throwError(error);
@@ -107,7 +107,7 @@ export class FlaskBackendService {
 
 
   // users section
-  
+
   /**
    * 
    * @param obs 
@@ -154,13 +154,13 @@ export class FlaskBackendService {
    */
   public getLoginAuthenticator_userObserver(username: string, password: string): Observable<User_Observer_Obj> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getloginauthenticator_userObserver`;
-    let inputAsJsonString = '{"username" : "' + username    + '", "password" : "' + password + '"}';
+    let inputAsJsonString = '{"username" : "' + username + '", "password" : "' + password + '"}';
 
     let loginAuth_obs = this.httpClient.post<User_Observer_Obj[]>(flask_endpoint, inputAsJsonString, this.httpOptions)
       .pipe(
         catchError(this.handleError<User_Observer_Obj[]>('getLoginAuthenticator', [])),
-        map((retval : any[]) => {
-          var userData : User_Observer_Obj = new User_Observer_Obj();
+        map((retval: any[]) => {
+          var userData: User_Observer_Obj = new User_Observer_Obj();
 
           // log data
           console.log("INSIDE MAP METHOD");
@@ -181,7 +181,7 @@ export class FlaskBackendService {
             userData.email = retval[0]['Email'];
             userData.obsId = retval[0]['ObsID'];
           }
-          
+
           return userData;
         })
       );
@@ -190,7 +190,7 @@ export class FlaskBackendService {
   }
 
 
-  
+
   /**ddddd
    * Provides an observable which returns a user's profile image.
    * 
@@ -205,8 +205,8 @@ export class FlaskBackendService {
 
     let userProfileImage_obs = this.httpClient.post<string>(flask_endpoint, inputAsJsonString, this.httpOptions).pipe(
       catchError(this.handleError<any>('getUserProfileImage', [])),
-      map( retval => {
-        var profileImage : string = "";
+      map(retval => {
+        var profileImage: string = "";
 
         console.log("\n\nAngular Flask Service received user image -- MAP FUNCTION \n\n");
         console.log(retval);
@@ -215,7 +215,7 @@ export class FlaskBackendService {
         // console.log(retval['pictureData']);
 
         if (retval && retval != "") {
-          profileImage = retval['pictureData'];  
+          profileImage = retval['pictureData'];
         }
 
         // console.log("Here's Profile Image after assigning it's value:");
@@ -228,19 +228,19 @@ export class FlaskBackendService {
     return userProfileImage_obs;
   }
 
-  
 
-  getAll_UserProfileImages_obs() : Observable<Sql_User_Profile_Pic[]> {
+
+  getAll_UserProfileImages_obs(): Observable<Sql_User_Profile_Pic[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getAll_UserProfileImages`;
 
     let obs = this.httpClient.get<Sql_User_Profile_Pic[]>(flask_endpoint).pipe(
       catchError(this.handleError<any>('getAll_UserProfileImages', [])),
-      map( (pictureDataList : any) => {
+      map((pictureDataList: any) => {
         var sqlUser_profilePic_list = [];
 
         console.log("Map function receiving all user images as json");
         console.log(pictureDataList);
-        
+
 
         for (let pd of pictureDataList) {
           var tempPd: Sql_User_Profile_Pic = new Sql_User_Profile_Pic();
@@ -264,7 +264,7 @@ export class FlaskBackendService {
 
 
 
-   
+
 
   /**
    * This function just submits a new user profile image to be saved for a particular user.
@@ -273,9 +273,9 @@ export class FlaskBackendService {
    * @param pictureData 
    * @param caption 
    */
-  public saveUserImage_obs(userId: number, pictureData: string, caption:string) {
+  public saveUserImage_obs(userId: number, pictureData: string, caption: string) {
     let flask_endpoint = `${this.FLASK_API_SERVER}/uploadImage_forUserProfile`;
-    
+
     let inputAsJsonString = '{"userId" : ' + userId.toString() + ', "pictureData" : "' + pictureData + '", "caption" : "' + caption + '"}';
 
     let obs = this.httpClient.post<string>(flask_endpoint, inputAsJsonString, this.httpOptions).pipe(
@@ -318,7 +318,7 @@ export class FlaskBackendService {
   }
 
 
-  
+
 
 
   /**
@@ -331,7 +331,7 @@ export class FlaskBackendService {
    * to a new object, in this case, a SqlSealDossier object. 
    * @param sealId 
    */
-  public getSeal_bySealId(sealId: number) : Observable<SqlSealDossier> {
+  public getSeal_bySealId(sealId: number): Observable<SqlSealDossier> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getseal-with-sealid`;
 
     let obs = this.httpClient
@@ -339,7 +339,7 @@ export class FlaskBackendService {
       .pipe(
         catchError(this.handleError<any>('getSeal_bySealId', [])),
         map(jsonResponse => {
-          var newSealDossier : SqlSealDossier = new SqlSealDossier();
+          var newSealDossier: SqlSealDossier = new SqlSealDossier();
           let jr = jsonResponse[0];
 
           newSealDossier.sealId = jr["SealID"];
@@ -362,8 +362,8 @@ export class FlaskBackendService {
 
     let obs = this.httpClient.get(flask_endpoint).pipe(
       catchError(this.handleError<any>('getAll_SealDossier_Data', [])),
-      map( jsonResponse => {
-        var sealDossierList : SqlSealDossier[] = [];
+      map(jsonResponse => {
+        var sealDossierList: SqlSealDossier[] = [];
 
         for (let json_dossier of jsonResponse) {
           var tempDossier: SqlSealDossier = new SqlSealDossier();
@@ -374,10 +374,10 @@ export class FlaskBackendService {
           //tempDossier.uniqueMarkYearList = json_dossier['markYearList'];
           // tempDossier.uniqueTagList = json_dossier['uniqueTagList'];
           // tempDossier.ageClass = json_dossier['AgeClass'];
-          
-          
+
+
           // tempDossier.lastSeen = json_dossier['LastSeen'];
-          
+
 
 
           sealDossierList.push(tempDossier);
@@ -395,19 +395,19 @@ export class FlaskBackendService {
    * This is the endpoint that is responsible for "deleting a user" 
    * We don't actually delete the user, we are just making the user inactive.
    */
-  public removeUserHavingEmail(jsonUsrObsObj:any): Observable<User_Observer_Obj[]> {
+  public removeUserHavingEmail(jsonUsrObsObj: any): Observable<User_Observer_Obj[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/removeUserHavingEmail`;
 
-    
+
     let obs = this.httpClient.post(flask_endpoint, jsonUsrObsObj, this.httpOptions).pipe(
       catchError(this.handleError<any>('getObservations_bySealId', [])),
       map(jsonResponse => {
-        var userObjList : User_Observer_Obj[] = [];
+        var userObjList: User_Observer_Obj[] = [];
 
         console.log("removeUserHavingEMail -- PROCESSING response from DB")
 
         for (let json_user of jsonResponse) {
-          var tempUser : User_Observer_Obj = new User_Observer_Obj();
+          var tempUser: User_Observer_Obj = new User_Observer_Obj();
           tempUser.firstName = json_user['FirstName'];
           tempUser.lastName = json_user['LastName'];
           tempUser.isVerifiedByAdmin = json_user['isVerifiedByAdmin'];
@@ -427,19 +427,19 @@ export class FlaskBackendService {
     return obs;
   }
 
-   /**
-   * New version of the get users api call. 
-   */
+  /**
+  * New version of the get users api call. 
+  */
   public getAll_UserObservers(): Observable<User_Observer_Obj[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getAll_UserObserver_Data`;
 
     let obs = this.httpClient.get(flask_endpoint).pipe(
       catchError(this.handleError<any>('getAll_UserObserver_Data', [])),
-      map((jsonResponse : any) => {
-        var userObjList : User_Observer_Obj[] = [];
+      map((jsonResponse: any) => {
+        var userObjList: User_Observer_Obj[] = [];
 
         for (let json_user of jsonResponse) {
-          var tempUser : User_Observer_Obj = new User_Observer_Obj();
+          var tempUser: User_Observer_Obj = new User_Observer_Obj();
           tempUser.firstName = json_user['FirstName'];
           tempUser.lastName = json_user['LastName'];
           tempUser.isVerifiedByAdmin = json_user['isVerifiedByAdmin'];
@@ -464,17 +464,17 @@ export class FlaskBackendService {
   /** 
    * 
    */
-  public getAll_Observations_bySealId(sealId:number) : Observable<SqlObservation[]> {
+  public getAll_Observations_bySealId(sealId: number): Observable<SqlObservation[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/getobservations-with-sealid`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
       .pipe(
         catchError(this.handleError<any>('getObservations_bySealId', [])),
-        map( (jsonResponse : any) => {
-          var observationList : SqlObservation[] = [];
+        map((jsonResponse: any) => {
+          var observationList: SqlObservation[] = [];
 
           for (let json_obs of jsonResponse) {
-            var tempSqlObs : SqlObservation = new SqlObservation();
+            var tempSqlObs: SqlObservation = new SqlObservation();
 
             tempSqlObs.ObservationID = json_obs['ObservationID'];
             tempSqlObs.ObserverID = json_obs['ObserverID'];
@@ -506,17 +506,17 @@ export class FlaskBackendService {
   /** 
    * 
    */
-  public get_identifyingObservation_bySealId(sealId:number) : Observable<SqlObservation> {
+  public get_identifyingObservation_bySealId(sealId: number): Observable<SqlObservation> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/get-IDing-observations-with-sealid`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions)
       .pipe(
         catchError(this.handleError<any>('getIdentifyingObservation_bySealId', [])),
-        map( (jsonResponse : any) => {
+        map((jsonResponse: any) => {
           var sqlobs = new SqlObservation();
 
           let json_obs = jsonResponse['0'];
-          
+
           sqlobs.ObservationID = json_obs['ObservationID'];
           sqlobs.ObserverID = json_obs['ObserverID'];
           sqlobs.Sex = json_obs['Sex'];
@@ -541,18 +541,18 @@ export class FlaskBackendService {
   }
 
 
-  
-  
+
+
   /**
    * 
    * @param sealId 
    */
-  public get_mostRecentObservation_bySealId(sealId : number) : Observable<SqlObservation> {
+  public get_mostRecentObservation_bySealId(sealId: number): Observable<SqlObservation> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/get-most-recent-observation-with-sealid`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
       catchError(this.handleError<any>('getMostRecentObservation_bySealId', [])),
-      map( (jsonResponse : any) => {
+      map((jsonResponse: any) => {
 
         console.log("\n\n\n\n");
         console.log("FlaskBackendService - MOST RECENT for DATE");
@@ -585,7 +585,7 @@ export class FlaskBackendService {
         console.log("FlaskBackendService - MOST RECENT for DATE");
         console.log("sqlobs: ");
         console.log(sqlobs);
-        
+
         return sqlobs;
       })
     );
@@ -598,12 +598,12 @@ export class FlaskBackendService {
    * 
    * @param sealId 
    */
-  public get_newestObservation_forAgeClass_bySealId(sealId : number) : Observable<SqlObservation> {
+  public get_newestObservation_forAgeClass_bySealId(sealId: number): Observable<SqlObservation> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/get_newest_obs_with_sealID_ageClass`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
       catchError(this.handleError<any>('getNewestObservation_forAgeClass_bySealId', [])),
-      map( (jsonResponse : any) => {
+      map((jsonResponse: any) => {
         let json_obs = jsonResponse['0'];
 
         var sqlobs = new SqlObservation();
@@ -635,16 +635,16 @@ export class FlaskBackendService {
   /** 
    * 
    */
-  public getAll_Tags_bySealId(sealId : number) : Observable<SqlTag[]> {
+  public getAll_Tags_bySealId(sealId: number): Observable<SqlTag[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/gettags-with-sealid`;
 
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
       catchError(this.handleError<any>('getTags_bySealId', [])),
-      map( (jsonResponse : any) => {
-        var tagList : SqlTag[] = [];
+      map((jsonResponse: any) => {
+        var tagList: SqlTag[] = [];
 
         for (let json_tag of jsonResponse) {
-          var tag : SqlTag = new SqlTag();
+          var tag: SqlTag = new SqlTag();
 
           tag.TagColor = json_tag['TagColor'];
           tag.TagDate = json_tag['TagDate'];
@@ -652,7 +652,7 @@ export class FlaskBackendService {
           tag.TagPosition = json_tag['TagPosition'];
           tag.TagSeal = json_tag['TagSeal'];
           tag.isLost = json_tag['isLost'];
-          
+
           tagList.push(tag);
         }
 
@@ -667,17 +667,17 @@ export class FlaskBackendService {
   /** 
    * 
    */
-  public getAll_Marks_bySealId(sealId : number) : Observable<SqlMark[]> {
+  public getAll_Marks_bySealId(sealId: number): Observable<SqlMark[]> {
 
     let flask_endpoint = `${this.FLASK_API_SERVER}/getmarks_with_sealID`;
     let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
       catchError(this.handleError<any>('getMarks_bySealId', [])),
-      map( (jsonResponse : any) => {
-        
-        var markList : SqlMark[] = [];
+      map((jsonResponse: any) => {
+
+        var markList: SqlMark[] = [];
 
         for (let json_mark of jsonResponse) {
-          var mark : SqlMark = new SqlMark();
+          var mark: SqlMark = new SqlMark();
 
           mark.MarkID = json_mark['MarkID'];
           mark.Mark = json_mark['Mark'];
@@ -686,7 +686,7 @@ export class FlaskBackendService {
           mark.Year = json_mark['Year'];
           mark.ObservationID = json_mark['ObservationID'];
           mark.MarkSeal = json_mark['MarkSeal'];
-          
+
           markList.push(mark);
         }
 
@@ -701,7 +701,7 @@ export class FlaskBackendService {
    * Saves the changes made to the users and receives an updated list of users after the changes have been made.
    * @param editedUser 
    */
-  public saveChanges_userObserver(editedUser : User_Observer_Obj) : Observable<User_Observer_Obj[]> {
+  public saveChanges_userObserver(editedUser: User_Observer_Obj): Observable<User_Observer_Obj[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/saveUserEditChanges`;
 
     console.log("Angular Service for Flask API received this user to update:");
@@ -709,8 +709,8 @@ export class FlaskBackendService {
 
     let obs = this.httpClient.post(flask_endpoint, editedUser, this.httpOptions).pipe(
       catchError(this.handleError<any>('saveUserEditChanges', [])),
-      map( jsonResponse => {
-        var userObsList : User_Observer_Obj[] = [];
+      map(jsonResponse => {
+        var userObsList: User_Observer_Obj[] = [];
 
         console.log("Angular Service for Flask API received this json response and will now map it to an object ");
         console.log(userObsList);
@@ -735,12 +735,29 @@ export class FlaskBackendService {
     return obs;
   }
 
+  /**
+   * Update user password through Manage Accounts
+   * @param email
+   * @param newPassword
+   */
+  public updateUserPassword(email: string, newPassword: string): Observable<User_Observer_Obj> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/updateuserpassword`;
+    let inputAsJsonString = '{"email" : "' + email + '", "newPassword" : "' + newPassword + '"}';
+
+    let obs = this.httpClient.post(flask_endpoint, inputAsJsonString, this.httpOptions)
+      .pipe(
+        catchError(this.handleError<any>('updateuserpassword', [])),
+      );
+
+    return obs;
+  }
+
 
   /**
    * This method is only suppoed to be accessed by admin level users. It is called by the manage accounts component.
    * @param newUser 
    */
-  public create_newUser_adminOnly(newUser: user_forCreateNewUser_byAdmin) : Observable<User_Observer_Obj[]> {
+  public create_newUser_adminOnly(newUser: user_forCreateNewUser_byAdmin): Observable<User_Observer_Obj[]> {
     let flask_endpoint = `${this.FLASK_API_SERVER}/addNewUser_forAdmin`;
 
     console.log("Angular Service for Flask API received this user to update:");
@@ -748,8 +765,8 @@ export class FlaskBackendService {
 
     let obs = this.httpClient.post(flask_endpoint, newUser, this.httpOptions).pipe(
       catchError(this.handleError<any>('addNewUser_byAdmin', [])),
-      map( jsonResponse => {
-        var userObsList : User_Observer_Obj[] = [];
+      map(jsonResponse => {
+        var userObsList: User_Observer_Obj[] = [];
 
         console.log("Angular Service for Flask API received this json response and will now map it to an object ");
         console.log(userObsList);
@@ -804,7 +821,7 @@ export class FlaskBackendService {
     let flask_endpoint = `${this.FLASK_API_SERVER}/attemptLogin`;
 
     var serverResponse;
-    const emailPass = {email, password};
+    const emailPass = { email, password };
 
     await this.httpClient.post<string>(flask_endpoint, emailPass, this.httpOptions).toPromise()
       .then(data => {
@@ -820,7 +837,7 @@ export class FlaskBackendService {
   async removeUser(user: string) {
     let flask_endpoint = `${this.FLASK_API_SERVER}/removeuser`;
 
-    console.log(user );
+    console.log(user);
     await this.httpClient.post<string>(flask_endpoint, user, this.httpOptions).toPromise()
       .then(data => {
         this.rows = data;

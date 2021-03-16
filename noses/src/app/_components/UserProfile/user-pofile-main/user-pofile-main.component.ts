@@ -100,18 +100,18 @@ export class UserPofileMainComponent implements OnInit {
     console.log(this.loggedInUser);
     
     // establish the data that will be passed to the dialog
-    dialogConfig.data = { masterObj: this.loggedInUser };
+    dialogConfig.data = { masterObj: this.loggedInUser,  editPermissions: false };
 
     // create a reference to the dialog
     const dialogRef = this.dialogMaterialService.open(EditUserDialogComponent, dialogConfig);
      
     // set up a subcription to receive any modified data from the dialog after it is closed
-    dialogRef.afterClosed().subscribe( (result: User_Observer_Obj) => {
+    dialogRef.afterClosed().subscribe(result => {
       if (result != undefined) {
         console.log("Resulting object we receive from the edit dialog");
         console.log(result);
         console.log("Now sending the combined user observer object to the DB")
-        this.authService.updateUserObserverTuplePair(result);
+        this.authService.updateUserObserverTuplePair(result.user);
       }
     });
   }
