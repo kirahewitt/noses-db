@@ -68,7 +68,7 @@
           </p>
 
           <!-- password -->
-          <p>
+          <p *ngIf="editPermissions">
             <mat-form-field class="full-width">
               <mat-label> Set New Password: </mat-label>
               <input matInput formControlName="newPassword" class="input" type="text"
