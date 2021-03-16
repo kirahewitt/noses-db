@@ -99,6 +99,7 @@ export class AllObservationsComponent implements OnInit {
         this.notReady = false;
       }
       this.observations = observations;
+      console.log("Observation size: " + this.observations.length);
       this.elements = observations;
       observations.forEach((element, ind) => {
         this.elements[ind].Tags = element.Tags.join(', ');
@@ -287,30 +288,32 @@ export class AllObservationsComponent implements OnInit {
     }
   }
 
-    /**
-   * Receives a Javascript Date object and converts it to a string of the form MM/DD/YYYY
-   */
-     public convertDateObjToDateString(dateObj : Date) : string {
-      let result : string = "";
+  /**
+ * Receives a Javascript Date object and converts it to a string of the form MM/DD/YYYY
+ */
+  public convertDateObjToDateString(dateObj: Date): string {
+    let result: string = "";
 
-      if (dateObj == null) {
-        return result;
-      }
-
-      // Date will be off by one day without this step
-      var temp = new Date(dateObj);
-      var d = new Date(temp.getTime() + Math.abs(temp.getTimezoneOffset()*60000));
-
-      console.log("\n\n WE ARE INSIDE THE CONVERSION FUNCTION \n\n");
-      result += (d.getMonth() + 1).toString() + "/" + (d.getDate()).toString() + "/" + d.getFullYear().toString();
+    if (dateObj == null) {
       return result;
+    }
+
+    // Date will be off by one day without this step
+    var temp = new Date(dateObj);
+    var d = new Date(temp.getTime() + Math.abs(temp.getTimezoneOffset() * 60000));
+
+    console.log("\n\n WE ARE INSIDE THE CONVERSION FUNCTION \n\n");
+    result += (d.getMonth() + 1).toString() + "/" + (d.getDate()).toString() + "/" + d.getFullYear().toString();
+    return result;
   }
 
-  public deleteSeal(row) {
-    this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID'] };
+  public deleteObs(row) {
+    // this.obsID = { 'obsID': row['ObservationID'], 'tag1': row['TagNumber1'], 'Mark': row['MarkID']};
+    console.log(row);
+    var obsID = { 'obsID': row.ObservationID };
     console.log('about to call delete');
 
-    this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
+    this.apiService.deleteObs(JSON.stringify(obsID)).subscribe(() => this.apiService.readObs());
   }
 
   public matchRuleShort(str, rule) {
