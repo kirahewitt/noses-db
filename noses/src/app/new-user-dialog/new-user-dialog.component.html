@@ -60,7 +60,7 @@
           <p>
             <mat-form-field class="full-width">
               <mat-label> Password: </mat-label>
-              <input matInput formControlName="password" value="{{newUser.password}}"  class="input" type="text" placeholder="Text input">
+              <input matInput formControlName="password" value="{{newUser.password}}"  class="input" type="password" placeholder="Text input">
               <mat-error *ngIf="hasError('password', 'required')"> This field is required. </mat-error> 
               
             </mat-form-field>
@@ -70,7 +70,7 @@
           <p>
             <mat-form-field class="full-width">
               <mat-label> Confirm Password: </mat-label>
-              <input matInput formControlName="passwordConfirm" value="{{newUser.passwordConfirm}}" [errorStateMatcher]="passwordErrorStateMatcher"  class="input" type="text" placeholder="Text input">
+              <input matInput formControlName="passwordConfirm" value="{{newUser.passwordConfirm}}" [errorStateMatcher]="passwordErrorStateMatcher"  class="input" type="password" placeholder="Text input">
               <mat-error *ngIf="hasError('passwordConfirm', 'required')"> This field is required. </mat-error> 
               <mat-error *ngIf="form.hasError('passwordPairMismatch')"> Passwords must match. </mat-error>
             </mat-form-field>
