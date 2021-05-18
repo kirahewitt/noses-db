@@ -316,7 +316,6 @@ export class ManageAccountsComponent implements OnInit {
     if (this.userList_forDisplay_FULL.length > 0 && this.userProfilePicList.length > 0) {
       
       console.log("GET IMAGE FOR STARTED. LOOKING FOR userid: " + userId.toString())
-      console.log("GET IMAGE FOR STARTED. LOOKING FOR userid: " + userId.toString())
 
       for (let pic of this.userProfilePicList) {
         if (pic.userId == userId) {
