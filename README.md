@@ -10,7 +10,6 @@ Features
 =================
 * Admin User can create/remove accounts
 * Admin User can set user priveleges
-* Uses Google Firebase for Authentication
 * Run queries on full and partial marks and tags
 * Filter results by Tags, Marks, and Breeding Season
 * Upload observations by single entry and bulk entry

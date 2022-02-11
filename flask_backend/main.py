@@ -14,7 +14,6 @@ import bcrypt
 #from werkzeug import generate_password_hash, check_password_hash
 from flask_cors import CORS, cross_origin
 from flask_mail import Mail, Message
-CORS(app)
 
 bleh = Flask(__name__)
 
@@ -24,7 +23,7 @@ app.config['MAIL_SERVER'] = "smtp.gmail.com" ##
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True 
-app.config['MAIL_USERNAME'] = "noses.donotreply@gmail.com"
+app.config['MAIL_USERNAME'] = "esealdata.donotreply@gmail.com"
 app.config['MAIL_PASSWORD'] = "lF01P6GQ2hm2"
 app.config['MAIL_DEFAULT_SENDER'] = "noses.donotreply@gmail.com"
 app.config['MAIL_MAX_EMAILS'] = True
@@ -1756,7 +1755,6 @@ def get_login_authenticator_userObserver():
       # get query results
       cursor.execute(getUserTupleQuery_forHash)
       rows = cursor.fetchall()
-
       # if the length is 0 (user does not exist), return json containing "incorrect password"
       if (len(rows) == 0):
         return jsonify("Email/Password combination does not exist in the DB.")

@@ -136,8 +136,7 @@ CREATE TABLE `Observers` (
 
 LOCK TABLES `Observers` WRITE;
 INSERT INTO `Observers` (`FirstName`, `LastName`) 
-VALUES ('Ilya','Minarov'),
-       ('Ian','O\'Rourke');
+VALUES ('Ilya','Minarov'),('Ian','O\'Rourke');
 UNLOCK TABLES;
 
 --
@@ -164,8 +163,9 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 INSERT INTO `Users` (`Username`, `Password`, `Initials`, `isAdmin`, `Affiliation`, `Email`, `ObsID`) 
-VALUES ('iorourke@calpoly.edu','password', 'IR', 3,'iorourke@calpoly.edu','iorourke@calpoly.edu', 2),
-       ('iminarov@calpoly.edu','password', 'IM', 3,'iminarov@calpoly.edu','iminarov@calpoly.edu', 1);
+VALUES ('iorourke@calpoly.edu','password', 'IR', 3,'iorourke@calpoly.edu','iorourke@calpoly.edu', 2, 1),
+       ('iminarov@calpoly.edu','password', 'IM', 3,'iminarov@calpoly.edu','iminarov@calpoly.edu', 1, 1),
+       ('kihewitt@calpoly.edu','password','KH',3,'kihewitt@calpoly.edu','kihewitt@calpoly.edu',3, 1);
 UNLOCK TABLES;
 
 

@@ -118,14 +118,14 @@ def makeConnection():
 
         # Config: localhost
         # cnx = connection.MySQLConnection(user='root',
-        #                                 password='password',
+        #                                 password='root',
         #                                 host='localhost',
         #                                 database='sealDB')
 
         # Config: AWS iorourke@calpoly.edu
-        cnx = connection.MySQLConnection(user='admin',
-                                        password='CS492_ij',
-                                        host='database-this-is-the-last-time.cvrgneqrnjcb.us-east-2.rds.amazonaws.com',
+        cnx = connection.MySQLConnection(user='root',
+                                        password='root',
+                                        host='localhost',
                                         database='sealDB')
 
 

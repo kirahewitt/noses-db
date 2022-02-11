@@ -203,6 +203,7 @@ export class AuthService {
         // display failure message
         console.log("Password INCORRECT.");
         console.log(retval.toString());
+        console.log(resp_json.toString())
 
         // set the failure variable
         this.IH_userIsValid = false;
