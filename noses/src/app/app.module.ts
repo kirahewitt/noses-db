@@ -98,12 +98,6 @@ import { FilterTypeSelectorComponent } from './_components/filter-type-selector/
 
 
 const config = {
-    apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
-    authDomain: "noses-346ed.firebaseapp.com",
-    databaseURL: "https://noses-346ed.firebaseio.com",
-    projectId: "noses-346ed",
-    storageBucket: "noses-346ed.appspot.com",
-    messagingSenderId: "924457799797"
 };
 
 

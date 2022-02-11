@@ -110,22 +110,9 @@ def surr_apos(origStr):
 # # test
 def makeConnection():
     try:
-        # Config: DB - csc 366
-        #cnx = connection.MySQLConnection(user='kbleich',
-        #                                password='abc123',
-        #                                host='ambari-head.csc.calpoly.edu',
-        #                                database='kbleich')
-
-        # Config: localhost
-        # cnx = connection.MySQLConnection(user='root',
-        #                                 password='password',
-        #                                 host='localhost',
-        #                                 database='sealDB')
-
-        # Config: AWS iorourke@calpoly.edu
-        cnx = connection.MySQLConnection(user='admin',
-                                        password='CS492_ij',
-                                        host='database-this-is-the-last-time.cvrgneqrnjcb.us-east-2.rds.amazonaws.com',
+        cnx = connection.MySQLConnection(user='',
+                                        password='',
+                                        host='',
                                         database='sealDB')
 
 
