@@ -1755,6 +1755,7 @@ def get_login_authenticator_userObserver():
       # get query results
       cursor.execute(getUserTupleQuery_forHash)
       rows = cursor.fetchall()
+      
       # if the length is 0 (user does not exist), return json containing "incorrect password"
       if (len(rows) == 0):
         return jsonify("Email/Password combination does not exist in the DB.")
