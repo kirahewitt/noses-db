@@ -1,10 +1,10 @@
 #!/bin/bash
 
-eval cd /etc/SealQL/sealqlteam6
+eval cd /home/noses/noses-db
 gitResults=$(git pull https://sealql:6maetlqlaes@github.com/rocktothorpe/sealqlteam6 2> /dev/null)
 
 if [[ $gitResults != *"Already up to date."* ]] ; then
-   eval cd /etc/SealQL/sealqlteam6/noses
+   eval cd /home/noses/noses-db/noses
    eval systemctl restart SealQL.service
    eval set -o pipefail
    eval npm install
@@ -18,7 +18,7 @@ if [[ $gitResults != *"Already up to date."* ]] ; then
    if [[ $error != 0 ]] ; then
       exit $error
    fi
-   eval cp /home/jbuelow/htaccess /etc/SealQL/sealqlteam6/noses/dist/noses/.htaccess
+   eval cp /home/jbuelow/htaccess /home/noses/noses-db/noses/dist/noses/.htaccess
    eval systemctl restart apache2
 fi
 exit 0

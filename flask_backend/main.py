@@ -12,11 +12,8 @@ import json
 import logging
 import bcrypt
 #from werkzeug import generate_password_hash, check_password_hash
-from flask_cors import CORS, cross_origin
 from flask_mail import Mail, Message
-
 bleh = Flask(__name__)
-
 app.config['DEBUG'] = True
 app.config['TESTING'] = False
 app.config['MAIL_SERVER'] = "smtp.gmail.com" ## 

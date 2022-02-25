@@ -110,7 +110,7 @@ def surr_apos(origStr):
 # # test
 def makeConnection():
     try:
-        cnx = connection.MySQLConnection(user='',
+        cnx = connection.MySQLConnection(user='admin',
                                         password='',
                                         host='',
                                         database='sealDB')

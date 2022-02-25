@@ -1,0 +1,3 @@
+.vscode/*
+.DS_Store
+flask_backend/db_config.py

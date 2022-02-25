@@ -27,7 +27,7 @@ export class FlaskBackendService {
 
   private FLASK_API_SERVER: string;
   private httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': 'http://34.217.54.156' })
   };
 
 
@@ -36,7 +36,8 @@ export class FlaskBackendService {
    * @param sealDataService a local reference to the application-wide angular service that keeps track of the currently selected seal.
    */
   constructor(private httpClient: HttpClient, private sealDataService: SealDataService) {
-    this.FLASK_API_SERVER = ""
+  this.FLASK_API_SERVER = "http://34.217.54.156:5000"
+      this.httpOptions.headers.append('Access-Control-Allow-Origin', '*')
   }
 
 
