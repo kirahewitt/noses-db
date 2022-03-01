@@ -18,31 +18,30 @@ export class TupleProcessingError {
 /**
  * List of variables that are the names of each of the columns in the spreadsheet submitted by the user.
  */
-var jsonName_fieldLeaderInitials = "Field Leader Initials";
-var jsonName_year = "Year";
+var jsonName_fieldLeaderInitials = "Initials";
 var jsonName_dateOfRecording = "Date";
 var jsonName_locationCode = "Loc.";
-var jsonName_sealSex = "Sex";
-var jsonName_sealAgeCode = "Age";
-var jsonName_sealHasPupQuantity = "Pup?";
 var jsonName_mark1_isNew = "New Mark 1?";
 var jsonName_mark1_idValue = "Mark 1";
 var jsonName_mark1_positionCode = "Mark 1 Position";
+
+var jsonName_tag1_isNew = "New Tag1?";
+var jsonName_tag1_idValue = "Tag1 #"
+var jsonName_tag1_positionCode = "Tag1 Pos."
+
+var jsonName_sealAgeCode = "Age";
+var jsonName_sealSex = "Sex";
+var jsonName_sealHasPupQuantity = "Pup?";
 
 var jsonName_mark2_isNew = "New Mark 2?";
 var jsonName_mark2_idValue = "Mark 2";
 var jsonName_mark2_positionCode = "Mark 2 Position";
 
-var jsonName_tag1_isNew = "New Tag1?";
-var jsonName_tag1_idValue = "Tag1 #"
-var jsonName_tag1_positionCode = "Tag 1 Pos."
-
 var jsonName_tag2_isNew = "New Tag2?";
 var jsonName_tag2_idValue = "Tag2 #"
-var jsonName_tag2_positionCode = "Tag 2 Pos."
+var jsonName_tag2_positionCode = "Tag2 Pos."
 
 var jsonName_sealMoltPercentage = "Molt (%)";
-var jsonName_currentSeason = "Season";
 var jsonName_sealStandardLength =  "St. Length";
 var jsonName_sealCurvilinearLength = "Crv. Length";
 var jsonName_sealAxillaryGirth = "Ax. Girth";
@@ -53,33 +52,33 @@ var jsonName_sealLastSeenAsPupDate = "Last seen as P";
 var jsonName_sealFirstSeenAsWeaner = "1st seen as W";
 var jsonName_weanDateRange = "Range (days)";
 var jsonName_comments = "Comments";
-var jsonName_observationEnteredInAno = "Entered in Ano";
+// var jsonName_year = "Year";
+// var jsonName_currentSeason = "Season";
+
 
 
 /**
  * Each of the above defined variables in a list.
  */
 var SpreadsheetAttributeList = [jsonName_fieldLeaderInitials,
-                                jsonName_year,
                                 jsonName_dateOfRecording,
                                 jsonName_locationCode,
-                                jsonName_sealSex,
-                                jsonName_sealAgeCode,
-                                jsonName_sealHasPupQuantity,
                                 jsonName_mark1_isNew,
                                 jsonName_mark1_idValue,
                                 jsonName_mark1_positionCode,
-                                jsonName_mark2_isNew,
-                                jsonName_mark2_idValue,
-                                jsonName_mark2_positionCode,
                                 jsonName_tag1_isNew,
                                 jsonName_tag1_idValue,
                                 jsonName_tag1_positionCode,
+                                jsonName_sealAgeCode,
+                                jsonName_sealSex,
+                                jsonName_sealHasPupQuantity,
+                                jsonName_mark2_isNew,
+                                jsonName_mark2_idValue,
+                                jsonName_mark2_positionCode,
                                 jsonName_tag2_isNew,
                                 jsonName_tag2_idValue,
                                 jsonName_tag2_positionCode,
                                 jsonName_sealMoltPercentage,
-                                jsonName_currentSeason,
                                 jsonName_sealStandardLength,
                                 jsonName_sealCurvilinearLength,
                                 jsonName_sealAxillaryGirth,
@@ -89,33 +88,31 @@ var SpreadsheetAttributeList = [jsonName_fieldLeaderInitials,
                                 jsonName_sealLastSeenAsPupDate,
                                 jsonName_sealFirstSeenAsWeaner,
                                 jsonName_weanDateRange,
-                                jsonName_comments,
-                                jsonName_observationEnteredInAno]
+                                jsonName_comments
+                                ]
 
 /**
  * This list is actually a map of jsonNames to objectNames, which will make it easier
  */
 var jsonName_to_objectName_map =  [ {jsonName: jsonName_fieldLeaderInitials, objectName: "fieldLeaderList"},
-                                    {jsonName: jsonName_year, objectName: "year"},
                                     {jsonName: jsonName_dateOfRecording, objectName: "dateOfRecording"},
                                     {jsonName: jsonName_locationCode, objectName: "locationCode"},
-                                    {jsonName: jsonName_sealSex, objectName: "sealSex"},
-                                    {jsonName: jsonName_sealAgeCode, objectName: "sealAgeCode"},
-                                    {jsonName: jsonName_sealHasPupQuantity, objectName: "sealHasPupQuantity"},
                                     {jsonName: jsonName_mark1_isNew, objectName: "mark1_isNew?"},
                                     {jsonName: jsonName_mark1_idValue, objectName: "mark1_idValue"},
                                     {jsonName: jsonName_mark1_positionCode, objectName: "mark1_positionCode"},
-                                    {jsonName: jsonName_mark2_isNew, objectName: "mark2_isNew?"},
-                                    {jsonName: jsonName_mark2_idValue, objectName: "mark2_idValue"},
-                                    {jsonName: jsonName_mark2_positionCode, objectName: "mark2_positionCode"},
                                     {jsonName: jsonName_tag1_isNew, objectName: "tag1_isNew?"},
                                     {jsonName: jsonName_tag1_idValue, objectName: "tag1_idValue"},
                                     {jsonName: jsonName_tag1_positionCode, objectName: "tag1_positionCode"},
+                                    {jsonName: jsonName_sealAgeCode, objectName: "sealAgeCode"},
+                                    {jsonName: jsonName_sealSex, objectName: "sealSex"},
+                                    {jsonName: jsonName_sealHasPupQuantity, objectName: "sealHasPupQuantity"},
+                                    {jsonName: jsonName_mark2_isNew, objectName: "mark2_isNew?"},
+                                    {jsonName: jsonName_mark2_idValue, objectName: "mark2_idValue"},
+                                    {jsonName: jsonName_mark2_positionCode, objectName: "mark2_positionCode"},
                                     {jsonName: jsonName_tag2_isNew, objectName: "tag2_isNew?"},
                                     {jsonName: jsonName_tag2_idValue, objectName: "tag2_idValue"},
                                     {jsonName: jsonName_tag2_positionCode, objectName: "tag2_positionCode"},
                                     {jsonName: jsonName_sealMoltPercentage, objectName: "sealMoltPercentage"},
-                                    {jsonName: jsonName_currentSeason, objectName: "currentSeason"},
                                     {jsonName: jsonName_sealStandardLength, objectName: "sealStandardLength"},
                                     {jsonName: jsonName_sealCurvilinearLength, objectName: "sealCurvilinearLength"},
                                     {jsonName: jsonName_sealAxillaryGirth, objectName: "sealAxillaryGirth"},
@@ -126,7 +123,6 @@ var jsonName_to_objectName_map =  [ {jsonName: jsonName_fieldLeaderInitials, obj
                                     {jsonName: jsonName_sealFirstSeenAsWeaner, objectName: "sealFirstSeenAsWeaner"},
                                     {jsonName: jsonName_weanDateRange, objectName: "weanDateRangeange"},
                                     {jsonName: jsonName_comments, objectName: "comments"},
-                                    {jsonName: jsonName_observationEnteredInAno, objectName: "observationEnteredInAno"}
                                     
                                   ];
 
@@ -281,7 +277,6 @@ export class SpreadsheetTuple {
     this.mark2_idValue = Object.assign("", source.mark2_idValue);
     this.mark2_isNew = Object.assign("", source.mark2_isNew);
     this.mark2_positionCode = Object.assign("", source.mark2_positionCode);
-    this.observationEnteredInAno = Object.assign("", source.observationEnteredInAno);
     this.originalJsonInput = JSON.parse(JSON.stringify(source.originalJsonInput));
     this.processingErrorList = JSON.parse(JSON.stringify(source.processingErrorList));
     this.sealAgeCode = Object.assign("", source.sealAgeCode);
@@ -360,29 +355,25 @@ export class SpreadsheetTuple {
         // if we receive a field leader which does not yet exist, record an error for this field.
       }
 
-      // the actual current year (as opposed to breeding season year)
-      else if (field[KEY] == jsonName_year) {
-        // verify they gave us an integer
-        let value = parseInt(valueAsString);
-
-        if (value == NaN) {
-          var error = new TupleProcessingError(jsonName_year, "Error: received non-integer value for year");
-          tuple.processingErrorList.push(error);
-        }
-        else {
-          tuple.year = value;
-        }
-      }
-
       // date the observation was recorded
       else if (field[KEY] == jsonName_dateOfRecording) {
         try {
           var value: Date = new Date(valueAsString);  
           tuple.dateOfRecording = value;
+          let dates = valueAsString.split("/")
+          let calYear = parseInt(dates[2])
+          let calMonth = parseInt(dates[1])
+          if (calMonth > 8) {
+            calYear = calYear + 1
+          }
+
+          tuple.year = calYear
+          tuple.currentSeason = calYear.toString()
+          
         }
         catch (error) {
-          var error = new TupleProcessingError(jsonName_dateOfRecording, "Error: something that wasn't a date (MM/DD/YYYY)");
-          tuple.processingErrorList.push(error);
+          var push_error = new TupleProcessingError(jsonName_dateOfRecording, "Error: something that wasn't a date (MM/DD/YYYY)" + error.toString());
+          tuple.processingErrorList.push(push_error);
         }
       }
 
@@ -683,12 +674,6 @@ export class SpreadsheetTuple {
         
       }
 
-
-      else if (field[KEY] == jsonName_currentSeason) {
-        // Gotta be for the current season or some season in the past
-        tuple.currentSeason = valueAsString;
-      }
-
       else if (field[KEY] == jsonName_sealStandardLength) {
         // Gotta hve format of either: 
         //    "<numeric value> <units>"
@@ -813,23 +798,10 @@ export class SpreadsheetTuple {
         tuple.comments = valueAsString;
       }
 
-      else if (field[KEY] == jsonName_observationEnteredInAno) {
-        // WHAT THE HECK IS THIS FIELD FOR?????
-        let value = valueAsString;
-
-        if (value != "Y" && value != "N" && value != "") {
-          var error = new TupleProcessingError(jsonName_observationEnteredInAno, "Error: expected Y or N. Instead: " + value);
-          tuple.processingErrorList.push(error);
-        }
-        else {
-          tuple.observationEnteredInAno = value;
-        }
-      }
-
       else {
         // somehow we received a field that wasn't in our known list of fields
         console.log("ERROR: NO MATCH");
-        var error = new TupleProcessingError(field[KEY] as string, "Error: expected Y or N. Instead: " + value);
+        var error = new TupleProcessingError(field[KEY] as string, "Error: known field. Instead: " + field[KEY] + " " + valueAsString);
         tuple.processingErrorList.push(error);
       }
     }
@@ -931,8 +903,8 @@ export class SpreadsheetTuple {
                                 "Last seen as P" : sealLSAP,
                                 "1st seen as W" : sealFSAW,
                                 "Range (days)" : weanRange,
-                                "Comments" : this.comments,
-                                "Entered in Ano" : this.observationEnteredInAno};
+                                "Comments" : this.comments
+    }
 
     
 

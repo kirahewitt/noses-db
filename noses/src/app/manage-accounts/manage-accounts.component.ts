@@ -82,11 +82,10 @@ export class ManageAccountsComponent implements OnInit {
   /**
    * @param apiService : A reference to the rest API
    * @param authService : Reference to the service responsible for authorizing a user
-   * @param afAuth : Reference to the angular service for Firebase.
    * @param dialogMaterialService : Reference to the MatDialog service, which simplifies creating angular material 
    * dialogue popups
    */
-  constructor(private apiService: FlaskBackendService, public manageAccountsService: ManageAccountsService, public authService: AuthService, public afAuth: AngularFireAuth, public dialogMaterialService: MatDialog) { 
+  constructor(private apiService: FlaskBackendService, public manageAccountsService: ManageAccountsService, public authService: AuthService, public dialogMaterialService: MatDialog) { 
     let tempUser: User_Observer_Obj = new User_Observer_Obj();
     this.columns_forDisplay = Object.getOwnPropertyNames(tempUser);
     this.userLevelNames = ["Awaiting Account Approval", "Citizen Scientist", "Field Leader", "Admin"];

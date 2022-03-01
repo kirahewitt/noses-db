@@ -1,8 +1,4 @@
 import { Injectable, NgZone } from "@angular/core";
-import { User } from "../_supporting_classes/user";
-import { auth } from "firebase/app";
-import { AngularFireAuth } from "@angular/fire/auth";
-import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firestore";
 import { Router } from "@angular/router";
 import { Observable, of, BehaviorSubject } from  'rxjs';
 import { FlaskBackendService } from './flask-backend.service';
@@ -36,7 +32,6 @@ export class AuthService {
    * We are subscribing to the service AngularFireAuth. 
    * 
    * @param afs Inject Firestore service
-   * @param afAuth Inject Firebase auth service
    * @param router reference to the router, which will allow us to change the page the user is currently on.
    * @param ngZone NgZone service to remove outside scope warning
    */
