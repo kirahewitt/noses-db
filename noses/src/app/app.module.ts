@@ -97,7 +97,6 @@ import { FilterTypeSelectorComponent } from './_components/filter-type-selector/
 
 
 const config = {
-<<<<<<< HEAD
      apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
      authDomain: "noses-346ed.firebaseapp.com",
      databaseURL: "https://noses-346ed.firebaseio.com",
@@ -105,15 +104,6 @@ const config = {
      storageBucket: "noses-346ed.appspot.com",
      messagingSenderId: "924457799797"
  };
-=======
-  apiKey: "AIzaSyCJXpZDV0cQVK6kyg8B95PC5Iq1fRyRFJ4",
-  authDomain: "noses-346ed.firebaseapp.com",
-  databaseURL: "https://noses-346ed.firebaseio.com",
-  projectId: "noses-346ed",
-  storageBucket: "noses-346ed.appspot.com",
-  messagingSenderId: "924457799797"
-};
->>>>>>> 102128dda36a03b4ee2aea0475e7a92bc1b92955
 
 
 @NgModule({
