@@ -10,9 +10,9 @@ mysql = MySQL()
 # app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
 # Configuration - AWS iorourke@calpoly.edu
-app.config['MYSQL_DATABASE_USER'] = ''
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_USER'] = 'admin'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'nosesadmin'
 app.config['MYSQL_DATABASE_DB'] = 'sealDB'
-app.config['MYSQL_DATABASE_HOST'] = ''
+app.config['MYSQL_DATABASE_HOST'] = 'noses-sealdb.cbhu3f3kpqob.us-east-1.rds.amazonaws.com'
 
 mysql.init_app(app)
