@@ -2395,6 +2395,28 @@ def update_age():
         cursor.close()
         conn.close()
 
+@app.route('/updateSex', methods=['POST'])
+def update_sex():
+    print("updating sex")
+    conn = mysql.connect()
+    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        if request.method == 'POST':
+            _json = request.json
+            print(_json)
+            print("UPDATE Observations SET Sex=\""+_json['sex']+"\" WHERE ObservationID=\"" + str(_json['obsID']) + "\"")
+            cursor.execute("UPDATE Observations SET Sex=\""+_json['sex']+"\" WHERE ObservationID=\"" + str(_json['obsID']) + "\"")
+            conn.commit()
+            return jsonify("hellowtheienfosdnck")
+        else:
+            return jsonify('nothing to do')
+
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+
 
 # This is required to get this python program to run.
 if __name__ == "__main__":

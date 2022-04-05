@@ -232,7 +232,7 @@ export class AuthService {
    * back to the sign in page.
    */
   public IH_SignOut() {
-    alert("successfully logged out");
+    alert("Successfully Logged Out");
     this.IH_userIsValid = false;
     this.IH_userIsValid_bs.next(this.IH_userIsValid);
 

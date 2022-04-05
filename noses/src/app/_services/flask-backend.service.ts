@@ -33,7 +33,7 @@ export class FlaskBackendService {
    * @param sealDataService a local reference to the application-wide angular service that keeps track of the currently selected seal.
    */
   constructor(private httpClient: HttpClient, private sealDataService: SealDataService) {
-  this.FLASK_API_SERVER = "http://10.144.0.171:5000"
+  this.FLASK_API_SERVER = "http://192.168.1.8:5000"
   this.httpOptions = {
     headers: new HttpHeaders()
     .set('content-type', 'application/json')
@@ -893,12 +893,26 @@ export class FlaskBackendService {
    * 
    * @param obs 
    */
-  public updateAgeClass(obs: string) {
+  async updateAgeClass(obs: string) {
     let flask_endpoint = `${this.FLASK_API_SERVER}/updateAgeClass`;
 
     console.log(obs);
     return this.httpClient.post<string>(flask_endpoint, obs, this.httpOptions);
   }
 
+    /**
+   * 
+   * @param obs 
+   */
+     async updateSex(obs: string) {
+      let flask_endpoint = `${this.FLASK_API_SERVER}/updateSex`;
+  
+      console.log(obs);
+      await this.httpClient.post<string>(flask_endpoint, obs, this.httpOptions).toPromise()
+        .then(data => {
+          this.rows = data;
+        });
+  
+      return this.rows;    }
 
 }

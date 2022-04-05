@@ -78,7 +78,7 @@ export class SealPageComponent implements OnInit {
 
     // let tempObservation: SqlObservation = new SqlObservation();
     // this.displayedColumns = Object.getOwnPropertyNames(tempObservation);
-    this.displayedColumns = ['AgeClass', 'Sex', 'Date', 'SLOCode', 'Observer', 'Comments', 'LastSeenPup', 'FirstSeenWeaner', 'WeanDateRange', 'EnteredInAno',  'Edit', 'Delete'];
+    this.displayedColumns = ['AgeClass', 'Sex', 'Date', 'SLOCode', 'Observer', 'Comments', 'LastSeenPup', 'FirstSeenWeaner', 'WeanDateRange',  'Edit', 'Delete'];
 
 
     let loggedInUser_datastream = this.authService.IH_getUserData_bs();
@@ -254,7 +254,15 @@ export class SealPageComponent implements OnInit {
 
     this.apiService.deleteObs(JSON.stringify(obsID)).subscribe(() => this.apiService.readObs());
  }
-
+ 
+  onSubmit() {
+    if(this.sealForm.value.sex != "") {
+      var json_sealIdentifier = JSON.stringify({'obsID': this.sealRow.ObservationID, 'sex': this.sealForm.value.sex});
+        
+      this.apiService.updateSex(json_sealIdentifier)
+  }
+}
+ 
 
   // /**
   //  * this function needs to be rewritten to use BehaviorSubjects/Observables properly. 

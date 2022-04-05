@@ -229,10 +229,6 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         return tupleList;
     }
 
-  public downloadTemplate() {
-    window.alert("sometext");
-  }  
-
   /**
    * Checks whether the data is valid and can be uploaded. Displays a message answering that
    *  question. Then if it can be uploaded, it extacts the list of json objects from the SpreadsheetTuple
