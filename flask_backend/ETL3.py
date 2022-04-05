@@ -7,13 +7,10 @@ import pandas
 import mysql
 import csv
 from dateutil import parser
+from Observation import Observation
 
+exceptions = open("exceptions.csv", "w+")
 
-
-
-###########################################################################
-###########################################################################
-#not sure if i need to have this here too
 _FL = 0
 _YEAR = 1
 _DATE = 2
@@ -50,52 +47,7 @@ _LASTSEEN = 27
 _FIRSTSEEN = 28
 _RANGE = 29
 _COMMENTS = 30
-_ENTERANO = 31
-_SEALID = 32
-
-from Observation import Observation
-###########################################################################
-###########################################################################
-
-exceptions = open("exceptions.csv", "w+")
-
-FL = 0
-YEAR = 1
-DATE = 2
-LOC = 3
-SEX = 4
-AGE = 5
-PUP = 6
-
-NEWMARK = 7
-MARK = 8
-MARKPOS = 9
-
-NEWMARK2 = 10
-MARK2 = 11
-MARKPOS2 = 12
-
-NEWTAG = 13
-TAG1 = 14
-TAGPOS = 15
-
-NEWTAG2 = 16
-TAG2 = 17
-TAG2POS = 18
-
-MOLT = 19
-SEASON = 20
-STLENGTH = 21
-CRVLENGTH = 22
-AXGIRTH = 23
-MASS = 24
-TARE = 25
-MASSTARE = 26
-LASTSEEN = 27
-FIRSTSEEN = 28
-RANGE = 29
-COMMENTS = 30
-ENTERANO = 31
+_SEALID = 31
 
 approvalStatus = 1
 
@@ -145,9 +97,9 @@ def swapNulls(row):
     for index in range(len(row)):
         if (isinstance(row[index], str) and row[index] == ""):
             row[index] = "NULL"
-        elif (isinstance(row[index], str) and index not in [YEAR, DATE, MOLT, SEASON,
-            STLENGTH, CRVLENGTH, AXGIRTH, MASS, TARE, MASSTARE,
-            LASTSEEN, FIRSTSEEN]):
+        elif (isinstance(row[index], str) and index not in [_YEAR, _DATE, _MOLT, _SEASON,
+            _STLENGTH, _CRVLENGTH, _AXGIRTH, _MASS, _TARE, _MASSTARE,
+            _LASTSEEN, _FIRSTSEEN]):
             row[index] = "'" + row[index] + "'"
     # print row
 
@@ -214,23 +166,23 @@ def insert_observation(cnx, cursor, row, approvalStatus):
     
     print("OVER HERE APPROVAL STATUS IS: ")
     print(approvalStatus)
-    observerId = getOrAddObserver(cnx, cursor, row[FL])
+    observerId = getOrAddObserver(cnx, cursor, row[_FL])
     print("Observer: " + str(observerId))
-    if "_" in row[TAG1]:
-        print("Inside writeObs: {:s} {:s} {:s}".format(row[DATE], row[27], row[28]))
+    if "_" in row[_TAG1]:
+        print("Inside writeObs: {:s} {:s} {:s}".format(row[_DATE], row[27], row[28]))
 
     print("BEFORE BUILDING STRING:")
     print(json.dumps(row))
     statement = (   "INSERT INTO Observations(ObserverID, sex, date, MoltPercent, Comments, AgeClass, Year, SLOCode, isApproved, LastSeenPup, FirstSeenWeaner, WeanDateRange, EnteredInAno) "
                             " VALUES "
                             "(" + str(observerId) +
-                            ", " + row[SEX] +
-                            ", " + getDate(row[DATE]) +
-                            ", " + str(row[MOLT]) +
-                            ", " + surr_apos(row[COMMENTS].replace("'", "")) +
-                            ", " + str(row[AGE]) +
-                            ", " + str(row[YEAR]) +
-                            ", " + row[LOC] +
+                            ", " + row[_SEX] +
+                            ", " + getDate(row[_DATE]) +
+                            ", " + str(row[_MOLT]) +
+                            ", " + surr_apos(row[_COMMENTS].replace("'", "")) +
+                            ", " + str(row[_AGE]) +
+                            ", " + str(row[_YEAR]) +
+                            ", " + row[_LOC] +
                             ", " + str(approvalStatus) +
                             ", " + ((getDate(row[27])) if row[27] != "NULL" else row[27]) +
                             ", " + ((getDate(row[28])) if row[28] != "NULL" else row[28]) +
@@ -298,8 +250,8 @@ def getSealIdFromMark(cursor, mark, year):
 # Performs two actions:
 # (1) inserts a Marks tuple
 # (2) inserts a ObserveMarks tuple
-def addMark(cnx, cursor, row, observationID, sealID):
-    insert_mark(cnx, cursor, row, observationID, sealID)
+def addMark(cnx, cursor, row, mark, markPos, year, observationID, sealID):
+    insert_mark(cnx, cursor, row, mark, markPos, year, observationID, sealID)
     query = "SELECT MAX(MarkID) FROM Marks;"
     runQuery(cursor, query)
     row = cursor.fetchone()
@@ -313,19 +265,14 @@ def insert_observeMark(cnx, cursor, mark, observationID):
 
 # takes an observation from which to make a new mark
 # updates table with the new mark, with error checks
-def insert_mark(cnx, cursor, csvRow, obsID, sealID):
-    MARK    = 8
-    MARKPOS = 9
-    YEAR    = 1
-
+def insert_mark(cnx, cursor, csvRow, mark, markPos, year, obsID, sealID):
     # get the values for our sql statement
     t_markID = "NULL"
-    t_mark = csvRow[MARK].replace(" ", "")
-    t_markPosition = csvRow[MARKPOS]
+    t_mark =mark.replace(" ", "")
+    t_markPosition = markPos
     t_markDate = str(getDate(csvRow[2]))
-    t_year = csvRow[YEAR]
+    t_year = year
     t_observationID = str(obsID)
-    t_markSeal = str(sealID)
     
     print("Making insert mark statement")
     print("")
@@ -361,16 +308,16 @@ def getSealIDFromTag(cursor, tag):
         return int(row["SealID"])
 
 
-def addTag(cnx, cursor, row, tagNumber, observationID, sealID):
+def addTag(cnx, cursor, row, tagNumber, tagPos, observationID, sealID):
     print("test1.5")
-    insert_tag(cnx, cursor, row, tagNumber, observationID, sealID)
+    insert_tag(cnx, cursor, row, tagNumber, tagPos, observationID, sealID)
     print("test1.6")
-    insert_observeTag(cnx, cursor, tagNumber, observationID)
+    insert_observeTag(cnx, cursor, tagNumber, tagPos, observationID)
     print("test1.7")
 
 
 ## Adds a new tuple to the ObserveTags relation, which represents a tag sighted in a particular observation.
-def insert_observeTag(cnx, cursor, tagNumber, observationID):
+def insert_observeTag(cnx, cursor, tagNumber, tagPos, observationID):
     #getNewOTAG = "SELECT MAX(OTAG_ID) FROM ObserveTags;"
     #runQuery(cursor, getNewOTAG)
     #row = cursor.fetchone()
@@ -404,14 +351,13 @@ def getColor(tag):
 
 # takes an observation from which to make a new mark
 # updates table with the new mark, with error checks
-def insert_tag(cnx, cursor, csvRow, tagNumber, observationID, sealID):
-    TAGPOS  = 9
+def insert_tag(cnx, cursor, csvRow, tagNumber, tagPos, observationID, sealID):
 
     print("making insert tag statement")
     statement = ("INSERT INTO Tags(TagNumber, TagColor, TagPosition, TagDate) VALUES ("
                 + str(tagNumber) + ", "        # mark
                 + getColor(tagNumber) + ", "          # TODO write getTagColor(row[whichTag][0])
-                + csvRow[TAGPOS] + ", "
+                + tagPos + ", "
                 + str(getDate(csvRow[2])) + ");")        # 
     print(statement)
     try:
@@ -425,7 +371,7 @@ def pushMeasurement(cnx, cursor, obsID, row):
     newID = getTopMeasurement(cursor) + 1
 
     statement = "INSERT INTO Measurements VALUES ({:d}, {:d}, {:s}, {:s}, {:s}, {:s}, {:s});".format(newID, obsID, 
-            row[AXGIRTH], row[MASS], row[TARE], row[CRVLENGTH], row[STLENGTH])
+            row[_AXGIRTH], row[_MASS], row[_TARE], row[_CRVLENGTH], row[_STLENGTH])
     pushQuery(cnx, cursor, statement)
 
 def dropSeal(cnx, cursor, ID):
@@ -477,7 +423,7 @@ def consolidate(cnx, cursor, sealID, tags, marks):
 def insert_seal(cnx, cursor, row, observationID):
     # insert a seal into DB
     print("here")
-    statement = "INSERT INTO Seals VALUES (NULL, {:d}, {:s}, FALSE)".format(observationID, row[SEX])
+    statement = "INSERT INTO Seals VALUES (NULL, {:d}, {:s}, FALSE)".format(observationID, row[_SEX])
     pushQuery(cnx, cursor, statement)
 
     # get ID generated by auto-increment
@@ -494,12 +440,14 @@ def insert_seal(cnx, cursor, row, observationID):
 # adds all non-null tags/marks and then adds a seal, returning the sealID
 def addSeal(cnx, cursor, row, observationID):
     sealID = insert_seal(cnx, cursor, row, observationID)
-    if(row[MARK] != "NULL"):
-        addMark(cnx, cursor, row, observationID, sealID)
-    if(row[TAG1] != "NULL"):
-        addTag(cnx, cursor, row, row[TAG1], observationID, sealID)
-    if(row[TAG2] != "NULL"):
-        addTag(cnx, cursor, row, row[TAG2], observationID, sealID)
+    if(row[_MARK1] != "NULL"):
+        addMark(cnx, cursor, row, row[_MARK1], row[_MARKPOS1], row[_YEAR], observationID, sealID)
+    if(row[_MARK2] != "NULL"):
+        addMark(cnx, cursor, row, row[_MARK2], row[_MARKPOS2], row[_YEAR], observationID, sealID)
+    if(row[_TAG1] != "NULL"):
+        addTag(cnx, cursor, row, row[_TAG1], row[_TAGPOS1], observationID, sealID)
+    if(row[_TAG2] != "NULL"):
+        addTag(cnx, cursor, row, row[_TAG2], row[_TAGPOS2], observationID, sealID)
     return sealID
 
 
@@ -509,20 +457,16 @@ def addSeal(cnx, cursor, row, observationID):
 ##    t1ID = tag1 ID
 ##    t2ID = tag2 ID
 def positiveMin(IDs):
-    mainID = 99999999999
+    mainID = -1
 
     print("IDs[0] " + str(IDs[0]))
     print("IDs[1] " + str(IDs[1]))
     print("IDs[2] " + str(IDs[2]))
+    print("IDs[3] " + str(IDs[3]))
 
-    if IDs[0] != -1:
-        mainID = IDs[0]
-
-    if IDs[1] != -1 and IDs[1] < mainID:
-        mainID = IDs[1]
-
-    if IDs[2] != -1 and IDs[2] < mainID:
-        mainID = IDs[2]
+    posVals = [x for x in IDs if x > 0]
+    if len(posVals) > 0:
+        mainID = min(posVals)
 
     return mainID
 
@@ -553,22 +497,29 @@ def updateObserveSeal(cnx, cursor, oldSeal, newSeal):
 #  it will create it.
 # takes an observation and determines if the seal has been seen before
 def processObservation(cnx, cursor, row, approvalStatus):
+    mainID = -1
+
     observationID = insert_observation(cnx, cursor, row, approvalStatus)
 
-    if(row[STLENGTH] != "NULL" or row[CRVLENGTH] != "NULL" or row[AXGIRTH] != "NULL" or row[MASS] != "NULL" or row[TARE] != "NULL" or row[MASSTARE] != "NULL"):
+    if(row[_STLENGTH] != "NULL" or row[_CRVLENGTH] != "NULL" or row[_AXGIRTH] != "NULL" or row[_MASS] != "NULL" or row[_TARE] != "NULL" or row[_MASSTARE] != "NULL"):
         pushMeasurement(cnx, cursor, observationID, row)
     divergentT = []
     divergentM = []
     merge = False
     # see if any of the identifiers in this observation match an existing seal/dossier
-    mID = getSealIdFromMark(cursor, row[MARK], str(row[YEAR]))
     print("marked")
-    t1ID = getSealIDFromTag(cursor, row[TAG1])
+    if (row[_MARK1]):
+        mID = getSealIdFromMark(cursor, row[_MARK1], str(row[_YEAR]))
+    if (row[_MARK2]):
+        m2ID = getSealIdFromMark(cursor, row[_MARK2], str(row[_YEAR]))
     print("tagged")
-    if(row[TAG2]):
-        t2ID = getSealIDFromTag(cursor, row[TAG2])
+    if(row[_TAG1]):
+        t1ID = getSealIDFromTag(cursor, row[_TAG1])
+    if(row[_TAG2]):
+        t2ID = getSealIDFromTag(cursor, row[_TAG2])
 
-    mainID = positiveMin([mID, t1ID, t2ID])
+    mainID = positiveMin([mID, m2ID, t1ID, t2ID])
+
     if row[_SEALID] > 0:
         mainID = row[_SEALID]
     print("test4")
@@ -580,26 +531,25 @@ def processObservation(cnx, cursor, row, approvalStatus):
     #processMarks(observationRecord, cursor, row, approvalStatus)
 
     # if we don't find the marks or tags
-    if(row[_SEALID] <= 0 and mID == -1 and t1ID == -1 and t2ID == -1):
+    if(mainID == -1):
         mainID = addSeal(cnx, cursor, row, observationID)
     else:
 
-        # print("...Processing Mark...")
-        # # insert the mark if not already in the DB
-        # if (mID == -1 and row[MARK] != "NULL"):                 # didn't find markID    AND     a mark was specified
-        #     addMark(cnx, cursor, row, observationID, mainID)
-        # elif (mID != -1 and row[MARK] != "NULL"):               # found markID          AND     a mark was specified
-        #     query = "SELECT MarkID FROM Marks WHERE Mark = {:s};".format(row[MARK])
-        #     runQuery(cursor, query)
-        #     fetch = cursor.fetchone()
-        #     markid = fetch[0]
-        #     insert_observeMark(cnx, cursor, markid, observationID)
-
-        print("...Processing Mark...")
-        if (mID == -1 and row[MARK] != "NULL"):                 # didn't find markID    AND     a mark was specified
-            addMark(cnx, cursor, row, observationID, mainID)
-        elif (mID != -1 and row[MARK] != "NULL"):               # found markID          AND     a mark was specified
-            query = "SELECT MarkID FROM Marks WHERE Mark = {:s};".format(row[MARK])
+        print("...Processing Mark1...")
+        if (mID == -1 and row[_MARK1] != "NULL"):                 # didn't find markID    AND     a mark was specified
+            addMark(cnx, cursor, row, row[_MARK1], row[_MARKPOS1], row[_YEAR], observationID, mainID)
+        elif (mID != -1 and row[_MARK1] != "NULL"):               # found markID          AND     a mark was specified
+            query = "SELECT MarkID FROM Marks WHERE Mark = {:s};".format(row[_MARK1])
+            runQuery(cursor, query)
+            fetch = cursor.fetchone()
+            markid = fetch["MarkID"]
+            insert_observeMark(cnx, cursor, markid, observationID)
+        
+        print("...Processing Mark2...")
+        if (mID == -1 and row[_MARK2] != "NULL"):                 # didn't find markID    AND     a mark was specified
+            addMark(cnx, cursor, row, row[_MARK2], row[_MARKPOS2], row[_YEAR], observationID, mainID)
+        elif (mID != -1 and row[_MARK2] != "NULL"):               # found markID          AND     a mark was specified
+            query = "SELECT MarkID FROM Marks WHERE Mark = {:s};".format(row[_MARK2])
             runQuery(cursor, query)
             fetch = cursor.fetchone()
             markid = fetch["MarkID"]
@@ -608,41 +558,34 @@ def processObservation(cnx, cursor, row, approvalStatus):
         print("...Processing Tag1...")
         # insert tag1 if not already in the DB
         print("test0")
-        if (t1ID == -1 and row[TAG1] != "NULL"):                # didn't find tagnum    AND     a tag was specified
+        if (t1ID == -1 and row[_TAG1] != "NULL"):                # didn't find tagnum    AND     a tag was specified
             print("test1")
-            addTag(cnx, cursor, row, row[TAG1].strip(), observationID, mainID)
+            addTag(cnx, cursor, row, row[_TAG1].strip(), row[_TAGPOS1], observationID, mainID)
             print("test2")
         elif (t1ID != -1):                                      # found tagNum          AND     a tag was specified
-            insert_observeTag(cnx, cursor, row[TAG1].strip(), observationID)
+            insert_observeTag(cnx, cursor, row[_TAG1].strip(), observationID)
 
         print("...Processing Tag2...")
         # insert tag2 if not already in the DB
-        if (t2ID == -1 and row[TAG2] != "NULL"):
-            addTag(cnx, cursor, row, row[TAG2].strip(), observationID, mainID)
-        elif (t2ID != -1 and row[TAG2] != "NULL"):
-            insert_observeTag(cnx, cursor, row[TAG2].strip(), observationID)
+        if (t2ID == -1 and row[_TAG2] != "NULL"):
+            addTag(cnx, cursor, row, row[_TAG2].strip(), row[_TAGPOS2], observationID, mainID)
+        elif (t2ID != -1 and row[_TAG2] != "NULL"):
+            insert_observeTag(cnx, cursor, row[_TAG2].strip(), observationID)
 
 
         print("...divergent stuff...")
-        if(mID != mainID and row[MARK] != "NULL" and mID != -1):
+        if(mID != mainID and row[_MARK1] != "NULL" and mID != -1):
             divergentM.append(mID)
             merge = True
-        if(t1ID != mainID and row[TAG1] != "NULL" and t1ID != -1):
+        if(m2ID != mainID and row[_MARK2] != "NULL" and m2ID != -1):
+            divergentM.append(m2ID)
+            merge = True
+        if(t1ID != mainID and row[_TAG1] != "NULL" and t1ID != -1):
             divergentT.append(t1ID)
             merge = True
-        if(t2ID != mainID and row[TAG2] != "NULL" and t2ID !=  -1):
+        if(t2ID != mainID and row[_TAG2] != "NULL" and t2ID !=  -1):
             divergentT.append(t2ID)
             merge = True
-
-        # if(mID != mainID and row[MARK] != "NULL" and mID != -1):
-        #     divergentM.append(mID)
-        #     merge = True
-        # if(t1ID == None && mainID==- != mainID and row[TAG1] != "NULL" and t1ID != None):
-        #     divergentT.append(t1ID)
-        #     merge = True
-        # if(t2ID != mainID and row[TAG2] != "NULL" and t2ID !=  None):
-        #     divergentT.append(t2ID)
-        #     merge = True
 
         print("...Checking for need to merge...")
         if(merge is True):
@@ -704,15 +647,14 @@ def startUpdate(obj, cnx):
                 val["Last seen as P"],
                 val["1st seen as W"],
                 val["Range (days)"],
-                val["Comments"],
-                val["Entered in Ano"]]
+                val["Comments"]]
         if "SealId" in val:
             row.append(val["SealId"])
         else:
             row.append(0)
         print("before conditions")
         tableName = "Beach"
-        sloCode = row[LOC]
+        sloCode = row[_LOC]
         print(sloCode)
         isFound = canFind(cursor, tableName, sloCode, "SLOCode")
         print(isFound)
@@ -755,7 +697,6 @@ def startUpdate(obj, cnx):
               + ", " + str(val["1st seen as W"])
               + ", " + str(val["Range (days)"])
               + ", " + str(val["Comments"])
-              + ", " + str(val["Entered in Ano"])
               + ", " + "Location unkown" + "\n")
         
         i = i + 1

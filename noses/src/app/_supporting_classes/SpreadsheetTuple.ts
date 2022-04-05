@@ -360,10 +360,9 @@ export class SpreadsheetTuple {
         try {
           var value: Date = new Date(valueAsString);  
           tuple.dateOfRecording = value;
-          let dates = valueAsString.split("/")
-          let calYear = parseInt(dates[2])
-          let calMonth = parseInt(dates[1])
-          if (calMonth > 8) {
+          let calYear = value.getFullYear()
+          let calMonth = value.getMonth()
+          if (calMonth > 7) {
             calYear = calYear + 1
           }
 

@@ -34,7 +34,6 @@ _LASTSEEN = 27
 _FIRSTSEEN = 28
 _RANGE = 29
 _COMMENTS = 30
-_ENTERANO = 31
 
 class Observation:
     def __init__(self, csvRow):
@@ -79,4 +78,3 @@ class Observation:
 
         self.range = csvRow[_RANGE]
         self.comments = csvRow[_COMMENTS]
-        self.enteredInAno = csvRow[_ENTERANO]

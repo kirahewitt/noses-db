@@ -214,7 +214,6 @@ export class NewObservationComponent implements OnInit {
                 fullData["Last seen as P"] = "";
                 fullData["1st seen as W"] = "";
                 fullData["Range (days)"] = "";
-                fullData["Entered in Ano"] = "";
                 fullData["Season"] = 2018;
                 fullData["LastSeenPup"] = "";
                 fullData["FirstSeenWeaner"] = "";

@@ -12,6 +12,8 @@ import {
 import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
+import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
+
 
 @Component({
   selector: 'app-approve-observations',
@@ -62,6 +64,7 @@ export class ApproveObservationsComponent implements OnInit {
               public afAuth: AngularFireAuth,
               private sealData: SealDataService,
               private adminStatus: AdminService,
+              private dossierHelperService: DossierViewHelperService,
               public router: Router) { }
 
   onClick(name) {
@@ -234,6 +237,8 @@ export class ApproveObservationsComponent implements OnInit {
   }
 
   selectSeal(row) {
+    let selectedSealdId: number = row['SealID'];
+    this.dossierHelperService.populateViaSealId(selectedSealdId);
     this.sealData.setCurrentSealState(row);
     this.router.navigate(["seal-page"]);
   }

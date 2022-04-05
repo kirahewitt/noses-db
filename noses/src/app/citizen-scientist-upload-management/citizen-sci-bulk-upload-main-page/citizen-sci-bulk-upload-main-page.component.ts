@@ -229,6 +229,9 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         return tupleList;
     }
 
+  public downloadTemplate() {
+    window.alert("sometext");
+  }  
 
   /**
    * Checks whether the data is valid and can be uploaded. Displays a message answering that
