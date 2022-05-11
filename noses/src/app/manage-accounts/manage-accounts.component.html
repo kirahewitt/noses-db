@@ -1,32 +1,17 @@
 
 
-<br>
-<br>
-<div class="row">
-
-
-  <div class="col-md-1"></div>
-
-  <div class="col-md-10">
-    <h4 class="center-heading">Manage Accounts</h4>
-  </div>
-
-  <div class="col-md-1"></div>
-
-  
-</div>
+<h1 class="title is-2 title-container">Manage Accounts</h1>
 <div class="row">
   <div class="col-md-3"></div>
-  <div class="col-md-9"></div>
+  <div class="col-md-6">
+    <h4 class="center-heading">Admin Approved Users</h4>
+  </div>
   <div class="col-md-3">
     <button mat-button  [disabled]="isAdmin === false" class="mat-raised-button mat-primary" (click)="openAddUserDialog()"><i class="fas fa-plus add-obs"></i> Add User</button>
+    <p></p>
   </div>
+  <!-- <div class="col-md-1"></div> -->
 </div>
-
-<br>
-<br>
-
-
 
 <!-- Table for all active accounts -->
 <div class="row">

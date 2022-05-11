@@ -1,15 +1,15 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
-import { SpreadsheetTuple, TupleProcessingError } from '../../_supporting_classes/SpreadsheetTuple';
 
 // imports that will let us use modal windows
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig} from '@angular/material/dialog';
-import { EditObservationDialogComponent } from 'src/app/edit-observation-dialog/edit-observation-dialog.component';
+// import { EditObservationDialogComponent } from 'src/app/edit-observation-dialog/edit-observation-dialog.component';
 import {MatPaginator} from '@angular/material/paginator';
 import { MatTableDataSource, MatSnackBar } from '@angular/material';
 import { FlaskBackendService } from 'src/app/_services/flask-backend.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { User_Observer_Obj } from 'src/app/_supporting_classes/sqlUser';
+import { BacklogSpreadsheetTuple } from 'src/app/_supporting_classes/BacklogSpreadsheetTuple';
 // import { DatePipe } from '@angular/common';
 
 
@@ -38,7 +38,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     private fileData: any[];
     private tupleTableStructList: TupleStructForTable[];
 
-    public observationTuples : SpreadsheetTuple[];
+    public observationTuples : BacklogSpreadsheetTuple[];
     public displayedColumns: string[];
     public dataSource: MatTableDataSource<TupleStructForTable>;
 
@@ -87,38 +87,38 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
 
 
-    /**
-     * Causes a dialog to appear that contains a form, which is used to edit the records uploaded
-     *  to the browser, validated and corrected, and sent to the DB.
-     * @param observationIndex: The index of the observation in the list provided by the
-     *  user.
-     */
-    public openDialog(observationIndex: number): void {
-        event.preventDefault();
+    // /**
+    //  * Causes a dialog to appear that contains a form, which is used to edit the records uploaded
+    //  *  to the browser, validated and corrected, and sent to the DB.
+    //  * @param observationIndex: The index of the observation in the list provided by the
+    //  *  user.
+    //  */
+    // public openDialog(observationIndex: number): void {
+    //     event.preventDefault();
 
-        // establish the settings for our dialog
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = true;
-        dialogConfig.autoFocus = true;
-        dialogConfig.width = "50%";
+    //     // establish the settings for our dialog
+    //     const dialogConfig = new MatDialogConfig();
+    //     dialogConfig.disableClose = true;
+    //     dialogConfig.autoFocus = true;
+    //     dialogConfig.width = "50%";
 
-        // establish the data that will be passed to the dialog
-        dialogConfig.data = {
-            obsList : this.observationTuples,
-            obsIndex : observationIndex
-        };
+    //     // establish the data that will be passed to the dialog
+    //     dialogConfig.data = {
+    //         obsList : this.observationTuples,
+    //         obsIndex : observationIndex
+    //     };
 
-        // set up a subcription to receive any modified data from the dialog after it is closed
-        const dialogRef = this.dialogMaterialService.open(EditObservationDialogComponent, dialogConfig);
-        dialogRef.afterClosed().subscribe( result => {
-            console.log("Dialog output: ", result);
+    //     // set up a subcription to receive any modified data from the dialog after it is closed
+    //     const dialogRef = this.dialogMaterialService.open(EditObservationDialogComponent, dialogConfig);
+    //     dialogRef.afterClosed().subscribe( result => {
+    //         console.log("Dialog output: ", result);
 
-            if (result != undefined) {
-                this.overwriteModifiedTuple(observationIndex, result);
-            }
-        });
+    //         if (result != undefined) {
+    //             this.overwriteModifiedTuple(observationIndex, result);
+    //         }
+    //     });
 
-    }
+    // }
 
 
     /**
@@ -136,15 +136,13 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         var tupleToOverwrite = this.observationTuples[observationIndex];
         tupleToOverwrite.originalJsonInput = result.originalJsonInput;
         // observation bookkeeping section
-        tupleToOverwrite.fieldLeaderList = result.fieldLeaderList;
-        tupleToOverwrite.year = result.year;
+        tupleToOverwrite.fieldLeaderInitials = result.fieldLeaderList;
         tupleToOverwrite.dateOfRecording = result.dateOfRecording;
         tupleToOverwrite.locationCode = result.locationCode;
-        tupleToOverwrite.currentSeason = result.currentSeason;
         // seal attribute section
         tupleToOverwrite.sealSex = result.sealSex;
         tupleToOverwrite.sealAgeCode = result.sealAgeCode;
-        tupleToOverwrite.sealHasPupQuantity = result.sealHasPupQuantity;
+        tupleToOverwrite.sealHasPup = result.sealHasPupQuantity;
         // mark section
         tupleToOverwrite.mark1_idValue = result.mark1_idValue;
         tupleToOverwrite.mark1_isNew = result.mark1_isNew;
@@ -162,20 +160,14 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
         // measurement section
         tupleToOverwrite.sealMoltPercentage = result.sealMoltPercentage;
         tupleToOverwrite.sealStandardLength = result.sealStandardLength;
-        tupleToOverwrite.sealStandardLength_units = result.sealStandardLength_units;
         tupleToOverwrite.sealCurvilinearLength = result.sealCurvilinearLength;
-        tupleToOverwrite.sealCurvilinearLength_units = result.sealCurvilinearLength_units;
         tupleToOverwrite.sealAxillaryGirth = result.sealAxillaryGirth;
-        tupleToOverwrite.sealAxillaryGirth_units = result.sealAxillaryGirth_units;
         tupleToOverwrite.sealMass = result.sealMass;
-        tupleToOverwrite.sealMass_units = result.sealMass_units;
         tupleToOverwrite.sealTare = result.sealTare;
-        tupleToOverwrite.sealTare_units = result.sealTare_units;
-        tupleToOverwrite.sealMassTare = result.sealMassTare;
-        tupleToOverwrite.sealMassTare_units = result.sealMassTare_units;
+        tupleToOverwrite.sealMassMinusTare = result.sealMassTare;
         // last section
-        tupleToOverwrite.sealLastSeenAsPupDate = new Date(result.sealLastSeenAsPupDate.toString());
-        tupleToOverwrite.sealFirstSeenAsWeaner = new Date(result.sealFirstSeenAsWeaner.toString());
+        tupleToOverwrite.sealLastSeenAsPupDate = result.sealLastSeenAsPupDate.toString();
+        tupleToOverwrite.sealFirstSeenAsWeaner = result.sealFirstSeenAsWeaner.toString();
         tupleToOverwrite.weanDateRange = result.weanDateRange;
         tupleToOverwrite.comments = result.comments;
     }
@@ -214,14 +206,14 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
     /**
      * Receives an object representing the csv file as json. For each element of the list, 
-     * it calls the constructor of the SpreadsheetTuple object.
+     * it calls the constructor of the BacklogSpreadsheetTuple object.
      * @param fileData 
      */
-    public processSpreadsheetFile(fileTupleList: any[]): SpreadsheetTuple[] {
-        var tupleList: SpreadsheetTuple[] = [];
+    public processSpreadsheetFile(fileTupleList: any[]): BacklogSpreadsheetTuple[] {
+        var tupleList: BacklogSpreadsheetTuple[] = [];
 
         for (var tuple of fileTupleList) {
-            var newTupleObj = new SpreadsheetTuple(tuple);
+            var newTupleObj = new BacklogSpreadsheetTuple(tuple);
             newTupleObj.validateTupleData();
             tupleList.push(newTupleObj);
         }
@@ -238,7 +230,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
     var snackbarMessage: string;
     
     if (this.getErroneousObservationIndices().length > 0) {
-      snackbarMessage = "WARNING: You cannot submit this upload until you correct all errors.";
+      snackbarMessage = "WARNING: Fatal Error Unknown Spreadsheet Header Field";
       this.displaySnackbarMessage(snackbarMessage);
       console.log(this.getErroneousObservationIndices().toString)
     }
@@ -252,8 +244,8 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
       console.log(extractedJsonData);
 
 
-      var fullData = [extractedJsonData, {"isApproved" : 0}];
-      this.apiService.addObservations(JSON.stringify(fullData)).subscribe(() => this.apiService.readObs());
+      var fullData = extractedJsonData;
+      this.apiService.addToBacklog(JSON.stringify(fullData)).subscribe(() => this.apiService.readObs());
     }    
   }
 
@@ -283,7 +275,7 @@ export class CitizenSciBulkUploadMainPageComponent implements OnInit {
 
         var i = 0;
         for (var tuple of this.observationTuples) {
-            if (tuple.processingErrorList.length > 0) {
+            if (tuple.fatalErrorList.length > 0) {
                 indexList.push(i);
                 let testErrorMessage = "ERRONEOUS OBSERVATION # -- " + i.toString();
                 console.log(testErrorMessage);

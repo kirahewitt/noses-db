@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observations } from '../_supporting_classes/Observations';
+import { StagedObservations } from '../_supporting_classes/StagedObservation';
 import { sqlUser, sqlUser_full, user_forCreateNewUser, User_Observer_Obj, user_forCreateNewUser_byAdmin } from '../_supporting_classes/sqlUser';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -33,7 +34,7 @@ export class FlaskBackendService {
    * @param sealDataService a local reference to the application-wide angular service that keeps track of the currently selected seal.
    */
   constructor(private httpClient: HttpClient, private sealDataService: SealDataService) {
-  this.FLASK_API_SERVER = "http://192.168.1.8:5000"
+  this.FLASK_API_SERVER = "http://10.144.2.165:5000"
   this.httpOptions = {
     headers: new HttpHeaders()
     .set('content-type', 'application/json')
@@ -74,8 +75,16 @@ export class FlaskBackendService {
     return this.httpClient.get<Observations[]>(`${this.FLASK_API_SERVER}/notapproved`);
   }
 
+  public getStaged(): Observable<StagedObservations[]> {
+    return this.httpClient.get<StagedObservations[]>(`${this.FLASK_API_SERVER}/getstaged`);
+  }
+
   public addObservations(user: string): Observable<string> {
     return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addobservations`, user, this.httpOptions).pipe(catchError(this.alertError));
+  }
+
+  public addToBacklog(user: string): Observable<string> {
+    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addtobacklog`, user, this.httpOptions).pipe(catchError(this.alertError));
   }
 
   /** 
@@ -99,10 +108,19 @@ export class FlaskBackendService {
     return obsId;
   }
 
+  async removeStaged(stagedId: number) {
+    console.log(stagedId);
+    await this.httpClient.post<number>(`${this.FLASK_API_SERVER}/removestaged`, { "stagedID": stagedId }, this.httpOptions).toPromise()
+      // .then(data => {
+      //   stagedId = data["stagedID"];
+      // });
+    return stagedId;
+  }
+
 
   private alertError(error) {
 
-    window.alert("Something went wrong. Try Again.")
+    // window.alert("Something went wrong. Try Again.")
     return throwError(error);
   }
 
@@ -490,7 +508,6 @@ export class FlaskBackendService {
             tempSqlObs.LastSeenPup = json_obs['LastSeenPup'];
             tempSqlObs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
             tempSqlObs.WeanDateRange = json_obs['WeanDateRange'];
-            tempSqlObs.EnteredInAno = json_obs['EnteredInAno'];
             tempSqlObs.isProcedure = json_obs['isProcedure'];
             tempSqlObs.isDeprecated = json_obs['isDeprecated'];
 
@@ -531,7 +548,6 @@ export class FlaskBackendService {
           sqlobs.LastSeenPup = json_obs['LastSeenPup'];
           sqlobs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
           sqlobs.WeanDateRange = json_obs['WeanDateRange'];
-          sqlobs.EnteredInAno = json_obs['EnteredInAno'];
           sqlobs.isProcedure = json_obs['isProcedure'];
           sqlobs.isDeprecated = json_obs['isDeprecated'];
 
@@ -579,7 +595,6 @@ export class FlaskBackendService {
         sqlobs.LastSeenPup = json_obs['LastSeenPup'];
         sqlobs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
         sqlobs.WeanDateRange = json_obs['WeanDateRange'];
-        sqlobs.EnteredInAno = json_obs['EnteredInAno'];
         sqlobs.isProcedure = json_obs['isProcedure'];
         sqlobs.isDeprecated = json_obs['isDeprecated'];
 
@@ -621,7 +636,6 @@ export class FlaskBackendService {
         sqlobs.LastSeenPup = json_obs['LastSeenPup'];
         sqlobs.FirstSeenWeaner = json_obs['FirstSeenWeaner'];
         sqlobs.WeanDateRange = json_obs['WeanDateRange'];
-        sqlobs.EnteredInAno = json_obs['EnteredInAno'];
         sqlobs.isProcedure = json_obs['isProcedure'];
         sqlobs.isDeprecated = json_obs['isDeprecated'];
 
@@ -906,6 +920,21 @@ export class FlaskBackendService {
    */
      async updateSex(obs: string) {
       let flask_endpoint = `${this.FLASK_API_SERVER}/updateSex`;
+  
+      console.log(obs);
+      await this.httpClient.post<string>(flask_endpoint, obs, this.httpOptions).toPromise()
+        .then(data => {
+          this.rows = data;
+        });
+  
+      return this.rows;    }
+
+          /**
+   * 
+   * @param obs 
+   */
+     async updateSexBacklog(obs: string) {
+      let flask_endpoint = `${this.FLASK_API_SERVER}/updateSexBacklog`;
   
       console.log(obs);
       await this.httpClient.post<string>(flask_endpoint, obs, this.httpOptions).toPromise()

@@ -1,35 +1,11 @@
+
 <div>
-    <br>
-    <br>
+  <h1 class="title is-2 title-container">All Seals</h1>
 
-    <!-- top row -->
-    <div class="row">
-        <div class="col-md-5"></div>
-        <div class="col-md-2">
-            <h1 class="title is-2 title-container">All Seals</h1>
-        </div>
-        <div class="col-md-3"></div>
-        <button (click)="downloadCSV()" class="btn btn-success">Download</button>
-    </div>
-
-    <br>
 
     <!-- spinner - bootstrap rows and cols used to put it in desired location -->
-    <div class="row">
-      <div class="col-md-5"></div>
-      <div class="col-md-2">
-      <div [hidden]="!notReady">
-        <br>
-        <br>
-        <br>
-        <mat-spinner></mat-spinner>
-      </div>
-      </div>
-    </div>
     <div [hidden]="notReady">
-    <div class="row">
-      
-    </div>
+    
     <div class="row">
 
 
@@ -38,6 +14,7 @@
           <div class="container">
             <div class="row">
               <div class="col-md-12 mx-auto">
+                <p>Search (Use * for unknown characters. Ex: PBM*8)</p>
                 <div class="md-form">
                   <input
                     type="text"
@@ -47,7 +24,7 @@
                     (input)="searchText = search.value"
                     mdbInput
                   />
-                  <label for="search">Search (Use * for unknown characters. Ex: PBM*8)</label>
+                  <label for="search"></label>
                 </div>
               </div>
             </div>

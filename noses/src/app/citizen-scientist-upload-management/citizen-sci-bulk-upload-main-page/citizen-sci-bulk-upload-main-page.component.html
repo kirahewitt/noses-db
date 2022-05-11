@@ -1,3 +1,4 @@
+<h1 class="title is-2 title-container">Bulk Upload Observations</h1>
 <div class="bulk-upload-body">
 
   <!-- ** JUMBOTRON ** -->
@@ -6,7 +7,6 @@
       <!-- Page Title Column -->
       <div class="col-md-4">
         <div class="padding-left-25">
-          <h1 class="display-4">CSV Bulk Upload</h1>
           <p>Upload your own observations.</p>
           <a href="../../assets/template.csv" download="template">
           <button class="btn btn-primary btn-sm">Download the Template</button>
@@ -83,7 +83,7 @@
           <td class="align-middle">{{tuple.tag2_idValue}}</td>
           <td class="align-middle">{{tuple.mark1_idValue}}</td>
           <td class="align-middle">{{tuple.mark2_idValue}}</td>
-          <td class="align-middle">{{convertDateObjToDateString(tuple.dateOfRecording)}}</td>
+          <td class="align-middle">{{tuple.dateOfRecording}}</td>
           <td class="align-middle">{{tuple.locationCode}}</td>
           <td class="align-middle">{{loggedInUser.firstName}} {{loggedInUser.lastName}}</td>
           <td>

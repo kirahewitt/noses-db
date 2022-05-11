@@ -146,6 +146,8 @@ CREATE TABLE `Measurements` (
   `TotalMass` double(12,2) DEFAULT NULL,
   `CurvilinearLength` double(12,2) DEFAULT NULL,
   `StandardLength` double(12,2) DEFAULT NULL,
+  `MassTare` double(12,2) DEFAULT NULL,
+  `Tare` double(12,2) DEFAULT NULL,
   PRIMARY KEY (`MeasurementID`),
   KEY `ObservationID` (`ObservationID`),
   CONSTRAINT `measurements_ibfk_1` FOREIGN KEY (`ObservationID`) REFERENCES `Observations` (`ObservationID`)
@@ -346,15 +348,35 @@ DROP TABLE IF EXISTS `StagedObservations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `StagedObservations` (
-  `StagedID` int(11) NOT NULL,
-  `ObsID` int(11) NOT NULL,
-  `MoltPercent` int(11) NOT NULL,
-  `Comments` varchar(240) NOT NULL,
-  `Date` date NOT NULL,
-  `Sex` varchar(1) NOT NULL,
-  `AgeClass` varchar(30) NOT NULL,
-  KEY `stagedobservations_ibfk_1` (`ObsID`),
-  CONSTRAINT `stagedobservations_ibfk_1` FOREIGN KEY (`ObsID`) REFERENCES `Observers` (`ObsID`)
+  `StagedID` int(11) NOT NULL AUTO_INCREMENT,
+  `Initials` varchar(30) DEFAULT NULL,
+  `MoltPercent` varchar(30) DEFAULT NULL,
+  `Date` varchar(30) DEFAULT NULL,
+  `Sex` varchar(30) DEFAULT NULL,
+  `Location` varchar(30) DEFAULT NULL,
+  `AgeClass` varchar(30) DEFAULT NULL,
+  `NewMark1` varchar(30) DEFAULT NULL,
+  `NewMark2` varchar(30) DEFAULT NULL,
+  `NewTag1` varchar(30) DEFAULT NULL,
+  `NewTag2` varchar(30) DEFAULT NULL,
+  `Mark1` varchar(30) DEFAULT NULL,
+  `Mark2` varchar(30) DEFAULT NULL,
+  `Tag1` varchar(30) DEFAULT NULL,
+  `Tag2` varchar(30) DEFAULT NULL,
+  `MarkPos1` varchar(30) DEFAULT NULL,
+  `MarkPos2` varchar(30) DEFAULT NULL,
+  `TagPos1` varchar(30) DEFAULT NULL,
+  `TagPos2` varchar(30) DEFAULT NULL,
+  `Pup` varchar(30) DEFAULT NULL,
+  `StLength` varchar(30) DEFAULT NULL,
+  `CrvLength` varchar(30) DEFAULT NULL,
+  `AxGirth` varchar(30) DEFAULT NULL,
+  `Mass` varchar(30) DEFAULT NULL,
+  `Tare`varchar(30) DEFAULT NULL,
+  `LastSeenP` varchar(30) DEFAULT NULL,
+  `FirstSeenW` varchar(30) DEFAULT NULL,
+  `Comments` varchar(240) DEFAULT NULL,
+  PRIMARY KEY (`StagedID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

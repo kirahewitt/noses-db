@@ -116,6 +116,7 @@ thead, tbody tr {
 
 .flex-column {
     flex-direction: column;
+    // padding-right: 30px;
     margin:-10px;
 }
 
@@ -156,4 +157,8 @@ thead, tbody tr {
     position:absolute;
     bottom: 3%;
     right: 5%;
+}
+
+input:required:invalid {
+    outline: none;
 }

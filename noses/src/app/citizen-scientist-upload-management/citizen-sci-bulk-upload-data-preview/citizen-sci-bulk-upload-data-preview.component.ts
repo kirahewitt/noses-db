@@ -46,7 +46,6 @@ export class CitizenSciBulkUploadDataPreviewComponent implements OnInit {
   //                       "Season": this.sealForm.value.Season, "St. Length": this.sealForm.value.stLength, "Crv. Length": this.sealForm.value.crvLength,
   //                       "Ax. Girth": this.sealForm.value.axGirth, "Mass": this.sealForm.value.Mass, "Tare": this.sealForm.value.Tare,
   //                       "Mass-Tare": this.sealForm.value.massTare, "Last seen as P": this.sealForm.value.lastSeenP, "1st seen as W": this.sealForm.value.fstWeen,
-  //                       "Range (days)": this.sealForm.value.Range, "Comments": this.sealForm.value.Comments, "Entered in Ano": this.sealForm.value.enterAno}],
   //                       {"isApproved": this.approvalStatus}];
 
   //   this.apiService.addObservations(JSON.stringify(this.sealUpload)).subscribe(() => this.apiService.readObs());

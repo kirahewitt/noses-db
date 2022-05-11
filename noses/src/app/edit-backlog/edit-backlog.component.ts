@@ -10,17 +10,18 @@ import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { User_Observer_Obj } from '../_supporting_classes/sqlUser';
 import { BacklogSpreadsheetTuple } from '../_supporting_classes/BacklogSpreadsheetTuple';
+import { assertNotNull } from '@angular/compiler/src/output/output_ast';
 
 @Component({
-  selector: 'app-new-observation',
-  templateUrl: './new-observation.component.html',
-  styleUrls: ['./new-observation.component.scss']
+  selector: 'app-edit-backlog',
+  templateUrl: './edit-backlog.component.html',
+  styleUrls: ['./edit-backlog.component.scss']
 })
-export class NewObservationComponent implements OnInit {
+export class EditBacklogComponent implements OnInit {
 
     public form : FormGroup;
 
-    public observationTuple :  BacklogSpreadsheetTuple;
+    public observationTuple : BacklogSpreadsheetTuple;
     public observationTuples : BacklogSpreadsheetTuple[];
     public currentUserEmail : string;
 
@@ -29,6 +30,8 @@ export class NewObservationComponent implements OnInit {
 
     public loggedInUser: User_Observer_Obj;
     public currentUserIsValid: boolean;
+
+    public stagedId: number;
 
     /**
      * 
@@ -82,7 +85,20 @@ export class NewObservationComponent implements OnInit {
           this.currentUserIsValid = retval;
         });
 
-         this.observationTuple = new BacklogSpreadsheetTuple(null);
+         let newObject = window.localStorage.getItem("currentObs");
+         this.stagedId = parseInt(window.localStorage.getItem("currentStagedId"));
+         this.observationTuple = JSON.parse(newObject);
+        //  var jsonData = window.localStorage.getItem("currentObs");
+        //  console.log("jsonData");
+        //  console.log(jsonData.toString());
+        //  if (jsonData != null) {
+        //     // var bTuple = new BacklogSpreadsheetTuple(jsonData);
+        //     // bTuple.validateTupleData();
+        //     // this.observationTuple = bTuple;
+        //     // console.log("TUPLE SUCCESSFULLY LOADED");
+        //     // console.log(jsonData);
+        //     // console.log(this.observationTuple)
+        //  }
 
         // set up the form and its validation
         this.form = this.formBuilder.group({
@@ -91,7 +107,6 @@ export class NewObservationComponent implements OnInit {
             fieldLeaderList: [this.observationTuple.fieldLeaderInitials, []],
             dateOfRecording : [this.observationTuple.dateOfRecording, []],
             locationCode : [this.observationTuple.locationCode, []],
-
 
             sealSex : [this.observationTuple.sealSex, [ValidationService.validate_sealSex]],
             sealAgeCode : [this.observationTuple.sealAgeCode, [ValidationService.validate_sealAgeCode]],
@@ -143,23 +158,33 @@ export class NewObservationComponent implements OnInit {
         return this.form.controls[controlName].hasError(errorName);
     }
 
-
-   /**
-     * Receives an object representing the csv file as json. For each element of the list, 
-     * it calls the constructor of the SpreadsheetTuple object.
-     * @param fileData 
-     */
-    public processSpreadsheetFile(tupleList: BacklogSpreadsheetTuple[]): BacklogSpreadsheetTuple[] {
-        var tupleList: BacklogSpreadsheetTuple[] = [];
-
-        for (var tuple of tupleList) {
-            var newTupleObj = new BacklogSpreadsheetTuple(tuple);
-            newTupleObj.validateTupleData();
-            tupleList.push(newTupleObj);
-        }
-
-        return tupleList;
+    async onSubmit() {
+        if(this.observationTuple.sealSex != "") {
+            console.log(this.observationTuple.sealSex)
+          var json_sealIdentifier = JSON.stringify({'stagedID': this.stagedId, 'sex': this.observationTuple.sealSex});
+          console.log(json_sealIdentifier)
+          await this.apiService.updateSexBacklog(json_sealIdentifier)
+          this.router.navigate(["approve-obs"]);
+      }
     }
+
+
+//    /**
+//      * Receives an object representing the csv file as json. For each element of the list, 
+//      * it calls the constructor of the SpreadsheetTuple object.
+//      * @param fileData 
+//      */
+//     public SpreadsheetTuple(tupleList: SpreadsheetTuple[]): SpreadsheetTuple[] {
+//         var tupleList: SpreadsheetTuple[] = [];
+
+//         for (var tuple of tupleList) {
+//             var newTupleObj = new SpreadsheetTuple(tuple);
+//             newTupleObj.validateTupleData();
+//             tupleList.push(newTupleObj);
+//         }
+
+//         return tupleList;
+//     }
 
 
 

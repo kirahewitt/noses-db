@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { FlaskBackendService } from '../_services/flask-backend.service';
-import { Observations } from  '../_supporting_classes/Observations';
+import { StagedObservations } from  '../_supporting_classes/StagedObservation';
 import { MatTableModule, MatTableDataSource, MatPaginator, MatSelect, MatProgressSpinner, } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { AuthService } from "../_services/auth.service";
@@ -13,6 +13,8 @@ import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { AdminService } from "../_services/admin.service";
 import { DossierViewHelperService } from '../_services/dossier-view-helper.service';
+import { BacklogSpreadsheetTuple } from '../_supporting_classes/BacklogSpreadsheetTuple';
+import { SpreadsheetTuple } from '../_supporting_classes/SpreadsheetTuple';
 
 
 @Component({
@@ -25,7 +27,7 @@ export class ApproveObservationsComponent implements OnInit {
   filters: string[] = [];
 
   userData: any;
-  observations: Observations[];
+  observations: StagedObservations[];
   dataSource: any;
 
   obsID: any;
@@ -75,12 +77,12 @@ export class ApproveObservationsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.apiService.readNotApproved().subscribe((observations: any)=>{
+    this.apiService.getStaged().subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal', 'approveObs', 'deleteObs' ];
+        this.displayedColumns = ['Checked', 'StagedID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal', 'approveObs', 'deleteObs'];
+        this.displayedColumns = ['Checked', 'StagedID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;
@@ -200,10 +202,10 @@ export class ApproveObservationsComponent implements OnInit {
   filterObs() {
     this.apiService.readNotApproved().subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal' ];
+        this.displayedColumns = ['Checked', 'StagedID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['ObservationID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
+        this.displayedColumns = ['Checked', 'StagedID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;
@@ -219,6 +221,64 @@ export class ApproveObservationsComponent implements OnInit {
       console.log(row.ObservationID);
       return this.apiService.approveObs(row.ObservationID);
     }
+  }
+
+  approveStaged(obs: StagedObservations): any{
+    var bTuple = new BacklogSpreadsheetTuple([]);
+    bTuple.addFromStaged(obs);
+    bTuple.validateTupleData();
+    if (bTuple.processingErrorList.length > 0) {
+      console.log("error list");
+      console.log(bTuple.processingErrorList);
+      return "unable to add";
+    }
+    var sTuple = new SpreadsheetTuple([]);
+    sTuple.addFromBacklog(bTuple);
+    return sTuple.toJson();
+  }
+
+  editStaged(obs: StagedObservations): any{
+    var bTuple = new BacklogSpreadsheetTuple([]);
+    bTuple.addFromStaged(obs);
+    window.localStorage.setItem("currentObs", JSON.stringify(bTuple));
+    window.localStorage.setItem("currentStagedId", obs.StagedID.toString())
+    this.router.navigate(["edit-backlog"]);
+  }
+
+  approveChecked(){
+    let extractedJsonList = [];
+    var issue = false;
+    for (var obs of this.observations) {
+      if (obs.checked == true) {
+        var result = this.approveStaged(obs);
+        console.log("result");
+        console.log(result);
+        this.apiService.removeStaged(obs.StagedID);
+        if (result == "unable to add") {
+          issue = true;
+        }
+        else {
+          console.log("here else")
+          extractedJsonList.push(result);
+        }
+      }
+    }
+    console.log(extractedJsonList)
+    if (extractedJsonList.length > 0) {
+      console.log(extractedJsonList);
+      console.log(JSON.stringify(extractedJsonList));
+      this.apiService.addObservations(JSON.stringify(extractedJsonList)).subscribe(() => this.apiService.readObs());
+    }
+    location.reload()
+  }
+
+  removeChecked(){
+    for (var obs of this.observations) {
+      if (obs.checked == true) {
+        this.apiService.removeStaged(obs.StagedID)
+      }
+    }
+    location.reload()
   }
 
   approveAllObs() {
@@ -272,4 +332,12 @@ export class ApproveObservationsComponent implements OnInit {
 
     this.apiService.deleteObs(JSON.stringify(this.obsID)).subscribe(() => this.apiService.readObs());
  }
+
+ 	checkAllCheckBox(ev) { // Angular 9
+		this.observations.forEach(x => x.checked = ev.target.checked)
+	}
+
+	isAllCheckBoxChecked() {
+		return this.observations.every(x => x.checked);
+	}
 }

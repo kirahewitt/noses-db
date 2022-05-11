@@ -1,0 +1,277 @@
+<!-- Beginning of the form -->
+<!-- <mat-dialog-content [formGroup]="form"> -->
+
+<h1 class="title is-2 title-container">Edit Observation</h1>
+<div class="page-container" [formGroup]="form">
+  <!-- body section-->
+  <div class="row page-padding">
+    <!-- left column -->
+    <div class="col-md-6">
+      <mat-card>
+        <h4>Basic Seal Data</h4>
+        <div style="display: flex; flex-direction: row;">
+          <div class="col-md-6">
+            <p>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Date Observation Recorded</mat-label>
+                <input #daterecorded (input)="observationTuple.dateOfRecording = daterecorded.value" matInput
+                  formControlName="dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="MM/DD/YYYY">
+                <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker [startAt]="observationTuple.dateOfRecording" #observationDatePicker></mat-datepicker>
+                <mat-error *ngIf="hasError('dateOfRecording', 'invalidDateFormat')">Input must be a date MM/DD/YY.
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Location Code</mat-label>
+                <select matNativeControl class="mdb-select md-form colorful-select dropdown-primary"
+                  (change)="observationTuple.locationCode = $event.target.value">
+                  <option value="ACL">ACL</option>
+                  <option value="ACU">ACU</option>
+                  <option value="ALL">ALL</option>
+                  <option value="ALLn">ALLn</option>
+                  <option value="ALLs">ALLs</option>
+                  <option value="ALU">ALU</option>
+                  <option value="DCC">DCC</option>
+                  <option value="DCL">DCL</option>
+                  <option value="DCU">DCU</option>
+                  <option value="LTC">LTC</option>
+                  <option value="LTL">LTL</option>
+                  <option value="LTU">LTU</option>
+                  <option value="VAFB">VAFB</option>
+                  <option value="VP3DC">VP3DC</option>
+                  <option value="VP3L">VP3L</option>
+                  <option value="VP3U">VP3U</option>
+                </select>
+              </mat-form-field>
+            </p>
+          </div>
+          <div class="col-md-6">
+            <p>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Field Leader Initials</mat-label>
+                <input #fieldleader matInput formControlName="fieldLeaderList"
+                  (input)="observationTuple.fieldLeaderList = fieldleader.value" placeholder="FL">
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Comments</mat-label>
+                <input #comments matInput formControlName="comments"
+                  (input)="observationTuple.comments = comments.value" placeholder="">
+              </mat-form-field>
+            </p>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: row;">
+          <div class="col-md-6">
+            <p>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Age</mat-label>
+                <input #age matInput formControlName="age" (input)="observationTuple.sealAgeCode = age.value"
+                  placeholder="">
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Sex</mat-label>
+                <select matNativeControl class="mdb-select md-form colorful-select dropdown-primary"
+                  (change)="observationTuple.Sex = $event.target.value">
+                  <option value="M">M</option>
+                  <option value="F">F</option>
+                </select>
+              </mat-form-field>
+            </p>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>% Molt Completed</mat-label>
+              <input #molt matInput formControlName="sealMoltPercentage"
+                (input)="observationTuple.sealMoltPercentage = molt.value" placeholder="00">
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <p>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Pup</mat-label>
+                <input #pups matInput formControlName="sealHasPupQuantity"
+                  (input)="observationTuple.sealHasPupQuantity = pups.value" placeholder="">
+              </mat-form-field>
+            </p>
+            <!-- date first seen as weaner -->
+            <p>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Date Last Seen As A Pup</mat-label>
+                <input #lastseen (input)="observationTuple.sealLastSeenAsPupDate = lastseen.value" matInput
+                  formControlName="sealLastSeenAsPupDate" [matDatepicker]="sealLastSeenAsPupDatePicker"
+                  placeholder="MM/DD/YYYY">
+                <mat-datepicker-toggle matSuffix [for]="sealLastSeenAsPupDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker [startAt]="observationTuple.sealLastSeenAsPupDate" #firstSeenAsWeanerDatePicker>
+                </mat-datepicker>
+                <mat-error *ngIf="hasError('sealLastSeenAsPupDate', 'invalidDateFormat')">Input must be a date MM/DD/YY.
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Date First Seen As A Weaner</mat-label>
+                <input #firstseen (input)="observationTuple.sealFirstSeenAsWeaner = firstseen.value" matInput
+                  formControlName="sealFirstSeenAsWeaner" [matDatepicker]="firstSeenAsWeanerDatePicker"
+                  placeholder="MM/DD/YYYY">
+                <mat-datepicker-toggle matSuffix [for]="firstSeenAsWeanerDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker [startAt]="observationTuple.sealFirstSeenAsWeaner" #firstSeenAsWeanerDatePicker>
+                </mat-datepicker>
+                <mat-error *ngIf="hasError('sealFirstSeenAsWeaner', 'invalidDateFormat')">Input must be a date MM/DD/YY.
+                </mat-error>
+              </mat-form-field>
+            </p>
+          </div>
+        </div>
+      </mat-card>
+      <mat-card>
+        <h4>Measurements</h4>
+        <div style="display: flex; flex-direction: row;">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+              <mat-label>Total Mass</mat-label>
+              <input matInput formControlName="sealMass" value="{{observationTuple.sealMass}}" placeholder="">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+              <mat-label>Tare Mass</mat-label>
+              <input matInput formControlName="sealTare" value="{{observationTuple.sealTare}}" placeholder="">
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+              <mat-label>Ax. Girth</mat-label>
+              <input matInput formControlName="sealAxillaryGirth" value="{{observationTuple.sealAxillaryGirth}}"
+                placeholder="">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+              <mat-label>Crv. Length</mat-label>
+              <input matInput formControlName="sealCurvilinearLength" value="{{observationTuple.sealCurvilinearLength}}"
+                placeholder="">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+              <mat-label>St. Length</mat-label>
+              <input matInput formControlName="sealStandardLength" value="{{observationTuple.sealStandardLength}}"
+                placeholder="">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+    <!-- right column -->
+    <div class="col-md-6">
+      <mat-card>
+        <h4>Identification Information</h4>
+        <p></p>
+        <p>Link to an existing seal? Selected Seal Id: {{observationTuple.sealId}} </p>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 mx-auto">
+              <div class="md-form">
+                <input type="text" class="form-control" (keyup)="searchItems()" #search
+                  (input)="searchText = search.value" mdbInput />
+                <label for="search">Search</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 mx-auto">
+              <button *ngIf="sealSelected(observationTuple.sealId)" type="button" mdbBtn color="danger" rounded="true"
+                size="sm" class="my-0" (click)="selectSeal(0)">Clear</button>
+            </div>
+          </div>
+          <table mdbTable class="z-depth-1">
+            <thead>
+              <tr>
+                <th *ngFor="let head of headElements; let i = index" scope="col">
+                  {{head}}
+                </th>
+              </tr>
+            </thead>
+            <tbody style="display: block; overflow: auto; max-height: 300px;">
+              <tr *ngFor="let el of elements; let i = index">
+                <th scope="row">{{el.SealID}}</th>
+                <td class="">{{el.Tags}}</td>
+                <td>{{el.Marks}}</td>
+                <td>{{el.Sex}}</td>
+                <td>{{el.AgeClass}}</td>
+                <td>
+                  <span (click)="viewSeal(el)" class="hippo">
+                    <img src="assets/cropped_silhouette_smaller_1_blue.png" height="30" width="56" />
+                  </span>
+                </td>
+                <td>
+                  <span class="table-remove">
+                    <button type="button" mdbBtn color="primary" rounded="true" size="sm" class="my-0"
+                      (click)="selectSeal(el.SealID)">Select</button>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; flex-direction: row;">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+              <mat-label>Mark 1: Id Value</mat-label>
+              <input #markonecode matInput formControlName="mark1_idValue"
+                (input)="observationTuple.mark1_idValue = markonecode.value" placeholder="">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+              <mat-label>Mark 1: Position Code</mat-label>
+              <input #markonepos matInput formControlName="mark1_positionCode"
+                (input)="observationTuple.mark1_positionCode = markonepos.value" placeholder="">
+            </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+                <mat-label>Mark 2: Id Value</mat-label>
+                <input #marktwocode matInput formControlName="mark2_idValue"
+                  (input)="observationTuple.mark2_idValue = marktwocode.value" placeholder="">
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+                <mat-label>Mark 2: Position Code</mat-label>
+                <input #marktwopos matInput formControlName="mark2_positionCode"
+                  (input)="observationTuple.mark2_positionCode = marktwopos.value" placeholder="">
+              </mat-form-field>
+          </div>
+          <div class="col-md-6">
+              <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+                <mat-label>Tag 1: Id Value</mat-label>
+                <input #tagonecode matInput formControlName="tag1_idValue"
+                  (input)="observationTuple.tag1_idValue = tagonecode.value" placeholder="">
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+                <mat-label>Tag 1: Position Code</mat-label>
+                <input #tagonepos matInput formControlName="tag1_positionCode"
+                  (input)="observationTuple.tag1_positionCode = tagonepos.value" placeholder="">
+              </mat-form-field>=
+              <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+                <mat-label>Tag 2: Id Value</mat-label>
+                <input #tagtwoid matInput formControlName="tag2_idValue"
+                  (input)="observationTuple.tag2_idValue = tagtwoid.value" placeholder="">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
+                <mat-label>Tag 2: Position Code</mat-label>
+                <input #tagtwopos matInput formControlName="tag2_positionCode"
+                  (input)="observationTuple.tag2_positionCode = tagtwopos.value" placeholder="">
+              </mat-form-field>
+          </div>
+          </div>
+      </mat-card>
+      <mat-card>
+      <div style="display: flex; flex-direction: row-reverse;">
+        <div class="col-md-6">
+        <button type="button" class="btn btn-outline-dark" (click)="uploadData()">Submit</button>
+        </div>
+        <div class="col-md-5">
+          <p></p>
+            <div class="checkbox">
+          <label><input type="checkbox" value="{{observationTuple.isApproved}}"> Observation Approved?</label>
+          </div>
+        </div>
+        </div>
+      </mat-card>
+      </div>
+    </div>

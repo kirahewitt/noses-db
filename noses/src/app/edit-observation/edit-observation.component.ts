@@ -9,19 +9,18 @@ import {MdbTableDirective} from 'angular-bootstrap-md';
 import { SealDataService } from "../_services/seal-data.service";
 import { Router } from "@angular/router";
 import { User_Observer_Obj } from '../_supporting_classes/sqlUser';
-import { BacklogSpreadsheetTuple } from '../_supporting_classes/BacklogSpreadsheetTuple';
 
 @Component({
-  selector: 'app-new-observation',
-  templateUrl: './new-observation.component.html',
-  styleUrls: ['./new-observation.component.scss']
+  selector: 'app-edit-observation',
+  templateUrl: './edit-observation.component.html',
+  styleUrls: ['./edit-observation.component.scss']
 })
-export class NewObservationComponent implements OnInit {
+export class EditObservationComponent implements OnInit {
 
     public form : FormGroup;
 
-    public observationTuple :  BacklogSpreadsheetTuple;
-    public observationTuples : BacklogSpreadsheetTuple[];
+    public observationTuple : SpreadsheetTuple;
+    public observationTuples : SpreadsheetTuple[];
     public currentUserEmail : string;
 
     public sealNum = "None"
@@ -82,17 +81,19 @@ export class NewObservationComponent implements OnInit {
           this.currentUserIsValid = retval;
         });
 
-         this.observationTuple = new BacklogSpreadsheetTuple(null);
+         this.observationTuple = new SpreadsheetTuple(null);
 
         // set up the form and its validation
         this.form = this.formBuilder.group({
             originalJsonInput: [this.observationTuple.originalJsonInput, []],
 
             fieldLeaderList: [this.observationTuple.fieldLeaderInitials, []],
+            year : [this.observationTuple.year, []],
             dateOfRecording : [this.observationTuple.dateOfRecording, []],
             locationCode : [this.observationTuple.locationCode, []],
 
 
+            currentSeason : [this.observationTuple.currentSeason, []],
             sealSex : [this.observationTuple.sealSex, [ValidationService.validate_sealSex]],
             sealAgeCode : [this.observationTuple.sealAgeCode, [ValidationService.validate_sealAgeCode]],
             sealHasPupQuantity : [this.observationTuple.sealHasPup, []],
@@ -144,22 +145,22 @@ export class NewObservationComponent implements OnInit {
     }
 
 
-   /**
-     * Receives an object representing the csv file as json. For each element of the list, 
-     * it calls the constructor of the SpreadsheetTuple object.
-     * @param fileData 
-     */
-    public processSpreadsheetFile(tupleList: BacklogSpreadsheetTuple[]): BacklogSpreadsheetTuple[] {
-        var tupleList: BacklogSpreadsheetTuple[] = [];
+//    /**
+//      * Receives an object representing the csv file as json. For each element of the list, 
+//      * it calls the constructor of the SpreadsheetTuple object.
+//      * @param fileData 
+//      */
+//     public SpreadsheetTuple(tupleList: SpreadsheetTuple[]): SpreadsheetTuple[] {
+//         var tupleList: SpreadsheetTuple[] = [];
 
-        for (var tuple of tupleList) {
-            var newTupleObj = new BacklogSpreadsheetTuple(tuple);
-            newTupleObj.validateTupleData();
-            tupleList.push(newTupleObj);
-        }
+//         for (var tuple of tupleList) {
+//             var newTupleObj = new SpreadsheetTuple(tuple);
+//             newTupleObj.validateTupleData();
+//             tupleList.push(newTupleObj);
+//         }
 
-        return tupleList;
-    }
+//         return tupleList;
+//     }
 
 
 
@@ -232,23 +233,23 @@ export class NewObservationComponent implements OnInit {
     }
 
 
-    /** Returns true if any of our tuples have a non-empty list of errors */
-    private getErroneousObservationIndices() {
+    // /** Returns true if any of our tuples have a non-empty list of errors */
+    // private getErroneousObservationIndices() {
         
-        var indexList: number[] = [];
+    //     var indexList: number[] = [];
 
-        var i = 0;
-        for (var tuple of this.observationTuples) {
-            if (tuple.processingErrorList.length > 0) {
-                indexList.push(i);
-                let testErrorMessage = "ERRONEOUS OBSERVATION # -- " + i.toString();
-                console.log(testErrorMessage);
-            }
-            i++;
-        }
+    //     var i = 0;
+    //     for (var tuple of this.observationTuples) {
+    //         if (tuple.processingErrorList.length > 0) {
+    //             indexList.push(i);
+    //             let testErrorMessage = "ERRONEOUS OBSERVATION # -- " + i.toString();
+    //             console.log(testErrorMessage);
+    //         }
+    //         i++;
+    //     }
         
-        return indexList;
-    }
+    //     return indexList;
+    // }
     public searchItems() {
         const prev = this.mdbTable.getDataSource();
         console.log(this.searchText);

@@ -12,49 +12,49 @@ from Observation import Observation
 exceptions = open("exceptions.csv", "w+")
 
 _FL = 0
-_YEAR = 1
-_DATE = 2
-_LOC = 3
-_SEX = 4
-_AGE = 5
-_PUP = 6
+_DATE = 1
+_LOC = 2
+_SEX = 3
+_AGE = 4
+_PUP = 5
 
-_NEWMARK1 = 7
-_MARK1 = 8
-_MARKPOS1 = 9
+_NEWMARK1 = 6
+_MARK1 = 7
+_MARKPOS1 = 8
 
-_NEWMARK2 = 10
-_MARK2 = 11
-_MARKPOS2 = 12
+_NEWMARK2 = 9
+_MARK2 = 10
+_MARKPOS2 = 11
 
-_NEWTAG1 = 13
-_TAG1 = 14
-_TAGPOS1 = 15
+_NEWTAG1 = 12
+_TAG1 = 13
+_TAGPOS1 = 14
 
-_NEWTAG2 = 16
-_TAG2 = 17
-_TAGPOS2 = 18
+_NEWTAG2 = 15
+_TAG2 = 16
+_TAGPOS2 = 17
 
-_MOLT = 19
-_SEASON = 20
-_STLENGTH = 21
-_CRVLENGTH = 22
-_AXGIRTH = 23
-_MASS = 24
-_TARE = 25
-_MASSTARE = 26
-_LASTSEEN = 27
-_FIRSTSEEN = 28
-_RANGE = 29
-_COMMENTS = 30
-_SEALID = 31
-
-approvalStatus = 1
+_MOLT = 18
+_STLENGTH = 19
+_CRVLENGTH = 20
+_AXGIRTH = 21
+_MASS = 22
+_TARE = 23
+_LASTSEEN = 24
+_FIRSTSEEN = 25
+_COMMENTS = 26
+_YEAR = 27
+_SEASON = 28
+_MASSTARE = 29
+_SEALID = 30
+_RANGE = 31
 
 
 ## Places a single apostrophe on either side of a provided string
 ## and returns the result.
 def surr_apos(origStr):
+    if (origStr == "NULL" or origStr == None):
+        return origStr
     retStr = "\'" + origStr + "\'"
     return retStr
 
@@ -98,7 +98,7 @@ def swapNulls(row):
         if (isinstance(row[index], str) and row[index] == ""):
             row[index] = "NULL"
         elif (isinstance(row[index], str) and index not in [_YEAR, _DATE, _MOLT, _SEASON,
-            _STLENGTH, _CRVLENGTH, _AXGIRTH, _MASS, _TARE, _MASSTARE,
+            _STLENGTH, _CRVLENGTH, _AXGIRTH, _MASS, _TARE,
             _LASTSEEN, _FIRSTSEEN]):
             row[index] = "'" + row[index] + "'"
     # print row
@@ -172,22 +172,21 @@ def insert_observation(cnx, cursor, row, approvalStatus):
         print("Inside writeObs: {:s} {:s} {:s}".format(row[_DATE], row[27], row[28]))
 
     print("BEFORE BUILDING STRING:")
-    print(json.dumps(row))
-    statement = (   "INSERT INTO Observations(ObserverID, sex, date, MoltPercent, Comments, AgeClass, Year, SLOCode, isApproved, LastSeenPup, FirstSeenWeaner, WeanDateRange, EnteredInAno) "
+    print(surr_apos(row[_COMMENTS]))
+    statement = (   "INSERT INTO Observations(ObserverID, sex, date, MoltPercent, Comments, AgeClass, Year, SLOCode, isApproved, LastSeenPup, FirstSeenWeaner, WeanDateRange) "
                             " VALUES "
                             "(" + str(observerId) +
                             ", " + row[_SEX] +
                             ", " + getDate(row[_DATE]) +
                             ", " + str(row[_MOLT]) +
-                            ", " + surr_apos(row[_COMMENTS].replace("'", "")) +
+                            ", " + surr_apos(row[_COMMENTS]) +
                             ", " + str(row[_AGE]) +
                             ", " + str(row[_YEAR]) +
                             ", " + row[_LOC] +
                             ", " + str(approvalStatus) +
-                            ", " + ((getDate(row[27])) if row[27] != "NULL" else row[27]) +
-                            ", " + ((getDate(row[28])) if row[28] != "NULL" else row[28]) +
-                            ", " + str(row[29]) +
-                            ", " + str(row[31]) +
+                            ", " + ((getDate(row[_LASTSEEN])) if row[_LASTSEEN] != "NULL" else row[_LASTSEEN]) +
+                            ", " + ((getDate(row[_FIRSTSEEN])) if row[_FIRSTSEEN] != "NULL" else row[_FIRSTSEEN]) +
+                            ", " + str(row[_RANGE]) +
                             ");"
                 )
     print("AFTER BUILDING STRING")
@@ -251,12 +250,15 @@ def getSealIdFromMark(cursor, mark, year):
 # (1) inserts a Marks tuple
 # (2) inserts a ObserveMarks tuple
 def addMark(cnx, cursor, row, mark, markPos, year, observationID, sealID):
+    print("in add mark")
+    print([mark, markPos, year, observationID, sealID])
     insert_mark(cnx, cursor, row, mark, markPos, year, observationID, sealID)
     query = "SELECT MAX(MarkID) FROM Marks;"
     runQuery(cursor, query)
     row = cursor.fetchone()
     markid = row["MAX(MarkID)"]
     insert_observeMark(cnx, cursor, markid, observationID)
+    print("done add mark")
 
 def insert_observeMark(cnx, cursor, mark, observationID):
     print("making insert observemark statement")
@@ -270,7 +272,7 @@ def insert_mark(cnx, cursor, csvRow, mark, markPos, year, obsID, sealID):
     t_markID = "NULL"
     t_mark =mark.replace(" ", "")
     t_markPosition = markPos
-    t_markDate = str(getDate(csvRow[2]))
+    t_markDate = str(csvRow[_DATE])
     t_year = year
     t_observationID = str(obsID)
     
@@ -358,7 +360,7 @@ def insert_tag(cnx, cursor, csvRow, tagNumber, tagPos, observationID, sealID):
                 + str(tagNumber) + ", "        # mark
                 + getColor(tagNumber) + ", "          # TODO write getTagColor(row[whichTag][0])
                 + tagPos + ", "
-                + str(getDate(csvRow[2])) + ");")        # 
+                + str(getDate(csvRow[_DATE])) + ");")        # 
     print(statement)
     try:
         cursor.execute(statement)
@@ -448,6 +450,7 @@ def addSeal(cnx, cursor, row, observationID):
         addTag(cnx, cursor, row, row[_TAG1], row[_TAGPOS1], observationID, sealID)
     if(row[_TAG2] != "NULL"):
         addTag(cnx, cursor, row, row[_TAG2], row[_TAGPOS2], observationID, sealID)
+    print("exiting addSeal")
     return sealID
 
 
@@ -464,7 +467,7 @@ def positiveMin(IDs):
     print("IDs[2] " + str(IDs[2]))
     print("IDs[3] " + str(IDs[3]))
 
-    posVals = [x for x in IDs if x > 0]
+    posVals = [x for x in IDs if int(x) > 0]
     if len(posVals) > 0:
         mainID = min(posVals)
 
@@ -501,7 +504,7 @@ def processObservation(cnx, cursor, row, approvalStatus):
 
     observationID = insert_observation(cnx, cursor, row, approvalStatus)
 
-    if(row[_STLENGTH] != "NULL" or row[_CRVLENGTH] != "NULL" or row[_AXGIRTH] != "NULL" or row[_MASS] != "NULL" or row[_TARE] != "NULL" or row[_MASSTARE] != "NULL"):
+    if(row[_STLENGTH] != "NULL" or row[_CRVLENGTH] != "NULL" or row[_AXGIRTH] != "NULL" or row[_MASS] != "NULL" or row[_TARE] != "NULL"):
         pushMeasurement(cnx, cursor, observationID, row)
     divergentT = []
     divergentM = []
@@ -520,7 +523,7 @@ def processObservation(cnx, cursor, row, approvalStatus):
 
     mainID = positiveMin([mID, m2ID, t1ID, t2ID])
 
-    if row[_SEALID] > 0:
+    if int(row[_SEALID]) > 0:
         mainID = row[_SEALID]
     print("test4")
 
@@ -595,30 +598,23 @@ def processObservation(cnx, cursor, row, approvalStatus):
     print("...Recording relationship btwn OBSERVATIONS and SEALS...")
     observeSeal(cnx, cursor, mainID, observationID)
 
-
-# Attempts to add a list of observations to the database.
-def startUpdate(obj, cnx):
-    print("\n\nSTART UPDATE...\n")
+# Attempts to add a list of observations to the database backlog.
+def startBacklogUpdate(obj, cnx):
+    print("\n\nSTART BACKLOG UPDATE...\n")
     cursor = cursor = cnx.cursor(pymysql.cursors.DictCursor)
 
-    print('in seal upload', obj)
+    print('in backlog seal upload', obj)
+    print(obj)
     y = json.loads(obj)
     if isinstance(y[0], dict):
         y = [y]
         print(y)
     j_obj = y[0]
-    
-    approvalStatus = y[1]["isApproved"]
-    print("approval status is: " + str(approvalStatus))
-
     i = 0
     print(j_obj[0])
     for val in j_obj:
-        print("*" + str(i) + "*")
-        
-        print(val["Mark 1 Position"])
+        print("*" + str(i) + "*")        
         row = [val["Field Leader Initials"],
-                val["Year"],
                 val["Date"],
                 val["Loc."],
                 val["Sex"],
@@ -637,17 +633,128 @@ def startUpdate(obj, cnx):
                 val["Tag2 #"],
                 val["Tag 2 Pos."],
                 val["Molt (%)"],
-                val["Season"],
                 val["St. Length"],
                 val["Crv. Length"],
                 val["Ax. Girth"],
                 val["Mass"],
                 val["Tare"],
-                val["Mass-Tare"],
                 val["Last seen as P"],
                 val["1st seen as W"],
-                val["Range (days)"],
                 val["Comments"]]
+
+        print("BEFORE BUILDING STRING:")
+        print(json.dumps(row))
+        statement = (   "INSERT INTO StagedObservations (Initials, MoltPercent, Date, Sex, Location, AgeClass, NewMark1, NewMark2, NewTag1, NewTag2, Mark1, Mark2, Tag1, Tag2, MarkPos1, MarkPos2, TagPos1, TagPos2, Pup, StLength, CrvLength, AxGirth, Mass, Tare, LastSeenP, FirstSeenW) "
+                                " VALUES "
+                                "(" + surr_apos(row[_FL]) +
+                                ", " + surr_apos(row[_MOLT]) +
+                                ", " + surr_apos(row[_DATE])+
+                                ", " + surr_apos(row[_SEX]) +
+                                ", " + surr_apos(row[_LOC]) +
+                                ", " + surr_apos(row[_AGE]) +
+                                ", " + surr_apos(row[_NEWMARK1]) +
+                                ", " + surr_apos(row[_NEWMARK2]) +
+                                ", " + surr_apos(row[_NEWTAG1]) +
+                                ", " + surr_apos(row[_NEWTAG2]) +
+                                ", " + surr_apos(row[_MARK1]) +
+                                ", " + surr_apos(row[_MARK2]) +
+                                ", " + surr_apos(row[_TAG1]) +
+                                ", " + surr_apos(row[_TAG2]) +
+                                ", " + surr_apos(row[_MARKPOS1]) +
+                                ", " + surr_apos(row[_MARKPOS2]) +
+                                ", " + surr_apos(row[_TAGPOS1]) +
+                                ", " + surr_apos(row[_TAGPOS2]) +
+                                ", " + surr_apos(row[_PUP]) +
+                                ", " + surr_apos(row[_STLENGTH]) +
+                                ", " + surr_apos(row[_CRVLENGTH]) +
+                                ", " + surr_apos(row[_AXGIRTH]) +
+                                ", " + surr_apos(row[_MASS]) +
+                                ", " + surr_apos(row[_TARE]) +
+                                ", " + surr_apos(row[_LASTSEEN]) +
+                                ", " + surr_apos(row[_FIRSTSEEN]) +
+                                ");"
+                    )
+        print("AFTER BUILDING STRING")
+
+        try:
+            # perform the sql insertion command
+            pushQuery(cnx, cursor, statement)
+        except mysql.connector.Error as err:
+            print(err)
+            return -5
+        i = i + 1
+
+    print(" ****CLOSING STUFF")
+    exceptions.close()
+
+def getStagedById(stagedId):
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        statement = "Select * from StagedObservations Where StagedID = " + stagedId
+        cursor.execute(statement)
+        rows = cursor.fetchall()
+        row = rows[0]
+        return row
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()    
+
+# Attempts to add a list of observations to the database.
+def startUpdate(obj, cnx):
+    print("\n\nSTART UPDATE...\n")
+    cursor = cursor = cnx.cursor(pymysql.cursors.DictCursor)
+
+    print('in seal upload', obj)
+    print(obj)
+    y = json.loads(obj)
+    print("y")
+    print(type(y))
+    if isinstance(y[0], dict):
+        y = [y]
+        print(y)
+    j_obj = y[0]
+    approvalStatus = 1
+    i = 0
+    print(j_obj[0])
+    for val in j_obj:
+        print("*" + str(i) + "*")
+        
+        print(val["Mark 1 Position"])
+        row = [val["Field Leader Initials"],
+                val["Date"],
+                val["Loc."],
+                val["Sex"],
+                val["Age"],
+                val["Pup?"],
+                val["New Mark 1?"],
+                val["Mark 1"],
+                val["Mark 1 Position"],
+                val["New Mark 2?"],
+                val["Mark 2"],
+                val["Mark 2 Position"],
+                val["New Tag1?"],
+                val["Tag1 #"],
+                val["Tag 1 Pos."],
+                val["New Tag2?"],
+                val["Tag2 #"],
+                val["Tag 2 Pos."],
+                val["Molt (%)"],
+                val["St. Length"],
+                val["Crv. Length"],
+                val["Ax. Girth"],
+                val["Mass"],
+                val["Tare"],
+                val["Last seen as P"],
+                val["1st seen as W"],
+                val["Comments"],
+                val["Year"],
+                val["Season"],
+                val["Mass-Tare"],
+                val["SealID"],
+                val["Range"]]
         if "SealId" in val:
             row.append(val["SealId"])
         else:
@@ -667,7 +774,6 @@ def startUpdate(obj, cnx):
         else:
             print("   ERROR")
             exceptions.write("\"" + str(val["Field Leader Initials"]) + "\""
-              + ", " + str(val["Year"])
               + ", " + str(val["Date"])
               + ", " + str(val["Loc."])
               + ", " + str(val["Sex"])
@@ -695,7 +801,6 @@ def startUpdate(obj, cnx):
               + ", " + str(val["Mass-Tare"])
               + ", " + str(val["Last seen as P"])
               + ", " + str(val["1st seen as W"])
-              + ", " + str(val["Range (days)"])
               + ", " + str(val["Comments"])
               + ", " + "Location unkown" + "\n")
         

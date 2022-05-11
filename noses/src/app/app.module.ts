@@ -33,11 +33,13 @@ import { CitizenSciBulkUploadMainPageComponent} from './citizen-scientist-upload
 import { CitizenSciBulkUploadDataPreviewComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-data-preview/citizen-sci-bulk-upload-data-preview.component';
 import { FilterBlockComponent } from './filter-block/filter-block.component';
 import { NewObservationComponent } from './new-observation/new-observation.component';
+import { EditObservationComponent } from './edit-observation/edit-observation.component';
+import { EditBacklogComponent } from './edit-backlog/edit-backlog.component';
 import { MarkTestComponent } from './mark-test/mark-test.component';
 import { MarkTestChildComponent } from './mark-test-child/mark-test-child.component';
 import { SealComponent } from './seal/seal.component';
 import { BulkUploadObservationViewComponent } from './citizen-scientist-upload-management/bulk-upload-observation-view/bulk-upload-observation-view.component';
-import { EditObservationDialogComponent } from './edit-observation-dialog/edit-observation-dialog.component';
+// import { EditObservationDialogComponent } from './edit-observation-dialog/edit-observation-dialog.component';
 import { TtlAngMaterialStartPageComponent } from './angular-material-tutorial-components/ttl-ang-material-start-page/ttl-ang-material-start-page.component';
 import { TtlAngMaterialDialogComponent } from './angular-material-tutorial-components/ttl-ang-material-dialog/ttl-ang-material-dialog.component';
 import { LoginStateComponent } from './_components/navbar/login-state/login-state.component';
@@ -124,11 +126,13 @@ const config = {
     CitizenSciBulkUploadDataPreviewComponent,
     FilterBlockComponent,
     NewObservationComponent,
+    EditObservationComponent,
+    EditBacklogComponent,
     MarkTestComponent,
     MarkTestChildComponent,
     SealComponent,
     BulkUploadObservationViewComponent,
-    EditObservationDialogComponent,
+    // EditObservationDialogComponent,
     TtlAngMaterialStartPageComponent,
     TtlAngMaterialDialogComponent,
     LoginStateComponent,
@@ -216,13 +220,13 @@ const config = {
     FlexLayoutModule,
     RouterModule,
     EditUserDialogComponent,
-    EditObservationDialogComponent,
+    // EditObservationDialogComponent,
     TtlAngMaterialDialogComponent
   ],
   entryComponents: [
     EditUserDialogComponent,
     NewUserDialogComponent,
-    EditObservationDialogComponent,
+    // EditObservationDialogComponent,
     TtlAngMaterialDialogComponent,
   ],
   providers: [AuthService, AuthGuard, ValidationService],

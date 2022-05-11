@@ -14,6 +14,8 @@ import { RequestAccountComponent} from './request-account/request-account.compon
 import { ComponentForAngServiceComponent } from './component-for-ang-service/component-for-ang-service.component';
 import { CitizenSciBulkUploadMainPageComponent } from './citizen-scientist-upload-management/citizen-sci-bulk-upload-main-page/citizen-sci-bulk-upload-main-page.component';
 import { NewObservationComponent } from './new-observation/new-observation.component';
+import { EditObservationComponent } from './edit-observation/edit-observation.component';
+import { EditBacklogComponent } from './edit-backlog/edit-backlog.component';
 import { SealComponent } from './seal/seal.component';
 import { MarkTestComponent } from './mark-test/mark-test.component';
 import { TtlAngMaterialStartPageComponent } from './angular-material-tutorial-components/ttl-ang-material-start-page/ttl-ang-material-start-page.component';
@@ -34,6 +36,8 @@ const routes: Routes = [
 { path: 'request-account', component: RequestAccountComponent},
 { path: 'component-for-ang-service', component: ComponentForAngServiceComponent, canActivate: [AuthGuard]},
 { path: 'citizen-sci-bulk-upload', component: CitizenSciBulkUploadMainPageComponent, canActivate: [AuthGuard]},
+{ path: 'edit-observation', component: EditObservationComponent, canActivate: [AuthGuard]},
+{ path: 'edit-backlog', component: EditBacklogComponent, canActivate: [AuthGuard]},
 { path: 'new-observation', component: NewObservationComponent, canActivate: [AuthGuard]},
 { path: 'mark', component: MarkTestComponent},
 { path: 'seal', component: SealComponent},

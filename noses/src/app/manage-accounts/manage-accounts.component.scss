@@ -86,3 +86,14 @@ td {
 .image {
   display: block;
 }
+
+.title-container {
+  display: flex;
+  padding-top: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  text-align: center;
+}

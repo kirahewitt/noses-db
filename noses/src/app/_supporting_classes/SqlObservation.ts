@@ -12,7 +12,6 @@ export class SqlObservation {
   LastSeenPup?: Date;
   FirstSeenWeaner?: Date;
   WeanDateRange?: number;
-  EnteredInAno?: number;
   isProcedure: number;
   isDeprecated: number;
 
@@ -30,7 +29,6 @@ export class SqlObservation {
     this.LastSeenPup = null;
     this.FirstSeenWeaner = null;
     this.WeanDateRange = null;
-    this.EnteredInAno = null;
     this.isProcedure = null;
     this.isDeprecated = null;
   }
