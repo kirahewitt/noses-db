@@ -52,7 +52,7 @@
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Field Leader Initials</mat-label>
                 <input #fieldleader matInput formControlName="fieldLeaderList"
-                  (input)="observationTuple.fieldLeaderList = fieldleader.value" placeholder="FL">
+                  (input)="observationTuple.fieldLeaderInitials = fieldleader.value" placeholder="FL">
               </mat-form-field>
             </p>
             <p>
@@ -77,7 +77,7 @@
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Sex</mat-label>
                 <select matNativeControl class="mdb-select md-form colorful-select dropdown-primary"
-                  (change)="observationTuple.Sex = $event.target.value">
+                  (change)="observationTuple.sealSex = $event.target.value">
                   <option value="M">M</option>
                   <option value="F">F</option>
                 </select>
@@ -94,7 +94,7 @@
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Pup</mat-label>
                 <input #pups matInput formControlName="sealHasPupQuantity"
-                  (input)="observationTuple.sealHasPupQuantity = pups.value" placeholder="">
+                  (input)="observationTuple.sealHasPup = pups.value" placeholder="">
               </mat-form-field>
             </p>
             <!-- date first seen as weaner -->
@@ -105,7 +105,7 @@
                   formControlName="sealLastSeenAsPupDate" [matDatepicker]="sealLastSeenAsPupDatePicker"
                   placeholder="MM/DD/YYYY">
                 <mat-datepicker-toggle matSuffix [for]="sealLastSeenAsPupDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker [startAt]="observationTuple.sealLastSeenAsPupDate" #firstSeenAsWeanerDatePicker>
+                <mat-datepicker [startAt]="observationTuple.sealLastSeenAsPupDate" #sealLastSeenAsPupDatePicker>
                 </mat-datepicker>
                 <mat-error *ngIf="hasError('sealLastSeenAsPupDate', 'invalidDateFormat')">Input must be a date MM/DD/YY.
                 </mat-error>
@@ -267,9 +267,6 @@
         </div>
         <div class="col-md-5">
           <p></p>
-            <div class="checkbox">
-          <label><input type="checkbox" value="{{observationTuple.isApproved}}"> Observation Approved?</label>
-          </div>
         </div>
         </div>
       </mat-card>
