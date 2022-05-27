@@ -1,9 +1,8 @@
 import pymysql
 import pandas as pd
 import json
-from app import app
+from flask_cors import CORS, cross_origin
 from ETL3 import startUpdate, startBacklogUpdate
-from db_config import mysql
 from flask import jsonify
 from flask import flash, request
 from flask import g, Flask
@@ -13,6 +12,20 @@ import logging
 import bcrypt
 #from werkzeug import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
+from flaskext.mysql import MySQL
+
+mysql = MySQL()
+
+app = Flask(__name__)
+
+cors = CORS(app)
+
+app.config['MYSQL_DATABASE_USER'] = 'admin'
+app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_DB'] = 'sealDB'
+app.config['MYSQL_DATABASE_HOST'] = 'noses-sealdb.cbhu3f3kpqob.us-east-1.rds.amazonaws.com'
+
+mysql.init_app(app)
 app.config['DEBUG'] = True
 app.config['TESTING'] = False
 app.config['MAIL_SERVER'] = "smtp.gmail.com" ## 
@@ -2553,7 +2566,6 @@ def update_sex_backlog():
     finally:
         cursor.close()
         conn.close()
-
 
 # This is required to get this python program to run.
 if __name__ == "__main__":

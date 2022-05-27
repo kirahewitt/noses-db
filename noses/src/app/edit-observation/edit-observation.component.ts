@@ -209,9 +209,7 @@ export class EditObservationComponent implements OnInit {
                 fullData["FirstSeenWeaner"] = "";
         var dataList = [];
         dataList.push(fullData);
-        this.apiService.addObservations(JSON.stringify(dataList)).subscribe((msg) =>{
-            console.log(msg);
-        this.apiService.readObs();});
+        this.apiService.addObservations(JSON.stringify(dataList));
     }
 
 

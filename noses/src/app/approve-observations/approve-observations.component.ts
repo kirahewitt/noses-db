@@ -245,7 +245,7 @@ export class ApproveObservationsComponent implements OnInit {
     this.router.navigate(["edit-backlog"]);
   }
 
-  approveChecked(){
+  async approveChecked(){
     let extractedJsonList = [];
     var issue = false;
     for (var obs of this.observations) {
@@ -253,7 +253,7 @@ export class ApproveObservationsComponent implements OnInit {
         var result = this.approveStaged(obs);
         console.log("result");
         console.log(result);
-        this.apiService.removeStaged(obs.StagedID);
+        await this.apiService.removeStaged(obs.StagedID);
         if (result == "unable to add") {
           issue = true;
         }
@@ -267,15 +267,15 @@ export class ApproveObservationsComponent implements OnInit {
     if (extractedJsonList.length > 0) {
       console.log(extractedJsonList);
       console.log(JSON.stringify(extractedJsonList));
-      this.apiService.addObservations(JSON.stringify(extractedJsonList)).subscribe(() => this.apiService.readObs());
+      await this.apiService.addObservations(JSON.stringify(extractedJsonList));
     }
     location.reload()
   }
 
-  removeChecked(){
+  async removeChecked(){
     for (var obs of this.observations) {
       if (obs.checked == true) {
-        this.apiService.removeStaged(obs.StagedID)
+        await this.apiService.removeStaged(obs.StagedID)
       }
     }
     location.reload()

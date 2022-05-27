@@ -9,8 +9,6 @@ import csv
 from dateutil import parser
 from Observation import Observation
 
-exceptions = open("exceptions.csv", "w+")
-
 _FL = 0
 _DATE = 1
 _LOC = 2
@@ -685,7 +683,6 @@ def startBacklogUpdate(obj, cnx):
         i = i + 1
 
     print(" ****CLOSING STUFF")
-    exceptions.close()
 
 def getStagedById(stagedId):
     try:
@@ -773,7 +770,7 @@ def startUpdate(obj, cnx):
             print("   test3")
         else:
             print("   ERROR")
-            exceptions.write("\"" + str(val["Field Leader Initials"]) + "\""
+            print("\"" + str(val["Field Leader Initials"]) + "\""
               + ", " + str(val["Date"])
               + ", " + str(val["Loc."])
               + ", " + str(val["Sex"])
@@ -807,7 +804,6 @@ def startUpdate(obj, cnx):
         i = i + 1
 
     print(" ****CLOSING STUFF")
-    exceptions.close()
     #cnx.close()
 
 #if __name__ == '__main__':

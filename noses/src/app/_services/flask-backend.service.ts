@@ -34,7 +34,7 @@ export class FlaskBackendService {
    * @param sealDataService a local reference to the application-wide angular service that keeps track of the currently selected seal.
    */
   constructor(private httpClient: HttpClient, private sealDataService: SealDataService) {
-  this.FLASK_API_SERVER = "http://10.144.2.165:5000"
+  this.FLASK_API_SERVER = "http://34.217.54.156:5000"
   this.httpOptions = {
     headers: new HttpHeaders()
     .set('content-type', 'application/json')
@@ -79,8 +79,8 @@ export class FlaskBackendService {
     return this.httpClient.get<StagedObservations[]>(`${this.FLASK_API_SERVER}/getstaged`);
   }
 
-  public addObservations(user: string): Observable<string> {
-    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addobservations`, user, this.httpOptions).pipe(catchError(this.alertError));
+  async addObservations(user: string): Promise<string> {
+    return this.httpClient.post<string>(`${this.FLASK_API_SERVER}/addobservations`, user, this.httpOptions).toPromise();
   }
 
   public addToBacklog(user: string): Observable<string> {
