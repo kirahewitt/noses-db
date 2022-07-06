@@ -6,6 +6,7 @@ import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
 import { SqlObservation } from '../_supporting_classes/SqlObservation';
 import { SqlTag } from '../_supporting_classes/SqlTag';
 import { SqlMark } from '../_supporting_classes/SqlMark';
+import { SqlMeasurement } from '../_supporting_classes/SqlMeasurement';
 
 
 /**
@@ -42,6 +43,10 @@ export class DossierViewHelperService {
 
   private uniqueTagList: SqlTag[];
   public uniqueTagList_updateStream : BehaviorSubject<SqlTag[]>;
+
+
+  private uniqueMesList: SqlMeasurement[];
+  public uniqueMesList_updateStream : BehaviorSubject<SqlMeasurement[]>;
   
   private uniqueMarkList: SqlMark[];
   public uniqueMarkList_updateStream : BehaviorSubject<SqlMark[]>;
@@ -80,6 +85,9 @@ export class DossierViewHelperService {
     this.uniqueMarkList = [];
     this.uniqueMarkList_updateStream = new BehaviorSubject<SqlMark[]>(this.uniqueMarkList);
 
+    this.uniqueMesList = [];
+    this.uniqueMesList_updateStream = new BehaviorSubject<SqlMeasurement[]>(this.uniqueMesList);
+
     this.identifyingObservation = new SqlObservation;
     this.identifyingObservation_updateStream = new BehaviorSubject<SqlObservation>(this.identifyingObservation);
 
@@ -109,7 +117,9 @@ export class DossierViewHelperService {
     return this.dossierViewStructure_c_updateStream;
   }
 
-
+  public getUniqueMesListDatastream() {
+    return this.uniqueMesList_updateStream;
+  }
   /**
    * 
    */
@@ -165,6 +175,7 @@ export class DossierViewHelperService {
    * ensuring that all subscribers to the update stream receive the latest copy of the data after the next() call is triggered.
    */
   public populateViaSealId(givenSealId: number) {
+    console.log("here")
   
 
     // get all the observations for this seal
@@ -202,6 +213,15 @@ export class DossierViewHelperService {
       // console.log(this.uniqueTagList);
     });
 
+    let uniqueMesForSeal = this.apiService.getAll_Measurements_bySealId(givenSealId);
+    console.log(uniqueMesForSeal);
+    uniqueMesForSeal.subscribe( (mesList : SqlMeasurement[]) => {
+      this.uniqueMesList = mesList;
+      this.uniqueMesList_updateStream.next(this.uniqueMesList);
+
+      // console.log("\nCurrent Value of: uniqueTagList");
+      // console.log(this.uniqueTagList);
+    });
 
     // get all the unique marks for this seal
     let uniqueMarksForSeal_obs = this.apiService.getAll_Marks_bySealId(givenSealId);

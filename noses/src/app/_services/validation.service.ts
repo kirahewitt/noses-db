@@ -48,7 +48,7 @@ export class ValidationService {
    * @param control 
    */
   static validate_sealAgeCode(control : FormControl) {
-    let acceptableValueList = ["P", "W", "J", "SA1", "SA2", "SA3", "SA4", "A"];
+    let acceptableValueList = ["P", "W", "J", "SA1", "SA2", "SA3", "SA4", "A", ""];
     let value = control.value;
 
     if (!isNaN(Number(value))) {
@@ -116,7 +116,7 @@ export class ValidationService {
     console.log(control);
     console.log(control.value);
 
-    if (value == null || value.match(regexMatcher)) {
+    if (value == null || value == "" || value.match(regexMatcher)) {
       return null;
     }
     else {

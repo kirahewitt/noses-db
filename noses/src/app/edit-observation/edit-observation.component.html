@@ -14,12 +14,8 @@
             <p>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Date Observation Recorded</mat-label>
-                <input #daterecorded (input)="observationTuple.dateOfRecording = daterecorded.value" matInput
-                  formControlName="dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="MM/DD/YYYY">
-                <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker [startAt]="observationTuple.dateOfRecording" #observationDatePicker></mat-datepicker>
-                <mat-error *ngIf="hasError('dateOfRecording', 'invalidDateFormat')">Input must be a date MM/DD/YY.
-                </mat-error>
+                <input #pups matInput formControlName="dateOfRecording"
+                  (input)="observationTuple.dateOfRecording = pups.value" placeholder="MM/DD/YYYY">
               </mat-form-field>
             </p>
             <p>

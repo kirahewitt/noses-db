@@ -42,6 +42,7 @@
 
         </label>
 
+
         <script>
           $(function () {
             $('[data-toggle="tooltip"]').tooltip()
@@ -87,8 +88,29 @@
           </span>
           Last Seen: {{sealMostRecentSightingDisplayString}}
         </label>
-      </nav>
+        </nav> 
+    <!-- <div *ngIf="showMeasurements"> -->
+      <nav class="panel ">
+          <p class="panel-tabs">
+            <a class="is-active">Seal Measurements</a>
+          </p> 
+        <label class="panel-block" style="cursor: default" data-toggle="tooltip" title="StandardLength">
+          St. Length: {{StandardLength}}
+        </label>
 
+        <label class="panel-block" style="cursor: default" data-toggle="tooltip" title="CurvilinearLength">
+          Crv. Length: {{CurvilinearLength}}
+        </label>
+
+        <label class="panel-block" style="cursor: default" data-toggle="tooltip" title="AuxillaryGirth">
+          Ax. Girth: {{AuxillaryGirth}}
+        </label>
+
+        <label class="panel-block" style="cursor: default" data-toggle="tooltip" title="AnimalMass">
+         Mass: {{AnimalMass}}
+        </label>
+        </nav>
+        <!-- </div> -->
     </div>
   </div>
 
@@ -108,6 +130,15 @@
       <button routerLink="/new-observation" class="btn add-obs">
         <i class="fas fa-plus add-obs"></i> Add Observation
       </button>
+      
+
+      <span class="file-cta btn-primary" (click)="uploader.click()">
+        <span class="file-icon"><i class="fas fa-upload"></i></span>
+        <span class="file-label"> Add seal image... </span>
+        <input type="file"
+               accepts=".png"
+               (change)="handleFileSelect($event.target.files)">
+    </span>
 
     </div>
 

@@ -70,8 +70,6 @@
           <th scope="col">Mark #2 ID</th>
           <th scope="col">Date</th>
           <th scope="col">Location</th>
-          <th scope="col">Observer Name</th>
-          <th scope="col">Actions</th>
         </tr>
       </thead>
 
@@ -85,26 +83,6 @@
           <td class="align-middle">{{tuple.mark2_idValue}}</td>
           <td class="align-middle">{{tuple.dateOfRecording}}</td>
           <td class="align-middle">{{tuple.locationCode}}</td>
-          <td class="align-middle">{{loggedInUser.firstName}} {{loggedInUser.lastName}}</td>
-          <td>
-
-            <div class="row text-center">
-
-              <div class="col-md-6">
-                <button class="btn btn-primary btn-md">
-                  <i class="fas fa-images"></i>
-                </button>
-              </div>
-
-              <div class="col-md-6">
-                <button class="btn btn-primary btn-md" (click)="openDialog(id); $event.stopPropagation()">
-                  <i class="fas fa-edit"></i>
-                </button>
-              </div>
-
-            </div>
-
-          </td>
         </tr>
       </tbody>
 

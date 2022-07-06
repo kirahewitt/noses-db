@@ -170,14 +170,15 @@ def insert_observation(cnx, cursor, row, approvalStatus):
         print("Inside writeObs: {:s} {:s} {:s}".format(row[_DATE], row[27], row[28]))
 
     print("BEFORE BUILDING STRING:")
-    print(surr_apos(row[_COMMENTS]))
+    if (row[_COMMENTS] == "") :
+        row[_COMMENTS] = surr_apos(row[_COMMENTS])
     statement = (   "INSERT INTO Observations(ObserverID, sex, date, MoltPercent, Comments, AgeClass, Year, SLOCode, isApproved, LastSeenPup, FirstSeenWeaner, WeanDateRange) "
                             " VALUES "
                             "(" + str(observerId) +
                             ", " + row[_SEX] +
                             ", " + getDate(row[_DATE]) +
                             ", " + str(row[_MOLT]) +
-                            ", " + surr_apos(row[_COMMENTS]) +
+                            ", " + row[_COMMENTS] +
                             ", " + str(row[_AGE]) +
                             ", " + str(row[_YEAR]) +
                             ", " + row[_LOC] +
@@ -501,7 +502,7 @@ def processObservation(cnx, cursor, row, approvalStatus):
     mainID = -1
 
     observationID = insert_observation(cnx, cursor, row, approvalStatus)
-
+    print(row[_STLENGTH])
     if(row[_STLENGTH] != "NULL" or row[_CRVLENGTH] != "NULL" or row[_AXGIRTH] != "NULL" or row[_MASS] != "NULL" or row[_TARE] != "NULL"):
         pushMeasurement(cnx, cursor, observationID, row)
     divergentT = []

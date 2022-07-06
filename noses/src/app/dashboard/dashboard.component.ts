@@ -377,14 +377,14 @@ export class DashboardComponent implements OnInit {
 
   public matchRuleShort(str, rule) {
     var escapeRegex = (str) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-    return new RegExp("^" + rule.split("*").map(escapeRegex).join(".*") + "$").test(str);
+    return new RegExp("^" + rule.split("_").map(escapeRegex).join(".+") + "$").test(str);
   }
 
   public searchItems() {
     const prev = this.mdbTable.getDataSource();
     console.log(this.searchText);
 
-    if (this.searchText.indexOf('*') >= 0) {
+    if (this.searchText.indexOf('_') >= 0) {
       var results = [];
       for (var obs of this.observations) {
         var mark: string = null;

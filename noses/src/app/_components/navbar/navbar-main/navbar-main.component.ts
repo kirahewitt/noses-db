@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AuthService } from 'src/app/_services/auth.service';
 import { AdminService } from 'src/app/_services/admin.service';
 import { User_Observer_Obj } from 'src/app/_supporting_classes/sqlUser';
+import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
 
 
 
@@ -17,6 +18,8 @@ export class NavbarMainComponent implements OnInit {
 
   public loggedInUser: User_Observer_Obj;
   public currentUserIsValid: boolean;
+
+  url: String;
   
 
   /**
@@ -30,6 +33,8 @@ export class NavbarMainComponent implements OnInit {
 
     this.loggedInUser = new User_Observer_Obj();
     this.currentUserIsValid = false;
+
+    this.url = window.location.pathname;
   }
 
 
@@ -41,6 +46,8 @@ export class NavbarMainComponent implements OnInit {
     loggedInUser_datastream.subscribe( (retval : User_Observer_Obj ) => {
       this.loggedInUser = retval;
       this.updatePrivelege();
+      console.log(this.url)
+      console.log(this.url === "/approve-obs")
     });
 
     let currentUserIsValid_datastream = this.authService.IH_getUserIsValid_bs();

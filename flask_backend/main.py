@@ -21,7 +21,7 @@ app = Flask(__name__)
 cors = CORS(app)
 
 app.config['MYSQL_DATABASE_USER'] = 'admin'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_PASSWORD'] = 'nosesadmin'
 app.config['MYSQL_DATABASE_DB'] = 'sealDB'
 app.config['MYSQL_DATABASE_HOST'] = 'noses-sealdb.cbhu3f3kpqob.us-east-1.rds.amazonaws.com'
 
@@ -587,6 +587,33 @@ def uploadImage_forUserProfile():
       conn.close()
 
 
+@app.route('/uploadImage_forSeal', methods=['POST', 'GET'])
+def uploadImage_forSeal():
+  print("here")
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    _json = request.json
+    sealId = _json['sealId']
+    pictureData = _json['pictureData']
+    picDate = _json['date']
+    
+    # put the image in the DB
+
+    insertObs_Image(conn, cursor, sealId, pictureData, picDate)
+
+    conn.commit()
+
+    return "success"
+
+  except Exception as e:
+    print(e)
+
+  finally:
+      cursor.close()
+      conn.close()
+
 ##
 ## getAll_UserProfileImages
 ##
@@ -799,6 +826,25 @@ def tupleExists_Image_for_UserAccount(conn, cursor, userId, imageId):
 ## That is, when someone makes an observation of a seal, and provides an image, this is used.
 ## 
 #def insertTuple_ImageWithObservation()
+
+def insertObs_Image(conn, cursor, sealId, pictureData, date):
+  # make the query
+  query = (" INSERT INTO SealPictures (sealId, pictureData, date) VALUES(%s, %s, %s)")
+  queryValues = (str(sealId), pictureData, date)
+
+  # print("image id: " + str(newImageId))
+  # print("picture data: ")
+  # print(pictureData)
+  # print("caption: " + caption)
+
+  # execute the query
+  cursor.execute(query, queryValues)
+
+  # store the response and return it as json
+  rows = cursor.fetchall()
+  resp = jsonify(rows)
+  
+  return resp
 
 
 ##
@@ -1482,7 +1528,50 @@ def get_observations_with_sealId():
     cursor.close()
     conn.close()
 
+@app.route('/getmes-with-sealid', methods=['POST', 'GET'])
+def get_mes_with_sealId():
 
+  # set up connection to the mysql database
+  conn = mysql.connect()
+  cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+  try:
+    if request.method == 'POST':
+
+      # get the input from the person accessing this REST endpoint
+      _json = request.json
+      print(_json)
+
+      # store the id of the seal we want to access
+      sealId = _json
+      query = ("select * from Measurements " +
+        "join Observations on Measurements.ObservationID = Observations.ObservationID " +
+        "join ObserveSeal on ObserveSeal.ObservationID = Observations.ObservationId " +
+	      "WHERE SealID = " + surr_apos(str(sealId)) + " ORDER BY Observations.Date DESC")
+      print(query)
+
+
+      # execute the query
+      cursor.execute(query)
+
+      # store the response and return it as json
+      rows = cursor.fetchall()
+        
+      resp = jsonify(rows)
+
+      print("\n\n NOW PRINTING THE RESPONSE FROM THE SERVER FOR SEAL ID - GETTAGS \n\n")
+      print(rows)
+
+      return resp
+    else:
+      return jsonify("no seal was clicked")
+
+  except Exception as e:
+    print(e)
+
+  finally:
+    cursor.close()
+    conn.close()
 
 # Retrieves the list of unique tags for all the observations currently associated with a particular seal.
 @app.route('/gettags-with-sealid', methods=['POST', 'GET'])
@@ -2374,12 +2463,13 @@ def getStaged():
         for row in rows:
           finalTags = []
           finalMarks = []
-          for tag in [row["Tag1"], row["Tag2"]]:
+          for i in range(1,3):
+            tag = row["Tag" + str(i)]
             if tag != "":
-              finalTags.append(tag)
-          for mark in [row["Mark1"], row["Mark2"]]:
+              finalTags.append(" " + tag + " " + str(row["TagPos" + str(i)]) + " ")
+            mark = row["Mark" + str(i)]
             if mark != "":
-              finalMarks.append(mark)
+              finalMarks.append(" " + mark + " " + str(row["MarkPos" + str(i)]) + " ")
           newRow = {'StagedID': row["StagedID"], 
                       'AgeClass': row["AgeClass"],
                       'Sex': row["Sex"],
@@ -2556,6 +2646,38 @@ def update_sex_backlog():
             _json = request.json
             print(_json)
             cursor.execute("UPDATE StagedObservations SET Sex=\""+_json['sex']+"\" WHERE StagedID=\"" + str(_json['stagedID']) + "\"")
+            conn.commit()
+            return jsonify("hellowtheienfosdnck")
+        else:
+            return jsonify('nothing to do')
+
+    except Exception as e:
+        print(e)
+    finally:
+        cursor.close()
+        conn.close()
+  
+@app.route('/updateBacklogItem', methods=['POST'])
+def update_backlog_item():
+    print("updating backlog item")
+    conn = mysql.connect()
+    cursor = cursor = conn.cursor(pymysql.cursors.DictCursor)
+    try:
+        if request.method == 'POST':
+            _json = request.json
+            print(_json)
+            id = _json["stagedID"]
+            changes = _json["changes"]
+            i = 0
+            cmd_string = "UPDATE StagedObservations SET "
+            for change in changes.keys():
+              if i > 0:
+                cmd_string += ", "
+              cmd_string += (change + "=\"" + changes[change] + "\"")
+              i += 1
+            cmd_string += (" WHERE StagedID=\"" + str(_json['stagedID']) + "\"")
+
+            cursor.execute(cmd_string)
             conn.commit()
             return jsonify("hellowtheienfosdnck")
         else:

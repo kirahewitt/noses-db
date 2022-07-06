@@ -318,14 +318,15 @@ export class AllObservationsComponent implements OnInit {
 
   public matchRuleShort(str, rule) {
     var escapeRegex = (str) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-    return new RegExp("^" + rule.split("*").map(escapeRegex).join(".*") + "$").test(str);
+    var returnVal = new RegExp("^" + rule.split("_").map(escapeRegex).join(".+") + "$").test(str);
+    return returnVal
   }
 
   public searchItems() {
     const prev = this.mdbTable.getDataSource();
     console.log("Search text: " + this.searchText);
 
-    if (this.searchText.indexOf('*') >= 0) {
+    if (this.searchText.indexOf('_') >= 0) {
       var results = [];
       for (var obs of this.observations) {
         if (this.matchRuleShort(obs['Marks'], this.searchText) || this.matchRuleShort(obs['Tags'], this.searchText)) {

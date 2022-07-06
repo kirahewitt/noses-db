@@ -79,10 +79,10 @@ export class ApproveObservationsComponent implements OnInit {
 
     this.apiService.getStaged().subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['Checked', 'StagedID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
+        this.displayedColumns = ['Checked', 'Initials', 'Date', 'Location', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['Checked', 'StagedID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
+        this.displayedColumns = ['Checked', 'Initials', 'Date', 'Location', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;
@@ -202,10 +202,10 @@ export class ApproveObservationsComponent implements OnInit {
   filterObs() {
     this.apiService.readNotApproved().subscribe((observations: any)=>{
       if(this.isAdmin) {
-        this.displayedColumns = ['Checked', 'StagedID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
+        this.displayedColumns = ['Checked', 'Initials', 'Date', 'Location', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
         this.notReady = false;
       } else {
-        this.displayedColumns = ['Checked', 'StagedID', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
+        this.displayedColumns = ['Checked', 'Initials', 'Date', 'Location', 'Tags', 'Marks', 'Sex', 'Age Class', 'Comments', 'viewSeal'];
         this.notReady = false;
       }
       this.observations = observations;

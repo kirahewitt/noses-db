@@ -1,7 +1,7 @@
 <!-- Beginning of the form -->
 <!-- <mat-dialog-content [formGroup]="form"> -->
 
-<h1 class="title is-2 title-container">Edit Observation</h1>
+<h1 class="title is-2 title-container">Edit Staged Observation</h1>
 <div class="page-container" [formGroup]="form">
   <!-- body section-->
   <div class="row page-padding">
@@ -14,12 +14,8 @@
             <p>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Date Observation Recorded</mat-label>
-                <input #daterecorded (input)="observationTuple.dateOfRecording = daterecorded.value" matInput
-                  formControlName="dateOfRecording" [matDatepicker]="observationDatePicker" placeholder="MM/DD/YYYY">
-                <mat-datepicker-toggle matSuffix [for]="observationDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker [startAt]="observationTuple.dateOfRecording" #observationDatePicker></mat-datepicker>
-                <mat-error *ngIf="hasError('dateOfRecording', 'invalidDateFormat')">Input must be a date MM/DD/YY.
-                </mat-error>
+                <input #dateOfRecording matInput formControlName="dateOfRecording"
+                  (input)="observationTuple.dateOfRecording = dateOfRecording.value" placeholder="MM/DD/YYYY">
               </mat-form-field>
             </p>
             <p>
@@ -51,7 +47,7 @@
             <p>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Field Leader Initials</mat-label>
-                <input #fieldleader matInput formControlName="fieldLeaderList"
+                <input #fieldLeaderList matInput formControlName="fieldLeaderList"
                   (input)="observationTuple.fieldLeaderInitials= fieldleader.value" placeholder="FL">
               </mat-form-field>
             </p>
@@ -69,7 +65,8 @@
             <p>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Age</mat-label>
-                <input #age matInput formControlName="age" (input)="observationTuple.sealAgeCode = age.value"
+                <input #sealAgeCode matInput formControlName="sealAgeCode" 
+                  (input)="observationTuple.sealAgeCode = sealAgeCode.value"
                   placeholder="">
               </mat-form-field>
             </p>
@@ -85,43 +82,31 @@
             </p>
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>% Molt Completed</mat-label>
-              <input #molt matInput formControlName="sealMoltPercentage"
-                (input)="observationTuple.sealMoltPercentage = molt.value" placeholder="00">
+              <input #sealMoltPercentage matInput formControlName="sealMoltPercentage"
+                (input)="observationTuple.sealMoltPercentage = sealMoltPercentage.value" placeholder="00">
             </mat-form-field>
           </div>
           <div class="col-md-6">
             <p>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Pup</mat-label>
-                <input #pups matInput formControlName="sealHasPupQuantity"
-                  (input)="observationTuple.sealHasPup = pups.value" placeholder="">
+                <input #sealHasPupQuantity matInput formControlName="sealHasPupQuantity"
+                  (input)="observationTuple.sealHasPup = sealHasPupQuantity.value" placeholder="">
               </mat-form-field>
             </p>
             <!-- date first seen as weaner -->
             <p>
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Date Last Seen As A Pup</mat-label>
-                <input #lastseen (input)="observationTuple.sealLastSeenAsPupDate = lastseen.value" matInput
-                  formControlName="sealLastSeenAsPupDate" [matDatepicker]="sealLastSeenAsPupDatePicker"
-                  placeholder="MM/DD/YYYY">
-                <mat-datepicker-toggle matSuffix [for]="sealLastSeenAsPupDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker [startAt]="observationTuple.sealLastSeenAsPupDate" #sealLastSeenAsPupDatePicker>
-                </mat-datepicker>
-                <mat-error *ngIf="hasError('sealLastSeenAsPupDate', 'invalidDateFormat')">Input must be a date MM/DD/YY.
-                </mat-error>
+                <mat-label>Last Seen as Pup</mat-label>
+                <input #sealLastSeenAsPupDate matInput formControlName="sealLastSeenAsPupDate"
+                  (input)="observationTuple.sealLastSeenAsPupDate = sealLastSeenAsPupDate.value" placeholder="MM/DD/YYYY">
               </mat-form-field>
             </p>
             <p>
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Date First Seen As A Weaner</mat-label>
-                <input #firstseen (input)="observationTuple.sealFirstSeenAsWeaner = firstseen.value" matInput
-                  formControlName="sealFirstSeenAsWeaner" [matDatepicker]="firstSeenAsWeanerDatePicker"
-                  placeholder="MM/DD/YYYY">
-                <mat-datepicker-toggle matSuffix [for]="firstSeenAsWeanerDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker [startAt]="observationTuple.sealFirstSeenAsWeaner" #firstSeenAsWeanerDatePicker>
-                </mat-datepicker>
-                <mat-error *ngIf="hasError('sealFirstSeenAsWeaner', 'invalidDateFormat')">Input must be a date MM/DD/YY.
-                </mat-error>
+                <mat-label>First Seen as Weaner</mat-label>
+                <input #sealFirstSeenAsWeaner matInput formControlName="sealFirstSeenAsWeaner"
+                  (input)="observationTuple.sealFirstSeenAsWeaner = sealFirstSeenAsWeaner.value" placeholder="MM/DD/YYYY">
               </mat-form-field>
             </p>
           </div>
@@ -133,28 +118,25 @@
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
               <mat-label>Total Mass</mat-label>
-              <input matInput formControlName="sealMass" value="{{observationTuple.sealMass}}" placeholder="">
+              <input #sealMass matInput formControlName="sealMass" (input)="observationTuple.sealMass = sealMass.value" placeholder="">
             </mat-form-field>
             <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
               <mat-label>Tare Mass</mat-label>
-              <input matInput formControlName="sealTare" value="{{observationTuple.sealTare}}" placeholder="">
+              <input #sealTare matInput formControlName="sealTare" (input)="observationTuple.sealTare = sealTare.value" placeholder="">
             </mat-form-field>
           </div>
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
               <mat-label>Ax. Girth</mat-label>
-              <input matInput formControlName="sealAxillaryGirth" value="{{observationTuple.sealAxillaryGirth}}"
-                placeholder="">
+              <input #sealAxillaryGirth matInput formControlName="sealAxillaryGirth" (input)="observationTuple.sealAxillaryGirth = sealAxillaryGirth.value" placeholder="">
             </mat-form-field>
             <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
               <mat-label>Crv. Length</mat-label>
-              <input matInput formControlName="sealCurvilinearLength" value="{{observationTuple.sealCurvilinearLength}}"
-                placeholder="">
+              <input #sealCurvilinearLength matInput formControlName="sealCurvilinearLength" (input)="observationTuple.sealCurvilinearLength = sealCurvilinearLength.value" placeholder="">
             </mat-form-field>
             <mat-form-field appearance="outline" class="full-width" style="padding-left: 1rem; padding-right: 1rem;">
               <mat-label>St. Length</mat-label>
-              <input matInput formControlName="sealStandardLength" value="{{observationTuple.sealStandardLength}}"
-                placeholder="">
+              <input #sealStandardLength matInput formControlName="sealStandardLength" (input)="observationTuple.sealStandardLength = sealStandardLength.value" placeholder="">
             </mat-form-field>
           </div>
         </div>

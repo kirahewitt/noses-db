@@ -11,6 +11,8 @@ import { SqlObservation } from '../_supporting_classes/SqlObservation';
 import { SqlMark } from '../_supporting_classes/SqlMark';
 import { User_Observer_Obj } from '../_supporting_classes/sqlUser';
 import { AuthService } from '../_services/auth.service';
+import { SqlMeasurement } from '../_supporting_classes/SqlMeasurement';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 /**
@@ -37,6 +39,7 @@ export class SealPageComponent implements OnInit {
   public sealDossier_main: DossierViewStructure;
   public observedTagList: SqlTag[];
   public observedMarkList: SqlMark[];
+  public observedMesList: SqlMeasurement[];
   public identifyingObservation: SqlObservation;
   public newestObservation_forAgeClass: SqlObservation;
   public mostRecentObservation_sealSighting: SqlObservation;
@@ -46,6 +49,11 @@ export class SealPageComponent implements OnInit {
   public sealSexDisplayString: string;
   public sealAgeClassDisplayString: string;
   public sealMostRecentSightingDisplayString: string;
+  public AuxillaryGirth = "";
+  public AnimalMass = "";
+  public CurvilinearLength = "";
+  public StandardLength = "";
+  public showMeasurements = false;
 
   public allObservationsList: SqlObservation[];
   public allObservationsList_dataSource: MatTableDataSource<SqlObservation>;
@@ -127,6 +135,14 @@ export class SealPageComponent implements OnInit {
       }
     });
 
+    // this.dossierHelperService.getUniqueMesListDatastream().subscribe((retval : SqlMeasurement[]) => {
+    //   this.observedMesList = retval;
+    //   this.observedMesListDisplay = "";
+    //   for (let tag of this.observedTagList) {
+    //     this.observedMesListDisplay += tag.TagNumber + " "
+    //   }
+    // });
+
 
     // Subscription to unique marks via new service
     this.dossierHelperService.getUniqueMarkListDatastream().subscribe((retval : SqlMark[]) => {
@@ -139,7 +155,7 @@ export class SealPageComponent implements OnInit {
       // make nice-ish displays of the marks with years [MARK123 @ 2010]
       this.markListDisplayStringList = [];
       for (let mark of this.observedMarkList) {
-        var tempDisplayString = "[" + mark.Mark + " @ " + mark.Year + "]";
+        var tempDisplayString = "[" + mark.Mark + " " + mark.MarkPosition + " @ " + mark.Year + "]";
         this.markListDisplayStringList.push(tempDisplayString);
       }
 
@@ -150,6 +166,30 @@ export class SealPageComponent implements OnInit {
       }
 
     });
+
+        // Subscription to unique measurements via new service
+        this.dossierHelperService.getUniqueMesListDatastream().subscribe((retval : SqlMeasurement[]) => {
+      
+          console.log("SUB - Measurements for seal Id: retrieved data:");
+          console.log(retval);
+          
+          this.observedMesList = retval;
+    
+          var currentMes = this.observedMesList.shift();
+          if (currentMes.AuxillaryGirth != null) {
+            this.AuxillaryGirth = currentMes.AuxillaryGirth.toString();
+          }
+          if (currentMes.AnimalMass != null) {
+            this.AnimalMass = currentMes.AnimalMass.toString();
+          }
+          if (currentMes.CurvilinearLength != null) {
+            this.CurvilinearLength = currentMes.CurvilinearLength.toString();
+          }
+          if (currentMes.StandardLength != null) {
+            this.StandardLength = currentMes.StandardLength.toString();
+          }
+        });
+    
 
 
     // Subscription to the Identifying observation
@@ -176,6 +216,10 @@ export class SealPageComponent implements OnInit {
       this.newestObservation_forAgeClass = retval;
       this.sealAgeClassDisplayString = this.newestObservation_forAgeClass.AgeClass;
     });
+
+    if (this.sealAgeClassDisplayString == "W" && this.AnimalMass != "") {
+      this.showMeasurements = true;
+    }
   }
 
 
@@ -306,4 +350,27 @@ export class SealPageComponent implements OnInit {
     console.log(this.show);
   }
 
+  public handleFileSelect(files: FileList) {
+    // var files = event.target.files; // FileList object
+    var file = files[0];
+    console.log("here")
+    console.log(file.name)
+    console.log(file.lastModified)
+    // this.fileName = file.name;
+
+    // specify a callback function for the reader that will read the image file's data
+    var reader = new FileReader();
+    reader.onloadend = (event: any) => {
+      var fileContent:string;
+      
+      fileContent = event.target.result;
+      console.log(fileContent);
+      const lastModifiedDate = new Date(file.lastModified);
+
+      this.apiService.saveSealImage(this.sealDossier_main.dossierId, fileContent, lastModifiedDate);
+    }
+    
+    // this method turns the item into a base64 string by default.
+    reader.readAsDataURL(file);
+}
 }

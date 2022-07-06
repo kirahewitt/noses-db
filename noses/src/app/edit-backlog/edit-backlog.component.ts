@@ -23,6 +23,7 @@ export class EditBacklogComponent implements OnInit {
 
     public observationTuple : BacklogSpreadsheetTuple;
     public observationTuples : BacklogSpreadsheetTuple[];
+    public oldObservationTuple: BacklogSpreadsheetTuple;
     public currentUserEmail : string;
 
     public sealNum = "None"
@@ -88,6 +89,7 @@ export class EditBacklogComponent implements OnInit {
          let newObject = window.localStorage.getItem("currentObs");
          this.stagedId = parseInt(window.localStorage.getItem("currentStagedId"));
          this.observationTuple = JSON.parse(newObject);
+         this.oldObservationTuple = JSON.parse(newObject);
         //  var jsonData = window.localStorage.getItem("currentObs");
         //  console.log("jsonData");
         //  console.log(jsonData.toString());
@@ -159,13 +161,18 @@ export class EditBacklogComponent implements OnInit {
     }
 
     async onSubmit() {
-        if(this.observationTuple.sealSex != "") {
-            console.log(this.observationTuple.sealSex)
-          var json_sealIdentifier = JSON.stringify({'stagedID': this.stagedId, 'sex': this.observationTuple.sealSex});
-          console.log(json_sealIdentifier)
-          await this.apiService.updateSexBacklog(json_sealIdentifier)
-          this.router.navigate(["approve-obs"]);
-      }
+        var changes = BacklogSpreadsheetTuple.getEditedFields(this.oldObservationTuple, this.observationTuple)
+        console.log(JSON.stringify(changes))
+        console.log(this.oldObservationTuple)
+        if (Object.keys(changes).length > 0) {
+            var json_changes = JSON.stringify({'stagedID': this.stagedId, 'changes': changes});
+            console.log(json_changes)
+            await this.apiService.updateBacklogItem(json_changes)
+            this.router.navigate(["approve-obs"]);
+        }
+        else {
+            this.router.navigate(["approve-obs"]);
+        }
     }
 
 
@@ -186,55 +193,6 @@ export class EditBacklogComponent implements OnInit {
 //         return tupleList;
 //     }
 
-
-
-    /**
-     * Checks whether the data is valid and can be uploaded. Displays a message answering that
-     *  question. Then if it can be uploaded, it extacts the list of json objects from the SpreadsheetTuple
-     *  list and sends it to the server.
-     */
-    public uploadData() {
-        var fullData = {};
-        console.log(this.observationTuple);
-        fullData["Field Leader Initials"] = this.observationTuple.fieldLeaderInitials;
-                fullData["Year"] = 2018;
-                fullData["Date"] = "01/01/2020";
-                fullData["Loc."] = this.observationTuple.locationCode;
-                fullData["Sex"] = this.observationTuple.sealSex;
-                fullData["Age"] = this.observationTuple.sealAgeCode;
-                fullData["New Mark 1?"] = "true";
-                fullData["Mark 1"] = this.observationTuple.mark1_idValue;
-                fullData["Mark 1 Position"] = this.observationTuple.mark1_positionCode;
-                fullData["New Mark 2?"] = "true";
-                fullData["Mark 2"] = this.observationTuple.mark2_idValue;
-                fullData["Mark 2 Position"] = this.observationTuple.mark2_positionCode;
-                fullData["New Tag1?"] = "true";
-                fullData["Tag1 #"] = this.observationTuple.tag1_idValue;
-                fullData["Tag 1 Pos."] = this.observationTuple.tag1_positionCode;
-                fullData["New Tag2?"] = this.observationTuple.tag2_isNew;
-                fullData["Tag2 #"] = this.observationTuple.tag2_idValue;
-                fullData["Tag 2 Pos."] = this.observationTuple.tag2_positionCode;
-                fullData["Molt (%)"] = !!this.observationTuple.sealMoltPercentage ? this.observationTuple.sealMoltPercentage : 0;
-                fullData["Comments"] = this.observationTuple.comments;
-                fullData["SealId"] = this.observationTuple.sealId != undefined ? this.observationTuple.sealId : 0;
-                fullData["isApproved"] = 1;
-                fullData["St. Length"] = "";
-                fullData["Crv. Length"] = "";
-                fullData["Ax. Girth"] = "";
-                fullData["Mass"] = "";
-                fullData["Pup?"] = "false";
-                fullData["Tare"] = "";
-                fullData["Mass-Tare"] = "";
-                fullData["Last seen as P"] = "";
-                fullData["1st seen as W"] = "";
-                fullData["Range (days)"] = "";
-                fullData["Season"] = 2018;
-                fullData["LastSeenPup"] = "";
-                fullData["FirstSeenWeaner"] = "";
-        var dataList = [];
-        dataList.push(fullData);
-        this.apiService.addObservations(JSON.stringify(dataList));
-    }
 
 
     public getExtractedJsonData() {

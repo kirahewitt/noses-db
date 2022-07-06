@@ -165,6 +165,92 @@ export class BacklogSpreadsheetTuple extends ParentTuple {
     this.sealLastSeenAsPupDate = source.LastSeenP;
     this.sealFirstSeenAsWeaner = source.FirstSeenW;
   }
+
+  static getEditedFields(original: BacklogSpreadsheetTuple, updated: BacklogSpreadsheetTuple) {
+    var dict = {};
+    if (original.fieldLeaderInitials != updated.fieldLeaderInitials) {
+      dict["Initials"] = updated.fieldLeaderInitials
+    }
+    if (original.sealAgeCode != updated.sealAgeCode) {
+      dict["AgeClass"] = updated.sealAgeCode
+    }
+    if (original.comments != updated.comments) {
+      dict["Comments"] = updated.comments
+    }
+    if (original.dateOfRecording != updated.dateOfRecording) {
+      dict["Date"] = updated.dateOfRecording
+    }
+    if (original.locationCode != updated.locationCode) {
+      dict["Location"] = updated.locationCode
+    }
+    if (original.sealSex != updated.sealSex) {
+      dict["Sex"] = updated.sealSex
+    }
+    if (original.mark1_isNew != updated.mark1_isNew) {
+      dict["NewMark1"] = updated.mark1_isNew
+    }
+    if (original.mark1_idValue != updated.mark1_idValue) {
+      dict["Mark1"] = updated.mark1_idValue
+    }
+    if (original.mark1_positionCode != updated.mark1_positionCode) {
+      dict["MarkPos1"] = updated.mark1_positionCode
+    }
+    if (original.mark2_isNew != updated.mark2_isNew) {
+      dict["NewMark2"] = updated.mark2_isNew
+    }
+    if (original.mark2_idValue != updated.mark2_idValue) {
+      dict["Mark2"] = updated.mark2_idValue
+    }
+    if (original.mark2_positionCode != updated.mark2_positionCode) {
+      dict["MarkPos2"] = updated.mark2_positionCode
+    }
+    if (original.tag1_isNew != updated.tag1_isNew) {
+      dict["NewTag1"] = updated.tag1_isNew
+    }
+    if (original.tag1_idValue != updated.tag1_idValue) {
+      dict["Tag1"] = updated.tag1_idValue
+    }
+    if (original.tag1_positionCode != updated.tag1_positionCode) {
+      dict["TagPos1"] = updated.tag1_positionCode
+    }
+    if (original.tag2_isNew != updated.tag2_isNew) {
+      dict["NewTag2"] = updated.tag2_isNew
+    }
+    if (original.tag2_idValue != updated.tag2_idValue) {
+      dict["Tag2"] = updated.tag2_idValue
+    }
+    if (original.tag2_positionCode != updated.tag2_positionCode) {
+      dict["TagPos2"] = updated.tag2_positionCode
+    }
+    if (original.sealMoltPercentage != updated.sealMoltPercentage) {
+      dict["MoltPercent"] = updated.sealMoltPercentage
+    }
+    if (original.sealHasPup != updated.sealHasPup) {
+      dict["Pup"] = updated.sealHasPup
+    }
+    if (original.sealStandardLength != updated.sealStandardLength) {
+      dict["StLength"] = updated.sealStandardLength
+    }
+    if (original.sealCurvilinearLength != updated.sealCurvilinearLength) {
+      dict["CrvLength"] = updated.sealCurvilinearLength
+    }
+    if (original.sealAxillaryGirth != updated.sealAxillaryGirth) {
+      dict["AxGirth"] = updated.sealAxillaryGirth
+    }
+    if (original.sealMass != updated.sealMass) {
+      dict["Mass"] = updated.sealMass
+    }
+    if (original.sealTare != updated.sealTare) {
+      dict["Tare"] = updated.sealTare
+    }
+    if (original.sealLastSeenAsPupDate != updated.sealLastSeenAsPupDate) {
+      dict["LastSeenP"] = updated.sealLastSeenAsPupDate
+    }
+    if (original.sealFirstSeenAsWeaner != updated.sealFirstSeenAsWeaner) {
+      dict["FirstSeenW"] = updated.sealFirstSeenAsWeaner
+    }
+    return dict
+  }
   
   /**
    * Creates an instance of this class to represent a json tuple. If there is an error while processing one

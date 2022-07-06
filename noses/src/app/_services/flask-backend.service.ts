@@ -9,6 +9,7 @@ import { SealDataService } from "./seal-data.service";
 import { Seal } from '../_supporting_classes/Seal';
 import { SqlSealDossier } from '../_supporting_classes/SqlSealDossier';
 import { SqlObservation } from '../_supporting_classes/SqlObservation';
+import { SqlMeasurement } from '../_supporting_classes/SqlMeasurement';
 import { SqlTag } from '../_supporting_classes/SqlTag';
 import { SqlMark } from '../_supporting_classes/SqlMark';
 import { ResetPasswordFormObject } from '../_supporting_classes/ResetPasswordFormObject';
@@ -34,7 +35,7 @@ export class FlaskBackendService {
    * @param sealDataService a local reference to the application-wide angular service that keeps track of the currently selected seal.
    */
   constructor(private httpClient: HttpClient, private sealDataService: SealDataService) {
-  this.FLASK_API_SERVER = "http://34.217.54.156:5000"
+  this.FLASK_API_SERVER = "http://192.168.1.14:5000"
   this.httpOptions = {
     headers: new HttpHeaders()
     .set('content-type', 'application/json')
@@ -300,6 +301,20 @@ export class FlaskBackendService {
     let obs = this.httpClient.post<string>(flask_endpoint, inputAsJsonString, this.httpOptions).pipe(
       catchError(this.handleError<any>('saveUserImage_obs', [])),
     );
+
+    return obs;
+  }
+
+  public saveSealImage(sealId: number, pictureData: string, picDate: Date) {
+    console.log("here")
+    let flask_endpoint = `${this.FLASK_API_SERVER}/uploadImage_forSeal`;
+
+    let inputAsJsonString = '{"sealId" : ' + sealId.toString() + ', "pictureData" : "' + pictureData + '", "date" : "' + picDate.toString() + '"}';
+
+    let obs = this.httpClient.post<string>(flask_endpoint, inputAsJsonString, this.httpOptions).pipe(
+      catchError(this.handleError<any>('saveSealImage', [])),
+    );
+    console.log(obs)
 
     return obs;
   }
@@ -711,6 +726,30 @@ export class FlaskBackendService {
     return obs;
   }
 
+  public getAll_Measurements_bySealId(sealId: number): Observable<SqlMeasurement[]> {
+    let flask_endpoint = `${this.FLASK_API_SERVER}/getmes-with-sealid`;
+
+    let obs = this.httpClient.post(flask_endpoint, sealId, this.httpOptions).pipe(
+      catchError(this.handleError<any>('getmes-with-sealid', [])),
+      map((jsonResponse: any) => {
+        var mesList: SqlMeasurement[] = [];
+
+        for (let json_tag of jsonResponse) {
+          var mes: SqlMeasurement = new SqlMeasurement();
+          mes.DateObs = json_tag['Date']
+          mes.AuxillaryGirth = json_tag['AuxillaryGirth'];
+          mes.AnimalMass = json_tag['AnimalMass'];
+          mes.CurvilinearLength = json_tag['CurvilinearLength'];
+          mes.StandardLength = json_tag['StandardLength'];
+          console.log(mes)
+          mesList.push(mes);
+        }
+
+        return mesList;
+      })
+    );
+    return obs;
+  }
 
   /**
    * Saves the changes made to the users and receives an updated list of users after the changes have been made.
@@ -943,5 +982,17 @@ export class FlaskBackendService {
         });
   
       return this.rows;    }
+      
+
+      async updateBacklogItem(obs: string) {
+        let flask_endpoint = `${this.FLASK_API_SERVER}/updateBacklogItem`;
+    
+        console.log(obs);
+        await this.httpClient.post<string>(flask_endpoint, obs, this.httpOptions).toPromise()
+          .then(data => {
+            this.rows = data;
+          });
+    
+        return this.rows;    }
 
 }

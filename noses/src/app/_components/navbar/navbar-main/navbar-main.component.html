@@ -1,4 +1,4 @@
-<nav class="navbar mat-elevation-z6">
+<nav class="navbar mat-elevation-z6" >
 
   <a mat-button="" routerLink="/menu" class="mat-button mat-button-base navbar-anchor"  >
     <span class="mat-button-wrapper">
@@ -14,7 +14,7 @@
 
   <!-- all seals -->
   <a *ngIf="currentUserIsValid === true" mat-button="" routerLink="/dashboard" class="mat-button mat-button-base navbar-anchor"  >
-      <span class="mat-button-wrapper">
+      <span class="mat-button-wrapper" routerLinkActive = "active">
         <span> All Seals </span>
       </span>
       <div class="mat-button-ripple mat-ripple" matripple=""></div>
@@ -23,7 +23,7 @@
 
   <!-- All Observations -->
   <a *ngIf="currentUserIsValid === true" mat-button="" routerLink="/all-observations" class="mat-button mat-button-base navbar-anchor"  >
-      <span class="mat-button-wrapper">
+      <span class="mat-button-wrapper" routerLinkActive = "active">
         <span> All Observations </span>
       </span>
       <div class="mat-button-ripple mat-ripple" matripple=""></div>
@@ -33,7 +33,7 @@
 
   <!-- Single Observation Upload -->
   <a *ngIf="currentUserIsValid === true" mat-button="" routerLink="/new-observation" class="mat-button mat-button-base navbar-anchor"  >
-      <span class="mat-button-wrapper">
+      <span class="mat-button-wrapper" routerLinkActive = "active">
         <span> Single Observation Upload </span>
       </span>
       <div class="mat-button-ripple mat-ripple" matripple=""></div>
@@ -41,8 +41,8 @@
   </a>
 
   <!-- Bulk Observation Upload -->
-  <a *ngIf="currentUserIsValid === true" mat-button="" routerLink="/citizen-sci-bulk-upload" class="mat-button mat-button-base navbar-anchor"  >
-      <span class="mat-button-wrapper">
+  <a *ngIf="currentUserIsValid === true" mat-button="" routerLink="/citizen-sci-bulk-upload" class="mat-button mat-button-base navbar-anchor">
+      <span class="mat-button-wrapper" routerLinkActive = "active">
         <span> Bulk Observation Upload </span>
       </span>
       <div class="mat-button-ripple mat-ripple" matripple=""></div>
@@ -50,17 +50,17 @@
   </a>
 
   <!-- approve observations -->
-  <a *ngIf="currentUserIsValid === true && isAtLeastFieldLeader === true" mat-button="" routerLink="/approve-obs" class="mat-button mat-button-base navbar-anchor"  >
-      <span class="mat-button-wrapper">
-        <span> Approve Observations </span>
-      </span>
-      <div class="mat-button-ripple mat-ripple" matripple=""></div>
-      <div class="mat-button-focus-overlay"></div>
-  </a>
+  <a *ngIf="currentUserIsValid === true && isAtLeastFieldLeader === true" mat-button="" routerLink="/approve-obs" class="mat-button mat-button-base navbar-anchor">
+    <span class="mat-button-wrapper" routerLinkActive = "active">
+      <span> Approve Observations </span>
+    </span>
+    <div class="mat-button-ripple mat-ripple" matripple=""></div>
+    <div class="mat-button-focus-overlay"></div>
+</a>
 
   <!-- Manage Accounts -->
   <a *ngIf="currentUserIsValid === true && isAdmin === true" mat-button="" routerLink="/manage-accounts" class="mat-button mat-button-base navbar-anchor"  >
-      <span class="mat-button-wrapper">
+      <span class="mat-button-wrapper" routerLinkActive = "active">
         <span> Manage Accounts </span>
       </span>
       <div class="mat-button-ripple mat-ripple" matripple=""></div>
